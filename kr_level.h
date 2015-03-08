@@ -23,8 +23,7 @@
 #include "kr_tileset.h"
 
 #define KR_LEVEL_VERSION "Level Version 1.0"
-#define KR_SCROLLING_WIDTH 300
-#define KR_SCROLLING_HEIGHT 300
+
 /*!
 * \struct Kr_Level
 * \brief  Structure to handle the level.

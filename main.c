@@ -26,7 +26,7 @@
 #define KR_FPS 30// Nombre de FPS
 #define KR_WIDTH_WINDOW  1280
 #define KR_HEIGHT_WINDOW 720
-#define MOVESPEED 10
+#define MOVESPEED 2
 
 SDL_Renderer *gpRenderer = NULL;
 
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 	Uint32   iPreviousTime = 0, iCurrentTime = 0; // Variable pour la gestion des FPS
 
 	/* Création de la fenêtre */
-	pWindow = SDL_CreateWindow("Jeu 2D - Isaac", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW, SDL_WINDOW_SHOWN);
+	pWindow = SDL_CreateWindow("Jeu 2D - Isaac", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW, SDL_WINDOW_SHOWN); // SDL_WINDOW_FULLSCREEN
 	if (pWindow == NULL)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Window : %s\n", SDL_GetError());
@@ -118,15 +118,15 @@ int main(int argc, char** argv)
 	SDL_Rect rLevel; // où sera afficher le level sur le renderer
 	SDL_Rect rLimitation; 
 
-	rLevel.x = 25;
-	rLevel.y = 25;
+	rLevel.x = 0;
+	rLevel.y = 0;
 	rLevel.h = KR_HEIGHT_WINDOW;
 	rLevel.w = KR_WIDTH_WINDOW;
 
 	rLimitation.x = 0;
 	rLimitation.y = 0;
-	rLimitation.w = 20;
-	rLimitation.h = 20;
+	rLimitation.w = 100;
+	rLimitation.h = 100;
 
 	pMonLevel = Kr_Level_Init("level2"); // Ne pas préciser l'extension
 	if (!Kr_Level_Load(pMonLevel, gpRenderer))
@@ -211,18 +211,18 @@ int main(int argc, char** argv)
 		pTextureText = Kr_Text_FontCreateTexture(gpRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
 		iCount += (1000 / KR_FPS); // Cette variable permet juste d'afficher le temps depuis lequel l'exe est actif, plus tard on le mettra en forme pour afficher le temps depuis lequel l'utilisateur est dans le jeu
 		//sprintf(szCompteur, "Time : %d", iCount); // Mise à jour du compteur
-		sprintf(szCompteur, "Image : X : %d Y : %d", rectPositionImage.x, rectPositionImage.y);//)pMap->iScrollX, pMap->iScrollY); // Affichage coordonnée de la map
+		sprintf(szCompteur, "Cursor : X : %d Y : %d", inEvent.iMouseX, inEvent.iMouseY);//)pMap->iScrollX, pMap->iScrollY); // Affichage coordonnée de la map
 
-
+		//Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pMonLevel->rLimitation->x, pMonLevel->rLimitation->y);
 		/* ========================================================================= */
 		/*                                  RENDER                                   */
 		/* ========================================================================= */
 		// Ici on gère l'affichage des surfaces
 		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
-		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);
-		SDL_RenderCopy(gpRenderer, pLimitation, NULL, &pMonLevel->rLimitation);
+		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);		
 		SDL_RenderCopy(gpRenderer, pBackground, NULL, &rectPositionImage); // En arrière plan
+		SDL_RenderCopy(gpRenderer, pLimitation, NULL, pMonLevel->rLimitation);
 		SDL_RenderCopy(gpRenderer, pTextureText, NULL, &textPosition); // En avant plan de la texture précédente
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle

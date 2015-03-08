@@ -10,8 +10,15 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Création                                     */
+/* Herrou        | 08/03/2015 | Gestion du Scrolling Ok                      */
 /* ========================================================================= */
+/*
+ Commentaire :
+  - L'affichage de la carte fonctionne correctement, cependant si on ne l'affiche pas dans le renderer complet (rDst != renderer) 
+    alors on aura l'impression que la fenêtre se déplace dans le renderer mais c'est simplement car on affiche que des blocs de 32 et non pas pixel par pixel
 
+
+*/
 #include "kr_level.h"
 
 #define CACHE_SIZE 5000
@@ -156,7 +163,7 @@ Boolean Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile)
 			if (iTmp >= pLevel->pLevel_Tileset->iNbTilesX * pLevel->pLevel_Tileset->iNbTilesY) // On vérifie que le codage du tile existe
 			{
 				Kr_Log_Print(KR_LOG_ERROR, "Can't load a tile in the layout because it's out of the tileset file ");
-				Kr_Log_Print(KR_LOG_ERROR, ">> ile n°\"%d\", but iNbTilesX = %d and iNbTilesY = %d", iTmp, pLevel->pLevel_Tileset->iNbTilesX, pLevel->pLevel_Tileset->iNbTilesY);
+				Kr_Log_Print(KR_LOG_ERROR, ">> Tile n°\"%d\", but iNbTilesX = %d and iNbTilesY = %d", iTmp, pLevel->pLevel_Tileset->iNbTilesX, pLevel->pLevel_Tileset->iNbTilesY);
 				return FALSE;
 			}
 			pLevel->szLayout[i][j] = iTmp;
@@ -191,6 +198,7 @@ void Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel, SDL_Rect *rDst)
 	iMinY =  pLevel->rScrollWindow.y / pLevel->pLevel_Tileset->iTilesHeight;// -1;
 	iMaxX = (pLevel->rScrollWindow.x + rDst->w) / pLevel->pLevel_Tileset->iTilesWidth;
 	iMaxY = (pLevel->rScrollWindow.y + rDst->h) / pLevel->pLevel_Tileset->iTilesHeight;
+
 	//Kr_Log_Print(KR_LOG_WARNING, " Scroll W: %d\n", pLevel->rScrollWindow.w);
 	//Kr_Log_Print(KR_LOG_WARNING, " Scroll H: %d\n", pLevel->rScrollWindow.h);
 	//Kr_Log_Print(KR_LOG_WARNING, " Limitation x: %d\n", pLevel->rLimitation.x);
@@ -199,8 +207,8 @@ void Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel, SDL_Rect *rDst)
 	{
 		for (j = iMinY; j <= iMaxY; j++)
 		{
-			Rect_dest.x =  + i*pLevel->pLevel_Tileset->iTilesWidth - pLevel->rScrollWindow.x;
-			Rect_dest.y =  + j*pLevel->pLevel_Tileset->iTilesHeight - pLevel->rScrollWindow.y;
+			Rect_dest.x = i*pLevel->pLevel_Tileset->iTilesWidth - pLevel->rScrollWindow.x + rDst->x;
+			Rect_dest.y = j*pLevel->pLevel_Tileset->iTilesHeight - pLevel->rScrollWindow.y + rDst->y;
 			Rect_dest.h = pLevel->pLevel_Tileset->iTilesHeight;
 			Rect_dest.w = pLevel->pLevel_Tileset->iTilesWidth;
 			if (i < 0 || i >= pLevel->iLevel_TileWidth || j < 0 || j >= pLevel->iLevel_TileHeight)
@@ -232,7 +240,7 @@ void Kr_Level_Focus(Kr_Level *pLevel, SDL_Rect *rToFocus, SDL_Rect *rLimitation)
 
 /*!
 *  \fn     void Kr_Level_UpdateScroll(Kr_Level *pLevel, SDL_Rect *rDst)
-*  \brief  Function to update the scrolling window
+*  \brief  Function to update the scrolling window and limitation rectangle
 *
 *  \param  pLevel a pointer to a the level structure
 *  \param  rDst      the rectangle where the level must be draw
@@ -245,17 +253,17 @@ void Kr_Level_UpdateScroll(Kr_Level *pLevel, SDL_Rect *rDst)
 	
 	iCenterXEntity = pLevel->rToFocus->x + pLevel->rToFocus->w / 2;
 	iCenterYEntity = pLevel->rToFocus->y + pLevel->rToFocus->h / 2;
-
+	//pLevel->rLimitation->x = pLevel->rToFocus->x + 2;
 	
 
 	iLimitXMin = pLevel->rScrollWindow.x + pLevel->rLimitation->x;
 	iLimitYMin = pLevel->rScrollWindow.y + pLevel->rLimitation->y;
 	iLimitXMax = iLimitXMin + pLevel->rLimitation->w;
 	iLimitYMax = iLimitYMin + pLevel->rLimitation->h;
-
+	//Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pLevel->rLimitation->x, pLevel->rLimitation->y);
 	//	Kr_Log_Print(KR_LOG_INFO, "ScrollX   : %d |ScrollY     : %d \n", pLevel->rScrollWindow.x, pLevel->rScrollWindow.y);
-	//	Kr_Log_Print(KR_LOG_INFO, "LimitX    : %d |LimitY     : %d \n", pLevel->rLimitation.x, pLevel->rLimitation.y);
-	//	Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pLevel->rToFocus->x, pLevel->rToFocus->y);
+	//	Kr_Log_Print(KR_LOG_INFO, "LimitX    : %d |LimitY     : %d \n", pLevel->rLimitation->x, pLevel->rLimitation->y);
+	//	
 	//	Kr_Log_Print(KR_LOG_INFO, "iLimitXMin: %d |iLimitXMax : %d \n", iLimitXMin, iLimitXMax);
 	//	Kr_Log_Print(KR_LOG_INFO, "iLimitYMin: %d |iLimitYMax : %d \n", iLimitYMin, iLimitYMax);
  	//	Kr_Log_Print(KR_LOG_INFO, "iCoordX   : %d |iCoordY    : %d \n", iCenterXEntity, iCenterYEntity);
@@ -265,20 +273,26 @@ void Kr_Level_UpdateScroll(Kr_Level *pLevel, SDL_Rect *rDst)
 	if (iCenterXEntity < iLimitXMin)
 	{
 		pLevel->rScrollWindow.x -= (iLimitXMin - iCenterXEntity);
+		//pLevel->rLimitation->x = pLevel->rToFocus->x;
+		Kr_Log_Print(KR_LOG_INFO, "XMIN\n");
+
 	}
 	if (iCenterYEntity < iLimitYMin)
 	{
 		pLevel->rScrollWindow.y -= (iLimitYMin - iCenterYEntity);
+		pLevel->rLimitation->y = pLevel->rToFocus->y;
 	}
 
 	if (iCenterXEntity > iLimitXMax)
 	{
 		pLevel->rScrollWindow.x += (iCenterXEntity - iLimitXMax);
+		pLevel->rLimitation->x = pLevel->rScrollWindow.x - pLevel->rLimitation->w;
 	}
 
 	if (iCenterYEntity > iLimitYMax)
 	{
 		pLevel->rScrollWindow.y += (iCenterYEntity - iLimitYMax);
+		pLevel->rLimitation->y = pLevel->rToFocus->y/2;
 	}
 	Kr_Level_ClampScroll(pLevel, rDst);
 }
@@ -294,7 +308,27 @@ void Kr_Level_UpdateScroll(Kr_Level *pLevel, SDL_Rect *rDst)
 void Kr_Level_ClampScroll(Kr_Level *pLevel, SDL_Rect *rDst)
 {
 
-	if (pLevel->rScrollWindow.x + pLevel->rToFocus->x  < 0)
+	if (pLevel->rScrollWindow.x < 0)
+	{
+		Kr_Log_Print(KR_LOG_WARNING, " 1 Reach limit on X : %d\n", pLevel->rScrollWindow.x);
+		pLevel->rScrollWindow.x = 0;
+	}
+	if (pLevel->rScrollWindow.y < 0)
+	{
+		Kr_Log_Print(KR_LOG_WARNING, " 2 Reach limit on Y : %d\n", pLevel->rScrollWindow.y);
+		pLevel->rScrollWindow.y = 0;
+	}
+	if (pLevel->rScrollWindow.x > pLevel->iLevel_TileWidth*pLevel->pLevel_Tileset->iTilesWidth - rDst->w - 1)
+	{
+		Kr_Log_Print(KR_LOG_WARNING, " 3 Reach limit on X : %d\n", pLevel->rScrollWindow.x);
+		pLevel->rScrollWindow.x = pLevel->iLevel_TileWidth*pLevel->pLevel_Tileset->iTilesWidth - rDst->w - 1;
+	}
+	if (pLevel->rScrollWindow.y > pLevel->iLevel_TileHeight*pLevel->pLevel_Tileset->iTilesHeight - rDst->h - 1)
+	{
+		Kr_Log_Print(KR_LOG_WARNING, " 4 Reach limit on Y : %d\n", pLevel->rScrollWindow.y);
+		pLevel->rScrollWindow.y = pLevel->iLevel_TileHeight*pLevel->pLevel_Tileset->iTilesHeight - rDst->h- 1;
+	}
+	/*if (pLevel->rScrollWindow.x + pLevel->rToFocus->x  < 0)
 	{
 		Kr_Log_Print(KR_LOG_WARNING, " 1 Reach limit on X : %d\n", pLevel->rScrollWindow.x);
 		pLevel->rScrollWindow.x = 0;
@@ -329,7 +363,9 @@ void Kr_Level_ClampScroll(Kr_Level *pLevel, SDL_Rect *rDst)
 	{
 		Kr_Log_Print(KR_LOG_WARNING, " 6 Reach limit on Y : %d\n", pLevel->rToFocus->y);
 		pLevel->rToFocus->y = pLevel->iLevel_TileHeight* pLevel->pLevel_Tileset->iTilesHeight - pLevel->rScrollWindow.y - pLevel->rToFocus->h - 1;
-	}
+	}*/
+
+
 	
 //	Kr_Log_Print(KR_LOG_WARNING, " RLimit X : %d   Y: %d\n", pLevel->rLimitation->x,pLevel->rLimitation->y);
 }
