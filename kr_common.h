@@ -2,14 +2,14 @@
 /*!
  * \file    kr_common.h
  * \brief   Contains the standard includes, structures and enumerations.
- * \author   
+ * \author  Olivier Herrou
  * \version 1.0
- * \date    1 Mars 2015
+ * \date    1 Février 2015
  */
 /* ========================================================================= */
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
-/*               | 01/03/2015 | Creation.                                    */
+/* Herrou        | 01/02/2015 | Creation.                                    */
 /*               |            |                                              */
 /*               |            |                                              */
 /*               |            |                                              */
@@ -22,7 +22,7 @@
     #ifdef _MSC_VER
         /*! Define to remove some useless warnings with Visual Studio. */
         #define _CRT_SECURE_NO_WARNINGS
-    #endif 
+    #endif
 
     #include <stdio.h>
     #include <stdlib.h>

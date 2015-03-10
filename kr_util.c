@@ -4,12 +4,14 @@
  * \brief   Contains some useful and standard functions.
  * \author  Olivier Herrou
  * \version 1.0
- * \date    1 Mars 2015
+ * \date    1 Février 2015
  */
 /* ========================================================================= */
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
-/* Herrou        | 01/03/2015 | Creation.                                    */
+/* Herrou        | 01/02/2015 | Creation.                                    */
+/*               | 07/02/2015 | Now using IMG_Load instead of Load_BMP       */
+/*               | 18/02/2015 | Le son et la musique sont gérés dans kr_sound*/
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */

@@ -4,12 +4,13 @@
 * \brief   Contains the structure to handle the input (keyboard and mouse).
 * \author  Olivier Herrou
 * \version 1.0
-* \date    1 Mars 2015
+* \date    5 Février 2015
 */
 /* ========================================================================= */
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
-/* Herrou        | 01/03/2015 | Creation.                                    */
+/* Herrou        | 05/02/2015 | Creation.                                    */
+/*               | 08/02/2015 | SDL_KEYDOWN gère maintenant les répétitions  */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
