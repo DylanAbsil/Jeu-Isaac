@@ -7,6 +7,7 @@
 /*               |            |                                              */
 /* ========================================================================= */
 
+
 #pragma comment( lib, "SDL2.lib" )
 #pragma comment( lib, "SDL2main.lib" )
 #pragma comment( lib, "SDL2_mixer.lib" )
@@ -208,12 +209,14 @@ int main(int argc, char** argv)
 		/* ========================================================================= */
 		/*                                  DIVERS                                   */
 		/* ========================================================================= */
+
 		pTextureText = Kr_Text_FontCreateTexture(gpRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
 		iCount += (1000 / KR_FPS); // Cette variable permet juste d'afficher le temps depuis lequel l'exe est actif, plus tard on le mettra en forme pour afficher le temps depuis lequel l'utilisateur est dans le jeu
 		//sprintf(szCompteur, "Time : %d", iCount); // Mise à jour du compteur
 		sprintf(szCompteur, "Cursor : X : %d Y : %d", inEvent.iMouseX, inEvent.iMouseY);//)pMap->iScrollX, pMap->iScrollY); // Affichage coordonnée de la map
 
 		//Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pMonLevel->rLimitation->x, pMonLevel->rLimitation->y);
+		
 		/* ========================================================================= */
 		/*                                  RENDER                                   */
 		/* ========================================================================= */
