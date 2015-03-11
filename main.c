@@ -14,6 +14,8 @@
 #pragma comment( lib, "SDL2_ttf.lib" )
 #pragma comment( lib, "SDL2_image.lib" )
 
+
+
 #include "kr_common.h"
 #include "kr_log.h"
 #include "kr_util.h"
