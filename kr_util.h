@@ -34,6 +34,8 @@ extern SDL_Renderer *gpRenderer; // Renderer is a global var from main
     /*! Macro to free memory block. */
     #define      UTIL_Free(x) do { free( x ); x = NULL; } while( 0 )
 
+
+
 #endif /* __KR_UTIL_H__ */
 
 /* ========================================================================= */
