@@ -25,3 +25,7 @@ typedef struct{
 	current;
 	last;
 }listSprite;
+
+typedef struct Sprite{
+
+};
