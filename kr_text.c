@@ -1,6 +1,6 @@
 ﻿/* ========================================================================= */
 /*!
- * \file    kr_log.c
+ * \file    kr_text.c
  * \brief   Contains the functions to handle the SDL_ttf.
  * \author  Olivier Herrou
  * \version 1.0
@@ -10,8 +10,8 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 08/02/2015 | Creation.                                    */
-/*               | 21/02/2015 | La police doit être dans le dossier font     */
-/*               |            |                                              */
+/* Herrou        | 21/02/2015 | La police doit être dans le dossier font     */
+/* Herrou        | 18/03/2015 | Modification pour la création du path vers font*/
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -31,11 +31,11 @@
 TTF_Font* Kr_Text_OpenFont(const char *szFile, Uint32 iSize)
 {
 	TTF_Font *pFont = NULL;
-	char     *szFontPath;
+	char      szFontPath[60];
 	size_t    iPathLen;
 
 	iPathLen = strlen(szFile);
-	szFontPath = UTIL_BuildPath("fonts", szFile, iPathLen, "ttf"); // Le fichier font doit être dans le répertoire "fonts" et avoir l'extension .ttf
+	sprintf(szFontPath, "fonts\\%s.ttf", szFile);
 	if (!szFontPath)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "The file %s.ttf is not in the folder \"fonts\"\n", szFile);

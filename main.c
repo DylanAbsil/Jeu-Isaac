@@ -24,9 +24,8 @@
 // Banque de son : http://www.wavsource.com/
 // Utiliser Uint32 gérer la portabilité !!!
 #define KR_FPS 30// Nombre de FPS
-#define KR_WIDTH_WINDOW  1280
-#define KR_HEIGHT_WINDOW 720
-#define MOVESPEED 2
+
+#define MOVESPEED 3
 
 SDL_Renderer *gpRenderer = NULL;
 
@@ -111,22 +110,11 @@ int main(int argc, char** argv)
 	TTF_SetFontStyle(pFont, TTF_STYLE_BOLD);
 
 
+
+
 	/* Chargement du niveau */
-	SDL_Texture *pLimitation = NULL;
-	pLimitation = UTIL_LoadTexture("Visu.png", NULL, NULL);
 	Kr_Level *pMonLevel = NULL;
-	SDL_Rect rLevel; // où sera afficher le level sur le renderer
-	SDL_Rect rLimitation; 
 
-	rLevel.x = 0;
-	rLevel.y = 0;
-	rLevel.h = KR_HEIGHT_WINDOW;
-	rLevel.w = KR_WIDTH_WINDOW;
-
-	rLimitation.x = 0;
-	rLimitation.y = 0;
-	rLimitation.w = 100;
-	rLimitation.h = 100;
 
 	pMonLevel = Kr_Level_Init("level2"); // Ne pas préciser l'extension
 	if (!Kr_Level_Load(pMonLevel, gpRenderer))
@@ -134,7 +122,6 @@ int main(int argc, char** argv)
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
 		exit(EXIT_FAILURE);
 	}
-	Kr_Level_Focus(pMonLevel, &rectPositionImage, &rLimitation);
 
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
@@ -148,7 +135,7 @@ int main(int argc, char** argv)
 		
 		if (inEvent.szMouseButtons[0])
 		{
-			Kr_Log_Print(KR_LOG_INFO, "CLIQUE GAUCHE\n");
+			Kr_Log_Print(KR_LOG_ERROR, "CLIQUE GAUCHE : %d %d \n", inEvent.iMouseX, inEvent.iMouseY);
 			inEvent.szMouseButtons[0] = 0; // Un seul clique, si je ne met pas ça, le son sera joué en boucle. La l'utilisateur va devoir relever son doigt
 		}
 		if (inEvent.szMouseButtons[1])
@@ -189,7 +176,7 @@ int main(int argc, char** argv)
 				Mix_PauseMusic();//Sinon je le met en pause
 			}
 		}
-
+	
 		/* ========================================================================= */
 		/*                                    FPS                                    */
 		/* ========================================================================= */
@@ -211,7 +198,7 @@ int main(int argc, char** argv)
 		pTextureText = Kr_Text_FontCreateTexture(gpRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
 		iCount += (1000 / KR_FPS); // Cette variable permet juste d'afficher le temps depuis lequel l'exe est actif, plus tard on le mettra en forme pour afficher le temps depuis lequel l'utilisateur est dans le jeu
 		//sprintf(szCompteur, "Time : %d", iCount); // Mise à jour du compteur
-		sprintf(szCompteur, "Cursor : X : %d Y : %d", inEvent.iMouseX, inEvent.iMouseY);//)pMap->iScrollX, pMap->iScrollY); // Affichage coordonnée de la map
+		sprintf(szCompteur, "Cursor : X : %d Y : %d", inEvent.iMouseX, inEvent.iMouseY);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
 
 		//Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pMonLevel->rLimitation->x, pMonLevel->rLimitation->y);
 		/* ========================================================================= */
@@ -220,9 +207,8 @@ int main(int argc, char** argv)
 		// Ici on gère l'affichage des surfaces
 		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
-		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);		
+		Kr_Level_Draw(gpRenderer, pMonLevel);		
 		SDL_RenderCopy(gpRenderer, pBackground, NULL, &rectPositionImage); // En arrière plan
-		SDL_RenderCopy(gpRenderer, pLimitation, NULL, pMonLevel->rLimitation);
 		SDL_RenderCopy(gpRenderer, pTextureText, NULL, &textPosition); // En avant plan de la texture précédente
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
@@ -233,7 +219,6 @@ int main(int argc, char** argv)
 	/* ========================================================================= */
 
 	UTIL_FreeTexture(&pBackground);		// Libération mémoire de la texture 
-	UTIL_FreeTexture(&pLimitation);		// Libération mémoire de la texture 
 	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre

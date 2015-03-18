@@ -10,7 +10,7 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Creation.                                    */
-/*               |            |                                              */
+/* Herrou        | 18/03/2015 | Suppression UTIL_BuildPath                   */
 /*               |            |                                              */
 /* ========================================================================= */
 #include "kr_util.h"
@@ -209,28 +209,6 @@ char* UTIL_CopyStr( const char *szSrc, size_t iSrcLen )
     return pDest;
 }
 
-/*!
- *  \fn     char* UTIL_BuildPath( const char *szFolder, const char *szFile, size_t iFileLen, const char *szExt )
- *  \brief  Function to build a path.
- *
- *  \param  szFolder Name of the folder.
- *  \param  szFile   Name of the file.
- *  \param  iFileLen Size of the filename to copy ( Without '\0' ).
- *  \param  szExt    Name of the extension.
- *  \return A pointer on the allocated path, or NULL if error.
- */
-char* UTIL_BuildPath( const char *szFolder, const char *szFile, size_t iFileLen, const char *szExt )
-{
-    size_t  iPathLen = strlen( szFolder ) + iFileLen + strlen( szExt );
-    char   *pPath    = ( char * ) UTIL_Malloc( iPathLen + 3 ); // + '/' + '.' + '\0'
-    
-    if( pPath )
-    {
-        sprintf( pPath, "%s/%s.%s", szFolder, szFile, szExt );
-    }
-    
-    return pPath;
-}
 
 /* ========================================================================= */
 

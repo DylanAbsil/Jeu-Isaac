@@ -10,7 +10,7 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Creation.                                    */
-/*               |            |                                              */
+/* Herrou        | 18/03/2015 | Suppression UTIL_BuildPath                   */
 /* ========================================================================= */
 
 #ifndef __KR_UTIL_H__
@@ -28,7 +28,6 @@ extern SDL_Renderer *gpRenderer; // Renderer is a global var from main
     void*        UTIL_Malloc( size_t iSize );
     void*        UTIL_Realloc( void *pData, size_t iSize );
     char*        UTIL_CopyStr( const char *szSrc, size_t iSrcLen );
-    char*        UTIL_BuildPath( const char *szFolder, const char *szFile, size_t iFileLen, const char *szExt );
 
 
     /*! Macro to free memory block. */
