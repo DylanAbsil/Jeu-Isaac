@@ -11,6 +11,10 @@
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Creation.                                    */
 /* Herrou        | 18/03/2015 | Suppression UTIL_BuildPath                   */
+/*               |            | Ajout des macro UTIL_ABS et UTIL_SGN         */
+/*               |            |                                              */
+/*               |            |                                              */
+/*               |            |                                              */
 /* ========================================================================= */
 
 #ifndef __KR_UTIL_H__
@@ -32,6 +36,12 @@ extern SDL_Renderer *gpRenderer; // Renderer is a global var from main
 
     /*! Macro to free memory block. */
     #define      UTIL_Free(x) do { free( x ); x = NULL; } while( 0 )
+
+	/*! Macro to check the signe of a value - Return 1 if positive, -1 if negative, 0 if null. */
+	#define UTIL_SGN(X) (((X)==0)?(0):(((X)<0)?(-1):(1)))
+
+	/*! Macro to return the absolute value */
+	#define UTIL_ABS(X) ((((X)<0)?(-(X)):(X)))
 
 #endif /* __KR_UTIL_H__ */
 

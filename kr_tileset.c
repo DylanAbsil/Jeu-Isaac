@@ -126,7 +126,7 @@ Boolean Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer)
 		    //Kr_Log_Print(KR_LOG_INFO, "Attribut %s %s\n", szBuf, szBuf2);
 			
 			pTileset->pTilesProp[iNumTile].iPlein = 0;
-			if (strcmp(szBuf2, "plein") == 0) pTileset->pTilesProp[iNumTile].iPlein = 1;
+			if (strcmp(szBuf2, "mur") == 0) pTileset->pTilesProp[iNumTile].iPlein = 1;
 		}
 	}
 	UTIL_CloseFile(&pFile);

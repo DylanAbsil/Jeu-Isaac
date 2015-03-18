@@ -25,9 +25,13 @@
 // Utiliser Uint32 gérer la portabilité !!!
 #define KR_FPS 30// Nombre de FPS
 
-#define MOVESPEED 3
+#define MOVESPEED 10
 
 SDL_Renderer *gpRenderer = NULL;
+
+void UpdatePlayerVector(Kr_Input inEvent, Kr_Level *pLevel, SDL_Rect *pPlayer);
+void GetVector(Kr_Input inEvent, Sint32 *vx, Sint32 *vy);
+
 
 int main(int argc, char** argv)
 {
@@ -132,7 +136,10 @@ int main(int argc, char** argv)
 	{
 		
 		UpdateEvents(&inEvent);
-		
+
+		/* Mise à jour des coordonnées du personnage*/
+		UpdatePlayerVector(inEvent, pMonLevel, &rectPositionImage);
+
 		if (inEvent.szMouseButtons[0])
 		{
 			Kr_Log_Print(KR_LOG_ERROR, "CLIQUE GAUCHE : %d %d \n", inEvent.iMouseX, inEvent.iMouseY);
@@ -147,22 +154,6 @@ int main(int argc, char** argv)
 		{
 			Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
-		}
-		if (inEvent.szKey[SDL_SCANCODE_UP]) // Touche flèche du haut
-		{
-			rectPositionImage.y -= MOVESPEED; // Je déplace le SDL_rect textPosition de -5 sur l'axe Y
-		}
-		if (inEvent.szKey[SDL_SCANCODE_DOWN])
-		{
-			rectPositionImage.y += MOVESPEED;
-		}
-		if (inEvent.szKey[SDL_SCANCODE_LEFT])
-		{
-			rectPositionImage.x -= MOVESPEED;
-		}
-		if (inEvent.szKey[SDL_SCANCODE_RIGHT])
-		{
-			rectPositionImage.x += MOVESPEED;
 		}
 		if (inEvent.szKey[SDL_SCANCODE_P])
 		{
@@ -229,4 +220,50 @@ int main(int argc, char** argv)
 	SDL_Quit();			// On quitte SDL
 	Kr_Log_Quit();		// On ferme les logs
 	return EXIT_SUCCESS;
+}
+
+
+
+
+/*!
+*  \fn     void GetVector(Kr_Input inEvent, Sint32 *vx, Sint32 *vy)
+*  \brief  Function to get the vector of the player
+*
+*  \todo   Update this function when the Player structure will be define
+*
+*  \param  inEvent Structure which handle the input
+*  \param  vx      a pointer to the vector on X
+*  \param  vy      a pointer to the vector on Y
+*  \return none
+*/
+void GetVector(Kr_Input inEvent, Sint32 *vx, Sint32 *vy)
+{
+
+	*vx = *vy = 0;
+	if (inEvent.szKey[SDL_SCANCODE_UP])
+		*vy = -MOVESPEED;
+	if (inEvent.szKey[SDL_SCANCODE_DOWN])
+		*vy = MOVESPEED;
+	if (inEvent.szKey[SDL_SCANCODE_LEFT])
+		*vx = -MOVESPEED;
+	if (inEvent.szKey[SDL_SCANCODE_RIGHT])
+		*vx = MOVESPEED;
+}
+
+/*!
+*  \fn     void UpdatePlayerVector(Kr_Input inEvent,Kr_Level *pLevel, SDL_Rect *pPlayer)
+*  \brief  Function to get the vector of the player
+*
+*  \todo   Update this function when the Player structure will be define
+*
+*  \param  inEvent Structure which handle the input
+*  \param  pLevel  a pointer to the Level
+*  \param  pPlayer  a pointer to the player
+*  \return none
+*/
+void UpdatePlayerVector(Kr_Input inEvent, Kr_Level *pLevel, SDL_Rect *pPlayer)
+{
+	Sint32 vx, vy;
+	GetVector(inEvent, &vx, &vy);
+	Kr_Collision_Move(pLevel, pPlayer, vx, vy);
 }

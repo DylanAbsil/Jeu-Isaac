@@ -10,6 +10,10 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Création.                                    */
+/* Herrou        | 18/03/2015 | Suppression des fonctions sur le scrolling   */
+/*               |            | Mise à jour de la structure sans scrolling   */
+/*               |            | Define pour taille de la fenêtre             */
+/*               |            | Ajout fonction pour la gestion des collisions*/
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -48,8 +52,15 @@ void	  Kr_Level_Free(Kr_Level *pLevel);
 Boolean	  Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile);
 void	  Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel);
 
-/* Sauvegarde etc*/
+/* Sauvegarde etc */
 Boolean	  Kr_Level_Save(Kr_Level *pLevel);
+
+/* Gestion des collisions */
+Uint32  Kr_Collision_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
+Boolean Kr_Collision_IsCollisionDecor(Kr_Level *pLevel, SDL_Rect *pRect1);
+Boolean Kr_Collision_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
+void    Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
+
 
 
 
