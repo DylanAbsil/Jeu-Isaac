@@ -23,6 +23,7 @@
 #include "kr_text.h"
 #include "kr_level.h"
 #include "kr_config.h"
+#include "kr_entite.h"
 
 // Banque de son : http://www.wavsource.com/
 // Utiliser Uint32 gérer la portabilité !!!
@@ -30,6 +31,7 @@
 #define KR_WIDTH_WINDOW  1280
 #define KR_HEIGHT_WINDOW 720
 #define MOVESPEED 2
+#define RESET_FRAME 10
 
 SDL_Renderer *gpRenderer = NULL;
 
@@ -62,6 +64,7 @@ int main(int argc, char** argv)
 		SDL_Quit();
 		return FALSE;
 	}
+	
 	SDL_Surface *pscreenSurface = SDL_GetWindowSurface(pWindow);
 	if (pscreenSurface == NULL)
 	{
@@ -69,6 +72,7 @@ int main(int argc, char** argv)
 		SDL_Quit();
 		return FALSE;
 	}
+
 	/* Création du renderer */
 	gpRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
 	if (gpRenderer == NULL)
@@ -77,6 +81,7 @@ int main(int argc, char** argv)
 		SDL_Quit();
 		return FALSE;
 	}
+
 	/* Initialisation de la structure pour gérer les événements*/
 	InitEvents(&inEvent);
 
@@ -85,19 +90,35 @@ int main(int argc, char** argv)
 	/* ========================================================================= */
 
 	/* Préparation d'une image que l'on souhaitera afficher via kr_util*/
-	SDL_Texture *pBackground = NULL;
+	SDL_Texture	 *pPersonnage = NULL;
+	Kr_Sprite	 *pSpritePersonnage = NULL;
+	Entity		 *pZelda = NULL;
 	SDL_Rect     rectPositionImage;
+	Uint32		 cptFrame = 0;
+	Uint32		 resetFrame = 0;
 
 	rectPositionImage.x = 0; 
 	rectPositionImage.y = 0;
 	rectPositionImage.w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
 	rectPositionImage.h = 32;
 
-	pBackground         = UTIL_LoadTexture("Personnage.jpg", NULL, NULL);
-	if (pBackground == NULL)
+	pPersonnage         = UTIL_LoadTexture("Zelda.png", NULL, NULL);
+	if (pPersonnage == NULL)
 	{
 		exit(EXIT_FAILURE);
-	} 
+	}
+	pSpritePersonnage = createSprite("Sprite Zelda", pPersonnage, 240, 32, &rectPositionImage);
+	if (pSpritePersonnage == NULL)
+	{
+		exit(EXIT_FAILURE);
+	}
+
+	pZelda = createEntity("Zelda", 30, 30, *pSpritePersonnage);
+	if (pZelda == NULL)
+	{
+		exit(EXIT_FAILURE);
+	}
+	
 
 
 	/* Préparation d'une Texture contenant un message via util.c*/
@@ -149,6 +170,7 @@ int main(int argc, char** argv)
 		
 		UpdateEvents(&inEvent);
 		
+
 		if (inEvent.szMouseButtons[0])
 		{
 			Kr_Log_Print(KR_LOG_INFO, "CLIQUE GAUCHE\n");
@@ -167,24 +189,50 @@ int main(int argc, char** argv)
 		if (inEvent.szKey[SDL_SCANCODE_UP]) // Touche flèche du haut
 		{
 			rectPositionImage.y -= MOVESPEED; // Je déplace le SDL_rect textPosition de -5 sur l'axe Y
+			resetFrame++;
+			if (resetFrame == RESET_FRAME){
+				pZelda->sprEntity.lCurrentFrames = cptFrame;
+				cptFrame++;
+				resetFrame = 0;
+			}
 		}
 		if (inEvent.szKey[SDL_SCANCODE_DOWN])
 		{
 			rectPositionImage.y += MOVESPEED;
+			resetFrame++;
+			if (resetFrame == RESET_FRAME){
+				pZelda->sprEntity.lCurrentFrames = 16 + cptFrame;
+				cptFrame++;
+				resetFrame = 0;
+			}
 		}
 		if (inEvent.szKey[SDL_SCANCODE_LEFT])
 		{
 			rectPositionImage.x -= MOVESPEED;
+			resetFrame++;
+			if (resetFrame == RESET_FRAME)
+			{
+				pZelda->sprEntity.lCurrentFrames = 8 + cptFrame;
+				cptFrame++;
+				resetFrame = 0;
+			}
 		}
 		if (inEvent.szKey[SDL_SCANCODE_RIGHT])
 		{
 			rectPositionImage.x += MOVESPEED;
+			resetFrame++;
+			if (resetFrame == RESET_FRAME)
+			{
+				pZelda->sprEntity.lCurrentFrames = 24 + cptFrame;
+				cptFrame++;
+				resetFrame = 0;
+			}
 		}
 		if (inEvent.szKey[SDL_SCANCODE_P])
 		{
 			inEvent.szKey[SDL_SCANCODE_P] = 0; // Un seul clique, comme pour la souris
-			if(Mix_PausedMusic()) // Si le son est en pause
-			{ 
+			if (Mix_PausedMusic()) // Si le son est en pause
+			{
 				Mix_ResumeMusic(); // On le relance
 			}
 			else
@@ -192,6 +240,7 @@ int main(int argc, char** argv)
 				Mix_PauseMusic();//Sinon je le met en pause
 			}
 		}
+		
 
 		/* ========================================================================= */
 		/*                                    FPS                                    */
@@ -218,7 +267,8 @@ int main(int argc, char** argv)
 		sprintf(szCompteur, "Cursor : X : %d Y : %d", inEvent.iMouseX, inEvent.iMouseY);//)pMap->iScrollX, pMap->iScrollY); // Affichage coordonnée de la map
 
 		//Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pMonLevel->rLimitation->x, pMonLevel->rLimitation->y);
-		
+		if (cptFrame == 8) cptFrame = 0;
+
 		/* ========================================================================= */
 		/*                                  RENDER                                   */
 		/* ========================================================================= */
@@ -226,7 +276,7 @@ int main(int argc, char** argv)
 		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
 		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);		
-		SDL_RenderCopy(gpRenderer, pBackground, NULL, &rectPositionImage); // En arrière plan
+		printZelda(gpRenderer, *pZelda); // En arrière plan
 		SDL_RenderCopy(gpRenderer, pLimitation, NULL, pMonLevel->rLimitation);
 		SDL_RenderCopy(gpRenderer, pTextureText, NULL, &textPosition); // En avant plan de la texture précédente
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
@@ -237,7 +287,7 @@ int main(int argc, char** argv)
 	/*                            LIBERATION MEMOIRE                             */
 	/* ========================================================================= */
 
-	UTIL_FreeTexture(&pBackground);		// Libération mémoire de la texture 
+	UTIL_FreeTexture(&pPersonnage);		// Libération mémoire de la texture 
 	UTIL_FreeTexture(&pLimitation);		// Libération mémoire de la texture 
 	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
