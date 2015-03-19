@@ -43,8 +43,12 @@ int main(int argc, char** argv)
 	/*                           CONFIGURATION GENERALE                          */
 	/* ========================================================================= */
 
+
+	Kr_Input inEvent; // Structure pour la gestion des événements
+	Uint32   iPreviousTime = 0, iCurrentTime = 0; // Variable pour la gestion des FPS
+
 	/* Création de la fenêtre */
-	pWindow = SDL_CreateWindow("Jeu 2D - Isaac", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW, SDL_WINDOW_SHOWN);
+	pWindow = SDL_CreateWindow("Jeu 2D - Isaac", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW, SDL_WINDOW_SHOWN); // SDL_WINDOW_FULLSCREEN
 	if (pWindow == NULL)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Window : %s\n", SDL_GetError());
@@ -66,14 +70,76 @@ int main(int argc, char** argv)
 		SDL_Quit();
 		return FALSE;
 	}
+	/* Initialisation de la structure pour gérer les événements*/
+	InitEvents(&inEvent);
 
-	SDL_Delay(1000);
+	/* ========================================================================= */
+	/*                                 EVENEMENT                                 */
+	/* ========================================================================= */
 
-	
+	while (!inEvent.szKey[SDL_SCANCODE_ESCAPE] && !inEvent.bQuit)
+	{
+
+		UpdateEvents(&inEvent);
+
+
+		if (inEvent.szMouseButtons[0])
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "CLIQUE GAUCHE : %d %d \n", inEvent.iMouseX, inEvent.iMouseY);
+			inEvent.szMouseButtons[0] = 0; // Un seul clique, si je ne met pas ça, le son sera joué en boucle. La l'utilisateur va devoir relever son doigt
+		}
+		if (inEvent.szMouseButtons[1])
+		{
+			Kr_Log_Print(KR_LOG_INFO, "CLIQUE MOLETTE\n");
+			inEvent.szMouseButtons[1] = 0; // Un seul clique
+		}
+		if (inEvent.szMouseButtons[2])
+		{
+			Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
+			inEvent.szMouseButtons[2] = 0; // Un seul clique
+		}
+		
+
+		/* ========================================================================= */
+		/*                                    FPS                                    */
+		/* ========================================================================= */
+
+		iCurrentTime = SDL_GetTicks();
+		if (iCurrentTime - iPreviousTime > (1000 / KR_FPS))
+		{
+			iPreviousTime = iCurrentTime;
+		}
+		else
+		{
+			//Kr_Log_Print(KR_LOG_INFO, "Attente de %d \n", (1000 / KR_FPS) - (iCurrentTime - iPreviousTime));
+			SDL_Delay((1000 / KR_FPS) - (iCurrentTime - iPreviousTime));
+		}
+
+		/* ========================================================================= */
+		/*                                  DIVERS                                   */
+		/* ========================================================================= */
+		
+
+		/* ========================================================================= */
+		/*                                  RENDER                                   */
+		/* ========================================================================= */
+		// Ici on gère l'affichage des surfaces
+		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
+		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
+	}
+
+	/* ========================================================================= */
+	/*                            LIBERATION MEMOIRE                             */
+	/* ========================================================================= */
+
+
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
 
+	Mix_CloseAudio();	// On quitte SDL_MIXER
+	TTF_Quit();			// On quitte SDL_TTF
 	SDL_Quit();			// On quitte SDL
 	Kr_Log_Quit();		// On ferme les logs
+
 	return EXIT_SUCCESS;
 }
