@@ -1,6 +1,6 @@
 /* ========================================================================= */
 /*!
-* \file    kr_HUD.c
+* \file    HUD.c
 * \brief   Contains the functions to display the HUD.
 * \author  Guillaume de Ferrand
 * \version 1.0
@@ -13,67 +13,67 @@
 /*																			 */
 /* ========================================================================= */
 
-//  --> Fontion Kr_HUDSet : un HUD en paramètre ???
 
 
 
-#include "kr_HUD.h"
+#include "HUD.h"
 
 
 
 /*!
-*  \fn      Kr_HUD * Kr_HUD_Init(char *HUDName)
-*  \brief   Function to initiate a Kr_Level
+*  \fn      HUD * HUD_Init(char *HUDName)
+*  \brief   Function to initiate a HUD
 *
 *  \param   HUDName    the HUD structure
-*  \return  a Kr_HUD structure
+*  \return  a HUD structure
 */
 
-Kr_Hud * Kr_HUD_Init(char *HUDName)
+HUD * HUD_Init(char *HUDName)
 {
-	Kr_Hud * HUD = NULL;
-	HUD = (Kr_Hud *)UTIL_Malloc(sizeof(Kr_Hud));
+	HUD * pHUD = NULL;
+	pHUD = (HUD *)UTIL_Malloc(sizeof(HUD));
 
-	HUD->HUDName = HUDName;
+	pHUD->HUDName = HUDName;
 	
-	HUD->pTexture = NULL;
+	pHUD->pTexture = NULL;
 	
-	HUD->RectDest.x = 0;
-	HUD->RectDest.y = 0;
-	HUD->RectDest.w = 0;
-	HUD->RectDest.h = 0;
+	pHUD->RectDest.x = 0;
+	pHUD->RectDest.y = 0;
+	pHUD->RectDest.w = 0;
+	pHUD->RectDest.h = 0;
 
-	HUD->estAffiche = FALSE;
+	pHUD->estAffiche = FALSE;
 }
 
 
 
 /*!
-*  \fn      Kr_HUD *Kr_HUDSet(Kr_Hud *HUD, int x, int y, int w, int h, const char *HUDPath)
+*  \fn      void HUD_Load(HUD *pHUD, int x, int y, int w, int h, const char *HUDPath)
 *  \brief   Function to initiate a HUD
 *
-*  \param   HUDName               the HUD structure
+*  \param   pHUD               the HUD structure
 *  \param   int x                 the x coordonate of the HUD on the screen
 *  \param   int y                 the y coordonate of the HUD on the screen
 *  \param   int w                 the width of the HUD
 *  \param   int h                 the height of the HUD
 *  \param   const char *HUDPath   the name of the sprite of the HUD
 *
-*  \return  a Kr_HUD structure
+*  \return  a HUD structure
 */
 
 
-//Problème --> Si c'est un HUD pour le nombre de vie ou munitation :
-//             alors on a un texte qui donne le nombre de vie (ou de munition) et pas une image...
+// a changer : --> Envoyer rect dans la fonction
 
-Kr_Hud * Kr_HUDSet(Kr_Hud *HUD, int x, int y, int w, int h, const char *HUDPath)
+
+void HUD_Load(HUD *pHUD, int x, int y, int w, int h, const char *HUDPath)
 {
-	HUD->RectDest.x = x;
-	HUD->RectDest.y = y;
-	HUD->RectDest.w = w;
-	HUD->RectDest.h = h;
+	pHUD->RectDest.x = x;
+	pHUD->RectDest.y = y;
+	pHUD->RectDest.w = w;
+	pHUD->RectDest.h = h;
 
-	HUD->pTexture = UTIL_LoadTexture(HUDPath, NULL, NULL);
+	//HUD->RectDest.h = rRect.h;
+	pHUD->pTexture = UTIL_LoadTexture(HUDPath, NULL, NULL);  //vérfier si renvoie nul et donc la fonction renvoie un entier
 }
 
 
@@ -81,30 +81,38 @@ Kr_Hud * Kr_HUDSet(Kr_Hud *HUD, int x, int y, int w, int h, const char *HUDPath)
 
 
 /*!
-*  \fn      void Kr_HUDAffiche(Kr_Hud *HUD, int NbRepet)
+*  \fn      void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, int NbRepet)
 *  \brief   Function to display the HUD
 *
-*  \param   HUD            the HUD structure
+*  \param   pHUD           the HUD structure
 *  \param   int NbRepet    the number of time the display of one sprite must be repeated
 *
 *  \return  void
 */
 
-void Kr_HUDAffiche(SDL_Renderer * renderer, Kr_Hud *HUD, int NbRepet)
+void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, int NbRepet)
 {
 	// test si on doit afficher
-	if (HUD->estAffiche == TRUE)
+	if (pHUD->estAffiche == TRUE)
 
 	// on affiche le HUD
 	{
-		int i = -1;
-		for (i = -1; i = NbRepet; i++)
+		int i = 0;
+		for (i = 0; i <= NbRepet; i++)
 		{
-			SDL_RenderCopy(renderer, HUD->pTexture, NULL, &(HUD->RectDest));
-			HUD->RectDest.x += 32;
+			SDL_RenderCopy(renderer, pHUD->pTexture, NULL, &(pHUD->RectDest));
+			pHUD->RectDest.x += (pHUD->RectDest.w + HUD_ESPACEMENT);
 			i++;
 		}
 	}
 	// on n'affiche rien
 	else return;
+}
+
+
+
+void HUD_free(HUD *pHUD)
+{
+	UTIL_FreeTexture(&(pHUD->pTexture));
+	UTIL_Free(pHUD);
 }

@@ -20,8 +20,8 @@
 // Banque de son : http://www.wavsource.com/
 // Utiliser Uint32 gérer la portabilité !!!
 #define KR_FPS 30// Nombre de FPS
-#define KR_WIDTH_WINDOW  1280
-#define KR_HEIGHT_WINDOW  704
+#define KR_WIDTH_WINDOW  600
+#define KR_HEIGHT_WINDOW  300
 
 SDL_Renderer *gpRenderer = NULL;
 
