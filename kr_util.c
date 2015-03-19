@@ -94,7 +94,7 @@ void UTIL_CloseFile( FILE **ppFile )
 SDL_Texture* UTIL_LoadTexture( const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize )
 {
     Uint32       iColorKey;
-    SDL_Texture *pTexture;
+    SDL_Texture *pTexture;*
     SDL_Surface *pSurface;
 
     pTexture = NULL;

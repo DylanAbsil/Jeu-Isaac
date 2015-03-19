@@ -68,9 +68,9 @@ typedef struct {
 	Uint32	iRangeWeapon;
 	Sint32	iMunitionWeapon;
 	Sint32	iDamageWeapon;
-	Kr_Sprite	sprWeapon;
 }Weapon;
 
+/* Rajouter un int direction*/
 typedef struct {
 	char	*szEntityName;		/*!< Name of the entity */
 	Uint32	iEntityLife;		/*!< Life of the entity */
