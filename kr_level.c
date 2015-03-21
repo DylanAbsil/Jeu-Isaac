@@ -14,6 +14,7 @@
 /* Herrou        | 18/03/2015 | Arret du scrolling, map en 40x22 en tiles de 32*/
 /* Herrou        | 19/03/2015 | Détection collision d'un rectangle avec la carte*/
 /*               |            | Gestion des grandes vitesses de déplacement   */
+/* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32         */
 /* ========================================================================= */
 
 /*
@@ -23,7 +24,7 @@ Commentaire :
 */
 #include "kr_level.h"
 
-#define CACHE_SIZE 5000
+#define CACHE_SIZE 15000
 
 /*!
 *  \fn     Kr_Tileset *Kr_Level_Init(const char *szFileName)
@@ -102,7 +103,7 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 	} while (strstr(szBuf, "#end") == NULL); // Identification de la fin du fichier level
 
 	UTIL_CloseFile(&pFile);
-	Kr_Log_Print(KR_LOG_INFO, "%d %d !\n", pLevel->iLevel_TileHeight, pLevel->pLevel_Tileset->iTilesHeight);
+	Kr_Log_Print(KR_LOG_INFO, "tiles %d %d !\n", pLevel->iLevel_TileHeight, pLevel->pLevel_Tileset->iTilesHeight);
 	Kr_Log_Print(KR_LOG_INFO, "Level : %s has been loaded !\n", pLevel->szLevelName);
 	return TRUE;
 }
@@ -142,9 +143,9 @@ Boolean Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile)
 	fscanf(pFile, "%d %d", &pLevel->iLevel_TileWidth, &pLevel->iLevel_TileHeight);
 
 	/* Allocation du tableau 2D szLayout */
-	pLevel->szLayout = malloc(pLevel->iLevel_TileWidth*sizeof(unsigned char*));
+	pLevel->szLayout = malloc(pLevel->iLevel_TileWidth*sizeof(Uint32*));
 	for (i = 0; i<pLevel->iLevel_TileWidth; i++)
-		pLevel->szLayout[i] = malloc(pLevel->iLevel_TileHeight*sizeof(unsigned char));
+		pLevel->szLayout[i] = malloc(pLevel->iLevel_TileHeight*sizeof(Uint32));
 
 	/* Affectation des données level au schema */
 	for (j = 0; j<pLevel->iLevel_TileHeight; j++)
@@ -159,7 +160,6 @@ Boolean Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile)
 				return FALSE;
 			}
 			pLevel->szLayout[i][j] = iTmp;
-			//Kr_Log_Print(KR_LOG_INFO, "pMap->schema[%d][%d] = %d \n", i, j, pMap->szSchema[i][j]);
 		}
 	}
 	Kr_Log_Print(KR_LOG_INFO, "Kr_Level_Layout: Done\n");
@@ -262,7 +262,7 @@ Boolean Kr_Collision_IsCollisionDecor(Kr_Level *pLevel, SDL_Rect *pRect1)
 
 			if (pLevel->pLevel_Tileset->pTilesProp[iNumTile].iPlein)
 			{
-				//Kr_Log_Print(KR_LOG_WARNING, "CollisionDecor:  Collision avec la Tile : %d %d \n",i,j); 
+				//(KR_LOG_WARNING, "CollisionDecor:  Collision avec la Tile : %d %d \n",i,j); 
 				return TRUE;
 			}
 		}

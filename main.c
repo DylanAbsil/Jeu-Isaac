@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 	/* Préparation d'une image que l'on souhaitera afficher via kr_util*/
 	SDL_Texture *pBackground = NULL;
 	SDL_Rect     rectPositionImage;
-
+	
 	rectPositionImage.x = 0; 
 	rectPositionImage.y = 0;
 	rectPositionImage.w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 	Kr_Level *pMonLevel = NULL;
 
 
-	pMonLevel = Kr_Level_Init("level2"); // Ne pas préciser l'extension
+	pMonLevel = Kr_Level_Init("Testtileset"); // Ne pas préciser l'extension
 	if (!Kr_Level_Load(pMonLevel, gpRenderer))
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
@@ -187,7 +187,8 @@ int main(int argc, char** argv)
 		/*                                  DIVERS                                   */
 		/* ========================================================================= */
 		pTextureText = Kr_Text_FontCreateTexture(gpRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
-		iCount += (1000 / KR_FPS); // Cette variable permet juste d'afficher le temps depuis lequel l'exe est actif, plus tard on le mettra en forme pour afficher le temps depuis lequel l'utilisateur est dans le jeu
+		//iCount += (1000 / KR_FPS); // Cette variable permet juste d'afficher le temps depuis lequel l'exe est actif, plus tard on le mettra en forme pour afficher le temps depuis lequel l'utilisateur est dans le jeu
+		iCount += 1;
 		//sprintf(szCompteur, "Time : %d", iCount); // Mise à jour du compteur
 		sprintf(szCompteur, "Cursor : X : %d Y : %d", inEvent.iMouseX, inEvent.iMouseY);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
 
@@ -204,7 +205,22 @@ int main(int argc, char** argv)
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
 	}
-
+	FILE *fp = fopen("test.txt", "w+");
+	int i,j;
+	for (i = 0; i < 650; i++)
+	{
+		
+		if (i % 31 == 0)
+		{
+			for (j = 0; j < 9; j++)
+			{
+				fprintf(fp, "162 ");
+			}
+			fprintf(fp,"\n");
+		}
+		fprintf(fp,"%d ",i);	
+	}
+	fclose(fp);
 	/* ========================================================================= */
 	/*                            LIBERATION MEMOIRE                             */
 	/* ========================================================================= */
@@ -267,3 +283,4 @@ void UpdatePlayerVector(Kr_Input inEvent, Kr_Level *pLevel, SDL_Rect *pPlayer)
 	GetVector(inEvent, &vx, &vy);
 	Kr_Collision_Move(pLevel, pPlayer, vx, vy);
 }
+

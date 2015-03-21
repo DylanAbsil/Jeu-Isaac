@@ -14,7 +14,7 @@
 /*               |            | Mise à jour de la structure sans scrolling   */
 /*               |            | Define pour taille de la fenêtre             */
 /*               |            | Ajout fonction pour la gestion des collisions*/
-/*               |            |                                              */
+/* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32         */
 /*               |            |                                              */
 /* ========================================================================= */
 
@@ -27,8 +27,8 @@
 #include "kr_tileset.h"
 
 #define KR_LEVEL_VERSION "Level Version 1.0"
-#define KR_WIDTH_WINDOW  32*40 // 1280
-#define KR_HEIGHT_WINDOW 32*22 // 704
+#define KR_WIDTH_WINDOW  16*80 // 1280
+#define KR_HEIGHT_WINDOW 16*44 // 704
 /*!
 * \struct Kr_Level
 * \brief  Structure to handle the level.
@@ -38,7 +38,7 @@ typedef struct
 	const char     *szLevelName;		/*!< Name of the level  */
 	Sint32          iLevel_TileWidth;	/*!< Width of the level in Tile number */
 	Sint32          iLevel_TileHeight;  /*!< Height of the level in Tile number */
-	unsigned char **szLayout;			/*!< 2D array of the level (unsigned char = 256 different tiles max */
+	Uint32        **szLayout;			/*!< 2D array of the level (unsigned char = 256 different tiles max */
 	Kr_Tileset     *pLevel_Tileset;		/*!< pointer to the tileset of this level */
 
 }Kr_Level;
