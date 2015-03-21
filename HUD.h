@@ -32,14 +32,16 @@ typedef struct {
 	SDL_Rect	RectDest;			/*!< Rectangle of destination */
 	SDL_Texture *pTexture;			/*!< Texture of the HUD */
 	Boolean		estAffiche;			/*!< Boolean telling if the HUD is displayed */
+	Boolean     estTexte;           /*!< Boolean telling if the HUD contains text */
 } HUD;
 
 
 
-HUD * HUD_Init(char *HUDName);
-void Kr_HUDSet(HUD *pHUD, int x, int y, int w, int h, const char *HUDPath);
-void Kr_HUDAffiche(SDL_Renderer * renderer, HUD *pHUD, int NbRepet);
+HUD * HUD_Init(char *HUDName, Boolean estTexte);
+void HUD_Load(HUD *pHUD, SDL_Rect rRect);
+void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, Uint32 NbRepet);
 void HUD_free(HUD *pHUD);
+void HUD_Update(HUD *pHUD, SDL_Texture *pTexture);
 
 
 

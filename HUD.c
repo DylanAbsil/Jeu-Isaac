@@ -10,6 +10,8 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Guillaume     | 18/03/2015 | Création                                     */
+/* Guillaume     | 19/03/2015 | Gestion erreur dans HUD_Load                 */
+/* Guillaume	 | 20/03/2015 | Création HUD_Update							 */
 /*																			 */
 /* ========================================================================= */
 
@@ -21,14 +23,15 @@
 
 
 /*!
-*  \fn      HUD * HUD_Init(char *HUDName)
+*  \fn      HUD * HUD_Init(char *HUDName, Boolean estTexte)
 *  \brief   Function to initiate a HUD
 *
 *  \param   HUDName    the HUD structure
-*  \return  a HUD structure
+*  \param   estTexte   a boolean to say if the HUD is composed of texte
+*  \return  the initialized structure
 */
 
-HUD * HUD_Init(char *HUDName)
+HUD * HUD_Init(char *HUDName, Boolean estTexte)
 {
 	HUD * pHUD = NULL;
 	pHUD = (HUD *)UTIL_Malloc(sizeof(HUD));
@@ -42,68 +45,73 @@ HUD * HUD_Init(char *HUDName)
 	pHUD->RectDest.w = 0;
 	pHUD->RectDest.h = 0;
 
-	pHUD->estAffiche = FALSE;
+	pHUD->estAffiche = TRUE;
+	pHUD->estTexte = estTexte;
+	return pHUD;
 }
 
 
 
 /*!
-*  \fn      void HUD_Load(HUD *pHUD, int x, int y, int w, int h, const char *HUDPath)
+*  \fn      void HUD_Load(HUD *pHUD, SDL_Rect rRect)
 *  \brief   Function to initiate a HUD
 *
-*  \param   pHUD               the HUD structure
-*  \param   int x                 the x coordonate of the HUD on the screen
-*  \param   int y                 the y coordonate of the HUD on the screen
-*  \param   int w                 the width of the HUD
-*  \param   int h                 the height of the HUD
-*  \param   const char *HUDPath   the name of the sprite of the HUD
-*
-*  \return  a HUD structure
-*/
-
-
-// a changer : --> Envoyer rect dans la fonction
-
-
-void HUD_Load(HUD *pHUD, int x, int y, int w, int h, const char *HUDPath)
-{
-	pHUD->RectDest.x = x;
-	pHUD->RectDest.y = y;
-	pHUD->RectDest.w = w;
-	pHUD->RectDest.h = h;
-
-	//HUD->RectDest.h = rRect.h;
-	pHUD->pTexture = UTIL_LoadTexture(HUDPath, NULL, NULL);  //vérfier si renvoie nul et donc la fonction renvoie un entier
-}
-
-
-
-
-
-/*!
-*  \fn      void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, int NbRepet)
-*  \brief   Function to display the HUD
-*
-*  \param   pHUD           the HUD structure
-*  \param   int NbRepet    the number of time the display of one sprite must be repeated
+*  \param   *pHUD       the HUD structure
+*  \param   rRect	    the rectangle of the HUD
 *
 *  \return  void
 */
 
-void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, int NbRepet)
+void HUD_Load(HUD *pHUD, SDL_Rect rRect)
+{
+	pHUD->RectDest.x = rRect.x;
+	pHUD->RectDest.y = rRect.y;
+	pHUD->RectDest.w = rRect.w;
+	pHUD->RectDest.h = rRect.h;
+
+	char HUDPath[50];
+	if (pHUD->estTexte == FALSE)
+	{
+		sprintf(HUDPath, "hud\\%s.png", pHUD->HUDName);
+		pHUD->pTexture = UTIL_LoadTexture(HUDPath, NULL, NULL);
+		if (pHUD->pTexture == NULL)
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "Impossible to load the sprite :%s\n", HUDPath);
+		}
+	}
+}
+
+
+
+
+
+/*!
+*  \fn      void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, Uint32 NbRepet)
+*  \brief   Function to display the HUD
+*
+*  \param   *renderer      the screen to display the HUD
+*  \param   pHUD           the HUD structure
+*  \param   NbRepet        the number of time the display of one sprite must be repeated
+*
+*  \return  void
+*/
+
+void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, Uint32 NbRepet)
 {
 	// test si on doit afficher
-	if (pHUD->estAffiche == TRUE)
-
+	if ((pHUD->estAffiche) == TRUE)
 	// on affiche le HUD
 	{
-		int i = 0;
+		Uint32 i = 0;
+		SDL_Rect Provisoir;
+		Provisoir = pHUD->RectDest;
+
 		for (i = 0; i <= NbRepet; i++)
 		{
-			SDL_RenderCopy(renderer, pHUD->pTexture, NULL, &(pHUD->RectDest));
-			pHUD->RectDest.x += (pHUD->RectDest.w + HUD_ESPACEMENT);
-			i++;
+			SDL_RenderCopy(renderer, pHUD->pTexture, NULL, &Provisoir);
+			Provisoir.x += (Provisoir.w + HUD_ESPACEMENT);
 		}
+		return;
 	}
 	// on n'affiche rien
 	else return;
@@ -111,8 +119,38 @@ void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, int NbRepet)
 
 
 
+
+
+/*!
+*  \fn      void HUD_free(HUD *pHUD)
+*  \brief   Function to free the HUD
+*
+*  \param   *pHUD      the HUD structure
+*
+*  \return  void
+*/
+
 void HUD_free(HUD *pHUD)
 {
 	UTIL_FreeTexture(&(pHUD->pTexture));
 	UTIL_Free(pHUD);
+}
+ 
+
+
+
+
+/*!
+*  \fn      void HUD_Update(HUD *pHUD, SDL_Texture *pTexture)
+*  \brief   Function to update the texture of the HUD
+*
+*  \param   *pHUD      the HUD structure
+*  \param   *pTexture  the new texture
+*
+*  \return  void
+*/
+
+void HUD_Update(HUD *pHUD, SDL_Texture *pTexture)
+{
+	pHUD->pTexture = pTexture;
 }
