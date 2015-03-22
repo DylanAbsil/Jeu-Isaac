@@ -19,6 +19,7 @@
 #include "kr_input.h"
 #include "kr_text.h"
 #include "kr_level.h"
+#include "kr_map.h"
 #include "kr_config.h"
 
 // Banque de son : http://www.wavsource.com/
@@ -90,8 +91,8 @@ int main(int argc, char** argv)
 	
 	rectPositionImage.x = 0; 
 	rectPositionImage.y = 0;
-	rectPositionImage.w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
-	rectPositionImage.h = 32;
+	rectPositionImage.w = 24; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
+	rectPositionImage.h = 24;
 
 	pBackground         = UTIL_LoadTexture("Personnage.jpg", NULL, NULL);
 	if (pBackground == NULL)
@@ -115,18 +116,32 @@ int main(int argc, char** argv)
 
 
 
+	/* Chargement de la map */
+	Kr_Map *pMap = NULL;
+	pMap = Kr_Map_Init("maps_world");
+	if (!pMap)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load the map\n");
+		exit(EXIT_FAILURE);
+	}
 
 	/* Chargement du niveau */
-	Kr_Level *pMonLevel = NULL;
+	Kr_Level *pLevel1 = NULL;
+	Kr_Level *pLevel2 = NULL;
 
-
-	pMonLevel = Kr_Level_Init("Testtileset"); // Ne pas préciser l'extension
-	if (!Kr_Level_Load(pMonLevel, gpRenderer))
+	pLevel1 = Kr_Level_Init("level1"); // Ne pas préciser l'extension
+	if (!Kr_Level_Load(pLevel1, gpRenderer))
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
 		exit(EXIT_FAILURE);
 	}
 
+	pLevel2 = Kr_Level_Init("level2"); // Ne pas préciser l'extension
+	if (!Kr_Level_Load(pLevel2, gpRenderer))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
+		exit(EXIT_FAILURE); 
+	}
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
 	/* ========================================================================= */
@@ -138,10 +153,12 @@ int main(int argc, char** argv)
 		UpdateEvents(&inEvent);
 
 		/* Mise à jour des coordonnées du personnage*/
-		UpdatePlayerVector(inEvent, pMonLevel, &rectPositionImage);
+		UpdatePlayerVector(inEvent, pLevel1, &rectPositionImage);
 
 		if (inEvent.szMouseButtons[0])
 		{
+			rectPositionImage.x = inEvent.iMouseX;
+			rectPositionImage.y = inEvent.iMouseY;
 			Kr_Log_Print(KR_LOG_ERROR, "CLIQUE GAUCHE : %d %d \n", inEvent.iMouseX, inEvent.iMouseY);
 			inEvent.szMouseButtons[0] = 0; // Un seul clique, si je ne met pas ça, le son sera joué en boucle. La l'utilisateur va devoir relever son doigt
 		}
@@ -199,28 +216,13 @@ int main(int argc, char** argv)
 		// Ici on gère l'affichage des surfaces
 		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
-		Kr_Level_Draw(gpRenderer, pMonLevel);		
+		Kr_Level_Draw(gpRenderer, pLevel1);
 		SDL_RenderCopy(gpRenderer, pBackground, NULL, &rectPositionImage); // En arrière plan
 		SDL_RenderCopy(gpRenderer, pTextureText, NULL, &textPosition); // En avant plan de la texture précédente
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
 	}
-	FILE *fp = fopen("test.txt", "w+");
-	int i,j;
-	for (i = 0; i < 650; i++)
-	{
-		
-		if (i % 31 == 0)
-		{
-			for (j = 0; j < 9; j++)
-			{
-				fprintf(fp, "162 ");
-			}
-			fprintf(fp,"\n");
-		}
-		fprintf(fp,"%d ",i);	
-	}
-	fclose(fp);
+
 	/* ========================================================================= */
 	/*                            LIBERATION MEMOIRE                             */
 	/* ========================================================================= */
@@ -230,7 +232,9 @@ int main(int argc, char** argv)
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
-	Kr_Level_Free(pMonLevel);
+	Kr_Level_Free(pLevel1);
+	Kr_Level_Free(pLevel2);
+	Kr_Map_Free(pMap);
 	Mix_CloseAudio();	// On quitte SDL_MIXER
 	TTF_Quit();			// On quitte SDL_TTF
 	SDL_Quit();			// On quitte SDL

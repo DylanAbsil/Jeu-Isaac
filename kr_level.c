@@ -64,7 +64,7 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 
 	/* Ouverture du fichier leveàl */
 	sprintf(szLevelPath, "maps\\%s.txt", pLevel->szLevelName);
-	Kr_Log_Print(KR_LOG_INFO, "Opening maps file %s\n", szLevelPath);
+	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szLevelPath);
 	pFile = UTIL_OpenFile(szLevelPath, "r"); // Ouverture du level en read
 	if (!pFile) return FALSE;
 

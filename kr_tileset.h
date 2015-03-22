@@ -10,6 +10,7 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Création.                                    */
+/* Herrou        | 22/03/2015 | Tiles Properties : Add iWater                */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -30,6 +31,7 @@ typedef struct
 {
 	SDL_Rect rTile;
 	Uint32 iPlein;
+	Uint32 iWater;
 	// tout ce que vous voulez...
 } Kr_TileProp;
 
