@@ -15,6 +15,7 @@
 /* Herrou        | 19/03/2015 | Détection collision d'un rectangle avec la carte*/
 /*               |            | Gestion des grandes vitesses de déplacement   */
 /* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32         */
+/* Herrou        | 22/03/2015 | Fonction Kr_Level_GetBlock OK	             */
 /* ========================================================================= */
 
 /*
@@ -318,4 +319,40 @@ void Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 v
 		if (Kr_Collision_TryMove(pLevel, pRect1, 0, UTIL_SGN(vy)) == FALSE)
 			break;
 	}
+}
+
+
+
+/*!
+*  \fn     void Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
+*  \brief  Function to check some event
+*
+*  \param  pLevel a pointer to a the level structure
+*  \param  pRect1 a pointer to the rectangle of the player
+*  \return none
+*/
+void Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
+{
+	
+
+}
+
+/*!
+*  \fn     Uint32 Kr_Level_GetBlock(Kr_Level *pLevel, Uint32 x, Uint32 y)
+*  \brief  Function to get the block at a coordinate
+*
+*  \param  pLevel a pointer to a the level structure
+*  \param  x      x coordinate
+*  \param  y      y coordinate
+*  \return the id of the block (cf the tileset)
+*/
+Uint32 Kr_Level_GetBlock(Kr_Level *pLevel, Uint32 x, Uint32 y)
+{
+	Uint32 iTilesID, iNumTilesX, iNumTilesY;
+	// Obtenir les numéros des tiles
+	iNumTilesX = x / pLevel->pLevel_Tileset->iTilesWidth;
+	iNumTilesY = y / pLevel->pLevel_Tileset->iTilesHeight;
+	iTilesID = pLevel->szLayout[iNumTilesX][iNumTilesY];
+	Kr_Log_Print(KR_LOG_INFO, "Tiles %d : Plein : %d \n", iTilesID, pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPlein);
+	return iTilesID;
 }

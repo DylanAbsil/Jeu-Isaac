@@ -59,7 +59,7 @@ Kr_Map *Kr_Map_Init(char *szMapFile)
 			}
 		}
 	}while (strstr(szBuffer, "#end") == NULL); // Identification de la fin du fichier
-//	Kr_Map_Log(pMap);
+	Kr_Map_Log(pMap);
 	Kr_Log_Print(KR_LOG_INFO, "Maps %s initialisation completed\n", szMapPath);
 	UTIL_CloseFile(&pFile);
 	return pMap;
@@ -97,3 +97,4 @@ void Kr_Map_Log(Kr_Map *pMap)
 		Kr_Log_Print(KR_LOG_INFO, "[level%d] : %s\n",i+1, pMap->szMapLayout[i]);
 	}
 }
+

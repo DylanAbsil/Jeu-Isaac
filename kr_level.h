@@ -15,6 +15,7 @@
 /*               |            | Define pour taille de la fenêtre             */
 /*               |            | Ajout fonction pour la gestion des collisions*/
 /* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32         */
+/* Herrou        | 22/03/2015 | Proto Kr_Level_GetBlock et Kr_Level_Event    */
 /*               |            |                                              */
 /* ========================================================================= */
 
@@ -61,7 +62,8 @@ Boolean Kr_Collision_IsCollisionDecor(Kr_Level *pLevel, SDL_Rect *pRect1);
 Boolean Kr_Collision_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
 void    Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
 
-
-
+/* Détection d'évenement sur la carte */
+void Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect);
+Uint32 Kr_Level_GetBlock(Kr_Level *pLevel, Uint32 x, Uint32 y);
 
 #endif /* __KR_LEVEL_H__ */

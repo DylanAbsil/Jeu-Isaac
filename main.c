@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 	/* Chargement du niveau */
 	Kr_Level *pLevel1 = NULL;
 	Kr_Level *pLevel2 = NULL;
-
+	Kr_Level *pCurrentLevel = NULL;
 	pLevel1 = Kr_Level_Init("level1"); // Ne pas préciser l'extension
 	if (!Kr_Level_Load(pLevel1, gpRenderer))
 	{
@@ -142,6 +142,7 @@ int main(int argc, char** argv)
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
 		exit(EXIT_FAILURE); 
 	}
+	pCurrentLevel = pLevel1;
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
 	/* ========================================================================= */
@@ -153,7 +154,7 @@ int main(int argc, char** argv)
 		UpdateEvents(&inEvent);
 
 		/* Mise à jour des coordonnées du personnage*/
-		UpdatePlayerVector(inEvent, pLevel1, &rectPositionImage);
+		UpdatePlayerVector(inEvent, pCurrentLevel, &rectPositionImage);
 
 		if (inEvent.szMouseButtons[0])
 		{
@@ -169,7 +170,9 @@ int main(int argc, char** argv)
 		}
 		if (inEvent.szMouseButtons[2])
 		{
-			Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
+			//Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
+			//Kr_Log_Print(KR_LOG_INFO, "Tiles %d\n", );
+			Kr_Level_GetBlock(pCurrentLevel, inEvent.iMouseX, inEvent.iMouseY);
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
 		}
 		if (inEvent.szKey[SDL_SCANCODE_P])
@@ -184,7 +187,17 @@ int main(int argc, char** argv)
 				Mix_PauseMusic();//Sinon je le met en pause
 			}
 		}
-	
+		if (inEvent.szKey[SDL_SCANCODE_KP_1])
+		{
+			pCurrentLevel = pLevel1;
+			inEvent.szKey[SDL_SCANCODE_KP_1] = 0;
+		}
+		if (inEvent.szKey[SDL_SCANCODE_KP_2])
+		{
+			pCurrentLevel = pLevel2;
+			inEvent.szKey[SDL_SCANCODE_KP_2] = 0;
+		}
+		
 		/* ========================================================================= */
 		/*                                    FPS                                    */
 		/* ========================================================================= */
@@ -216,7 +229,7 @@ int main(int argc, char** argv)
 		// Ici on gère l'affichage des surfaces
 		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
-		Kr_Level_Draw(gpRenderer, pLevel1);
+		Kr_Level_Draw(gpRenderer, pCurrentLevel);
 		SDL_RenderCopy(gpRenderer, pBackground, NULL, &rectPositionImage); // En arrière plan
 		SDL_RenderCopy(gpRenderer, pTextureText, NULL, &textPosition); // En avant plan de la texture précédente
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
