@@ -103,13 +103,13 @@ void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, Uint32 NbRepet)
 	// on affiche le HUD
 	{
 		Uint32 i = 0;
-		SDL_Rect Provisoir;
-		Provisoir = pHUD->RectDest;
+		SDL_Rect CopieRectDest;
+		CopieRectDest = pHUD->RectDest;
 
 		for (i = 0; i <= NbRepet; i++)
 		{
-			SDL_RenderCopy(renderer, pHUD->pTexture, NULL, &Provisoir);
-			Provisoir.x += (Provisoir.w + HUD_ESPACEMENT);
+			SDL_RenderCopy(renderer, pHUD->pTexture, NULL, &CopieRectDest);
+			CopieRectDest.x -= (CopieRectDest.w + HUD_ESPACEMENT);
 		}
 		return;
 	}

@@ -1,7 +1,7 @@
 /* ========================================================================= */
 /*!
 * \file    HUD.h
-* \brief   Contains the structure to of the HUD.
+* \brief   Contains the structure of the HUD.
 * \author  Guillaume de Ferrand	
 * \version 1.0
 * \date    18 Mars 2015
@@ -24,7 +24,7 @@
 
 
 /*===========================================================================*/
-/*	  				       GESTION DES HUD  								 */
+/*	  				       STRUCTURE DES HUD  								 */
 /*===========================================================================*/
 
 typedef struct {
@@ -36,6 +36,9 @@ typedef struct {
 } HUD;
 
 
+/*===========================================================================*/
+/*	  				       FONCTIONS DES HUD  								 */
+/*===========================================================================*/
 
 HUD * HUD_Init(char *HUDName, Boolean estTexte);
 void HUD_Load(HUD *pHUD, SDL_Rect rRect);
@@ -51,7 +54,7 @@ void HUD_Update(HUD *pHUD, SDL_Texture *pTexture);
 Pour menu : 
 	-> 2 fichiers différents
 	-> Faire structure bouton (Nom, Rect)
-	-> Faire structure Menu : Tableau de Rect
+	-> Faire structure Menu : Tableau de boutton
 	-> Fonctions init, load, draw, free
 
 */

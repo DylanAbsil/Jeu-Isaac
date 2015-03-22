@@ -18,6 +18,7 @@
 #include "kr_config.h"
 #include "HUD.h"
 #include "kr_text.h"
+#include "Menu.h"
 
 
 // Banque de son : http://www.wavsource.com/
@@ -101,7 +102,7 @@ int main(int argc, char** argv)
 	// Pour mettre texte et images à la même hauteru (pour les HUD Bombe et Cle) :
 	// écart en x : les parties textes doivent être décalées de la largeur de l'image + l'espacement HUD_ESPACEMENT
 	// écart en y : normalement 0 mais comme la police est plus grande -> décaler pour avoir le texte 5 pixels plus haut
-	SDL_Rect RectVie = { 1050, 22, 16, 16 };
+	SDL_Rect RectVie = { 1250, 22, 16, 16 };
 	SDL_Rect RectBombeImage = { 50, 35, 18, 18 };
 	SDL_Rect RectBombeTexte = { 70, 30, 16, 16 };
 	SDL_Rect RectCleImage = { 50, 12, 18, 18 };
@@ -131,6 +132,36 @@ int main(int argc, char** argv)
 	/* InitialisationHUD CleTexte */
 	CleTexte = HUD_Init("CleImage", TRUE);
 	HUD_Load(CleTexte, RectCleTexte);
+
+
+	/* ========================================================================= */
+	/*                          CONFIGURATION BOUTON                             */
+	/* ========================================================================= */
+
+	/* Initialisation des variables de la police pour les Boutons */
+	TTF_Font *policeBouton = NULL; //Variable pour la police des Boutons
+	SDL_Color CouleurBouton = { 255, 255, 255 }; //Variable pour la couleur de la police des Boutons
+
+	/* Ouverture de la police */
+	policeBouton = Kr_Text_OpenFont("upheavtt", 40);
+	TTF_SetFontStyle(policeBouton, TTF_STYLE_BOLD);
+
+	/* Initialisation structure Bouton */
+	Bouton *Charger = NULL;
+
+	/* Initialisation du rectangle pour le bouton*/
+	SDL_Rect RectImageCharger = { 440, 296, 400, 100 };
+	SDL_Rect RectTexteCharger = { 540, 326, 40, 40 };
+
+	/* Initialisation bouton Charger */
+	Charger = Bouton_Init("CHARGER");
+	Bouton_Load(gpRenderer, Charger, policeBouton, CouleurBouton, RectImageCharger, RectTexteCharger);
+
+	/* Modification pour tester Bouton_Update */
+	Bouton_Selectionne(Charger);
+	Bouton_Update(Charger);
+
+
 
 	
 	/* ========================================================================= */
@@ -210,11 +241,12 @@ int main(int argc, char** argv)
 		/* ========================================================================= */
 		// Ici on gère l'affichage des surfaces
 		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
-		HUD_Draw(gpRenderer, Vie, 9); // Affichage HUD Vie
+		HUD_Draw(gpRenderer, Vie, 5); // Affichage HUD Vie
 		HUD_Draw(gpRenderer, BombeImage, 0); // Affichage HUD BombeImage
 		HUD_Draw(gpRenderer, BombeTexte, 0); // Affichage HUD BombeTexte
 		HUD_Draw(gpRenderer, CleImage, 0); // Affichage HUD CleImage
 		HUD_Draw(gpRenderer, CleTexte, 0); // Affichage HUD CleTexte
+		Bouton_Draw(gpRenderer, Charger); // Affichage Bouton Charger
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 
 		/* Libération des deux textures HUD crées dans la boucle */
@@ -236,6 +268,7 @@ int main(int argc, char** argv)
 	HUD_free(BombeImage);
 	HUD_free(BombeTexte);
 	HUD_free(CleTexte);
+	Bouton_free(Charger);
 
 
 	Mix_CloseAudio();	// On quitte SDL_MIXER
