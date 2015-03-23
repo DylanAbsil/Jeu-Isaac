@@ -16,6 +16,8 @@
 /*               |            | Gestion des grandes vitesses de déplacement   */
 /* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32         */
 /* Herrou        | 22/03/2015 | Fonction Kr_Level_GetBlock OK	             */
+/* Herrou        | 23/03/2015 | Renommer GetBlock en GetTile			     */
+/*               |            | Kr_Level_Event, OK                           */
 /* ========================================================================= */
 
 /*
@@ -324,35 +326,64 @@ void Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 v
 
 
 /*!
-*  \fn     void Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
+*  \fn     Uint32 Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
 *  \brief  Function to check some event
 *
 *  \param  pLevel a pointer to a the level structure
 *  \param  pRect1 a pointer to the rectangle of the player
-*  \return none
+*  \return 1 if we must change the level, 0 otherwise
 */
-void Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
+Uint32 Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
 {
-	
+	Uint32 x, y, i,j, iTmp;
+	Sint32 iTilesID;
 
+	/* événement Changement de Level*/
+	iTmp = 0;
+	for (i = 0; i < 2; i++)
+	{
+		x = pRect->x + i*pRect->w;
+		for (j = 0; j < 2; j++)
+		{
+			y = pRect->y + j*pRect->h;
+			iTilesID = Kr_Level_GetTile(pLevel, x, y);
+			if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel && iTilesID != -1) // Le tile est-il un Tile pour changer de level ?
+			{
+				iTmp++;
+			}
+		}		
+	}
+	if (iTmp >= 2)
+	{
+		return 1; //On considère qu'on change de level
+	}
+
+	/* Autre événement */
+
+	return 0;
 }
 
 /*!
-*  \fn     Uint32 Kr_Level_GetBlock(Kr_Level *pLevel, Uint32 x, Uint32 y)
+*  \fn     Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
 *  \brief  Function to get the block at a coordinate
 *
 *  \param  pLevel a pointer to a the level structure
 *  \param  x      x coordinate
 *  \param  y      y coordinate
-*  \return the id of the block (cf the tileset)
+*  \return the id of the block (cf the tileset), -1 if error
 */
-Uint32 Kr_Level_GetBlock(Kr_Level *pLevel, Uint32 x, Uint32 y)
+Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
 {
 	Uint32 iTilesID, iNumTilesX, iNumTilesY;
 	// Obtenir les numéros des tiles
+	if ((x >= (pLevel->iLevel_TileWidth * pLevel->pLevel_Tileset->iTilesWidth)) || (y >= (pLevel->iLevel_TileHeight * pLevel->pLevel_Tileset->iTilesHeight)))
+	{
+		Kr_Log_Print(KR_LOG_WARNING, "GetTile : Out of level X: %d, Y: %d!!! \n",x,y);
+		return iTilesID = -1;
+	}
 	iNumTilesX = x / pLevel->pLevel_Tileset->iTilesWidth;
 	iNumTilesY = y / pLevel->pLevel_Tileset->iTilesHeight;
 	iTilesID = pLevel->szLayout[iNumTilesX][iNumTilesY];
-	Kr_Log_Print(KR_LOG_INFO, "Tiles %d : Plein : %d \n", iTilesID, pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPlein);
+	Kr_Log_Print(KR_LOG_INFO, "Tiles %d   |  X: %d   Y: %d  |   PorteLEvel : %d \n", iTilesID,x,y, pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel);
 	return iTilesID;
 }

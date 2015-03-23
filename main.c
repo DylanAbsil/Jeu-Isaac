@@ -128,6 +128,8 @@ int main(int argc, char** argv)
 	/* Chargement du niveau */
 	Kr_Level *pLevel1 = NULL;
 	Kr_Level *pLevel2 = NULL;
+	Kr_Level *pLevel3 = NULL;
+	Kr_Level *pLevel4 = NULL;
 	Kr_Level *pCurrentLevel = NULL;
 	pLevel1 = Kr_Level_Init("level1"); // Ne pas préciser l'extension
 	if (!Kr_Level_Load(pLevel1, gpRenderer))
@@ -141,6 +143,20 @@ int main(int argc, char** argv)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
 		exit(EXIT_FAILURE); 
+	}
+
+	pLevel3 = Kr_Level_Init("level3"); // Ne pas préciser l'extension
+	if (!Kr_Level_Load(pLevel3, gpRenderer))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
+		exit(EXIT_FAILURE);
+	}
+
+	pLevel4 = Kr_Level_Init("level4"); // Ne pas préciser l'extension
+	if (!Kr_Level_Load(pLevel4, gpRenderer))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
+		exit(EXIT_FAILURE);
 	}
 	pCurrentLevel = pLevel1;
 	/* ========================================================================= */
@@ -172,7 +188,19 @@ int main(int argc, char** argv)
 		{
 			//Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
 			//Kr_Log_Print(KR_LOG_INFO, "Tiles %d\n", );
-			Kr_Level_GetBlock(pCurrentLevel, inEvent.iMouseX, inEvent.iMouseY);
+			if (Kr_Level_Event(pCurrentLevel, &rectPositionImage) == 1)
+			{
+				if (pCurrentLevel == pLevel1)
+				{
+					pCurrentLevel = pLevel2;
+				}
+				else
+				{
+					pCurrentLevel = pLevel1;
+				}
+			}
+			Kr_Log_Print(KR_LOG_INFO, "\n");
+			//Kr_Level_GetTile(pCurrentLevel, inEvent.iMouseX, inEvent.iMouseY);
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
 		}
 		if (inEvent.szKey[SDL_SCANCODE_P])
@@ -189,12 +217,12 @@ int main(int argc, char** argv)
 		}
 		if (inEvent.szKey[SDL_SCANCODE_KP_1])
 		{
-			pCurrentLevel = pLevel1;
+			pCurrentLevel = pLevel3;
 			inEvent.szKey[SDL_SCANCODE_KP_1] = 0;
 		}
 		if (inEvent.szKey[SDL_SCANCODE_KP_2])
 		{
-			pCurrentLevel = pLevel2;
+			pCurrentLevel = pLevel4;
 			inEvent.szKey[SDL_SCANCODE_KP_2] = 0;
 		}
 		
@@ -220,7 +248,7 @@ int main(int argc, char** argv)
 		//iCount += (1000 / KR_FPS); // Cette variable permet juste d'afficher le temps depuis lequel l'exe est actif, plus tard on le mettra en forme pour afficher le temps depuis lequel l'utilisateur est dans le jeu
 		iCount += 1;
 		//sprintf(szCompteur, "Time : %d", iCount); // Mise à jour du compteur
-		sprintf(szCompteur, "Cursor : X : %d Y : %d", inEvent.iMouseX, inEvent.iMouseY);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
+		sprintf(szCompteur, "Cursor : X : %d Y : %d   %s", inEvent.iMouseX, inEvent.iMouseY,pCurrentLevel->szLevelName);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
 
 		//Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pMonLevel->rLimitation->x, pMonLevel->rLimitation->y);
 		/* ========================================================================= */
@@ -247,6 +275,8 @@ int main(int argc, char** argv)
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
 	Kr_Level_Free(pLevel1);
 	Kr_Level_Free(pLevel2);
+	Kr_Level_Free(pLevel3);
+	Kr_Level_Free(pLevel4);
 	Kr_Map_Free(pMap);
 	Mix_CloseAudio();	// On quitte SDL_MIXER
 	TTF_Quit();			// On quitte SDL_TTF

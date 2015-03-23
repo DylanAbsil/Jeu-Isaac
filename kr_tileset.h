@@ -11,6 +11,7 @@
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Création.                                    */
 /* Herrou        | 22/03/2015 | Tiles Properties : Add iWater                */
+/* Herrou        | 23/03/2015 | Tiles Properties : Add iPorteLevel           */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -32,6 +33,7 @@ typedef struct
 	SDL_Rect rTile;
 	Uint32 iPlein;
 	Uint32 iWater;
+	Uint32 iPorteLevel;
 	// tout ce que vous voulez...
 } Kr_TileProp;
 
