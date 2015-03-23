@@ -36,6 +36,14 @@
     #include <SDL2/SDL_image.h>
 
 
+// Banque de son : http://www.wavsource.com/
+// Utiliser Uint32 gérer la portabilité !!!
+#define KR_FPS 30// Nombre de FPS
+#define KR_WIDTH_WINDOW  1280
+#define KR_HEIGHT_WINDOW 720
+#define MOVESPEED 2
+#define RESET_FRAME 5
+
 
     /*! 
      * \enum  Boolean

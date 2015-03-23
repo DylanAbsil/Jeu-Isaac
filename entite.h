@@ -15,30 +15,10 @@
 /* ========================================================================= */
 
 #include "kr_util.h"
+#include "kr_sprite.h"
+#include "kr_input.h"
+#include "kr_level.h"
 
-
-
-/*===========================================================================*/
-/*	  				       GESTION DES SPRITES								 */
-/*===========================================================================*/
-
-typedef struct {
-	char		*sprName;			/*!< Name of the sprite */
-	SDL_Texture *ptextureSprite;	/*!< Texture of the sprite */
-	Uint32		lFrameWidth;		/*!< Frame width of the sprite */  // Un sprite n'a qu'une seule largeur
-	Uint32		lNbFrames;			/*!< Number of frames in the sprite */
-	Uint32		lCurrentFrames;		/*!< The current frame */
-	SDL_Rect	*rectPosition;
-}Kr_Sprite;
-
-Kr_Sprite * createSprite(char * name, SDL_Texture * texture, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect * ptRectPosition);
-
-
-
-
-/*=========================================================================== */
-/*					   	   GESTION DES ENTITES								  */
-/*============================================================================*/
 
 /*!
 * \enum EntityState
@@ -52,37 +32,59 @@ typedef enum {
 	poisoned,
 }EntityState;
 
+/*!
+ * \enum Direction
+ * \brief Enumaration to describe the direction of the mouvement of the entity
+ */
+typedef enum {
+	nord,
+	est,
+	sud,
+	ouest,
+}Direction;
+
+
 typedef struct {
-	char	*szNamePrj;
+	char	*strNamePrj;
 	Sint32	*iDamagePrj;
 	Uint32	*iSpeedPrj;
-	Kr_Sprite sprProjectile;
+	Kr_Sprite *pSprProjectile;
 	Sint32	iCoordPrj_XStart;
 	Sint32	iCoordPrj_YStart;
 	Sint32	iCoordPrj_XCurrent;
 	Sint32	iCoordPrj_YCurrent;
 }Projectile;
 
+
 typedef struct {
-	char	*szNameWeapon;
+	char	*strNameWeapon;
 	Uint32	iRangeWeapon;
 	Sint32	iMunitionWeapon;
 	Sint32	iDamageWeapon;
 }Weapon;
 
-/* Rajouter un int direction*/
+
 typedef struct {
-	char	*szEntityName;		/*!< Name of the entity */
-	Uint32	iEntityLife;		/*!< Life of the entity */
-	Uint32	iArmor;				/*!< Armor of the entity */
+	char	*strEntityName;		/* Name of the entity */
+	Uint32	iEntityLife;		/* Life of the entity */
+	Uint32	iArmor;				/* Armor of the entity */
 	Weapon	wpnName;
-	Kr_Sprite	sprEntity;
+	Kr_Sprite	*pSprEntity;
 	EntityState	state;
 	Sint32	iCoordXEntity;
 	Sint32	iCoordYEntity;
 	Uint32	iSpeedEntity;
+	Direction direction;
+	Boolean mouvement;			/* Mouvement : 0 static, 1 in movement */
 }Entity;
 
+Entity * init_Entity();
+void load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
+void free_Entity(Entity *entite);
+void draw_Entity(SDL_Renderer *pRenderer, Entity entite);
 
-Entity * createEntity(char * name, Uint32 life, Uint32 armor, Kr_Sprite sprite); /*!< creationd'une entite >*/
-void printZelda(SDL_Renderer * renderer, Entity entity);
+
+Direction foundDirection(Sint32 vx, Sint32 vy);
+
+void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
+void updatePlayerVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite);

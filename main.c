@@ -16,6 +16,8 @@
 
 
 
+
+
 #include "kr_common.h"
 #include "kr_log.h"
 #include "kr_util.h"
@@ -23,15 +25,8 @@
 #include "kr_text.h"
 #include "kr_level.h"
 #include "kr_config.h"
-#include "kr_entite.h"
-
-// Banque de son : http://www.wavsource.com/
-// Utiliser Uint32 gérer la portabilité !!!
-#define KR_FPS 30// Nombre de FPS
-#define KR_WIDTH_WINDOW  1280
-#define KR_HEIGHT_WINDOW 720
-#define MOVESPEED 2
-#define RESET_FRAME 10
+#include "entite.h"
+#include "kr_sprite.h"
 
 SDL_Renderer *gpRenderer = NULL;
 
@@ -99,41 +94,12 @@ int main(int argc, char** argv)
 
 	rectPositionImage.x = 0; 
 	rectPositionImage.y = 0;
-	rectPositionImage.w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
-	rectPositionImage.h = 32;
+	rectPositionImage.w = 128; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
+	rectPositionImage.h = 128;
 
-	pPersonnage         = UTIL_LoadTexture("Zelda.png", NULL, NULL);
-	if (pPersonnage == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
-	pSpritePersonnage = createSprite("Sprite Zelda", pPersonnage, 240, 32, &rectPositionImage);
-	if (pSpritePersonnage == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
-
-	pZelda = createEntity("Zelda", 30, 30, *pSpritePersonnage);
-	if (pZelda == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
+	/* Chargement du personnage */
 	
-
-
-	/* Préparation d'une Texture contenant un message via util.c*/
-	SDL_Rect     textPosition;
-	SDL_Color    couleur = { 123, 255, 0 }; 
-	SDL_Texture *pTextureText = NULL;
-	TTF_Font    *pFont = NULL;
-	char         szCompteur[100] = " ";// Tableau contenant la valeur du compteur
-	Uint32       iCount = 0; //Valeur actuel du compteur
-
-	textPosition.x = 0;
-	textPosition.y = 0;
-	pFont = Kr_Text_OpenFont("cour", 25);
-	TTF_SetFontStyle(pFont, TTF_STYLE_BOLD);
-
+	
 
 	/* Chargement du niveau */
 	SDL_Texture *pLimitation = NULL;
@@ -149,8 +115,8 @@ int main(int argc, char** argv)
 
 	rLimitation.x = 0;
 	rLimitation.y = 0;
-	rLimitation.w = 100;
-	rLimitation.h = 100;
+	rLimitation.w = 64;
+	rLimitation.h = 64;
 
 	pMonLevel = Kr_Level_Init("level2"); // Ne pas préciser l'extension
 	if (!Kr_Level_Load(pMonLevel, gpRenderer))
@@ -186,48 +152,9 @@ int main(int argc, char** argv)
 			Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
 		}
-		if (inEvent.szKey[SDL_SCANCODE_UP]) // Touche flèche du haut
-		{
-			rectPositionImage.y -= MOVESPEED; // Je déplace le SDL_rect textPosition de -5 sur l'axe Y
-			resetFrame++;
-			if (resetFrame == RESET_FRAME){
-				pZelda->sprEntity.lCurrentFrames = cptFrame;
-				cptFrame++;
-				resetFrame = 0;
-			}
-		}
-		if (inEvent.szKey[SDL_SCANCODE_DOWN])
-		{
-			rectPositionImage.y += MOVESPEED;
-			resetFrame++;
-			if (resetFrame == RESET_FRAME){
-				pZelda->sprEntity.lCurrentFrames = 16 + cptFrame;
-				cptFrame++;
-				resetFrame = 0;
-			}
-		}
-		if (inEvent.szKey[SDL_SCANCODE_LEFT])
-		{
-			rectPositionImage.x -= MOVESPEED;
-			resetFrame++;
-			if (resetFrame == RESET_FRAME)
-			{
-				pZelda->sprEntity.lCurrentFrames = 8 + cptFrame;
-				cptFrame++;
-				resetFrame = 0;
-			}
-		}
-		if (inEvent.szKey[SDL_SCANCODE_RIGHT])
-		{
-			rectPositionImage.x += MOVESPEED;
-			resetFrame++;
-			if (resetFrame == RESET_FRAME)
-			{
-				pZelda->sprEntity.lCurrentFrames = 24 + cptFrame;
-				cptFrame++;
-				resetFrame = 0;
-			}
-		}
+		
+		updatePlayerVector(inEvent, pMonLevel, pZelda);
+
 		if (inEvent.szKey[SDL_SCANCODE_P])
 		{
 			inEvent.szKey[SDL_SCANCODE_P] = 0; // Un seul clique, comme pour la souris
@@ -240,6 +167,7 @@ int main(int argc, char** argv)
 				Mix_PauseMusic();//Sinon je le met en pause
 			}
 		}
+		
 		
 
 		/* ========================================================================= */
@@ -261,13 +189,7 @@ int main(int argc, char** argv)
 		/*                                  DIVERS                                   */
 		/* ========================================================================= */
 
-		pTextureText = Kr_Text_FontCreateTexture(gpRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
-		iCount += (1000 / KR_FPS); // Cette variable permet juste d'afficher le temps depuis lequel l'exe est actif, plus tard on le mettra en forme pour afficher le temps depuis lequel l'utilisateur est dans le jeu
-		//sprintf(szCompteur, "Time : %d", iCount); // Mise à jour du compteur
-		sprintf(szCompteur, "Cursor : X : %d Y : %d", inEvent.iMouseX, inEvent.iMouseY);//)pMap->iScrollX, pMap->iScrollY); // Affichage coordonnée de la map
 
-		//Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pMonLevel->rLimitation->x, pMonLevel->rLimitation->y);
-		if (cptFrame == 8) cptFrame = 0;
 
 		/* ========================================================================= */
 		/*                                  RENDER                                   */
@@ -276,11 +198,9 @@ int main(int argc, char** argv)
 		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
 		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);		
-		printZelda(gpRenderer, *pZelda); // En arrière plan
+		draw_Entity(gpRenderer, *pZelda); // En arrière plan
 		SDL_RenderCopy(gpRenderer, pLimitation, NULL, pMonLevel->rLimitation);
-		SDL_RenderCopy(gpRenderer, pTextureText, NULL, &textPosition); // En avant plan de la texture précédente
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
-		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
 	}
 
 	/* ========================================================================= */
@@ -289,10 +209,8 @@ int main(int argc, char** argv)
 
 	UTIL_FreeTexture(&pPersonnage);		// Libération mémoire de la texture 
 	UTIL_FreeTexture(&pLimitation);		// Libération mémoire de la texture 
-	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
-	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
 	Kr_Level_Free(pMonLevel);
 	Mix_CloseAudio();	// On quitte SDL_MIXER
 	TTF_Quit();			// On quitte SDL_TTF
