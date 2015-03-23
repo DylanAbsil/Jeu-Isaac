@@ -6,13 +6,14 @@
 * \version 1.0
 * \date    22 Mars 2015
 */
-/* ================================================================================= */
-/* Developers    | Date       | Comments                                             */
-/* --------------+------------+----------------------------------------------------- */
-/* Guillaume     | 22/03/2015 | Création                                             */
-/* Guillaume     | 23/03/2015 | Ajout fonction Bouton_Update et Bouton_Selectionne   */
-/*																		       	     */
-/* ================================================================================= */
+/* ================================================================================== */
+/* Developers    | Date       | Comments                                              */
+/* --------------+------------+------------------------------------------------------ */
+/* Guillaume     | 22/03/2015 | Création                                              */
+/* Guillaume     | 23/03/2015 | Ajout fonction Bouton_Update et Bouton_estSelectionne */
+/* Guillaume     | 24/03/2015 | MAJ fonctions Update, estSelectionne                  */
+/*																		       	      */
+/* ================================================================================== */
 
 
 
@@ -35,7 +36,8 @@ Bouton * Bouton_Init(char *BoutonName)
 
 	pBouton->BoutonName = BoutonName;
 
-	//pBouton->pTexture = NULL;
+	pBouton->pTextureImage = NULL;
+	pBouton->pTextureTexte = NULL;
 
 	pBouton->RectImage.x = 0;
 	pBouton->RectImage.y = 0;
@@ -56,26 +58,26 @@ Bouton * Bouton_Init(char *BoutonName)
 
 
 /*!
-*  \fn      void Bouton_Load(Bouton *pBouton, SDL_Rect rRect)
+*  \fn      void Bouton_Load(SDL_Renderer * renderer, Bouton *pBouton, TTF_Font *pFont, SDL_Color Color, SDL_Rect RectImage)
 *  \brief   Function to initiate a Bouton
 *
-*  \param   *pHUD       the Bouton structure
-*  \param   rRect	    the rectangle of the Bouton
+*  \param   *renderer   the renderer to display the button
+*  \param   *pBouton    the Bouton structure
+*  \param   *pFont	    the font of the text of the button
+*  \param   Color       the color of the text of the button 
+*  \param   RectImage   the rectngle of the backgrund of the button
 *
 *  \return  void
 */
 
-void Bouton_Load(SDL_Renderer * renderer, Bouton *pBouton, TTF_Font *pFont, SDL_Color Color, SDL_Rect RectImage, SDL_Rect RectTexte)
+void Bouton_Load(SDL_Renderer * renderer, Bouton *pBouton, TTF_Font *pFont, SDL_Color Color, SDL_Rect RectImage)
 {
+	SDL_Rect RectTexteTampon = { 0, 0, 0, 0 };
+
 	pBouton->RectImage.x = RectImage.x;
 	pBouton->RectImage.y = RectImage.y;
 	pBouton->RectImage.w = RectImage.w;
 	pBouton->RectImage.h = RectImage.h;
-
-	pBouton->RectTexte.x = RectTexte.x;
-	pBouton->RectTexte.y = RectTexte.y;
-	pBouton->RectTexte.w = RectTexte.w;
-	pBouton->RectTexte.h = RectTexte.h;
 
 	char BoutonPath[50];
 	sprintf(BoutonPath, "Bouton\\%s.png", "Fond_Bouton");
@@ -85,7 +87,12 @@ void Bouton_Load(SDL_Renderer * renderer, Bouton *pBouton, TTF_Font *pFont, SDL_
 		Kr_Log_Print(KR_LOG_ERROR, "Impossible to load the sprite :%s\n", BoutonPath);
 	}
 
-	pBouton->pTextureTexte = Kr_Text_FontCreateTexture(renderer, pFont, pBouton->BoutonName, Color, TRUE, &(pBouton->RectTexte));
+	pBouton->pTextureTexte = Kr_Text_FontCreateTexture(renderer, pFont, pBouton->BoutonName, Color, TRUE, &RectTexteTampon);
+
+	pBouton->RectTexte.x = pBouton->RectImage.x + ((pBouton->RectImage.w - RectTexteTampon.w) / 2);
+	pBouton->RectTexte.y = pBouton->RectImage.y + ((pBouton->RectImage.h - RectTexteTampon.h) / 2);
+	pBouton->RectTexte.w = RectTexteTampon.w;
+	pBouton->RectTexte.h = RectTexteTampon.h;
 }
 
 
@@ -154,6 +161,7 @@ void Bouton_Update(Bouton *pBouton)
 	char BoutonPath[50];
 	if (pBouton->estSelectionne == TRUE)
 	{
+		UTIL_FreeTexture(&(pBouton->pTextureImage));
 		sprintf(BoutonPath, "Bouton\\%s.png", "Fond_Bouton_Selectionne");
 		pBouton->pTextureImage = UTIL_LoadTexture(BoutonPath, NULL, NULL);
 		if (pBouton->pTextureImage == NULL)
@@ -164,6 +172,7 @@ void Bouton_Update(Bouton *pBouton)
 	}
 	else
 	{
+		UTIL_FreeTexture(&(pBouton->pTextureImage));
 		sprintf(BoutonPath, "Bouton\\%s.png", "Fond_Bouton");
 		pBouton->pTextureImage = UTIL_LoadTexture(BoutonPath, NULL, NULL);
 		if (pBouton->pTextureImage == NULL)
@@ -179,21 +188,31 @@ void Bouton_Update(Bouton *pBouton)
 
 /*!
 *  \fn      void Bouton_Selectionne(Bouton *pBouton)
-*  \brief   Function to change the statute of estSelectionne
+*  \brief   Function to change the statute of estSelectionne into TRUE
 *
 *  \param   *pBouton      the bouton structure
 *
 *  \return  void
 */
 
-void Bouton_Selectionne(Bouton *pBouton)
+void Bouton_estSelectionne(Bouton *pBouton)
 {
-	if (pBouton->estSelectionne == TRUE)
-	{
-		pBouton->estSelectionne = FALSE;
-	}
-	else
-	{
 		pBouton->estSelectionne = TRUE;
-	}
+}
+
+
+
+
+/*!
+*  \fn      void Bouton_nestPasSelectionne(Bouton *pBouton)
+*  \brief   Function to change the statute of estSelectionne into FALSE
+*
+*  \param   *pBouton      the bouton structure
+*
+*  \return  void
+*/
+
+void Bouton_nestPasSelectionne(Bouton *pBouton)
+{
+	pBouton->estSelectionne = FALSE;
 }

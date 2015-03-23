@@ -150,16 +150,12 @@ int main(int argc, char** argv)
 	Bouton *Charger = NULL;
 
 	/* Initialisation du rectangle pour le bouton*/
-	SDL_Rect RectImageCharger = { 440, 296, 400, 100 };
-	SDL_Rect RectTexteCharger = { 540, 326, 40, 40 };
+	SDL_Rect RectImageCharger = { 140, 150, 400, 100 };
 
 	/* Initialisation bouton Charger */
 	Charger = Bouton_Init("CHARGER");
-	Bouton_Load(gpRenderer, Charger, policeBouton, CouleurBouton, RectImageCharger, RectTexteCharger);
+	Bouton_Load(gpRenderer, Charger, policeBouton, CouleurBouton, RectImageCharger);
 
-	/* Modification pour tester Bouton_Update */
-	Bouton_Selectionne(Charger);
-	Bouton_Update(Charger);
 
 
 
@@ -200,7 +196,21 @@ int main(int argc, char** argv)
 			CleTexte->estAffiche = ~CleTexte->estAffiche;
 			inEvent.szKey[SDL_SCANCODE_H] = 0;
 		}
-
+		/* Permet de detecter si la position du pointeur correspond vec celle d'une texture */
+		if ((Charger->RectImage.x <= inEvent.iMouseX) && 
+			(inEvent.iMouseX <= (Charger->RectImage.x + Charger->RectImage.w)) &&
+			(Charger->RectImage.y <= inEvent.iMouseY) &&
+			inEvent.iMouseY <= (Charger->RectImage.y + Charger->RectImage.h))
+		{
+			Bouton_estSelectionne(Charger);
+			Bouton_Update(Charger);
+		}
+		else
+		{
+			Bouton_nestPasSelectionne(Charger);
+			Bouton_Update(Charger);
+		}
+		
 
 		/* ========================================================================= */
 		/*                                    FPS                                    */

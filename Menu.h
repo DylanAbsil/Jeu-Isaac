@@ -27,7 +27,7 @@
 
 
 /*===========================================================================*/
-/*	  				      STRUCTURE POUR LES MENUS  	   					 */
+/*	  				      STRUCTURE POUR LES BOUTONS  	   					 */
 /*===========================================================================*/
 
 typedef struct {
@@ -43,17 +43,23 @@ typedef struct {
 
 
 /*===========================================================================*/
-/*	  				      STRUCTURE POUR LES MENUS  	   					 */
+/*	  				      STRUCTURE POUR LES BOUTONS  	   					 */
 /*===========================================================================*/
 
 /* Fonctions pour la structure bouton */
 Bouton * Bouton_Init(char *BoutonName);
-//void Bouton_Load(Bouton *pBouton, SDL_Rect RectImage, SDL_Rect RectTexte);
-void Bouton_Load(SDL_Renderer * renderer, Bouton *pBouton, TTF_Font *pFont, SDL_Color Color, SDL_Rect RectImage, SDL_Rect RectTexte);
-//void Bouton_Draw(SDL_Renderer * renderer, Bouton *pBouton, TTF_Font *pFont, SDL_Color Color);
+void Bouton_Load(SDL_Renderer * renderer, Bouton *pBouton, TTF_Font *pFont, SDL_Color Color, SDL_Rect RectImage);
 void Bouton_Draw(SDL_Renderer * renderer, Bouton *pBouton);
 void Bouton_free(Bouton *pBouton);
 void Bouton_Update(Bouton *pBouton);
-void Bouton_Selectionne(Bouton *pBouton);
+void Bouton_estSelectionne(Bouton *pBouton);
+void Bouton_nestPasSelectionne(Bouton *pBouton);
+
+
+
+
+/*===========================================================================*/
+/*	  				      STRUCTURE POUR LES MENUS  	   					 */
+/*===========================================================================*/
 
 
