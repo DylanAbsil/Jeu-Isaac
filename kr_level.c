@@ -18,6 +18,7 @@
 /* Herrou        | 22/03/2015 | Fonction Kr_Level_GetBlock OK	             */
 /* Herrou        | 23/03/2015 | Renommer GetBlock en GetTile			     */
 /*               |            | Kr_Level_Event, OK                           */
+/* Herrou        | 24/03/2015 | MAJ Free, Add Change                         */
 /* ========================================================================= */
 
 /*
@@ -122,7 +123,7 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 void Kr_Level_Free(Kr_Level *pLevel)
 {
 	Sint32 i;
-
+	if (pLevel == NULL) return;
 	Kr_Tileset_Free(pLevel->pLevel_Tileset);
 	for (i = 0; i< pLevel->iLevel_TileHeight; i++)
 		free(pLevel->szLayout[i]);
@@ -386,4 +387,26 @@ Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
 	iTilesID = pLevel->szLayout[iNumTilesX][iNumTilesY];
 	Kr_Log_Print(KR_LOG_INFO, "Tiles %d   |  X: %d   Y: %d  |   PorteLEvel : %d \n", iTilesID,x,y, pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel);
 	return iTilesID;
+}
+
+
+
+/*!
+*  \fn     Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Renderer *pRenderer)
+*  \brief  Function to change the level
+*
+*  \param  pCurrentLevel  a pointer to the current Level which must be freed
+*  \param  szLevelName    the name of the new Level to load
+*  \param  pRenderer      a pointer to the Renderer
+*  \return the initialised level structure, NULL otherwise
+*/
+Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Renderer *pRenderer)
+{
+	Kr_Level *pNewLevel = Kr_Level_Init(szLevelName);
+	if (!Kr_Level_Load(pNewLevel, pRenderer))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
+		return NULL;
+	}
+	return pNewLevel;
 }

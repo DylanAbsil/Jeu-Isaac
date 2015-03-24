@@ -18,6 +18,7 @@
 /* Herrou        | 22/03/2015 | Proto Kr_Level_GetBlock et Kr_Level_Event    
 /* Herrou        | 23/03/2015 | Renommer GetBlock en GetTile			     */
 /*               |            | Kr_Level_Event retourne un code selon l'event*/
+/* Herrou        | 24/03/2015 | MAJ Free, Add Change                         */
 /* ========================================================================= */
 
 #ifndef __KR_LEVEL_H__
@@ -56,6 +57,7 @@ void	  Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel);
 
 /* Sauvegarde etc */
 Boolean	  Kr_Level_Save(Kr_Level *pLevel);
+Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Renderer *pRenderer);
 
 /* Gestion des collisions */
 Uint32  Kr_Collision_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);

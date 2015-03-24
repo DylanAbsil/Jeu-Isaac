@@ -126,49 +126,24 @@ int main(int argc, char** argv)
 	}
 
 	/* Chargement du niveau */
-	Kr_Level *pLevel1 = NULL;
-	Kr_Level *pLevel2 = NULL;
-	Kr_Level *pLevel3 = NULL;
-	Kr_Level *pLevel4 = NULL;
+	Boolean   bChangeLevel = TRUE;
 	Kr_Level *pCurrentLevel = NULL;
-	pLevel1 = Kr_Level_Init("level1"); // Ne pas préciser l'extension
-	if (!Kr_Level_Load(pLevel1, gpRenderer))
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
-		exit(EXIT_FAILURE);
-	}
+	char      szNewLevel[20] = "level1";
 
-	pLevel2 = Kr_Level_Init("level2"); // Ne pas préciser l'extension
-	if (!Kr_Level_Load(pLevel2, gpRenderer))
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
-		exit(EXIT_FAILURE); 
-	}
-
-	pLevel3 = Kr_Level_Init("level3"); // Ne pas préciser l'extension
-	if (!Kr_Level_Load(pLevel3, gpRenderer))
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
-		exit(EXIT_FAILURE);
-	}
-
-	pLevel4 = Kr_Level_Init("level4"); // Ne pas préciser l'extension
-	if (!Kr_Level_Load(pLevel4, gpRenderer))
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
-		exit(EXIT_FAILURE);
-	}
-	pCurrentLevel = pLevel1;
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
 	/* ========================================================================= */
-	// Cette boucle va permettre mettre à jour la structure qui gère les entrées clavier/souris
-	// On aura plus qu'à regarder si notre touche a été appuyé et si oui agir en conséquence
 	while (!inEvent.szKey[SDL_SCANCODE_ESCAPE] && !inEvent.bQuit)
 	{
-		
-		UpdateEvents(&inEvent);
+		/* Faire au début sinon crash*/
+		if (bChangeLevel == TRUE)
+		{
+			bChangeLevel = FALSE;
+			pCurrentLevel = Kr_Level_Change(pCurrentLevel, szNewLevel, gpRenderer);
+		}
 
+
+		UpdateEvents(&inEvent);
 		/* Mise à jour des coordonnées du personnage*/
 		UpdatePlayerVector(inEvent, pCurrentLevel, &rectPositionImage);
 
@@ -187,17 +162,11 @@ int main(int argc, char** argv)
 		if (inEvent.szMouseButtons[2])
 		{
 			//Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
-			//Kr_Log_Print(KR_LOG_INFO, "Tiles %d\n", );
 			if (Kr_Level_Event(pCurrentLevel, &rectPositionImage) == 1)
 			{
-				if (pCurrentLevel == pLevel1)
-				{
-					pCurrentLevel = pLevel2;
-				}
-				else
-				{
-					pCurrentLevel = pLevel1;
-				}
+				bChangeLevel = TRUE;
+				if (strcmp(szNewLevel, "level1") == 0) strcpy(szNewLevel, "level2");
+				else strcpy(szNewLevel, "level1");
 			}
 			Kr_Log_Print(KR_LOG_INFO, "\n");
 			//Kr_Level_GetTile(pCurrentLevel, inEvent.iMouseX, inEvent.iMouseY);
@@ -217,12 +186,14 @@ int main(int argc, char** argv)
 		}
 		if (inEvent.szKey[SDL_SCANCODE_KP_1])
 		{
-			pCurrentLevel = pLevel3;
+			bChangeLevel = TRUE;
+			strcpy(szNewLevel, "level3");
 			inEvent.szKey[SDL_SCANCODE_KP_1] = 0;
 		}
 		if (inEvent.szKey[SDL_SCANCODE_KP_2])
 		{
-			pCurrentLevel = pLevel4;
+			bChangeLevel = TRUE; 
+			strcpy(szNewLevel, "level4");
 			inEvent.szKey[SDL_SCANCODE_KP_2] = 0;
 		}
 		
@@ -244,10 +215,12 @@ int main(int argc, char** argv)
 		/* ========================================================================= */
 		/*                                  DIVERS                                   */
 		/* ========================================================================= */
+		
+
+		
+		
 		pTextureText = Kr_Text_FontCreateTexture(gpRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
-		//iCount += (1000 / KR_FPS); // Cette variable permet juste d'afficher le temps depuis lequel l'exe est actif, plus tard on le mettra en forme pour afficher le temps depuis lequel l'utilisateur est dans le jeu
 		iCount += 1;
-		//sprintf(szCompteur, "Time : %d", iCount); // Mise à jour du compteur
 		sprintf(szCompteur, "Cursor : X : %d Y : %d   %s", inEvent.iMouseX, inEvent.iMouseY,pCurrentLevel->szLevelName);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
 
 		//Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pMonLevel->rLimitation->x, pMonLevel->rLimitation->y);
@@ -273,10 +246,7 @@ int main(int argc, char** argv)
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
-	Kr_Level_Free(pLevel1);
-	Kr_Level_Free(pLevel2);
-	Kr_Level_Free(pLevel3);
-	Kr_Level_Free(pLevel4);
+	Kr_Level_Free(pCurrentLevel);
 	Kr_Map_Free(pMap);
 	Mix_CloseAudio();	// On quitte SDL_MIXER
 	TTF_Quit();			// On quitte SDL_TTF
@@ -330,4 +300,3 @@ void UpdatePlayerVector(Kr_Input inEvent, Kr_Level *pLevel, SDL_Rect *pPlayer)
 	GetVector(inEvent, &vx, &vy);
 	Kr_Collision_Move(pLevel, pPlayer, vx, vy);
 }
-
