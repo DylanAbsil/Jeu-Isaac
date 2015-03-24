@@ -19,8 +19,9 @@
 
 Kr_Sprite * init_Sprite(){
 	Kr_Sprite * pSprite = UTIL_Malloc(sizeof(Kr_Sprite));
-	pSprite->strName = 0;
+	pSprite->strName = "Nom indefini";
 	pSprite->pTextureSprite = NULL;
+	pSprite->iFrameHeight = 0;
 	pSprite->iFrameWidth = 0;
 	pSprite->iNbFrames = 0;
 	pSprite->iCurrentFrame = 0;
@@ -28,16 +29,25 @@ Kr_Sprite * init_Sprite(){
 	return pSprite;
 }
 
-void load_Sprite(Kr_Sprite *sprite, char *name, SDL_Texture *pTextureSprite, Uint32 frameWidth, Uint32 nbFrames, Uint32 currentFrame, SDL_Rect *pRectPosition){
-	sprite->strName = strcpy(sprite->strName, name);
-	sprite->pTextureSprite = pTextureSprite;
+void load_Sprite(Kr_Sprite *sprite, char *name, SDL_Texture *pTexture, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition){
+	// Creation d'un nouveau sprite et d'une nouvelle texture juste a partir du nom
+	/*SDL_Texture *pSpriteEntite = NULL;
+	char newSprFileName[SIZE_MAX_NAME];
+	strcpy_s(newSprFileName, SIZE_MAX_NAME, name);
+	strcat_s(newSprFileName, SIZE_MAX_NAME, "_sud");	
+	pSpriteEntite = UTIL_LoadTexture(UTIL_BuildPath("sprite", newSprFileName, strlen(newSprFileName) - 1, "png"), NULL, pRectPosition );
+	*/
+	// Integration dans la structure
+	sprite->strName = name;
+	sprite->pTextureSprite = pTexture;
+	sprite->iFrameHeight = frameHeight;
 	sprite->iFrameWidth = frameWidth;
 	sprite->iNbFrames = nbFrames;
-	sprite->iCurrentFrame = currentFrame;
 	sprite->pRectPosition = pRectPosition;
 }
 
 void free_Sprite(Kr_Sprite *pSprite){
+	UTIL_FreeTexture(&pSprite->pTextureSprite);
 	free(pSprite);
 }
 

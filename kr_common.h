@@ -43,6 +43,7 @@
 #define KR_HEIGHT_WINDOW 720
 #define MOVESPEED 2
 #define RESET_FRAME 5
+#define SIZE_MAX_NAME 30
 
 
     /*! 

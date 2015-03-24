@@ -26,7 +26,6 @@
 #include "kr_level.h"
 #include "kr_config.h"
 #include "entite.h"
-#include "kr_sprite.h"
 
 SDL_Renderer *gpRenderer = NULL;
 
@@ -85,20 +84,25 @@ int main(int argc, char** argv)
 	/* ========================================================================= */
 
 	/* Préparation d'une image que l'on souhaitera afficher via kr_util*/
-	SDL_Texture	 *pPersonnage = NULL;
-	Kr_Sprite	 *pSpritePersonnage = NULL;
+	SDL_Texture  *pTextureZelda;
+	Kr_Sprite	 *pSpriteZelda = NULL;
 	Entity		 *pZelda = NULL;
 	SDL_Rect     rectPositionImage;
-	Uint32		 cptFrame = 0;
+	Uint32		 tempoAnim = 0;
 	Uint32		 resetFrame = 0;
 
 	rectPositionImage.x = 0; 
 	rectPositionImage.y = 0;
-	rectPositionImage.w = 128; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
-	rectPositionImage.h = 128;
+	rectPositionImage.w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
+	rectPositionImage.h = 32;
 
 	/* Chargement du personnage */
-	
+	pTextureZelda = UTIL_LoadTexture("zelda_s.png", NULL, &rectPositionImage);
+	pSpriteZelda = init_Sprite();
+	load_Sprite(pSpriteZelda, "zelda_s", pTextureZelda, 26, 240, 8, &rectPositionImage );
+	pZelda	= init_Entity();
+	load_Entity(pZelda, "zelda", 100, 50, pSpriteZelda);
+
 	
 
 	/* Chargement du niveau */
@@ -153,7 +157,7 @@ int main(int argc, char** argv)
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
 		}
 		
-		updatePlayerVector(inEvent, pMonLevel, pZelda);
+		updatePlayerVector(inEvent, pMonLevel, pZelda, &tempoAnim);
 
 		if (inEvent.szKey[SDL_SCANCODE_P])
 		{
@@ -198,7 +202,7 @@ int main(int argc, char** argv)
 		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
 		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);		
-		draw_Entity(gpRenderer, *pZelda); // En arrière plan
+		draw_Entity(gpRenderer, pZelda); // En arrière plan
 		SDL_RenderCopy(gpRenderer, pLimitation, NULL, pMonLevel->rLimitation);
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 	}
@@ -207,7 +211,7 @@ int main(int argc, char** argv)
 	/*                            LIBERATION MEMOIRE                             */
 	/* ========================================================================= */
 
-	UTIL_FreeTexture(&pPersonnage);		// Libération mémoire de la texture 
+
 	UTIL_FreeTexture(&pLimitation);		// Libération mémoire de la texture 
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre

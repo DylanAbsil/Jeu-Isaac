@@ -16,7 +16,7 @@
 #include "kr_util.h"
 
 typedef struct {
-	char		*strName;			/* Name of the sprite */
+	char		*strName;			/* Name of the sprite (contenant la direction ex : zelda_sud) */
 	SDL_Texture *pTextureSprite;	/* Texture of the sprite */
 	Uint32		iFrameHeight;		/* Frame height of the sprite */
 	Uint32		iFrameWidth;		/* Frame width of the sprite */  // Un sprite n'a qu'une seule largeur
@@ -27,5 +27,5 @@ typedef struct {
 
 
 Kr_Sprite * init_Sprite();
-void load_Sprite(Kr_Sprite *sprite, char *name, SDL_Texture *pTextureSprite, Uint32	frameWidth, Uint32 nbFrames, Uint32 currentFrame, SDL_Rect *pRectposition);
+void load_Sprite(Kr_Sprite *sprite, char *name, SDL_Texture *pTexture, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectposition);
 void free_Sprite(Kr_Sprite *pSprite);
