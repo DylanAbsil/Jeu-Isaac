@@ -12,6 +12,8 @@
 /* Herrou        | 01/03/2015 | Creation.                                    */
 /* Herrou        | 18/03/2015 | Suppression UTIL_BuildPath                   */
 /*               |            | Ajout des macro UTIL_ABS et UTIL_SGN         */
+/* Herrou        | 24/03/2015 | MAJ LoadTexture, le renderer n'est plus une  */
+/*				 |            | var global, il est mit en paramètre          */
 /*               |            |                                              */
 /*               |            |                                              */
 /*               |            |                                              */
@@ -27,7 +29,7 @@ extern SDL_Renderer *gpRenderer; // Renderer is a global var from main
     Uint32       UTIL_Sqrt32( Uint32 iValue );
     FILE*        UTIL_OpenFile( const char *szPath, const char *szMode );
     void         UTIL_CloseFile( FILE **ppFile );
-    SDL_Texture* UTIL_LoadTexture( const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize ); 
+    SDL_Texture* UTIL_LoadTexture(SDL_Renderer *pRenderer, const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize ); 
     void         UTIL_FreeTexture( SDL_Texture **ppTexture );
     void*        UTIL_Malloc( size_t iSize );
     void*        UTIL_Realloc( void *pData, size_t iSize );

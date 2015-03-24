@@ -6,20 +6,21 @@
 * \version 1.0
 * \date    01 Mars 2015
 */
-/* ========================================================================= */
-/* Developers    | Date       | Comments                                     */
-/* --------------+------------+--------------------------------------------- */
-/* Herrou        | 01/03/2015 | Création                                     */
-/* Herrou        | 08/03/2015 | Gestion du Scrolling en cours                */
-/* Herrou        | 18/03/2015 | Arret du scrolling, map en 40x22 en tiles de 32*/
-/* Herrou        | 19/03/2015 | Détection collision d'un rectangle avec la carte*/
-/*               |            | Gestion des grandes vitesses de déplacement   */
-/* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32         */
-/* Herrou        | 22/03/2015 | Fonction Kr_Level_GetBlock OK	             */
-/* Herrou        | 23/03/2015 | Renommer GetBlock en GetTile			     */
-/*               |            | Kr_Level_Event, OK                           */
-/* Herrou        | 24/03/2015 | MAJ Free, Add Change                         */
-/* ========================================================================= */
+/* ================================================================================================================ */
+/* Developers    | Date       | Comments																			*/
+/* --------------+------------+------------------------------------------------------------------------------------ */
+/* Herrou        | 01/03/2015 | Création																			*/
+/* Herrou        | 08/03/2015 | Gestion du Scrolling en cours														*/
+/* Herrou        | 18/03/2015 | Arret du scrolling, map en 40x22 en tiles de 32										*/
+/* Herrou        | 19/03/2015 | Détection collision d'un rectangle avec la carte									*/
+/*               |            | Gestion des grandes vitesses de déplacement											*/
+/* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32												*/
+/* Herrou        | 22/03/2015 | Fonction Kr_Level_GetBlock OK														*/
+/* Herrou        | 23/03/2015 | Renommer GetBlock en GetTile			     										*/
+/*               |            | Kr_Level_Event, OK                           										*/
+/* Herrou        | 24/03/2015 | MAJ Free, Add Change																*/
+/*               |            | MAJ Event: détection du milieu du rectangle pour le changement de niveau			*/
+/* ===============================================================================================================  */
 
 /*
 Commentaire : 
@@ -341,23 +342,12 @@ Uint32 Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
 
 	/* événement Changement de Level*/
 	iTmp = 0;
-	for (i = 0; i < 2; i++)
-	{
-		x = pRect->x + i*pRect->w;
-		for (j = 0; j < 2; j++)
-		{
-			y = pRect->y + j*pRect->h;
-			iTilesID = Kr_Level_GetTile(pLevel, x, y);
-			if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel && iTilesID != -1) // Le tile est-il un Tile pour changer de level ?
-			{
-				iTmp++;
-			}
-		}		
-	}
-	if (iTmp >= 2)
-	{
-		return 1; //On considère qu'on change de level
-	}
+	// Calcule des coordonnées du milieu du rectangle
+	x = pRect->x + pRect->w / 2;
+	y = pRect->y + pRect->h / 2;
+	iTilesID = Kr_Level_GetTile(pLevel, x, y);
+	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel && iTilesID != -1) return 1;// Le tile est-il un Tile pour changer de level ?
+
 
 	/* Autre événement */
 
@@ -379,13 +369,13 @@ Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
 	// Obtenir les numéros des tiles
 	if ((x >= (pLevel->iLevel_TileWidth * pLevel->pLevel_Tileset->iTilesWidth)) || (y >= (pLevel->iLevel_TileHeight * pLevel->pLevel_Tileset->iTilesHeight)))
 	{
-		Kr_Log_Print(KR_LOG_WARNING, "GetTile : Out of level X: %d, Y: %d!!! \n",x,y);
+		//Kr_Log_Print(KR_LOG_WARNING, "GetTile : Out of level X: %d, Y: %d!!! \n",x,y);
 		return iTilesID = -1;
 	}
 	iNumTilesX = x / pLevel->pLevel_Tileset->iTilesWidth;
 	iNumTilesY = y / pLevel->pLevel_Tileset->iTilesHeight;
 	iTilesID = pLevel->szLayout[iNumTilesX][iNumTilesY];
-	Kr_Log_Print(KR_LOG_INFO, "Tiles %d   |  X: %d   Y: %d  |   PorteLEvel : %d \n", iTilesID,x,y, pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel);
+	//Kr_Log_Print(KR_LOG_INFO, "Tiles %d   |  X: %d   Y: %d  |   PorteLEvel : %d \n", iTilesID,x,y, pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel);
 	return iTilesID;
 }
 
@@ -402,6 +392,7 @@ Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
 */
 Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Renderer *pRenderer)
 {
+	Kr_Level_Free(pCurrentLevel);
 	Kr_Level *pNewLevel = Kr_Level_Init(szLevelName);
 	if (!Kr_Level_Load(pNewLevel, pRenderer))
 	{

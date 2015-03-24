@@ -28,7 +28,7 @@
 
 #define MOVESPEED 10
 
-SDL_Renderer *gpRenderer = NULL;
+
 
 void UpdatePlayerVector(Kr_Input inEvent, Kr_Level *pLevel, SDL_Rect *pPlayer);
 void GetVector(Kr_Input inEvent, Sint32 *vx, Sint32 *vy);
@@ -71,8 +71,8 @@ int main(int argc, char** argv)
 		return FALSE;
 	}
 	/* Création du renderer */
-	gpRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
-	if (gpRenderer == NULL)
+	SDL_Renderer *pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
+	if (pRenderer == NULL)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Renderer", SDL_GetError());
 		SDL_Quit();
@@ -91,10 +91,10 @@ int main(int argc, char** argv)
 	
 	rectPositionImage.x = 0; 
 	rectPositionImage.y = 0;
-	rectPositionImage.w = 24; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
-	rectPositionImage.h = 24;
+	rectPositionImage.w = 20; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
+	rectPositionImage.h = 20;
 
-	pBackground         = UTIL_LoadTexture("Personnage.jpg", NULL, NULL);
+	pBackground         = UTIL_LoadTexture(pRenderer,"Personnage.jpg", NULL, NULL);
 	if (pBackground == NULL)
 	{
 		exit(EXIT_FAILURE);
@@ -139,7 +139,7 @@ int main(int argc, char** argv)
 		if (bChangeLevel == TRUE)
 		{
 			bChangeLevel = FALSE;
-			pCurrentLevel = Kr_Level_Change(pCurrentLevel, szNewLevel, gpRenderer);
+			pCurrentLevel = Kr_Level_Change(pCurrentLevel, szNewLevel, pRenderer);
 		}
 
 
@@ -151,13 +151,8 @@ int main(int argc, char** argv)
 		{
 			rectPositionImage.x = inEvent.iMouseX;
 			rectPositionImage.y = inEvent.iMouseY;
-			Kr_Log_Print(KR_LOG_ERROR, "CLIQUE GAUCHE : %d %d \n", inEvent.iMouseX, inEvent.iMouseY);
+			Kr_Log_Print(KR_LOG_INFO, "CLIQUE GAUCHE : %d %d \n", inEvent.iMouseX, inEvent.iMouseY);
 			inEvent.szMouseButtons[0] = 0; // Un seul clique, si je ne met pas ça, le son sera joué en boucle. La l'utilisateur va devoir relever son doigt
-		}
-		if (inEvent.szMouseButtons[1])
-		{
-			Kr_Log_Print(KR_LOG_INFO, "CLIQUE MOLETTE\n");
-			inEvent.szMouseButtons[1] = 0; // Un seul clique
 		}
 		if (inEvent.szMouseButtons[2])
 		{
@@ -171,18 +166,6 @@ int main(int argc, char** argv)
 			Kr_Log_Print(KR_LOG_INFO, "\n");
 			//Kr_Level_GetTile(pCurrentLevel, inEvent.iMouseX, inEvent.iMouseY);
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
-		}
-		if (inEvent.szKey[SDL_SCANCODE_P])
-		{
-			inEvent.szKey[SDL_SCANCODE_P] = 0; // Un seul clique, comme pour la souris
-			if(Mix_PausedMusic()) // Si le son est en pause
-			{ 
-				Mix_ResumeMusic(); // On le relance
-			}
-			else
-			{
-				Mix_PauseMusic();//Sinon je le met en pause
-			}
 		}
 		if (inEvent.szKey[SDL_SCANCODE_KP_1])
 		{
@@ -214,12 +197,9 @@ int main(int argc, char** argv)
 		
 		/* ========================================================================= */
 		/*                                  DIVERS                                   */
-		/* ========================================================================= */
+		/* ========================================================================= */		
 		
-
-		
-		
-		pTextureText = Kr_Text_FontCreateTexture(gpRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
+		pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
 		iCount += 1;
 		sprintf(szCompteur, "Cursor : X : %d Y : %d   %s", inEvent.iMouseX, inEvent.iMouseY,pCurrentLevel->szLevelName);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
 
@@ -228,12 +208,12 @@ int main(int argc, char** argv)
 		/*                                  RENDER                                   */
 		/* ========================================================================= */
 		// Ici on gère l'affichage des surfaces
-		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
+		SDL_RenderClear(pRenderer); // Dans un premier temps on Clear le renderer
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
-		Kr_Level_Draw(gpRenderer, pCurrentLevel);
-		SDL_RenderCopy(gpRenderer, pBackground, NULL, &rectPositionImage); // En arrière plan
-		SDL_RenderCopy(gpRenderer, pTextureText, NULL, &textPosition); // En avant plan de la texture précédente
-		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
+		Kr_Level_Draw(pRenderer, pCurrentLevel);
+		SDL_RenderCopy(pRenderer, pBackground, NULL, &rectPositionImage); // En arrière plan
+		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition); // En avant plan de la texture précédente
+		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
 	}
 
@@ -243,7 +223,7 @@ int main(int argc, char** argv)
 
 	UTIL_FreeTexture(&pBackground);		// Libération mémoire de la texture 
 	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
-	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
+	SDL_DestroyRenderer(pRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
 	Kr_Level_Free(pCurrentLevel);

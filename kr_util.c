@@ -11,6 +11,8 @@
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Creation.                                    */
 /* Herrou        | 18/03/2015 | Suppression UTIL_BuildPath                   */
+/* Herrou        | 24/03/2015 | MAJ LoadTexture, le renderer n'est plus une  */
+/*				 |            | var global, il est mit en paramètre          */
 /*               |            |                                              */
 /* ========================================================================= */
 #include "kr_util.h"
@@ -91,7 +93,7 @@ void UTIL_CloseFile( FILE **ppFile )
  *  \return A pointer on the loaded texture, or NULL if error.
  */
 
-SDL_Texture* UTIL_LoadTexture( const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize )
+SDL_Texture* UTIL_LoadTexture(SDL_Renderer *pRenderer, const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize )
 {
     Uint32       iColorKey;
     SDL_Texture *pTexture;
@@ -119,7 +121,7 @@ SDL_Texture* UTIL_LoadTexture( const char *szPath, SDL_Color *pTransColor, SDL_R
             pTextureSize->h = pSurface->h;
         }
 
-		pTexture = SDL_CreateTextureFromSurface(gpRenderer, pSurface);
+		pTexture = SDL_CreateTextureFromSurface(pRenderer, pSurface);
         
         if( pTexture == NULL )
         {
