@@ -84,7 +84,6 @@ int main(int argc, char** argv)
 	/* ========================================================================= */
 
 	/* Préparation d'une image que l'on souhaitera afficher via kr_util*/
-	SDL_Texture  *pTextureZelda;
 	Kr_Sprite	 *pSpriteZelda = NULL;
 	Entity		 *pZelda = NULL;
 	SDL_Rect     rectPositionImage;
@@ -97,11 +96,21 @@ int main(int argc, char** argv)
 	rectPositionImage.h = 32;
 
 	/* Chargement du personnage */
-	pTextureZelda = UTIL_LoadTexture("zelda_s.png", NULL, &rectPositionImage);
 	pSpriteZelda = init_Sprite();
-	load_Sprite(pSpriteZelda, "zelda_s", pTextureZelda, 26, 240, 8, &rectPositionImage );
+
+	if ( load_Sprite(pSpriteZelda, "zelda", 26, 240, 8, &rectPositionImage) == FALSE ){
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+
 	pZelda	= init_Entity();
-	load_Entity(pZelda, "zelda", 100, 50, pSpriteZelda);
+
+	if( load_Entity(pZelda, "zelda", 100, 50, pSpriteZelda) == FALSE ){
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
 
 	
 
@@ -157,7 +166,12 @@ int main(int argc, char** argv)
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
 		}
 		
-		updatePlayerVector(inEvent, pMonLevel, pZelda, &tempoAnim);
+		if (updatePlayerVector(inEvent, pMonLevel, pZelda, &tempoAnim) == FALSE){
+			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update player vector\n");
+			SDL_Quit();
+			return FALSE;
+		}
+		Kr_Log_Print(KR_LOG_INFO, "Player vector has been updated\n");
 
 		if (inEvent.szKey[SDL_SCANCODE_P])
 		{

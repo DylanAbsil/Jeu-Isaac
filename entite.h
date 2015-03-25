@@ -18,6 +18,7 @@
 #include "kr_sprite.h"
 #include "kr_input.h"
 #include "kr_level.h"
+#include "kr_log.h"
 
 
 /*!
@@ -79,12 +80,12 @@ typedef struct {
 }Entity;
 
 Entity * init_Entity();
-void load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
+Boolean load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
 void free_Entity(Entity *entite);
-void draw_Entity(SDL_Renderer *pRenderer, Entity *entite);
+Boolean draw_Entity(SDL_Renderer *pRenderer, Entity *entite);
 
 
 Direction foundDirection(Sint32 vx, Sint32 vy);
 
 void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
-void updatePlayerVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim);
+Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim);

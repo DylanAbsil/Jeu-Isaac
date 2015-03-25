@@ -50,18 +50,25 @@ Entity * init_Entity(){
 *  \param life his life with an integer
 *  \param armor his armor with an integer
 *  \param sprite a pointer to the sprite of the entity
-*  \return none
+*  \return boolean verify if the load is correct or no
 */
-void load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite){
+Boolean load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite){
 	entite->strEntityName = name;
 	entite->iEntityLife = life;
 	entite->iArmor = armor;
 	entite->pSprEntity = sprite;
+	if (sprite == NULL){
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s in the entity %s !\n", sprite->strName, name);
+		return FALSE;
+	}
 	entite->state = normal;
 	entite->iCoordXEntity = sprite->pRectPosition->x;
 	entite->iCoordYEntity = sprite->pRectPosition->y;
 	entite->direction = sud;
 	entite->mouvement = 0;
+
+	Kr_Log_Print(KR_LOG_INFO, "Entity %s with sprite %s has been loaded !\n", entite->strEntityName, entite->pSprEntity->strName);
+	return TRUE;
 }
 //Rajouter le load d'une arme plus tard ou utiliser une fonction differente
 
@@ -73,16 +80,27 @@ void load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Spri
 *
 *  \param  pRenderer
 *  \param  entite
-*  \return none
+*  \return boolean if the entite has been draw on the screen or not
 */
-void draw_Entity(SDL_Renderer * pRenderer, Entity *entite){
+Boolean draw_Entity(SDL_Renderer * pRenderer, Entity *entite){
 	SDL_Rect frameToDraw;
 	int largeur = entite->pSprEntity->iFrameWidth / entite->pSprEntity->iNbFrames;
+	if ((largeur < 0) | (entite == NULL)){
+		Kr_Log_Print(KR_LOG_ERROR, "Impossible to access to the entity\n");
+		return FALSE;
+	}
 	frameToDraw.x = (entite->pSprEntity->iCurrentFrame) * largeur;
 	frameToDraw.y = 0;
 	frameToDraw.h = entite->pSprEntity->iFrameHeight;
 	frameToDraw.w = largeur;
-	SDL_RenderCopy(pRenderer, entite->pSprEntity->pTextureSprite, &frameToDraw, entite->pSprEntity->pRectPosition);
+	Kr_Log_Print(KR_LOG_INFO, "Frame : { x = %d ; y = %d ; h = %d ; w = %d }\n", frameToDraw.x, frameToDraw.y, frameToDraw.h, frameToDraw.w);
+	if (SDL_RenderCopy(pRenderer, entite->pSprEntity->pTextureSprite, &frameToDraw, entite->pSprEntity->pRectPosition) == -1){
+		Kr_Log_Print(KR_LOG_ERROR, "The entity %s hasn't been draw on the window\n", entite->strEntityName);
+		return FALSE;
+	}
+	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window\n", entite->strEntityName);
+	return TRUE;
+
 }
 
 
@@ -121,9 +139,9 @@ void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy){
 Direction foundDirection(Sint32 vx, Sint32 vy){
 	Direction newDir;
 	if (vy > 0)
-		newDir = nord;
-	if (vy < 0)
 		newDir = sud;
+	if (vy < 0)
+		newDir = nord;
 	if (vx > 0)
 		newDir = est;
 	if (vx < 0)
@@ -141,78 +159,88 @@ Direction foundDirection(Sint32 vx, Sint32 vy){
 *  \param  pLevel  a pointer to the Level
 *  \param  pPlayer  a pointer to the player
 *  \param tempoAnim a int to make a teporosation of the animation
-*  \return none
+*  \return Boolean true if the vector has been updated false either
 */
-void updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, int *tempoAnim){
+Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, int *tempoAnim){
 	Sint32 vx, vy;
+
 	// Nouveau sprite potentiel suivant la direction
 	char newSprFileName[SIZE_MAX_NAME];
-	strcpy_s(newSprFileName, SIZE_MAX_NAME, entite->strEntityName);
-	
+
 	//Obtention des déplacements générés par le clavier
 	getVector(myEvent, &vx, &vy);
+	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
 
 	//Gestion des collisions
 	//Kr_Collision_Move(pLevel, pPlayer, vx, vy);
 
 	// Changement de l'animation
-	if ((vx & vy) == 0){
+	if ( (vx == 0) && (vy ==0) ){
 		entite->mouvement = 0;
 		entite->pSprEntity->iCurrentFrame = 0;
 		*tempoAnim = 0;
+		Kr_Log_Print(KR_LOG_INFO, " the entity %s hasn't moved\n", entite->strEntityName);
+		return TRUE;
 	}
 	else{
 		entite->mouvement = 1;
 		*tempoAnim += 1;
+		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
 		if (*tempoAnim == RESET_FRAME){
 			entite->pSprEntity->iCurrentFrame += 1;
 			if (entite->pSprEntity->iCurrentFrame == 8)
 				entite->pSprEntity->iCurrentFrame = 0;
+			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
 			Direction newDir = foundDirection(vx, vy);
+			Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
 			switch (newDir){
 			case nord:
 				if (entite->direction != nord){
 					entite->direction = nord;
-					strcat_s(newSprFileName, SIZE_MAX_NAME, "_n");
+					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "nord");
 					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture("zelda_n.png", NULL, entite->pSprEntity->pRectPosition);
+					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, entite->pSprEntity->pRectPosition);
 				}
 				break;
 			case sud:
 				if (entite->direction != sud){
 					entite->direction = sud;
-					strcat_s(newSprFileName, SIZE_MAX_NAME, "_s");
+					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "sud");
 					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture("zelda_s.png", NULL, entite->pSprEntity->pRectPosition);
+					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, entite->pSprEntity->pRectPosition);
 				}
 				break;
 			case ouest:
 				if (entite->direction != ouest){
 					entite->direction = ouest;
-					strcat_s(newSprFileName, SIZE_MAX_NAME, "_o");
+					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "ouest");
 					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture("zelda_o.png", NULL, entite->pSprEntity->pRectPosition);
+					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, entite->pSprEntity->pRectPosition);
 				}
 				break;
 			case est:
 				if (entite->direction != est){
 					entite->direction = est;
-					strcat_s(newSprFileName, SIZE_MAX_NAME, "_e");
+					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "est");
 					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture("zelda_e.png", NULL, entite->pSprEntity->pRectPosition);
+					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, entite->pSprEntity->pRectPosition);
 				}
 				break;
 			default:
 				break;
 			}
+			Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 			*tempoAnim = 0;
+			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
 		}
+		//Deplacement final prévu
+		entite->iCoordXEntity += vx;
+		entite->iCoordYEntity += vy;
+		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\n", entite->strEntityName, vx, vy);
+		return TRUE;
 	}
 
 
-	//Deplacement final prévu
-	entite->iCoordXEntity += vx;
-	entite->iCoordYEntity += vy;
 	
 	
 }

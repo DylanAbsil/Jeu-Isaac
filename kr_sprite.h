@@ -14,6 +14,7 @@
 /* ========================================================================= */
 
 #include "kr_util.h"
+#include "kr_log.h"
 
 typedef struct {
 	char		*strName;			/* Name of the sprite (contenant la direction ex : zelda_sud) */
@@ -27,5 +28,5 @@ typedef struct {
 
 
 Kr_Sprite * init_Sprite();
-void load_Sprite(Kr_Sprite *sprite, char *name, SDL_Texture *pTexture, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectposition);
+Boolean load_Sprite(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectposition);
 void free_Sprite(Kr_Sprite *pSprite);
