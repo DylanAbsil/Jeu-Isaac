@@ -115,8 +115,8 @@ SDL_Texture* UTIL_LoadTexture( const char *szPath, SDL_Color *pTransColor, SDL_R
 
         if( pTextureSize )
         {
-			pSurface->w = pTextureSize->w;
-			pSurface->h = pTextureSize->h;
+			pTextureSize->w = pSurface->w;
+			pTextureSize->h = pSurface->h ;
         }
 
 		pTexture = SDL_CreateTextureFromSurface(gpRenderer, pSurface);

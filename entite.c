@@ -85,7 +85,8 @@ Boolean load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_S
 Boolean draw_Entity(SDL_Renderer * pRenderer, Entity *entite){
 	SDL_Rect frameToDraw;
 	int largeur = entite->pSprEntity->iFrameWidth / entite->pSprEntity->iNbFrames;
-	if ((largeur < 0) | (entite == NULL)){
+
+	if ((largeur < 0) || (entite == NULL)){
 		Kr_Log_Print(KR_LOG_ERROR, "Impossible to access to the entity\n");
 		return FALSE;
 	}
@@ -188,26 +189,28 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, i
 		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
 		if (*tempoAnim == RESET_FRAME){
 			entite->pSprEntity->iCurrentFrame += 1;
-			if (entite->pSprEntity->iCurrentFrame == 8)
+			if (entite->pSprEntity->iCurrentFrame == entite->pSprEntity->iNbFrames)
 				entite->pSprEntity->iCurrentFrame = 0;
 			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
+			
 			Direction newDir = foundDirection(vx, vy);
 			Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
+
 			switch (newDir){
 			case nord:
 				if (entite->direction != nord){
 					entite->direction = nord;
 					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "nord");
 					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, entite->pSprEntity->pRectPosition);
-				}
+					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, NULL);
+					}
 				break;
 			case sud:
 				if (entite->direction != sud){
 					entite->direction = sud;
 					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "sud");
 					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, entite->pSprEntity->pRectPosition);
+					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, NULL);
 				}
 				break;
 			case ouest:
@@ -215,7 +218,7 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, i
 					entite->direction = ouest;
 					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "ouest");
 					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, entite->pSprEntity->pRectPosition);
+					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, NULL);
 				}
 				break;
 			case est:
@@ -223,20 +226,26 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, i
 					entite->direction = est;
 					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "est");
 					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, entite->pSprEntity->pRectPosition);
+					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(newSprFileName, NULL, NULL);
 				}
 				break;
 			default:
 				break;
 			}
+			entite->pSprEntity->strName = newSprFileName;
+			Kr_Log_Print(KR_LOG_INFO, "Sprite %s has been loaded\n", entite->pSprEntity->strName);
 			Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
+
 			*tempoAnim = 0;
+
 			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
 		}
 		//Deplacement final prévu
 		entite->iCoordXEntity += vx;
 		entite->iCoordYEntity += vy;
-		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\n", entite->strEntityName, vx, vy);
+		entite->pSprEntity->pRectPosition->x += vx;
+		entite->pSprEntity->pRectPosition->y += vy;
+		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", entite->strEntityName, vx, vy, entite->iCoordXEntity, entite->iCoordYEntity);
 		return TRUE;
 	}
 

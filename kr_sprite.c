@@ -36,7 +36,7 @@ Boolean load_Sprite(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 fr
 
 	sprintf(newSprFileName, "sprites/%s_sud.png", name);
 
-	pSpriteEntite = UTIL_LoadTexture(newSprFileName, NULL, pRectPosition);
+	pSpriteEntite = UTIL_LoadTexture(newSprFileName, NULL, NULL);
 	if (pSpriteEntite == NULL){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the texture associate !\n", name);
 		return FALSE;
