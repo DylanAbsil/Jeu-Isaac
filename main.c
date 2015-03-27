@@ -83,30 +83,52 @@ int main(int argc, char** argv)
 	/*                                  PRECACHE                                 */
 	/* ========================================================================= */
 
-	/* Préparation d'une image que l'on souhaitera afficher via kr_util*/
+	/* Préparation d'images que l'on souhaitera afficher */
 	Kr_Sprite	 *pSpriteZelda = NULL;
+	Kr_Sprite	 *pSpriteMonstre = NULL;
 	Entity		 *pZelda = NULL;
-	SDL_Rect     rectPositionImage;
+	Entity		 *pMonstre = NULL;
+	SDL_Rect     rectPositionZelda;
+	SDL_Rect     rectPositionMonstre;
 	Uint32		 tempoAnim = 0;
-	Uint32		 resetFrame = 0;
+	Uint32		 tempoAnim2 = 0;
 
-	rectPositionImage.x = 0; 
-	rectPositionImage.y = 0;
-	rectPositionImage.w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
-	rectPositionImage.h = 32;
+	rectPositionZelda.x = 0; 
+	rectPositionZelda.y = 0;
+	rectPositionZelda.w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
+	rectPositionZelda.h = 32;
 
-	/* Chargement du personnage */
-	pSpriteZelda = init_Sprite();
+	rectPositionMonstre.x = 0;
+	rectPositionMonstre.y = 0;
+	rectPositionMonstre.h = 120;
+	rectPositionMonstre.w = 120;
 
-	if ( load_Sprite(pSpriteZelda, "zelda", 26, 240, 8, &rectPositionImage) == FALSE ){
+	/* Chargement des sprites */
+	pSpriteZelda = init_Sprite();			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
+	pSpriteMonstre = init_Sprite();
+
+	if ( load_Sprite(pSpriteZelda, "zelda", 26, 240, 8, &rectPositionZelda) == FALSE ){		
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	if (load_Sprite(pSpriteMonstre, "dragon", 64, 420, 8, &rectPositionMonstre) == FALSE){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
 
-	pZelda	= init_Entity();
+	/* Chargement des personnages */
+	pZelda = init_Entity();				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
+	pMonstre = init_Entity();
+	
+	if( load_Entity(pZelda, "zelda", 100, 50, pSpriteZelda) == FALSE ){		
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
 
-	if( load_Entity(pZelda, "zelda", 100, 50, pSpriteZelda) == FALSE ){
+	if (load_Entity(pMonstre, "dragon", 200, 10, pSpriteMonstre) == FALSE){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
@@ -137,7 +159,7 @@ int main(int argc, char** argv)
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
 		exit(EXIT_FAILURE);
 	}
-	Kr_Level_Focus(pMonLevel, &rectPositionImage, &rLimitation);
+	Kr_Level_Focus(pMonLevel, &rectPositionZelda, &rLimitation);
 
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
@@ -147,9 +169,9 @@ int main(int argc, char** argv)
 	while (!inEvent.szKey[SDL_SCANCODE_ESCAPE] && !inEvent.bQuit)
 	{
 		
-		UpdateEvents(&inEvent);
+		UpdateEvents(&inEvent);					//chargement du nouvel evenements dans la variable inevent
 		
-
+		/*Gestion des evenement de la souris */
 		if (inEvent.szMouseButtons[0])
 		{
 			Kr_Log_Print(KR_LOG_INFO, "CLIQUE GAUCHE\n");
@@ -166,7 +188,15 @@ int main(int argc, char** argv)
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
 		}
 		
-		if (updatePlayerVector(inEvent, pMonLevel, pZelda, &tempoAnim) == FALSE){
+		/*Gestion des evenements clavier*/
+		if (updateEntityVector(inEvent, pMonLevel, pZelda, &tempoAnim) == FALSE){				//Update la position et l'animation du perso principal
+			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update player vector\n");
+			SDL_Quit();
+			return FALSE;
+		}
+		Kr_Log_Print(KR_LOG_INFO, "Player vector has been updated\n");
+
+		if (updateMonstreVector(inEvent, pMonLevel, pMonstre, &tempoAnim2) == FALSE){				//Update la position et l'animation du perso principal
 			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update player vector\n");
 			SDL_Quit();
 			return FALSE;
@@ -207,19 +237,25 @@ int main(int argc, char** argv)
 		/*                                  DIVERS                                   */
 		/* ========================================================================= */
 
+		/* Autres évenements à gérer */
 
 
 		/* ========================================================================= */
 		/*                                  RENDER                                   */
 		/* ========================================================================= */
+
 		// Ici on gère l'affichage des surfaces
 		SDL_RenderClear(gpRenderer); // Dans un premier temps on Clear le renderer
+		
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
-		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);		
-		draw_Entity(gpRenderer, pZelda); // En arrière plan
-		SDL_RenderCopy(gpRenderer, pLimitation, NULL, pMonLevel->rLimitation);
+		
+		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);				//Affichage du level	
+		draw_Entity(gpRenderer, pZelda);							//Affichage du perso principale
+		draw_Entity(gpRenderer, pMonstre);
+
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 	}
+	//Fin de la boucle d'affichage puis fin du programme
 
 	/* ========================================================================= */
 	/*                            LIBERATION MEMOIRE                             */
@@ -229,7 +265,9 @@ int main(int argc, char** argv)
 	UTIL_FreeTexture(&pLimitation);		// Libération mémoire de la texture 
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
-	Kr_Level_Free(pMonLevel);
+	Kr_Level_Free(pMonLevel);			// Libération mémoire du niveau
+	free_Entity(pZelda);				// Libération mémoire du zelda
+	free_Entity(pMonstre);
 	Mix_CloseAudio();	// On quitte SDL_MIXER
 	TTF_Quit();			// On quitte SDL_TTF
 	SDL_Quit();			// On quitte SDL

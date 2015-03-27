@@ -88,4 +88,6 @@ Boolean draw_Entity(SDL_Renderer *pRenderer, Entity *entite);
 Direction foundDirection(Sint32 vx, Sint32 vy);
 
 void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
-Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim);
+void getVectorD(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
+Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim);
+Boolean updateMonstreVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim);
