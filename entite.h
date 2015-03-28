@@ -14,6 +14,8 @@
 /*               |            |                                              */
 /* ========================================================================= */
 
+#ifndef __ENTITE_H__
+#define __ENTITE_H__
 
 #include "kr_sprite.h"
 #include "kr_input.h"
@@ -31,7 +33,7 @@ typedef enum {
 	slowed,
 	feared,
 	poisoned,
-}EntityState;
+}Entity_state;
 
 /*!
 * \enum EntityType
@@ -43,7 +45,7 @@ typedef enum {
 	small_monster,
 	boss,
 	pnj,
-}EntityType;
+}Entity_type;
 
 /*!
  * \enum Direction
@@ -54,7 +56,7 @@ typedef enum {
 	est,
 	sud,
 	ouest,
-}Direction;
+}Entity_direction;
 
 
 typedef struct {
@@ -79,28 +81,30 @@ typedef struct {
 
 typedef struct {
 	char	*strEntityName;		/* Name of the entity */
-	EntityType type;			/* Type of the entity */
+	Entity_type type;			/* Type of the entity */
 	Uint32	iEntityLife;		/* Life of the entity */
 	Uint32	iArmor;				/* Armor of the entity */
 	Weapon	wpnName;
 	Kr_Sprite	*pSprEntity;	/* Pointer to his sprite */
-	EntityState	state;
+	Entity_state	state;
 	Sint32	iCoordXEntity;
 	Sint32	iCoordYEntity;
 	Uint32	iSpeedEntity;
-	Direction direction;		/* Direction : nord, est, sud, ouest */
+	Entity_direction direction;		/* Direction : nord, est, sud, ouest */
 	Boolean mouvement;			/* Mouvement : 0 static, 1 in movement */
 }Entity;
 
-Entity * init_Entity();
-Boolean load_Entity(Entity *entite, char * name, EntityType type, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
-void free_Entity(Entity *entite);
-Boolean draw_Entity(SDL_Renderer *pRenderer, Entity *entite);
+Entity * Entity_init();
+Boolean Entity_load(Entity *entite, char * name, Entity_type type, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
+void Entity_free(Entity *entite);
+Boolean Entity_draw(SDL_Renderer *pRenderer, Entity *entite);
 
 
-Direction foundDirection(Sint32 vx, Sint32 vy);
+Entity_direction foundDirection(Sint32 vx, Sint32 vy);
 void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy);
 
 void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
 
 Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim);
+
+#endif /* __KR_ENTITE_H__ */

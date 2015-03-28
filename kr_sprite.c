@@ -18,7 +18,7 @@
 #include "kr_sprite.h"
 
 /*!
-*  \fn     Kr_Sprite * init_Sprite()
+*  \fn     Kr_Sprite * Sprite_init()
 *  \brief  Function to init a sprite
 *
 *  \todo   use this function at first to create a sprite then load
@@ -26,7 +26,7 @@
 *  \param  none
 *  \return Kr_Sprite* a pointer to the empty created entity
 */
-Kr_Sprite * init_Sprite(){
+Kr_Sprite * Sprite_init(){
 	Kr_Sprite * pSprite = UTIL_Malloc(sizeof(Kr_Sprite));		//allocation mémoire
 	pSprite->strName = "Nom indefini";
 	pSprite->pTextureSprite = NULL;
@@ -39,7 +39,7 @@ Kr_Sprite * init_Sprite(){
 }
 
 /*!
-*  \fn     void load_Sprite(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition)
+*  \fn     void Sprite_load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition)
 *  \brief  Function to load the sprite
 *
 *  \todo   use this function after the sprite had been inited
@@ -52,7 +52,7 @@ Kr_Sprite * init_Sprite(){
 *  \param *pRectPosition	the position and the size visible on the screen
 *  \return boolean it verify if the load is correct or not
 */
-Boolean load_Sprite(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition){
+Boolean Sprite_load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition){
 	// Creation d'un nouveau sprite et d'une nouvelle texture juste a partir du nom
 	SDL_Texture *pSpriteEntite = NULL;
 	char newSprFileName[SIZE_MAX_NAME];
@@ -81,7 +81,7 @@ Boolean load_Sprite(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 fr
 	return TRUE;
 }
 
-void free_Sprite(Kr_Sprite *pSprite){
+void Sprite_free(Kr_Sprite *pSprite){
 	UTIL_FreeTexture(&pSprite->pTextureSprite);
 	free(pSprite);
 }

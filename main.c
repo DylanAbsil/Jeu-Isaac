@@ -104,31 +104,31 @@ int main(int argc, char** argv)
 	rectPositionMonstre.w = 120;
 
 	/* Chargement des sprites */
-	pSpriteZelda = init_Sprite();			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
-	pSpriteMonstre = init_Sprite();
+	pSpriteZelda = Sprite_init();			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
+	pSpriteMonstre = Sprite_init();
 
-	if ( load_Sprite(pSpriteZelda, "zelda", 26, 240, 8, &rectPositionZelda) == FALSE ){		
+	if ( Sprite_load(pSpriteZelda, "zelda", 26, 240, 8, &rectPositionZelda) == FALSE ){		
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
-	if (load_Sprite(pSpriteMonstre, "dragon", 64, 420, 8, &rectPositionMonstre) == FALSE){
+	if (Sprite_load(pSpriteMonstre, "dragon", 64, 420, 8, &rectPositionMonstre) == FALSE){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
 
 	/* Chargement des personnages */
-	pZelda = init_Entity();				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
-	pMonstre = init_Entity();
+	pZelda = Entity_init();				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
+	pMonstre = Entity_init();
 	
-	if( load_Entity(pZelda, "zelda", player, 100, 50, pSpriteZelda) == FALSE ){		
+	if( Entity_load(pZelda, "zelda", player, 100, 50, pSpriteZelda) == FALSE ){		
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
 
-	if (load_Entity(pMonstre, "dragon", boss, 200, 10, pSpriteMonstre) == FALSE){
+	if (Entity_load(pMonstre, "dragon", boss, 200, 10, pSpriteMonstre) == FALSE){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
@@ -245,7 +245,7 @@ int main(int argc, char** argv)
 		
 		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);				//Affichage du level	
 		//draw_Entity(gpRenderer, pZelda);							//Affichage du perso principale
-		draw_Entity(gpRenderer, pMonstre);
+		Entity_draw(gpRenderer, pMonstre);
 
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 	}
@@ -260,8 +260,8 @@ int main(int argc, char** argv)
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
 	Kr_Level_Free(pMonLevel);			// Libération mémoire du niveau
-	free_Entity(pZelda);				// Libération mémoire du zelda
-	free_Entity(pMonstre);
+	Entity_free(pZelda);				// Libération mémoire du zelda
+	Entity_free(pMonstre);
 	Mix_CloseAudio();	// On quitte SDL_MIXER
 	TTF_Quit();			// On quitte SDL_TTF
 	SDL_Quit();			// On quitte SDL

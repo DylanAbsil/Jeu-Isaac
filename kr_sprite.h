@@ -27,6 +27,6 @@ typedef struct {
 }Kr_Sprite;
 
 
-Kr_Sprite * init_Sprite();
-Boolean load_Sprite(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectposition);
-void free_Sprite(Kr_Sprite *pSprite);
+Kr_Sprite * Sprite_init();
+Boolean Sprite_load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectposition);
+void Sprite_free(Kr_Sprite *pSprite);
