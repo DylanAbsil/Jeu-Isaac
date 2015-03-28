@@ -23,7 +23,7 @@
 /* ===============================================================================================================  */
 
 /*
-Commentaire : 
+Commentaire :
 
 
 */
@@ -32,13 +32,13 @@ Commentaire :
 #define CACHE_SIZE 15000
 
 /*!
-*  \fn     Kr_Tileset *Kr_Level_Init(const char *szFileName)
+*  \fn     Kr_Tileset *Kr_Level_Init(char *szFileName)
 *  \brief  Function to load initialize a Level thanks to the level file
 *
 *  \param  szFileName the name of the level file
 *  \return the initialize structure
 */
-Kr_Level *Kr_Level_Init(const char *szFileName)
+Kr_Level *Kr_Level_Init(char *szFileName)
 {
 	Kr_Level *pLevel = NULL;
 	pLevel = (Kr_Level *)UTIL_Malloc(sizeof(Kr_Level));
@@ -87,8 +87,8 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 		fgets(szBuf, CACHE_SIZE, pFile);
 		if (strstr(szBuf, "#tileset")) // Identification de la ligne tileset
 		{
-			fscanf(pFile, "%s",szBuf2); // Lecture de la ligne suivante qui indique le fichier .tls
-	
+			fscanf(pFile, "%s", szBuf2); // Lecture de la ligne suivante qui indique le fichier .tls
+
 			pLevel->pLevel_Tileset = Kr_Tileset_Init(szBuf2);
 			if (!Kr_Tileset_Load(pLevel->pLevel_Tileset, pRenderer))
 			{
@@ -157,7 +157,7 @@ Boolean Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile)
 	{
 		for (i = 0; i<pLevel->iLevel_TileWidth; i++)
 		{
-			fscanf(pFile, "%d", &iTmp); 
+			fscanf(pFile, "%d", &iTmp);
 			if (iTmp >= pLevel->pLevel_Tileset->iNbTilesX * pLevel->pLevel_Tileset->iNbTilesY) // On vérifie que le codage du tile existe
 			{
 				Kr_Log_Print(KR_LOG_ERROR, "Can't load a tile in the layout because it's out of the tileset file ");
@@ -200,7 +200,7 @@ void Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel)
 			else
 			{
 				iNumTile = pLevel->szLayout[i][j];
-				
+
 			}
 			SDL_RenderCopy(pRenderer, pLevel->pLevel_Tileset->pTextureTileset, &(pLevel->pLevel_Tileset->pTilesProp[iNumTile].rTile), &Rect_dest); // En arrière plan si la fonction Kr_Map_Draw est appelé au tout début
 		}
@@ -229,7 +229,7 @@ Uint32 Kr_Collision_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 v
 		return 1;
 	}
 	if (Kr_Collision_TryMove(pLevel, pRect1, vx, vy) == TRUE) return 2;
-	
+
 	Kr_Collision_Affine(pLevel, pRect1, vx, vy);
 	return 3;
 }
@@ -337,7 +337,7 @@ void Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 v
 */
 Uint32 Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
 {
-	Uint32 x, y, i,j, iTmp;
+	Uint32 x, y,iTmp;
 	Sint32 iTilesID;
 
 	/* événement Changement de Level*/

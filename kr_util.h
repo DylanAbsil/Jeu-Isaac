@@ -14,7 +14,7 @@
 /*               |            | Ajout des macro UTIL_ABS et UTIL_SGN         */
 /* Herrou        | 24/03/2015 | MAJ LoadTexture, le renderer n'est plus une  */
 /*				 |            | var global, il est mit en paramètre          */
-/*               |            |                                              */
+/*               |            | Add UTIL_SousChaine                          */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -34,7 +34,7 @@ extern SDL_Renderer *gpRenderer; // Renderer is a global var from main
     void*        UTIL_Malloc( size_t iSize );
     void*        UTIL_Realloc( void *pData, size_t iSize );
     char*        UTIL_CopyStr( const char *szSrc, size_t iSrcLen );
-
+	void		 UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, char *p_szExtrait);
 
     /*! Macro to free memory block. */
     #define      UTIL_Free(x) do { free( x ); x = NULL; } while( 0 )

@@ -10,7 +10,7 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 22/03/2015 | Creation.                                    */
-/*               |            |                                              */
+/*               |            | Ajout de Kr_GetNeighbor                      */
 /*               |            |                                              */
 /*               |            |                                              */
 /*               |            |                                              */
@@ -42,6 +42,7 @@ typedef struct
 Kr_Map *Kr_Map_Init(char *szMapFile);
 void	Kr_Map_Free(Kr_Map *pMap);
 void    Kr_Map_Log(Kr_Map *pMap);
+void	Kr_Map_GetNeighbor(Kr_Level *pLevel, Uint32 *iNumNord, Uint32 *iNumSud, Uint32 *iNumEst, Uint32 *iNumOuest);
 
 
 #endif /* __KR_MAP_H__ */

@@ -10,7 +10,7 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 22/03/2015 | Creation.                                    */
-/*               |            |                                              */
+/*               |            | Ajout de Kr_GetNeigbor                       */
 /*               |            |                                              */
 /*               |            |                                              */
 /*               |            |  TODO : strcspn compatible linux ?           */
@@ -98,3 +98,31 @@ void Kr_Map_Log(Kr_Map *pMap)
 	}
 }
 
+void Kr_Map_GetNeighbor(Kr_Level *pLevel, Uint32 *iNumNord, Uint32 *iNumSud, Uint32 *iNumEst, Uint32 *iNumOuest)
+{
+	char szLevelName[20];
+	char szTmp[20];
+	char *p_conv;
+	Sint32 iNumLevel = 0;
+	Uint32 iNameLenght = 0;
+
+	/* Déterminer le numéro du level */
+	// Tous les niveaux sont nommées levelX où X est le numéro du level
+	strcpy(szLevelName, pLevel->szLevelName);
+	iNameLenght = strlen(szLevelName);
+	UTIL_SousChaine(szLevelName, 4, iNameLenght, szTmp);
+	// Convertir avec strtol la chaine en chiffre 
+	iNumLevel = strtol(szTmp, &p_conv, 10); // Conversion en base 10
+	if (p_conv != NULL)
+	{
+		if (*p_conv == '\0') // La conversion à réussi
+		{
+			Kr_Log_Print(KR_LOG_INFO, "The current level '%s' is %d\n", szLevelName, iNumLevel);
+		}
+		else // La conversion à échoué
+		{
+			Kr_Log_Print(KR_LOG_INFO, "Can't convert the level name  '%s' to a integer, error is : %s\n ", szTmp, p_conv);
+			EXIT_FAILURE;
+		}
+	}
+}

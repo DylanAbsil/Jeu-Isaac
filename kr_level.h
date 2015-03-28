@@ -8,18 +8,19 @@
 */
 /* ========================================================================= */
 /* Developers    | Date       | Comments                                     */
-/* --------------+------------+--------------------------------------------- */
-/* Herrou        | 01/03/2015 | Création.                                    */
-/* Herrou        | 18/03/2015 | Suppression des fonctions sur le scrolling   */
-/*               |            | Mise à jour de la structure sans scrolling   */
-/*               |            | Define pour taille de la fenêtre             */
-/*               |            | Ajout fonction pour la gestion des collisions*/
-/* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32         */
+/* --------------+------------+---------------------------------------------------------------- */
+/* Herrou        | 01/03/2015 | Création.                                    					*/
+/* Herrou        | 18/03/2015 | Suppression des fonctions sur le scrolling   					*/
+/*               |            | Mise à jour de la structure sans scrolling   					*/
+/*               |            | Define pour taille de la fenêtre             					*/
+/*               |            | Ajout fonction pour la gestion des collisions					*/
+/* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32         					*/
 /* Herrou        | 22/03/2015 | Proto Kr_Level_GetBlock et Kr_Level_Event    
-/* Herrou        | 23/03/2015 | Renommer GetBlock en GetTile			     */
-/*               |            | Kr_Level_Event retourne un code selon l'event*/
-/* Herrou        | 24/03/2015 | MAJ Free, Add Change                         */
-/* ========================================================================= */
+/* Herrou        | 23/03/2015 | Renommer GetBlock en GetTile									*/
+/*               |            | Kr_Level_Event retourne un code selon l'event					*/
+/* Herrou        | 24/03/2015 | MAJ Free, Add Change											*/
+/*               |            | MAJ Structure Kr_Level, ajout des numéros des levels adjacents	*/
+/* ============================================================================================ */
 
 #ifndef __KR_LEVEL_H__
 #define __KR_LEVEL_H__
@@ -43,13 +44,17 @@ typedef struct
 	Sint32          iLevel_TileHeight;  /*!< Height of the level in Tile number */
 	Uint32        **szLayout;			/*!< 2D array of the level (unsigned char = 256 different tiles max */
 	Kr_Tileset     *pLevel_Tileset;		/*!< pointer to the tileset of this level */
+	Uint32          iNumNord;		    /*!< The numero of the level with which is connected to the north */
+	Uint32          iNumSud;		    /*!< The numero of the level with which is connected to the south */
+	Uint32          iNumEst;		    /*!< The numero of the level with which is connected to the east */
+	Uint32          iNumOuest;		    /*!< The numero of the level with which is connected to the west */
 
 }Kr_Level;
 
 
 
 
-Kr_Level *Kr_Level_Init(const char *szFileName);
+Kr_Level *Kr_Level_Init(char *szFileName);
 Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer);
 void	  Kr_Level_Free(Kr_Level *pLevel);
 Boolean	  Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile);
