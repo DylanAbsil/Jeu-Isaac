@@ -14,6 +14,7 @@
 /* Herrou        | 24/03/2015 | MAJ LoadTexture, le renderer n'est plus une  */
 /*				 |            | var global, il est mit en paramètre          */
 /*               |            | Add UTIL_SousChaine                          */
+/* Herrou        | 28/03/2015 | Correction UTIL_SousChaine  */
 /*               |            |                                              */
 /* ========================================================================= */
 #include "kr_util.h"
@@ -225,7 +226,7 @@ void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, ch
 {
 	Uint32 iLengthChaine = 0, i = 0, j = 0;
 	iLengthChaine = strlen(szChaine1);
-	if (iPosDebut<0 || iPosFin> iLengthChaine - 1 || iPosFin<iPosDebut) // Gestion des valeurs des positions
+	if (iPosDebut<0 || iPosFin<iLengthChaine || iPosFin<iPosDebut) // Gestion des valeurs des positions
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "UTIL_sousChaine : Can't extract the string, wrong position! \n");
 		p_szExtrait = NULL;
