@@ -39,7 +39,7 @@ Tant que les fonctions ne fonctionnent pas pour tout type de monstre on ne peut 
 #include "kr_level.h"
 
 /*!
-*  \fn     Entity * init_Entity()
+*  \fn     Entity * Entity_init()
 *  \brief  Function to init an entity
 *
 *  \todo   use this function at first to create an entity then load
@@ -47,7 +47,7 @@ Tant que les fonctions ne fonctionnent pas pour tout type de monstre on ne peut 
 *  \param  none
 *  \return Entity* a pointer to the empty created entity 
 */
-Entity * init_Entity(){
+Entity * Entity_init(){
 	Entity * entite = (Entity *)malloc(sizeof(Entity));
 	entite->strEntityName = "Nom indefini";
 	entite->pSprEntity = NULL;
@@ -59,7 +59,7 @@ Entity * init_Entity(){
 }
 
 /*!
-*  \fn     void load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite)
+*  \fn     void Entity_load(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite)
 *  \brief  Function to load the entity
 *
 *  \todo   use this function after the entity had been inited
@@ -71,7 +71,7 @@ Entity * init_Entity(){
 *  \param sprite a pointer to the sprite of the entity
 *  \return boolean it verify if the load is correct or not
 */
-Boolean load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite){
+Boolean Entity_load(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite){
 	entite->strEntityName = name;
 	entite->iEntityLife = life;
 	entite->iArmor = armor;
@@ -91,13 +91,20 @@ Boolean load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_S
 }
 //Rajouter le load d'une arme plus tard ou utiliser une fonction differente
 
-void free_Entity(Entity *entite){
+/*!
+*  \fn     void Entity_Free(Entity *entite)
+*  \brief  Function to freed an entity
+*
+*  \param  pEntity a pointer to the Entity to free
+*  \return none
+*/
+void Entity_Free(Entity *entite){
 	Kr_Sprite_Free(entite->pSprEntity);
 	UTIL_Free(entite);
 }
 
 /*!
-*  \fn     draw_Entite(SDL_Renderer * renderer, Entity entite)
+*  \fn     Entite_Draw(SDL_Renderer * renderer, Entity entite)
 *  \brief  Function to draw an entity
 *
 *  \todo   Update this function when the entity have moved
@@ -106,7 +113,7 @@ void free_Entity(Entity *entite){
 *  \param  entite
 *  \return boolean if the entite has been draw on the screen or not
 */
-Boolean draw_Entity(SDL_Renderer * pRenderer, Entity *entite){
+Boolean Entity_Draw(SDL_Renderer * pRenderer, Entity *entite){
 	SDL_Rect frameToDraw;
 
 	//Création d'un int permettant de sélectionner la bonne frame
@@ -155,17 +162,6 @@ void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy){
 		*vx = MOVESPEED;
 }
 
-void getVectorD(Kr_Input myEvent, Sint32 *vx, Sint32 *vy){ //Temporaire juste pour controler un monstre
-	*vx = *vy = 0;
-	if (myEvent.szKey[SDL_SCANCODE_W])
-		*vy = -MOVESPEED;
-	if (myEvent.szKey[SDL_SCANCODE_S])
-		*vy = MOVESPEED;
-	if (myEvent.szKey[SDL_SCANCODE_A])
-		*vx = -MOVESPEED;
-	if (myEvent.szKey[SDL_SCANCODE_D])
-		*vx = MOVESPEED;
-}
 
 /*!
  *	\fn	    Direction foundDirection(Sint32 vx, Sint32 vy)
@@ -203,9 +199,6 @@ Direction foundDirection(Sint32 vx, Sint32 vy){
 Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, int *tempoAnim, SDL_Renderer *pRenderer){
 	Sint32 vx, vy;
 
-	// Nouveau sprite potentiel suivant la direction
-	char newSprFileName[SIZE_MAX_NAME];
-
 	//Obtention des déplacements générés par le clavier
 	getVector(myEvent, &vx, &vy);
 	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
@@ -232,48 +225,6 @@ Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, i
 				entite->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
 			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
 			
-			Direction newDir = foundDirection(vx, vy);			//  - on cherche la nouvelle direction
-			Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
-
-			switch (newDir){									// Suivant la nouvelle direction :
-			case nord:
-				if (entite->direction != nord){						// if direction différente
-					entite->direction = nord;							//  -> on change
-					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "nord"); //on va chercher le bon fichier image
-					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);							// on libère l'ancienne texture
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer,newSprFileName, NULL, NULL);	//on load la nouvelle texture asssociéee à la nouvelle direction
-					}
-				break;
-			case sud:
-				if (entite->direction != sud){
-					entite->direction = sud;
-					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "sud");
-					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
-				}
-				break;
-			case ouest:
-				if (entite->direction != ouest){
-					entite->direction = ouest;
-					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "ouest");
-					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
-				}
-				break;
-			case est:
-				if (entite->direction != est){
-					entite->direction = est;
-					sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "est");
-					UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-					entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
-				}
-				break;
-			default:
-				break;
-			}
-			entite->pSprEntity->strName = newSprFileName;					//on change le nom du sprite (par le lien sprites/image.png pour que ca soit plus clair
-			Kr_Log_Print(KR_LOG_INFO, "Sprite %s has been loaded\n", entite->pSprEntity->strName);
-			Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 
 			*tempoAnim = 0;
 
@@ -288,59 +239,65 @@ Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, i
 		
 		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", entite->strEntityName, vx, vy, entite->iCoordXEntity, entite->iCoordYEntity);
 		return TRUE;
-	}
-
-
-	
+	}	
 	
 }
 
-//meme fonction mais pour un monstre gérer avec zqsd
-Boolean updateMonstreVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, int *tempoAnim){
-	Sint32 vx, vy;
+/*!
+*  \fn     void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer){
+*  \brief  Function to switch the texture of the entity according to the new direction
+*
+*  \param  enite  a pointer to the entity
+*  \param  vx the vector in x
+*  \param  vy the vector in y
+*  \param  pRenderer the renderer
+*  \return none
+*/
+void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer){
+	// Nouveau sprite potentiel suivant la direction
+	char newSprFileName[SIZE_MAX_NAME];
+		
+	Direction newDir = foundDirection(vx, vy);			//  - on cherche la nouvelle direction
+	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
 
-	//Obtention des déplacements générés par le clavier
-	getVectorD(myEvent, &vx, &vy);
-	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
-
-	//Gestion des collisions (à venir)
-	//Kr_Collision_Move(pLevel, pPlayer, vx, vy);
-
-	// Changement de l'animation
-	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
-		entite->mouvement = 0;									//
-		entite->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
-		*tempoAnim = 0;											// reset de la tempo
-		Kr_Log_Print(KR_LOG_INFO, " the entity %s hasn't moved\n", entite->strEntityName);
-		return TRUE;
-	}
-	else{												//Sinon
-		entite->mouvement = 1;
-		*tempoAnim += 1;
-		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
-
-		if (*tempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
-			entite->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
-			if (entite->pSprEntity->iCurrentFrame == entite->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
-				entite->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
-			
-			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
-
-			*tempoAnim = 0;
-			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
+	switch (newDir){									// Suivant la nouvelle direction :
+	case nord:
+		if (entite->direction != nord){						// if direction différente
+			entite->direction = nord;							//  -> on change
+			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "nord"); //on va chercher le bon fichier image
+			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);							// on libère l'ancienne texture
+			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);	//on load la nouvelle texture asssociéee à la nouvelle direction
 		}
-
-		//Deplacement final prévu
-		entite->iCoordXEntity += vx;							//on change les coordonnées de l'entité :
-		entite->iCoordYEntity += vy;							//		- à la fois dans la structure entité
-		entite->pSprEntity->pRectPosition->x += vx;				//		- mais aussi dans la sdl_rect du sprite (c'est lui qui sert vraiment à l'affichage)
-		entite->pSprEntity->pRectPosition->y += vy;
-
-		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", entite->strEntityName, vx, vy, entite->iCoordXEntity, entite->iCoordYEntity);
-		return TRUE;
+		break;
+	case sud:
+		if (entite->direction != sud){
+			entite->direction = sud;
+			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "sud");
+			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
+			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
+		}
+		break;
+	case ouest:
+		if (entite->direction != ouest){
+			entite->direction = ouest;
+			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "ouest");
+			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
+			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
+		}
+		break;
+	case est:
+		if (entite->direction != est){
+			entite->direction = est;
+			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "est");
+			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
+			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
+		}
+		break;
+	default:
+		break;
 	}
-
-
-
+	entite->pSprEntity->strName = newSprFileName;					//on change le nom du sprite (par le lien sprites/image.png pour que ca soit plus clair
+	Kr_Log_Print(KR_LOG_INFO, "Sprite %s has been loaded\n", entite->pSprEntity->strName);
+	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 
 }

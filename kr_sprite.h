@@ -15,6 +15,7 @@
 /*               |            | Kr_Sprite_Load add param SDL_Renderer        */
 /*               |            | Prévention des inclusions multiples          */
 /* ========================================================================= */
+
 #ifndef __KR_SPRITE_H__
 #define __KR_SPRITE_H__
 

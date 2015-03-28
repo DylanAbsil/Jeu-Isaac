@@ -79,7 +79,7 @@ Boolean Kr_Sprite_Load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32
 }
 
 /*!
-*  \fn     Kr_Sprite *Kr_Sprite_Init()
+*  \fn     void Kr_Sprite_Free(Kr_Sprite *pSprite)
 *  \brief  Function to freed a Kr_Sprite texture
 *
 *  \param  pSprite a pointer to the Kr_Sprite texture to free
