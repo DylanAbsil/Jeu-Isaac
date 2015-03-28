@@ -16,6 +16,24 @@
 /*               |            | Prévention des inclusions multiples          */
 /* ========================================================================= */
 
+
+/*
+Commentaire: il faut mettre à jour les prototypes des fonctions pour que les fonctions du projet soient cohérentes, il faut qu'on comprennent à quoi les fonctions s'appliquent, si c'est une entité on commence par Entite_, si c'est un level Level_ etc, sinon le main va devenir incompréhensible
+             - Entite_Init, Entite_Load, Entite_Free, Entite_Draw, Entite_GetVector, Entite_FoundDirection etc etc
+			 - Il faut une seule fonction pour déplacer TOUT type d'entité, aussi bien le personnage que les monstres
+Tant que les fonctions ne fonctionnent pas pour tout type de monstre on ne peut pas commencer à gérer les déplacements entre les niveaux, ni gérer les collisions...
+
+
+
+
+*/
+
+
+
+
+
+
+
 #include "entite.h"
 #include "kr_input.h"
 #include "kr_level.h"
