@@ -104,31 +104,31 @@ int main(int argc, char** argv)
 	rectPositionMonstre.w = 120;
 
 	/* Chargement des sprites */
-	pSpriteZelda = Sprite_init();			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
-	pSpriteMonstre = Sprite_init();
+	pSpriteZelda = Kr_Sprite_Init();			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
+	pSpriteMonstre = Kr_Sprite_Init();
 
-	if ( Sprite_load(pSpriteZelda, "zelda", 26, 240, 8, &rectPositionZelda) == FALSE ){		
+	if ( Kr_Sprite_Load(pSpriteZelda, "zelda", 26, 240, 8, &rectPositionZelda, gpRenderer) == FALSE ){		
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
-	if (Sprite_load(pSpriteMonstre, "dragon", 64, 420, 8, &rectPositionMonstre) == FALSE){
+	if (Kr_Sprite_Load(pSpriteMonstre, "dragon", 64, 420, 8, &rectPositionMonstre, gpRenderer) == FALSE){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
 
 	/* Chargement des personnages */
-	pZelda = Entity_init();				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
-	pMonstre = Entity_init();
+	pZelda = Entity_Init();				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
+	pMonstre = Entity_Init();
 	
-	if( Entity_load(pZelda, "zelda", player, 100, 50, pSpriteZelda) == FALSE ){		
+	if( Entity_Load(pZelda, "zelda", 100, 50, pSpriteZelda) == FALSE ){		
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
 
-	if (Entity_load(pMonstre, "dragon", boss, 200, 10, pSpriteMonstre) == FALSE){
+	if (Entity_Load(pMonstre, "dragon", 200, 10, pSpriteMonstre) == FALSE){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
 
 	/* Chargement du niveau */
 	SDL_Texture *pLimitation = NULL;
-	pLimitation = UTIL_LoadTexture("Visu.png", NULL, NULL);
+	pLimitation = UTIL_LoadTexture(gpRenderer, "Visu.png", NULL, NULL);
 	Kr_Level *pMonLevel = NULL;
 	SDL_Rect rLevel; // où sera afficher le level sur le renderer
 	SDL_Rect rLimitation; 
@@ -159,7 +159,6 @@ int main(int argc, char** argv)
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
 		exit(EXIT_FAILURE);
 	}
-	Kr_Level_Focus(pMonLevel, &rectPositionZelda, &rLimitation);
 
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
@@ -189,7 +188,7 @@ int main(int argc, char** argv)
 		}
 		
 		/*Gestion des evenements clavier*/
-		if (updateEntityVector(inEvent, pMonLevel, pMonstre, &tempoAnim) == FALSE){				//Update la position et l'animation du perso principal
+		if (updateEntityVector(inEvent, pMonLevel, pMonstre, &tempoAnim, gpRenderer) == FALSE){				//Update la position et l'animation du perso principal
 			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update player vector\n");
 			SDL_Quit();
 			return FALSE;
@@ -243,9 +242,9 @@ int main(int argc, char** argv)
 		
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
 		
-		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);				//Affichage du level	
+		Kr_Level_Draw(gpRenderer, pMonLevel);				//Affichage du level	
 		//draw_Entity(gpRenderer, pZelda);							//Affichage du perso principale
-		Entity_draw(gpRenderer, pMonstre);
+		Entity_Draw(gpRenderer, pMonstre);
 
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 	}
@@ -260,8 +259,8 @@ int main(int argc, char** argv)
 	SDL_DestroyRenderer(gpRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
 	Kr_Level_Free(pMonLevel);			// Libération mémoire du niveau
-	Entity_free(pZelda);				// Libération mémoire du zelda
-	Entity_free(pMonstre);
+	Entity_Free(pZelda);				// Libération mémoire du zelda
+	Entity_Free(pMonstre);
 	Mix_CloseAudio();	// On quitte SDL_MIXER
 	TTF_Quit();			// On quitte SDL_TTF
 	SDL_Quit();			// On quitte SDL

@@ -10,23 +10,23 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Robin         | 23/03/2015 | Creation.                                    */
-/*               |            |                                              */
-/*               |            |                                              */
-/*               |            |                                              */
+/* Herrou        | 28/03/2015 | Harmoniser les prototypes avec le projet     */
+/*               |            | Mise en forme et corrections                 */
+/*               |            | Kr_Sprite_Load add param SDL_Renderer        */
+/*               |            | Prévention des inclusions multiples          */
 /* ========================================================================= */
 
 #include "kr_sprite.h"
 
 /*!
-*  \fn     Kr_Sprite * Sprite_init()
+*  \fn     Kr_Sprite *Kr_Sprite_Init()
 *  \brief  Function to init a sprite
 *
 *  \todo   use this function at first to create a sprite then load
 *
-*  \param  none
 *  \return Kr_Sprite* a pointer to the empty created entity
 */
-Kr_Sprite * Sprite_init(){
+Kr_Sprite *Kr_Sprite_Init(){
 	Kr_Sprite * pSprite = UTIL_Malloc(sizeof(Kr_Sprite));		//allocation mémoire
 	pSprite->strName = "Nom indefini";
 	pSprite->pTextureSprite = NULL;
@@ -39,50 +39,53 @@ Kr_Sprite * Sprite_init(){
 }
 
 /*!
-*  \fn     void Sprite_load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition)
+*  \fn     Boolean Kr_Sprite_Load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition)
 *  \brief  Function to load the sprite
 *
-*  \todo   use this function after the sprite had been inited
+*  \todo   use this function after the sprite had been initialized
 *
-*  \param sprite a pointer to a sprite
-*  \param name the name of the name (name of the path)
-*  \param frameHeight the height of the image in pixel
-*  \param frameWidth the width
-*  \param nbFrames the numper of frames of the animation
-*  \param *pRectPosition	the position and the size visible on the screen
-*  \return boolean it verify if the load is correct or not
+*  \param  sprite         a pointer to a sprite
+*  \param  name           the name of the sprite (name of the path)
+*  \param  frameHeight    the height of the frame
+*  \param  frameWidth     the width of the frame
+*  \param  nbFrames       the numper of frames of the animation
+*  \param  pRectPosition  a pointer to the position and the size of the sprite
+*  \param  pRenderer      a pointer to the renderer  
+*  \return TRUE if everything is ok, FALSE otherwise
 */
-Boolean Sprite_load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition){
+Boolean Kr_Sprite_Load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition, SDL_Renderer *pRenderer){
 	// Creation d'un nouveau sprite et d'une nouvelle texture juste a partir du nom
 	SDL_Texture *pSpriteEntite = NULL;
 	char newSprFileName[SIZE_MAX_NAME];
 
 	sprintf(newSprFileName, "sprites/%s_sud.png", name);
 
-	pSpriteEntite = UTIL_LoadTexture(newSprFileName, NULL, NULL);
+	pSpriteEntite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
 	if (pSpriteEntite == NULL){
-		Kr_Log_Print(KR_LOG_ERROR, "Cant load the texture associate !\n", name);
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the texture of the sprite : %s!\n", newSprFileName);
 		return FALSE;
 	}
 
 	// Integration dans la structure
-	sprite->strName = newSprFileName;
+	sprite->strName        = newSprFileName;
 	sprite->pTextureSprite = pSpriteEntite;
-	if (sprite->pTextureSprite == NULL){
-		Kr_Log_Print(KR_LOG_ERROR, "Cant load the texture associate with %s !\n", name);
-		return FALSE;
-	}
-	sprite->iFrameHeight = frameHeight;
-	sprite->iFrameWidth = frameWidth;
-	sprite->iNbFrames = nbFrames;
-	sprite->pRectPosition = pRectPosition;
+	sprite->iFrameHeight   = frameHeight;
+	sprite->iFrameWidth    = frameWidth;
+	sprite->iNbFrames      = nbFrames;
+	sprite->pRectPosition  = pRectPosition;
 
 	Kr_Log_Print(KR_LOG_INFO, "Sprite %s of %d by %d has been loaded !\n", sprite->strName, sprite->iFrameWidth, sprite->iFrameHeight);
 	return TRUE;
 }
 
-void Sprite_free(Kr_Sprite *pSprite){
+/*!
+*  \fn     void Kr_Sprite_Free(Kr_Sprite *pSprite)
+*  \brief  Function to freed a Kr_Sprite texture
+*
+*  \param  pSprite a pointer to the Kr_Sprite texture to free
+*  \return none
+*/
+void Kr_Sprite_Free(Kr_Sprite *pSprite){
 	UTIL_FreeTexture(&pSprite->pTextureSprite);
-	free(pSprite);
+	UTIL_Free(pSprite);
 }
-

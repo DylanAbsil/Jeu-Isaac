@@ -10,8 +10,10 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Robin         | 14/03/2015 | Création.                                    */
-/*               |            |                                              */
-/*               |            |                                              */
+/* Herrou        | 28/03/2015 | Harmoniser les prototypes avec le projet     */
+/*               |            | Mise en forme et corrections                 */
+/*               |            | Ajout du SDL_Renderer pour updateEntityVector*/
+/*               |            | Prévention des inclusions multiples          */
 /* ========================================================================= */
 
 #ifndef __ENTITE_H__
@@ -25,7 +27,7 @@
 
 /*!
 * \enum EntityState
-* \brief Enumeration to describe the state of the entity.
+* \brief Enumeration to describe the stae of the entity.
 */
 typedef enum {
 	normal,
@@ -33,19 +35,7 @@ typedef enum {
 	slowed,
 	feared,
 	poisoned,
-}Entity_state;
-
-/*!
-* \enum EntityType
-* \brief Enumeration to describe the type of the entity : player, boss, monster ...
-*/
-typedef enum {
-	player,
-	monster,
-	small_monster,
-	boss,
-	pnj,
-}Entity_type;
+}EntityState;
 
 /*!
  * \enum Direction
@@ -56,7 +46,7 @@ typedef enum {
 	est,
 	sud,
 	ouest,
-}Entity_direction;
+}Direction;
 
 
 typedef struct {
@@ -81,30 +71,29 @@ typedef struct {
 
 typedef struct {
 	char	*strEntityName;		/* Name of the entity */
-	Entity_type type;			/* Type of the entity */
 	Uint32	iEntityLife;		/* Life of the entity */
 	Uint32	iArmor;				/* Armor of the entity */
 	Weapon	wpnName;
-	Kr_Sprite	*pSprEntity;	/* Pointer to his sprite */
-	Entity_state	state;
+	Kr_Sprite	*pSprEntity;
+	EntityState	state;
 	Sint32	iCoordXEntity;
 	Sint32	iCoordYEntity;
 	Uint32	iSpeedEntity;
-	Entity_direction direction;		/* Direction : nord, est, sud, ouest */
+	Direction direction;
 	Boolean mouvement;			/* Mouvement : 0 static, 1 in movement */
 }Entity;
 
-Entity * Entity_init();
-Boolean Entity_load(Entity *entite, char * name, Entity_type type, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
-void Entity_free(Entity *entite);
-Boolean Entity_draw(SDL_Renderer *pRenderer, Entity *entite);
+Entity *	Entity_Init();
+Boolean		Entity_Load(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
+void		Entity_Free(Entity *entite);
+Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
 
 
-Entity_direction foundDirection(Sint32 vx, Sint32 vy);
-void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy);
+Direction	foundDirection(Sint32 vx, Sint32 vy);
+void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
+void		switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer);
 
-void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
+Boolean		updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim, SDL_Renderer *pRenderer);
 
-Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim);
 
 #endif /* __KR_ENTITE_H__ */

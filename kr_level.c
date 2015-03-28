@@ -6,31 +6,39 @@
 * \version 1.0
 * \date    01 Mars 2015
 */
-/* ========================================================================= */
-/* Developers    | Date       | Comments                                     */
-/* --------------+------------+--------------------------------------------- */
-/* Herrou        | 01/03/2015 | Création                                     */
-/* Herrou        | 08/03/2015 | Gestion du Scrolling Ok                      */
-/* ========================================================================= */
+/* ================================================================================================================ */
+/* Developers    | Date       | Comments																			*/
+/* --------------+------------+------------------------------------------------------------------------------------ */
+/* Herrou        | 01/03/2015 | Création																			*/
+/* Herrou        | 08/03/2015 | Gestion du Scrolling en cours														*/
+/* Herrou        | 18/03/2015 | Arret du scrolling, map en 40x22 en tiles de 32										*/
+/* Herrou        | 19/03/2015 | Détection collision d'un rectangle avec la carte									*/
+/*               |            | Gestion des grandes vitesses de déplacement											*/
+/* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32												*/
+/* Herrou        | 22/03/2015 | Fonction Kr_Level_GetBlock OK														*/
+/* Herrou        | 23/03/2015 | Renommer GetBlock en GetTile			     										*/
+/*               |            | Kr_Level_Event, OK                           										*/
+/* Herrou        | 24/03/2015 | MAJ Free, Add Change																*/
+/*               |            | MAJ Event: détection du milieu du rectangle pour le changement de niveau			*/
+/* ===============================================================================================================  */
+
 /*
- Commentaire :
-  - L'affichage de la carte fonctionne correctement, cependant si on ne l'affiche pas dans le renderer complet (rDst != renderer) 
-    alors on aura l'impression que la fenêtre se déplace dans le renderer mais c'est simplement car on affiche que des blocs de 32 et non pas pixel par pixel
+Commentaire :
 
 
 */
 #include "kr_level.h"
 
-#define CACHE_SIZE 5000
+#define CACHE_SIZE 15000
 
 /*!
-*  \fn     Kr_Tileset *Kr_Level_Init(const char *szFileName)
+*  \fn     Kr_Tileset *Kr_Level_Init(char *szFileName)
 *  \brief  Function to load initialize a Level thanks to the level file
 *
 *  \param  szFileName the name of the level file
 *  \return the initialize structure
 */
-Kr_Level *Kr_Level_Init(const char *szFileName)
+Kr_Level *Kr_Level_Init(char *szFileName)
 {
 	Kr_Level *pLevel = NULL;
 	pLevel = (Kr_Level *)UTIL_Malloc(sizeof(Kr_Level));
@@ -40,18 +48,9 @@ Kr_Level *Kr_Level_Init(const char *szFileName)
 	pLevel->iLevel_TileHeight = 0;
 	pLevel->pLevel_Tileset = NULL;
 	pLevel->szLayout = NULL;
-
-	pLevel->rToFocus = NULL;
-
-	pLevel->rLimitation = NULL;
-
-	pLevel->rScrollWindow.x = 0;
-	pLevel->rScrollWindow.y = 0;
-	pLevel->rScrollWindow.h = 0;
-	pLevel->rScrollWindow.w = 0;
-
 	return pLevel;
 }
+
 
 /*!
 *  \fn     Boolean Kr_Level_Load(Kr_Level *pLevel)
@@ -70,7 +69,7 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 
 	/* Ouverture du fichier leveàl */
 	sprintf(szLevelPath, "maps\\%s.txt", pLevel->szLevelName);
-	Kr_Log_Print(KR_LOG_INFO, "Opening maps file %s\n", szLevelPath);
+	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szLevelPath);
 	pFile = UTIL_OpenFile(szLevelPath, "r"); // Ouverture du level en read
 	if (!pFile) return FALSE;
 
@@ -88,8 +87,8 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 		fgets(szBuf, CACHE_SIZE, pFile);
 		if (strstr(szBuf, "#tileset")) // Identification de la ligne tileset
 		{
-			fscanf(pFile, "%s",szBuf2); // Lecture de la ligne suivante qui indique le fichier .tls
-	
+			fscanf(pFile, "%s", szBuf2); // Lecture de la ligne suivante qui indique le fichier .tls
+
 			pLevel->pLevel_Tileset = Kr_Tileset_Init(szBuf2);
 			if (!Kr_Tileset_Load(pLevel->pLevel_Tileset, pRenderer))
 			{
@@ -109,11 +108,10 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 	} while (strstr(szBuf, "#end") == NULL); // Identification de la fin du fichier level
 
 	UTIL_CloseFile(&pFile);
-	Kr_Log_Print(KR_LOG_INFO, "%d %d !\n", pLevel->iLevel_TileHeight, pLevel->pLevel_Tileset->iTilesHeight);
+	Kr_Log_Print(KR_LOG_INFO, "tiles %d %d !\n", pLevel->iLevel_TileHeight, pLevel->pLevel_Tileset->iTilesHeight);
 	Kr_Log_Print(KR_LOG_INFO, "Level : %s has been loaded !\n", pLevel->szLevelName);
 	return TRUE;
 }
-
 
 
 /*!
@@ -126,7 +124,7 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 void Kr_Level_Free(Kr_Level *pLevel)
 {
 	Sint32 i;
-
+	if (pLevel == NULL) return;
 	Kr_Tileset_Free(pLevel->pLevel_Tileset);
 	for (i = 0; i< pLevel->iLevel_TileHeight; i++)
 		free(pLevel->szLayout[i]);
@@ -150,16 +148,16 @@ Boolean Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile)
 	fscanf(pFile, "%d %d", &pLevel->iLevel_TileWidth, &pLevel->iLevel_TileHeight);
 
 	/* Allocation du tableau 2D szLayout */
-	pLevel->szLayout = malloc(pLevel->iLevel_TileWidth*sizeof(unsigned char*));
+	pLevel->szLayout = malloc(pLevel->iLevel_TileWidth*sizeof(Uint32*));
 	for (i = 0; i<pLevel->iLevel_TileWidth; i++)
-		pLevel->szLayout[i] = malloc(pLevel->iLevel_TileHeight*sizeof(unsigned char));
+		pLevel->szLayout[i] = malloc(pLevel->iLevel_TileHeight*sizeof(Uint32));
 
 	/* Affectation des données level au schema */
 	for (j = 0; j<pLevel->iLevel_TileHeight; j++)
 	{
 		for (i = 0; i<pLevel->iLevel_TileWidth; i++)
 		{
-			fscanf(pFile, "%d", &iTmp); 
+			fscanf(pFile, "%d", &iTmp);
 			if (iTmp >= pLevel->pLevel_Tileset->iNbTilesX * pLevel->pLevel_Tileset->iNbTilesY) // On vérifie que le codage du tile existe
 			{
 				Kr_Log_Print(KR_LOG_ERROR, "Can't load a tile in the layout because it's out of the tileset file ");
@@ -167,7 +165,6 @@ Boolean Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile)
 				return FALSE;
 			}
 			pLevel->szLayout[i][j] = iTmp;
-			//Kr_Log_Print(KR_LOG_INFO, "pMap->schema[%d][%d] = %d \n", i, j, pMap->szSchema[i][j]);
 		}
 	}
 	Kr_Log_Print(KR_LOG_INFO, "Kr_Level_Layout: Done\n");
@@ -175,40 +172,27 @@ Boolean Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile)
 }
 
 
-
-
 /*!
-*  \fn     void Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel, SDL_Rect rDst)
+*  \fn     void Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel)
 *  \brief  Function to draw a level on a renderer
 *
 *  \param  pRenderer a pointer to the renderer
 *  \param  pLevel    a pointer to a the level structure
-*  \param  rDst      the rectangle where the level must be draw
 *  \return none
 */
-void Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel, SDL_Rect *rDst)
+void Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel)
 {
 	Sint32   i, j;
 	SDL_Rect Rect_dest;
 	Sint32   iNumTile;
-	Sint32   iMinX, iMaxX, iMinY, iMaxY;
-	Kr_Level_UpdateScroll(pLevel, rDst);
 
-	iMinX =  pLevel->rScrollWindow.x / pLevel->pLevel_Tileset->iTilesWidth;// -1;
-	iMinY =  pLevel->rScrollWindow.y / pLevel->pLevel_Tileset->iTilesHeight;// -1;
-	iMaxX = (pLevel->rScrollWindow.x + rDst->w) / pLevel->pLevel_Tileset->iTilesWidth;
-	iMaxY = (pLevel->rScrollWindow.y + rDst->h) / pLevel->pLevel_Tileset->iTilesHeight;
 
-	//Kr_Log_Print(KR_LOG_WARNING, " Scroll W: %d\n", pLevel->rScrollWindow.w);
-	//Kr_Log_Print(KR_LOG_WARNING, " Scroll H: %d\n", pLevel->rScrollWindow.h);
-	//Kr_Log_Print(KR_LOG_WARNING, " Limitation x: %d\n", pLevel->rLimitation.x);
-	//Kr_Log_Print(KR_LOG_WARNING, " Limitation y: %d\n", pLevel->rLimitation.y);
-	for (i = iMinX; i <= iMaxX; i++)
+	for (i = 0; i <= pLevel->iLevel_TileWidth; i++)
 	{
-		for (j = iMinY; j <= iMaxY; j++)
+		for (j = 0; j <= pLevel->iLevel_TileHeight; j++)
 		{
-			Rect_dest.x = i*pLevel->pLevel_Tileset->iTilesWidth - pLevel->rScrollWindow.x + rDst->x;
-			Rect_dest.y = j*pLevel->pLevel_Tileset->iTilesHeight - pLevel->rScrollWindow.y + rDst->y;
+			Rect_dest.x = i*pLevel->pLevel_Tileset->iTilesWidth;
+			Rect_dest.y = j*pLevel->pLevel_Tileset->iTilesHeight;
 			Rect_dest.h = pLevel->pLevel_Tileset->iTilesHeight;
 			Rect_dest.w = pLevel->pLevel_Tileset->iTilesWidth;
 			if (i < 0 || i >= pLevel->iLevel_TileWidth || j < 0 || j >= pLevel->iLevel_TileHeight)
@@ -216,6 +200,7 @@ void Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel, SDL_Rect *rDst)
 			else
 			{
 				iNumTile = pLevel->szLayout[i][j];
+
 			}
 			SDL_RenderCopy(pRenderer, pLevel->pLevel_Tileset->pTextureTileset, &(pLevel->pLevel_Tileset->pTilesProp[iNumTile].rTile), &Rect_dest); // En arrière plan si la fonction Kr_Map_Draw est appelé au tout début
 		}
@@ -223,149 +208,196 @@ void Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel, SDL_Rect *rDst)
 }
 
 /*!
-*  \fn     void Kr_Level_Focus(Kr_Level *pLevel, SDL_Rect *rToFocus, SDL_Rect *rLimitation)
-*  \brief  Function to initialize the scrolling data
+*  \fn     Uint32 Kr_Collision_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy)
+*  \brief  Function to move a rectangle on a level (Recursif !)
 *
-*  \param  pLevel        a pointer to a the level structure
-*  \param  rToFocus      the rectangle which will be focus for the scrolling
-*  \param  rLimitation   the limitation rectangle 
-*  \return none
+*  \TODO : Code de retour d'erreur savoir s'il a échoué tout, s'il a échoué mais affiné, etc
+*
+*  \param  pLevel a pointer to a the level structure
+*  \param  pRect1 a pointer to the rectangle you want to move
+*  \param  vx     the vector on X
+*  \param  vy     the vector on Y
+*  \return 1, 2 or 3 (debuging only)
 */
-void Kr_Level_Focus(Kr_Level *pLevel, SDL_Rect *rToFocus, SDL_Rect *rLimitation)
+Uint32 Kr_Collision_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy)
 {
-	pLevel->rLimitation = rLimitation;
-	pLevel->rToFocus = rToFocus;
+	/* Gestion des dépassements très rapides, pour ne pas passer au dela du mur*/
+	if (UTIL_ABS(vx) >= pLevel->pLevel_Tileset->iTilesWidth || UTIL_ABS(vy) >= pLevel->pLevel_Tileset->iTilesHeight) // Prendre valeur absolu sinon cela fonctionnera pas pour des vecteurs négatifs
+	{
+		Kr_Collision_Move(pLevel, pRect1, vx / 2, vy / 2);
+		Kr_Collision_Move(pLevel, pRect1, vx - vx / 2, vy - vy / 2);
+		return 1;
+	}
+	if (Kr_Collision_TryMove(pLevel, pRect1, vx, vy) == TRUE) return 2;
 
+	Kr_Collision_Affine(pLevel, pRect1, vx, vy);
+	return 3;
 }
 
 /*!
-*  \fn     void Kr_Level_UpdateScroll(Kr_Level *pLevel, SDL_Rect *rDst)
-*  \brief  Function to update the scrolling window and limitation rectangle
+*  \fn     Kr_Collision_IsCollisionDecor(Kr_Level *pLevel, SDL_Rect *pRect1)
+*  \brief  Function to detect if the rectangle is colliding with the level tiles
 *
 *  \param  pLevel a pointer to a the level structure
-*  \param  rDst      the rectangle where the level must be draw
-*  \return none
+*  \param  pRect1  a pointer to the rectangle you want to test
+*  \return TRUE if the two rectangle are colliding, FALSE otherwise
 */
-void Kr_Level_UpdateScroll(Kr_Level *pLevel, SDL_Rect *rDst)
+Boolean Kr_Collision_IsCollisionDecor(Kr_Level *pLevel, SDL_Rect *pRect1)
 {
-	Sint32 iCenterXEntity, iCenterYEntity, iLimitXMin, iLimitXMax, iLimitYMin, iLimitYMax;
+	Uint32 iMinX, iMinY, iMaxX, iMaxY, i, j, iNumTile;
 
-	
-	iCenterXEntity = pLevel->rToFocus->x + pLevel->rToFocus->w / 2;
-	iCenterYEntity = pLevel->rToFocus->y + pLevel->rToFocus->h / 2;
-	//pLevel->rLimitation->x = pLevel->rToFocus->x + 2;
-	
-
-	iLimitXMin = pLevel->rScrollWindow.x + pLevel->rLimitation->x;
-	iLimitYMin = pLevel->rScrollWindow.y + pLevel->rLimitation->y;
-	iLimitXMax = iLimitXMin + pLevel->rLimitation->w;
-	iLimitYMax = iLimitYMin + pLevel->rLimitation->h;
-	//Kr_Log_Print(KR_LOG_INFO, "X         : %d |Y          : %d \n", pLevel->rLimitation->x, pLevel->rLimitation->y);
-	//	Kr_Log_Print(KR_LOG_INFO, "ScrollX   : %d |ScrollY     : %d \n", pLevel->rScrollWindow.x, pLevel->rScrollWindow.y);
-	//	Kr_Log_Print(KR_LOG_INFO, "LimitX    : %d |LimitY     : %d \n", pLevel->rLimitation->x, pLevel->rLimitation->y);
-	//	
-	//	Kr_Log_Print(KR_LOG_INFO, "iLimitXMin: %d |iLimitXMax : %d \n", iLimitXMin, iLimitXMax);
-	//	Kr_Log_Print(KR_LOG_INFO, "iLimitYMin: %d |iLimitYMax : %d \n", iLimitYMin, iLimitYMax);
- 	//	Kr_Log_Print(KR_LOG_INFO, "iCoordX   : %d |iCoordY    : %d \n", iCenterXEntity, iCenterYEntity);
-	//	Kr_Log_Print(KR_LOG_INFO, "\n");
-
-	/* Gestion de la fenetre de scroll */
-	if (iCenterXEntity < iLimitXMin)
+	// Verifie si on est pas déjà hors map
+	if (pRect1->x < 0 || ((pRect1->x + pRect1->w - 1) >= pLevel->iLevel_TileWidth  * pLevel->pLevel_Tileset->iTilesWidth) ||
+		pRect1->y < 0 || ((pRect1->y + pRect1->h - 1) >= pLevel->iLevel_TileHeight * pLevel->pLevel_Tileset->iTilesHeight))
 	{
-		pLevel->rScrollWindow.x -= (iLimitXMin - iCenterXEntity);
-		//pLevel->rLimitation->x = pLevel->rToFocus->x;
-		Kr_Log_Print(KR_LOG_INFO, "XMIN\n");
-
-	}
-	if (iCenterYEntity < iLimitYMin)
-	{
-		pLevel->rScrollWindow.y -= (iLimitYMin - iCenterYEntity);
-		pLevel->rLimitation->y = pLevel->rToFocus->y;
+		return TRUE;
 	}
 
-	if (iCenterXEntity > iLimitXMax)
-	{
-		pLevel->rScrollWindow.x += (iCenterXEntity - iLimitXMax);
-		pLevel->rLimitation->x = pLevel->rScrollWindow.x - pLevel->rLimitation->w;
-	}
+	// Détermine les tiles à controler
+	iMinX = pRect1->x / pLevel->pLevel_Tileset->iTilesWidth;
+	iMinY = pRect1->y / pLevel->pLevel_Tileset->iTilesHeight;
+	iMaxX = (pRect1->x + pRect1->w - 1) / pLevel->pLevel_Tileset->iTilesWidth;
+	iMaxY = (pRect1->y + pRect1->h - 1) / pLevel->pLevel_Tileset->iTilesHeight;
 
-	if (iCenterYEntity > iLimitYMax)
+	for (i = iMinX; i <= iMaxX; i++)
 	{
-		pLevel->rScrollWindow.y += (iCenterYEntity - iLimitYMax);
-		pLevel->rLimitation->y = pLevel->rToFocus->y/2;
+		for (j = iMinY; j <= iMaxY; j++)
+		{
+			iNumTile = pLevel->szLayout[i][j];
+
+			if (pLevel->pLevel_Tileset->pTilesProp[iNumTile].iPlein)
+			{
+				//(KR_LOG_WARNING, "CollisionDecor:  Collision avec la Tile : %d %d \n",i,j); 
+				return TRUE;
+			}
+		}
 	}
-	Kr_Level_ClampScroll(pLevel, rDst);
+	//Kr_Log_Print(KR_LOG_WARNING, "CollisionDecor: %d tiles analysées \n", i*j);
+	return FALSE;
 }
 
 /*!
-*  \fn     void Kr_Level_Free(Kr_Level *pLevel, SDL_Rect *rDst)
-*  \brief  Function to handle the collision of the scrolling window with the edges of the level
+*  \fn     Boolean Kr_Collision_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy)
+*  \brief  Function to try to move a rectangle with a certain vector speed and check if it's colliding with the level tiles
 *
 *  \param  pLevel a pointer to a the level structure
-*  \param  rDst      the rectangle where the level must be draw
+*  \param  pRect1  a pointer to the first rectangle you want to test
+*  \param  vx      the vector on X
+*  \param  vy      the vector on Y
+*  \return TRUE if the two rectangle are NOT colliding, FALSE otherwise
+*/
+Boolean Kr_Collision_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy)
+{
+	SDL_Rect test;
+	test = *pRect1;
+	test.x += vx;
+	test.y += vy;
+	if (Kr_Collision_IsCollisionDecor(pLevel, &test) == FALSE)
+	{
+		*pRect1 = test;
+		return TRUE;
+	}
+	return FALSE;
+}
+
+/*!
+*  \fn     void Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy)
+*  \brief  Function to reduce the vector speed to check if there is a collision between the rectangle and the level tiles
+*
+*  \param  pLevel a pointer to a the level structure
+*  \param  pRect1  a pointer to the first rectangle you want to test
+*  \param  vx      the vector on X
+*  \param  vy      the vector on Y
 *  \return none
 */
-void Kr_Level_ClampScroll(Kr_Level *pLevel, SDL_Rect *rDst)
+void Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy)
 {
-
-	if (pLevel->rScrollWindow.x < 0)
+	Sint32 i;
+	for (i = 0; i<UTIL_ABS(vx); i++)
 	{
-		Kr_Log_Print(KR_LOG_WARNING, " 1 Reach limit on X : %d\n", pLevel->rScrollWindow.x);
-		pLevel->rScrollWindow.x = 0;
+		if (Kr_Collision_TryMove(pLevel, pRect1, UTIL_SGN(vx), 0) == FALSE)
+			break;
 	}
-	if (pLevel->rScrollWindow.y < 0)
+	for (i = 0; i<UTIL_ABS(vy); i++)
 	{
-		Kr_Log_Print(KR_LOG_WARNING, " 2 Reach limit on Y : %d\n", pLevel->rScrollWindow.y);
-		pLevel->rScrollWindow.y = 0;
+		if (Kr_Collision_TryMove(pLevel, pRect1, 0, UTIL_SGN(vy)) == FALSE)
+			break;
 	}
-	if (pLevel->rScrollWindow.x > pLevel->iLevel_TileWidth*pLevel->pLevel_Tileset->iTilesWidth - rDst->w - 1)
-	{
-		Kr_Log_Print(KR_LOG_WARNING, " 3 Reach limit on X : %d\n", pLevel->rScrollWindow.x);
-		pLevel->rScrollWindow.x = pLevel->iLevel_TileWidth*pLevel->pLevel_Tileset->iTilesWidth - rDst->w - 1;
-	}
-	if (pLevel->rScrollWindow.y > pLevel->iLevel_TileHeight*pLevel->pLevel_Tileset->iTilesHeight - rDst->h - 1)
-	{
-		Kr_Log_Print(KR_LOG_WARNING, " 4 Reach limit on Y : %d\n", pLevel->rScrollWindow.y);
-		pLevel->rScrollWindow.y = pLevel->iLevel_TileHeight*pLevel->pLevel_Tileset->iTilesHeight - rDst->h- 1;
-	}
-	/*if (pLevel->rScrollWindow.x + pLevel->rToFocus->x  < 0)
-	{
-		Kr_Log_Print(KR_LOG_WARNING, " 1 Reach limit on X : %d\n", pLevel->rScrollWindow.x);
-		pLevel->rScrollWindow.x = 0;
-		pLevel->rToFocus->x = 0;
-	}
-	if (pLevel->rScrollWindow.y + pLevel->rToFocus->y < 0)
-	{
-		Kr_Log_Print(KR_LOG_WARNING, " 2 Reach limit on Y : %d\n", pLevel->rScrollWindow.y);
-		pLevel->rScrollWindow.y = 0;
-		pLevel->rToFocus->y = 0;
-	}
-
-	if (pLevel->rScrollWindow.x > pLevel->iLevel_TileWidth * pLevel->pLevel_Tileset->iTilesWidth - rDst->w - 1)
-	{
-		Kr_Log_Print(KR_LOG_WARNING, " 3 Reach limit on X : %d\n", pLevel->rScrollWindow.x);
-		pLevel->rScrollWindow.x = pLevel->iLevel_TileWidth * pLevel->pLevel_Tileset->iTilesWidth - rDst->w - 1;
-	}
-	if (pLevel->rScrollWindow.y > pLevel->iLevel_TileHeight* pLevel->pLevel_Tileset->iTilesHeight - rDst->h- 1)
-	{
-		//Kr_Log_Print(KR_LOG_WARNING, " 4 Reach limit on Y : %d\n", pLevel->rScrollWindow.y);
-		pLevel->rScrollWindow.y = pLevel->iLevel_TileHeight * pLevel->pLevel_Tileset->iTilesHeight - rDst->h - 1;
-	
-	}
-	//
-	if (pLevel->rScrollWindow.x + pLevel->rToFocus->x + pLevel->rToFocus->w >= pLevel->iLevel_TileWidth* pLevel->pLevel_Tileset->iTilesWidth - 1) // Faux car tout est constant
-	{
-		Kr_Log_Print(KR_LOG_WARNING, " 5 Reach limit on X : %d\n", pLevel->rToFocus->x);
-		pLevel->rToFocus->x = pLevel->iLevel_TileWidth* pLevel->pLevel_Tileset->iTilesWidth - pLevel->rScrollWindow.x - pLevel->rToFocus->w - 1;
-	}
-
-	if (pLevel->rScrollWindow.y + pLevel->rToFocus->y + pLevel->rToFocus->h >= pLevel->iLevel_TileHeight* pLevel->pLevel_Tileset->iTilesHeight - 1)
-	{
-		Kr_Log_Print(KR_LOG_WARNING, " 6 Reach limit on Y : %d\n", pLevel->rToFocus->y);
-		pLevel->rToFocus->y = pLevel->iLevel_TileHeight* pLevel->pLevel_Tileset->iTilesHeight - pLevel->rScrollWindow.y - pLevel->rToFocus->h - 1;
-	}*/
+}
 
 
-	
-//	Kr_Log_Print(KR_LOG_WARNING, " RLimit X : %d   Y: %d\n", pLevel->rLimitation->x,pLevel->rLimitation->y);
+
+/*!
+*  \fn     Uint32 Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
+*  \brief  Function to check some event
+*
+*  \param  pLevel a pointer to a the level structure
+*  \param  pRect1 a pointer to the rectangle of the player
+*  \return 1 if we must change the level, 0 otherwise
+*/
+Uint32 Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect)
+{
+	Uint32 x, y,iTmp;
+	Sint32 iTilesID;
+
+	/* événement Changement de Level*/
+	iTmp = 0;
+	// Calcule des coordonnées du milieu du rectangle
+	x = pRect->x + pRect->w / 2;
+	y = pRect->y + pRect->h / 2;
+	iTilesID = Kr_Level_GetTile(pLevel, x, y);
+	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel && iTilesID != -1) return 1;// Le tile est-il un Tile pour changer de level ?
+
+
+	/* Autre événement */
+
+	return 0;
+}
+
+/*!
+*  \fn     Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
+*  \brief  Function to get the block at a coordinate
+*
+*  \param  pLevel a pointer to a the level structure
+*  \param  x      x coordinate
+*  \param  y      y coordinate
+*  \return the id of the block (cf the tileset), -1 if error
+*/
+Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
+{
+	Uint32 iTilesID, iNumTilesX, iNumTilesY;
+	// Obtenir les numéros des tiles
+	if ((x >= (pLevel->iLevel_TileWidth * pLevel->pLevel_Tileset->iTilesWidth)) || (y >= (pLevel->iLevel_TileHeight * pLevel->pLevel_Tileset->iTilesHeight)))
+	{
+		//Kr_Log_Print(KR_LOG_WARNING, "GetTile : Out of level X: %d, Y: %d!!! \n",x,y);
+		return iTilesID = -1;
+	}
+	iNumTilesX = x / pLevel->pLevel_Tileset->iTilesWidth;
+	iNumTilesY = y / pLevel->pLevel_Tileset->iTilesHeight;
+	iTilesID = pLevel->szLayout[iNumTilesX][iNumTilesY];
+	//Kr_Log_Print(KR_LOG_INFO, "Tiles %d   |  X: %d   Y: %d  |   PorteLEvel : %d \n", iTilesID,x,y, pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel);
+	return iTilesID;
+}
+
+
+
+/*!
+*  \fn     Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Renderer *pRenderer)
+*  \brief  Function to change the level
+*
+*  \param  pCurrentLevel  a pointer to the current Level which must be freed
+*  \param  szLevelName    the name of the new Level to load
+*  \param  pRenderer      a pointer to the Renderer
+*  \return the initialised level structure, NULL otherwise
+*/
+Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Renderer *pRenderer)
+{
+	Kr_Level_Free(pCurrentLevel);
+	Kr_Level *pNewLevel = Kr_Level_Init(szLevelName);
+	if (!Kr_Level_Load(pNewLevel, pRenderer))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
+		return NULL;
+	}
+	return pNewLevel;
 }

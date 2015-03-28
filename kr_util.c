@@ -10,7 +10,10 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Creation.                                    */
-/*               |            |                                              */
+/* Herrou        | 18/03/2015 | Suppression UTIL_BuildPath                   */
+/* Herrou        | 24/03/2015 | MAJ LoadTexture, le renderer n'est plus une  */
+/*				 |            | var global, il est mit en paramètre          */
+/*               |            | Add UTIL_SousChaine                          */
 /*               |            |                                              */
 /* ========================================================================= */
 #include "kr_util.h"
@@ -91,7 +94,7 @@ void UTIL_CloseFile( FILE **ppFile )
  *  \return A pointer on the loaded texture, or NULL if error.
  */
 
-SDL_Texture* UTIL_LoadTexture( const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize )
+SDL_Texture* UTIL_LoadTexture(SDL_Renderer *pRenderer, const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize )
 {
     Uint32       iColorKey;
     SDL_Texture *pTexture;
@@ -115,11 +118,11 @@ SDL_Texture* UTIL_LoadTexture( const char *szPath, SDL_Color *pTransColor, SDL_R
 
         if( pTextureSize )
         {
-			pTextureSize->w = pSurface->w;
-			pTextureSize->h = pSurface->h ;
+            pTextureSize->w = pSurface->w;
+            pTextureSize->h = pSurface->h;
         }
 
-		pTexture = SDL_CreateTextureFromSurface(gpRenderer, pSurface);
+		pTexture = SDL_CreateTextureFromSurface(pRenderer, pSurface);
         
         if( pTexture == NULL )
         {
@@ -209,28 +212,32 @@ char* UTIL_CopyStr( const char *szSrc, size_t iSrcLen )
     return pDest;
 }
 
-/*!
- *  \fn     char* UTIL_BuildPath( const char *szFolder, const char *szFile, size_t iFileLen, const char *szExt )
- *  \brief  Function to build a path.
- *
- *  \param  szFolder Name of the folder.
- *  \param  szFile   Name of the file.
- *  \param  iFileLen Size of the filename to copy ( Without '\0' ).
- *  \param  szExt    Name of the extension.
- *  \return A pointer on the allocated path, or NULL if error.
- */
-char* UTIL_BuildPath( const char *szFolder, const char *szFile, size_t iFileLen, const char *szExt )
+
+/** \fn   void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, char *p_szExtrait)
+* \brief  Cette fonction permet d'extraire dans une chaine la sous-chaine comprise entre deux positions
+* \param  szChaine1   Const chaine de caractere que l'on souhaite traiter
+* \param  iPosDebut   Entier indiquant le début de la sous-chaine, La premiere valeur de la chaine correspond à 0 et non 1!
+* \param  iPosFin     Entier indiquant la fin de la sous-chaine
+* \param  p_szExtrait Pointeur sur la sous-chaine qui a ete extraite
+* \return Renvoie la sous-chaine à l'aide de p_szExtrait, si une erreur est survenue ce pointeur aura pour valeur NULL
+*/
+void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, char *p_szExtrait)
 {
-    size_t  iPathLen = strlen( szFolder ) + iFileLen + strlen( szExt );
-    char   *pPath    = ( char * ) UTIL_Malloc( iPathLen + 3 ); // + '/' + '.' + '\0'
-    
-    if( pPath )
-    {
-        sprintf( pPath, "%s/%s.%s", szFolder, szFile, szExt );
-    }
-    
-    return pPath;
+	Uint32 iLengthChaine = 0, i = 0, j = 0;
+	iLengthChaine = strlen(szChaine1);
+	if (iPosDebut<0 || iPosFin> iLengthChaine - 1 || iPosFin<iPosDebut) // Gestion des valeurs des positions
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "UTIL_sousChaine : Can't extract the string, wrong position! \n");
+		p_szExtrait = NULL;
+		return;
+	}
+	for (i = iPosDebut; i <= iPosFin; i++) // Extraction de la sous-chaine : OK
+	{
+		*(p_szExtrait + j) = szChaine1[i];
+		j++;
+	}
 }
+
 
 /* ========================================================================= */
 
