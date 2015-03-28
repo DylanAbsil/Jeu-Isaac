@@ -122,13 +122,13 @@ int main(int argc, char** argv)
 	pZelda = init_Entity();				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
 	pMonstre = init_Entity();
 	
-	if( load_Entity(pZelda, "zelda", 100, 50, pSpriteZelda) == FALSE ){		
+	if( load_Entity(pZelda, "zelda", player, 100, 50, pSpriteZelda) == FALSE ){		
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
 
-	if (load_Entity(pMonstre, "dragon", 200, 10, pSpriteMonstre) == FALSE){
+	if (load_Entity(pMonstre, "dragon", boss, 200, 10, pSpriteMonstre) == FALSE){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
@@ -189,20 +189,14 @@ int main(int argc, char** argv)
 		}
 		
 		/*Gestion des evenements clavier*/
-		if (updateEntityVector(inEvent, pMonLevel, pZelda, &tempoAnim) == FALSE){				//Update la position et l'animation du perso principal
+		if (updateEntityVector(inEvent, pMonLevel, pMonstre, &tempoAnim) == FALSE){				//Update la position et l'animation du perso principal
 			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update player vector\n");
 			SDL_Quit();
 			return FALSE;
 		}
 		Kr_Log_Print(KR_LOG_INFO, "Player vector has been updated\n");
 
-		if (updateMonstreVector(inEvent, pMonLevel, pMonstre, &tempoAnim2) == FALSE){				//Update la position et l'animation du perso principal
-			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update player vector\n");
-			SDL_Quit();
-			return FALSE;
-		}
-		Kr_Log_Print(KR_LOG_INFO, "Player vector has been updated\n");
-
+		
 		if (inEvent.szKey[SDL_SCANCODE_P])
 		{
 			inEvent.szKey[SDL_SCANCODE_P] = 0; // Un seul clique, comme pour la souris
@@ -250,7 +244,7 @@ int main(int argc, char** argv)
 		// Remarque, en inversant les deux SDL_RenderCopy, on peut choisir qu'elle image sera en arrière-plan de l'autre
 		
 		Kr_Level_Draw(gpRenderer, pMonLevel, &rLevel);				//Affichage du level	
-		draw_Entity(gpRenderer, pZelda);							//Affichage du perso principale
+		//draw_Entity(gpRenderer, pZelda);							//Affichage du perso principale
 		draw_Entity(gpRenderer, pMonstre);
 
 		SDL_RenderPresent(gpRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)

@@ -23,7 +23,7 @@
 
 /*!
 * \enum EntityState
-* \brief Enumeration to describe the stae of the entity.
+* \brief Enumeration to describe the state of the entity.
 */
 typedef enum {
 	normal,
@@ -32,6 +32,18 @@ typedef enum {
 	feared,
 	poisoned,
 }EntityState;
+
+/*!
+* \enum EntityType
+* \brief Enumeration to describe the type of the entity : player, boss, monster ...
+*/
+typedef enum {
+	player,
+	monster,
+	small_monster,
+	boss,
+	pnj,
+}EntityType;
 
 /*!
  * \enum Direction
@@ -67,27 +79,28 @@ typedef struct {
 
 typedef struct {
 	char	*strEntityName;		/* Name of the entity */
+	EntityType type;			/* Type of the entity */
 	Uint32	iEntityLife;		/* Life of the entity */
 	Uint32	iArmor;				/* Armor of the entity */
 	Weapon	wpnName;
-	Kr_Sprite	*pSprEntity;
+	Kr_Sprite	*pSprEntity;	/* Pointer to his sprite */
 	EntityState	state;
 	Sint32	iCoordXEntity;
 	Sint32	iCoordYEntity;
 	Uint32	iSpeedEntity;
-	Direction direction;
+	Direction direction;		/* Direction : nord, est, sud, ouest */
 	Boolean mouvement;			/* Mouvement : 0 static, 1 in movement */
 }Entity;
 
 Entity * init_Entity();
-Boolean load_Entity(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
+Boolean load_Entity(Entity *entite, char * name, EntityType type, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
 void free_Entity(Entity *entite);
 Boolean draw_Entity(SDL_Renderer *pRenderer, Entity *entite);
 
 
 Direction foundDirection(Sint32 vx, Sint32 vy);
+void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy);
 
 void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
-void getVectorD(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
+
 Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim);
-Boolean updateMonstreVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim);
