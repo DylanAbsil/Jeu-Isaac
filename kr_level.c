@@ -150,6 +150,8 @@ void Kr_Level_Free(Kr_Level *pLevel)
 	for (i = 0; i< pLevel->iLevel_TileHeight; i++)
 		free(pLevel->szLayout[i]);
 	UTIL_Free(pLevel->szLayout);
+	UTIL_Free(pLevel->szLevelFile);
+	//UTIL_Free(pLevel->szLevelName);
 	UTIL_Free(pLevel);
 }
 

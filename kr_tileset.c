@@ -157,6 +157,7 @@ void Kr_Tileset_Free(Kr_Tileset *pTileset)
 {
 	UTIL_FreeTexture(&pTileset->pTextureTileset);
 	UTIL_Free(pTileset->pTilesProp);
+	UTIL_Free(pTileset->szTilesetName);
 	UTIL_Free(pTileset);
 }
 

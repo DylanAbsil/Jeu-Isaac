@@ -11,10 +11,10 @@
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 22/03/2015 | Creation.                                    */
 /*               |            | Ajout de Kr_GetNeigbor                       */
-/*               |            |                                              */
-/*               |            |                                              */
 /*               |            |  TODO : strcspn compatible linux ?           */
 /* Herrou        | 04/04/2015 | Initialisation du nom faite par UTIL_CopyStr */
+/*               |            |                                              */
+/*               |            |                                              */
 /* ========================================================================= */
 
 #include "kr_map.h"
@@ -80,6 +80,7 @@ void Kr_Map_Free(Kr_Map *pMap)
 	for (i = 0; i < pMap->iNbLevel; i++)
 		free(pMap->szMapLayout[i]);	
 	UTIL_Free(pMap->szMapLayout);
+	UTIL_Free(pMap->szMapFile);
 	UTIL_Free(pMap);
 }
 
@@ -114,7 +115,6 @@ void Kr_Map_Log(Kr_Map *pMap)
 */
 void Kr_Map_GetNeighbor(Kr_Level *pLevel, Uint32 *iNumNord, Uint32 *iNumSud, Uint32 *iNumEst, Uint32 *iNumOuest)
 {
-	
 	char szLevelFile[20];
 	Uint32 iNumLevel = 0;
 	/* Déterminer le numéro du level actuel */
@@ -122,5 +122,4 @@ void Kr_Map_GetNeighbor(Kr_Level *pLevel, Uint32 *iNumNord, Uint32 *iNumSud, Uin
 	strcpy(szLevelFile, pLevel->szLevelFile);
 	iNumLevel = Kr_Level_GetLevelNumber(szLevelFile);
 	Kr_Log_Print(KR_LOG_INFO, "The current level '%s' is %d\n", szLevelFile, iNumLevel);
-
 }
