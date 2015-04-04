@@ -96,3 +96,46 @@ void Kr_FPS_Show(Kr_Fps *pFPS)
 		SDL_RenderCopy(pFPS->pRenderer, pFPS->pTexture, NULL, pFPS->pRectPosition); // affichage des FPS
 	}
 }
+
+/* Utilisation
+Avant la boucle principale :
+
+// Préparation de la gestion des FPS
+SDL_Texture *pTextureFPS = NULL;
+TTF_Font	*pFontFPS = NULL;
+Kr_Fps		*pFPS = NULL;
+SDL_Color    colorFPS = { 0, 10, 220 };
+SDL_Rect	 rectPositionFPS;
+Uint32   iPreviousTime = 0, iCurrentTime = 0;
+
+rectPositionFPS.x = 1150;
+rectPositionFPS.y = 685;
+pFontFPS = Kr_Text_OpenFont("cour", 18);
+TTF_SetFontStyle(pFontFPS, TTF_STYLE_ITALIC);
+
+pFPS = Kr_Fps_Init(pRenderer, pFontFPS, &rectPositionFPS, colorFPS, TRUE);
+if (pFPS == NULL)
+{
+	Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the FPS structure\n");
+	exit(EXIT_FAILURE);
+}
+
+Dans la boucle de gestion des événements
+
+if (inEvent.szKey[SDL_SCANCODE_F]) // Gestion de l'affichage des FPS
+{
+if (pFPS->bMustShow) pFPS->bMustShow = FALSE;
+else pFPS->bMustShow = TRUE;
+inEvent.szKey[SDL_SCANCODE_F] = 0;
+}
+
+
+//Attente
+Kr_Fps_Wait(pFPS, &iCurrentTime, &iPreviousTime, KR_FPS);
+
+//L'affichage se fait en dernier, avec les HUDS
+Kr_FPS_Show(pFPS);
+
+
+
+*/
