@@ -20,6 +20,9 @@
 /*               |            | Kr_Level_Event, OK                           										*/
 /* Herrou        | 24/03/2015 | MAJ Free, Add Change																*/
 /*               |            | MAJ Event: détection du milieu du rectangle pour le changement de niveau			*/
+/* Herrou        | 04/04/2015 | Initialisation du nom faite par UTIL_CopyStr										*/
+/*               |            | Mise à jour des fonctions au vue des modifications de la structure Kr_Level 		*/		
+/*               |            | Création de la fonction Kr_Level_GetLevelNumber  									*/
 /* ===============================================================================================================  */
 
 /*
@@ -41,9 +44,13 @@ Commentaire :
 Kr_Level *Kr_Level_Init(char *szFileName)
 {
 	Kr_Level *pLevel = NULL;
+	Uint32 iNameLen = strlen(szFileName);
 	pLevel = (Kr_Level *)UTIL_Malloc(sizeof(Kr_Level));
 
-	pLevel->szLevelName = szFileName;
+	pLevel->szLevelFile = UTIL_CopyStr(szFileName, iNameLen);
+
+	pLevel->szLevelName = NULL;	
+	pLevel->iLevelNum = -1;       
 	pLevel->iLevel_TileWidth = 0;
 	pLevel->iLevel_TileHeight = 0;
 	pLevel->pLevel_Tileset = NULL;
@@ -53,27 +60,29 @@ Kr_Level *Kr_Level_Init(char *szFileName)
 
 
 /*!
-*  \fn     Boolean Kr_Level_Load(Kr_Level *pLevel)
+*  \fn     Boolean Kr_Level_Load(Kr_Level *pLevel, Kr_Map *pMap, SDL_Renderer *pRenderer)
 *  \brief  Function to load a Kr_Level structure via a level file
 *
+*  \param  pMap      a pointer to the map
 *  \param  pLevel    a pointer to a the level structure
 *  \param  pRenderer a pointer to the renderer
 *  \return TRUE if everything is ok, NULL otherwise
 */
-Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
+Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 {
-	char         szBuf[CACHE_SIZE];  // Buffer
-	char         szBuf2[CACHE_SIZE]; // Buffer2
-	char         szLevelPath[50];
-	FILE        *pFile;
+	char   szBuf[CACHE_SIZE];  // Buffer
+	char   szBuf2[CACHE_SIZE]; // Buffer2
+	char   szLevelPath[50];
+	FILE  *pFile;
+	Uint32 iNameLen;
 
-	/* Ouverture du fichier leveàl */
-	sprintf(szLevelPath, "maps\\%s.txt", pLevel->szLevelName);
+	/* Ouverture du fichier level */
+	sprintf(szLevelPath, "maps\\%s.txt", pLevel->szLevelFile);
 	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szLevelPath);
 	pFile = UTIL_OpenFile(szLevelPath, "r"); // Ouverture du level en read
 	if (!pFile) return FALSE;
 
-	/* Vérification de la version du fichier tileset */
+	/* Vérification de la version du fichier level */
 	fgets(szBuf, CACHE_SIZE, pFile);
 	if (strstr(szBuf, KR_LEVEL_VERSION) == NULL)
 	{
@@ -82,9 +91,20 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 		return FALSE;
 	}
 
+	/* Recherche du numéro du level*/
+	pLevel->iLevelNum = Kr_Level_GetLevelNumber(pLevel->szLevelFile);
+
+
 	do // Lecture ligne par ligne du fichier
 	{
 		fgets(szBuf, CACHE_SIZE, pFile);
+		if (strstr(szBuf, "#property")) // Identification de la ligne property
+		{
+			fgets(szBuf2, CACHE_SIZE, pFile); // Lecture de la ligne suivante qui indique le nom du level
+			szBuf2[strcspn(szBuf2, "\n")] = '\0'; //retirer \n
+			iNameLen = strlen(szBuf2) - 1;      // Il faut retirer 1 car il ne faut pas envoyer à UTIL_CopyStr \0
+			pLevel->szLevelName = UTIL_CopyStr(szBuf2, iNameLen);
+		}
 		if (strstr(szBuf, "#tileset")) // Identification de la ligne tileset
 		{
 			fscanf(pFile, "%s", szBuf2); // Lecture de la ligne suivante qui indique le fichier .tls
@@ -104,12 +124,13 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer)
 				return FALSE;
 			}
 
-		}
+		} 
 	} while (strstr(szBuf, "#end") == NULL); // Identification de la fin du fichier level
 
 	UTIL_CloseFile(&pFile);
+	//Kr_Map_GetNeighbor(pMap, pLevel, &pLevel->iNumNord, &pLevel->iNumSud, &pLevel->iNumEst, &pLevel->iNumOuest);
 	Kr_Log_Print(KR_LOG_INFO, "tiles %d %d !\n", pLevel->iLevel_TileHeight, pLevel->pLevel_Tileset->iTilesHeight);
-	Kr_Log_Print(KR_LOG_INFO, "Level : %s has been loaded !\n", pLevel->szLevelName);
+	Kr_Log_Print(KR_LOG_INFO, "Level : %s has been loaded !\n", pLevel->szLevelFile);
 	return TRUE;
 }
 
@@ -382,9 +403,10 @@ Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
 
 
 /*!
-*  \fn     Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Renderer *pRenderer)
+*  \fn     Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Kr_Map *pMap, char* szLevelName, SDL_Renderer *pRenderer)
 *  \brief  Function to change the level
 *
+*  \param  pMap           a pointer to the map
 *  \param  pCurrentLevel  a pointer to the current Level which must be freed
 *  \param  szLevelName    the name of the new Level to load
 *  \param  pRenderer      a pointer to the Renderer
@@ -400,4 +422,38 @@ Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Render
 		return NULL;
 	}
 	return pNewLevel;
+}
+
+
+
+/*!
+*  \fn    Uint32 Kr_Level_GetLevelNumber(char *szLevelFile)
+*  \brief  Function to fill the parameter of the Kr_Level structure about the neighbor level of pLevel
+*
+*  \param  szLevelFile the name of the level file will provide the number of the level since level are saved as levelX.txt where X is the number of the level
+*  \return the number of the level if everything is OK, 0 otherwise
+*/
+Uint32 Kr_Level_GetLevelNumber(char *szLevelFile)
+{
+	char   szTmp[20];
+	char  *p_conv;
+	Sint32 iNumLevel = 0;
+	Uint32 iNameLenght = 0;
+
+	iNameLenght = strlen(szLevelFile);
+	UTIL_SousChaine(szLevelFile, 5, iNameLenght, szTmp);
+	// Convertir avec strtol la chaine en chiffre 
+	iNumLevel = strtol(szTmp, &p_conv, 10); // Conversion en base 10
+	if (p_conv != NULL)
+	{
+		if (*p_conv == '\0') // La conversion à réussi
+		{
+		}
+		else // La conversion à échoué
+		{
+			Kr_Log_Print(KR_LOG_INFO, "Can't convert the level name  '%s' to a integer, error is : %s\n ", szTmp, p_conv);
+			return 0;
+		}
+	}
+	return iNumLevel;
 }

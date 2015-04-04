@@ -6,16 +6,17 @@
  * \version 1.0
  * \date    1 Mars 2015
  */
-/* ========================================================================= */
-/* Developers    | Date       | Comments                                     */
-/* --------------+------------+--------------------------------------------- */
-/* Herrou        | 01/03/2015 | Creation.                                    */
-/* Herrou        | 18/03/2015 | Suppression UTIL_BuildPath                   */
-/* Herrou        | 24/03/2015 | MAJ LoadTexture, le renderer n'est plus une  */
-/*				 |            | var global, il est mit en paramètre          */
-/*               |            | Add UTIL_SousChaine                          */
-/*               |            |                                              */
-/* ========================================================================= */
+/* ======================================================================================================== */
+/* Developers    | Date       | Comments																	*/
+/* --------------+------------+---------------------------------------------------------------------------- */
+/* Herrou        | 01/03/2015 | Creation.																	*/
+/* Herrou        | 18/03/2015 | Suppression UTIL_BuildPath													*/
+/* Herrou        | 24/03/2015 | MAJ LoadTexture, le renderer n'est plus une									*/
+/*				 |            | var global, il est mit en paramètre											*/
+/*               |            | Add UTIL_SousChaine															*/
+/* Herrou        | 04/04/2015 | Modification UTIL_SousChaine :											    */
+/*               |            |  - La chaine à traiter ne doit pas contenir de caractère particulier		*/
+/* ======================================================================================================== */
 #include "kr_util.h"
 
 #include "kr_log.h"
@@ -215,7 +216,7 @@ char* UTIL_CopyStr( const char *szSrc, size_t iSrcLen )
 
 /** \fn   void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, char *p_szExtrait)
 * \brief  Cette fonction permet d'extraire dans une chaine la sous-chaine comprise entre deux positions
-* \param  szChaine1   Const chaine de caractere que l'on souhaite traiter
+* \param  szChaine1   Const chaine de caractere que l'on souhaite traiter, supprimer tout caractère particulier !!!! \0 et \n par exemple
 * \param  iPosDebut   Entier indiquant le début de la sous-chaine, La premiere valeur de la chaine correspond à 0 et non 1!
 * \param  iPosFin     Entier indiquant la fin de la sous-chaine
 * \param  p_szExtrait Pointeur sur la sous-chaine qui a ete extraite
@@ -225,7 +226,7 @@ void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, ch
 {
 	Uint32 iLengthChaine = 0, i = 0, j = 0;
 	iLengthChaine = strlen(szChaine1);
-	if (iPosDebut<0 || iPosFin> iLengthChaine - 1 || iPosFin<iPosDebut) // Gestion des valeurs des positions
+	if (iPosDebut<0 || iPosFin> iLengthChaine  || iPosFin<iPosDebut) // Gestion des valeurs des positions
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "UTIL_sousChaine : Can't extract the string, wrong position! \n");
 		p_szExtrait = NULL;

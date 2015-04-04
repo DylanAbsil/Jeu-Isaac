@@ -6,8 +6,8 @@
 * \version 1.0
 * \date    01 Mars 2015
 */
-/* ========================================================================= */
-/* Developers    | Date       | Comments                                     */
+/* ============================================================================================ */
+/* Developers    | Date       | Comments                                                        */
 /* --------------+------------+---------------------------------------------------------------- */
 /* Herrou        | 01/03/2015 | Création.                                    					*/
 /* Herrou        | 18/03/2015 | Suppression des fonctions sur le scrolling   					*/
@@ -15,11 +15,18 @@
 /*               |            | Define pour taille de la fenêtre             					*/
 /*               |            | Ajout fonction pour la gestion des collisions					*/
 /* Herrou        | 21/03/2015 | MAJ szLayout unsigned char => Uint32         					*/
-/* Herrou        | 22/03/2015 | Proto Kr_Level_GetBlock et Kr_Level_Event    
+/* Herrou        | 22/03/2015 | Proto Kr_Level_GetBlock et Kr_Level_Event                       */  
 /* Herrou        | 23/03/2015 | Renommer GetBlock en GetTile									*/
 /*               |            | Kr_Level_Event retourne un code selon l'event					*/
 /* Herrou        | 24/03/2015 | MAJ Free, Add Change											*/
 /*               |            | MAJ Structure Kr_Level, ajout des numéros des levels adjacents	*/
+/* Herrou        | 04/04/2015 | Modification paramètre de la structure :						*/
+/*               |            |  - Modification du nom pour décrire le level, ce n'est plus le  */
+/*               |            |    du fichier mais un nom plus spécifique au level              */
+/*               |            |  - Ajout d'un numéro pour chaque niveau        					*/
+/*               |            |  - Ajout d'un paramètre pour stocker le nom du fichier level    */
+/*               |            | Création de la fonction Kr_Level_GetLevelNumber  				*/
+/*               |            |Passage des fichiers levels en version: Level Version 1.1 		*/
 /* ============================================================================================ */
 
 #ifndef __KR_LEVEL_H__
@@ -30,7 +37,7 @@
 #include "kr_log.h"
 #include "kr_tileset.h"
 
-#define KR_LEVEL_VERSION "Level Version 1.0"
+#define KR_LEVEL_VERSION "Level Version 1.1"
 #define KR_WIDTH_WINDOW  16*80 // 1280
 #define KR_HEIGHT_WINDOW 16*44 // 704
 /*!
@@ -39,16 +46,17 @@
 */
 typedef struct
 {
-	const char     *szLevelName;		/*!< Name of the level  */
+	char           *szLevelFile;		/*!< Name of the file of the level  */
+	char		   *szLevelName;		/*!< Name of the level  */
+	Sint32          iLevelNum;          /*!< Number of the level */
 	Sint32          iLevel_TileWidth;	/*!< Width of the level in Tile number */
 	Sint32          iLevel_TileHeight;  /*!< Height of the level in Tile number */
-	Uint32        **szLayout;			/*!< 2D array of the level (unsigned char = 256 different tiles max */
+	Uint32        **szLayout;			/*!< 2D array of the level (sizeof(Uint32) tiles possible */
 	Kr_Tileset     *pLevel_Tileset;		/*!< pointer to the tileset of this level */
 	Uint32          iNumNord;		    /*!< The numero of the level with which is connected to the north */
 	Uint32          iNumSud;		    /*!< The numero of the level with which is connected to the south */
 	Uint32          iNumEst;		    /*!< The numero of the level with which is connected to the east */
 	Uint32          iNumOuest;		    /*!< The numero of the level with which is connected to the west */
-
 }Kr_Level;
 
 
@@ -73,5 +81,9 @@ void    Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint3
 /* Détection d'évenement sur la carte */
 Uint32 Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect);
 Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y);
+
+
+Uint32 Kr_Level_GetLevelNumber(char *szLevelFile);
+
 
 #endif /* __KR_LEVEL_H__ */
