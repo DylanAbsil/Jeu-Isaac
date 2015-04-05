@@ -17,6 +17,7 @@
 /* Herrou        | 04/04/2015 | Initialisation du nom faite par UTIL_CopyStr */
 /*               |            | Le nom du sprite est donnée à Sprite_Init    */
 /*               |            |    et non pas à Entity_Load                  */
+/* Herrou        | 05/04/2015 | Ajout du param Entity à foundDirection       */
 /* ========================================================================= */
 
 #ifndef __ENTITE_H__
@@ -92,11 +93,11 @@ void		Entity_Free(Entity *entite);
 Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
 
 
-Direction	foundDirection(Sint32 vx, Sint32 vy);
+Direction	foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity);
 void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
 void		switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer);
 
-Boolean		updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim, SDL_Renderer *pRenderer);
+Boolean		updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, Uint32 *tempoAnim, SDL_Renderer *pRenderer);
 
 
 #endif /* __KR_ENTITE_H__ */

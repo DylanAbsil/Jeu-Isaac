@@ -17,6 +17,7 @@
 /* Herrou        | 04/04/2015 | Initialisation du nom faite par UTIL_CopyStr */
 /*               |            | Le nom du sprite est donnée à Entite_Init    */
 /*               |            |    et non pas à Entite_Load                  */
+/* Herrou        | 05/04/2015 | Ajout du param Entity à foundDirection       */
 /* ========================================================================= */
 
 
@@ -152,15 +153,16 @@ void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy){
 
 
 /*!
-*	\fn	    Direction foundDirection(Sint32 vx, Sint32 vy)
+*	\fn	    Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity)
 *  \brief  Function to get a direction from a vector
 *
-*  \param vx a move in x
-*  \param vy a move in y
+*  \param vx       a move in x
+*  \param vy       a move in y
+*  \param pEntity  a pointer to the entity structure
 *  \return Direction the direction associated to the vector
 */
-Direction foundDirection(Sint32 vx, Sint32 vy){
-	Direction newDir;
+Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
+	Direction newDir = pEntity->direction; // défaut
 	if (vy > 0)
 		newDir = sud;
 	if (vy < 0)
@@ -191,12 +193,12 @@ Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, U
 	getVector(myEvent, &vx, &vy);
 //	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
 
+	switchTextureFromDirection(entite, vx, vy, pRenderer);
 	//Gestion des collisions (à venir)
 	if (Kr_Collision_Move(pLevel, entite->pSprEntity->pRectPosition, vx, vy) == 3)
 	{
 		vx = vy = 0;
 	}
-
 	// Changement de l'animation
 	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
 		entite->mouvement = 0;									//
@@ -245,7 +247,7 @@ Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, U
 void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer){
 	// Nouveau sprite potentiel suivant la direction
 	char newSprFileName[SIZE_MAX_NAME];
-	Direction newDir = foundDirection(vx, vy);			//  - on cherche la nouvelle direction
+	Direction newDir = foundDirection(vx, vy, entite);			//  - on cherche la nouvelle direction
 //	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
 
 	strcpy(newSprFileName, entite->pSprEntity->strName); //Nécessaire de l'initialiser même si après la direction change
