@@ -1,8 +1,8 @@
-/* ================================================================================================================ */
-/* Developers    | Date       | Comments																			*/
-/* --------------+------------+------------------------------------------------------------------------------------ */
-/* Herrou        | 04/04/2015 | Création
-/* ===============================================================================================================  */
-
-
 Ce fichier permet d'indiquer vos commentaires sur votre code ou ceux des autres. Regarder régulièrement.
+
+
+BUG : 
+
+ERROR :
+
+REMARQUE : Je suis actuellement en train de corriger des erreurs d'allocations de string dans les fichiers sprite et entity, n'y touchait pas !
