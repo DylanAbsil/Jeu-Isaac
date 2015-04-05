@@ -157,11 +157,11 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 
 /*!
 *  \fn     Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
-*  \brief  Function to check some event
+*  \brief  Function to check if the level should be changed
 *
 *  \param  pLevel  a pointer to a the level structure
 *  \param  pEntity a pointer to the entity
-*  \return 1 if we must change the level, 0 otherwise
+*  \return the number of the level if we must change, 0 otherwise
 */
 Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 {
