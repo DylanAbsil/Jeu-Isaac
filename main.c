@@ -25,7 +25,8 @@
 #include "kr_fps.h"
 #include "entite.h"
 #include "kr_sprite.h"
-
+#include "HUD.h"
+#include "Menu.h"
 
 
 
