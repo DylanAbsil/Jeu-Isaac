@@ -43,7 +43,7 @@
 #define KR_HEIGHT_WINDOW 16*44 // 704
 #define MOVESPEED 2
 #define RESET_FRAME 5
-#define SIZE_MAX_NAME 30
+#define SIZE_MAX_NAME 100
 
     /*! 
      * \enum  Boolean

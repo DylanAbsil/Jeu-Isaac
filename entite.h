@@ -14,6 +14,9 @@
 /*               |            | Mise en forme et corrections                 */
 /*               |            | Ajout du SDL_Renderer pour updateEntityVector*/
 /*               |            | Prévention des inclusions multiples          */
+/* Herrou        | 04/04/2015 | Initialisation du nom faite par UTIL_CopyStr */
+/*               |            | Le nom du sprite est donnée à Sprite_Init    */
+/*               |            |    et non pas à Entity_Load                  */
 /* ========================================================================= */
 
 #ifndef __ENTITE_H__
@@ -38,9 +41,9 @@ typedef enum {
 }EntityState;
 
 /*!
- * \enum Direction
- * \brief Enumaration to describe the direction of the mouvement of the entity
- */
+* \enum Direction
+* \brief Enumaration to describe the direction of the mouvement of the entity
+*/
 typedef enum {
 	nord,
 	est,
@@ -83,17 +86,17 @@ typedef struct {
 	Boolean mouvement;			/* Mouvement : 0 static, 1 in movement */
 }Entity;
 
-Entity * Entity_init();
-Boolean Entity_load(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
-void Entity_free(Entity *entite);
-Boolean Entity_draw(SDL_Renderer *pRenderer, Entity *entite);
+Entity *	Entity_Init(char *szFileName);
+Boolean		Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
+void		Entity_Free(Entity *entite);
+Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
 
 
-Direction foundDirection(Sint32 vx, Sint32 vy);
-void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
-void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer);
+Direction	foundDirection(Sint32 vx, Sint32 vy);
+void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
+void		switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer);
 
-Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim, SDL_Renderer *pRenderer);
+Boolean		updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, int *tempoAnim, SDL_Renderer *pRenderer);
 
 
 #endif /* __KR_ENTITE_H__ */
