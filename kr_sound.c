@@ -10,7 +10,7 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 28/03/2015 | Creation.                                    */
-/*               |            |                                              */
+/*               | 31/03/2015 | Fix                                          */
 /*               |            |                                              */
 /* ========================================================================= */
 
@@ -65,7 +65,7 @@ void Kr_Sound_FreeChunk(Mix_Chunk **ppChunk)
 Kr_Sound* Kr_Sound_Alloc( const char *szSndName )
 {
     Kr_Sound *pSound;
-	char     *pSoundPath;
+	char      pSoundPath[50];
 	size_t    iSoundLen;
     
     pSound   = NULL;
@@ -95,8 +95,6 @@ Kr_Sound* Kr_Sound_Alloc( const char *szSndName )
                 UTIL_Free( pSound );
             }
         }
-        
-		UTIL_Free(pSoundPath);
     }
 
     return pSound;
@@ -157,7 +155,7 @@ void Kr_Sound_Free( Kr_Sound **ppSound )
 Mix_Music* Kr_Sound_LoadMusic(const char *szMusicName)
 {
 	Mix_Music *pMusic = NULL;
-	char	  *szMusicPath;
+	char	   szMusicPath[50];
 	size_t     iPathLen;
 
 	iPathLen = strlen(szMusicName);

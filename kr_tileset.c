@@ -12,6 +12,7 @@
 /* Herrou        | 01/03/2015 | Création.                                    */
 /* Herrou        | 22/03/2015 | MAJ tiles properties                         */
 /* Herrou        | 23/03/2015 | MAJ tiles properties, iPorteLevel            */
+/* Herrou        | 04/04/2015 | Initialisation du nom faite par UTIL_CopyStr */
 /*               |            |                                              */
 /* ========================================================================= */
 
@@ -29,15 +30,16 @@
 Kr_Tileset *Kr_Tileset_Init(const char *szFileName)
 {
 	Kr_Tileset  *pTileset = NULL;
+	Uint32 iNameLen = strlen(szFileName);
 	pTileset = (Kr_Tileset *)UTIL_Malloc(sizeof(Kr_Tileset));
 
-	pTileset->szTilesetName		= szFileName;
-	pTileset->iNbTilesX			= 0;
-	pTileset->iNbTilesY			= 0;
-	pTileset->iTilesHeight		= 0;
-	pTileset->iTilesWidth		= 0;
-	pTileset->pTextureTileset	= NULL;
-	pTileset->pTilesProp		= NULL;
+	pTileset->szTilesetName   = UTIL_CopyStr(szFileName, iNameLen);
+	pTileset->iNbTilesX		  = 0;
+	pTileset->iNbTilesY		  = 0;
+	pTileset->iTilesHeight	  = 0;
+	pTileset->iTilesWidth	  = 0;
+	pTileset->pTextureTileset = NULL;
+	pTileset->pTilesProp	  = NULL;
 	return pTileset;
 }
 
@@ -155,6 +157,7 @@ void Kr_Tileset_Free(Kr_Tileset *pTileset)
 {
 	UTIL_FreeTexture(&pTileset->pTextureTileset);
 	UTIL_Free(pTileset->pTilesProp);
+	UTIL_Free(pTileset->szTilesetName);
 	UTIL_Free(pTileset);
 }
 
