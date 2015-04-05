@@ -5,4 +5,4 @@ BUG :
 
 ERROR :
 
-REMARQUE : Je suis actuellement en train de corriger des erreurs d'allocations de string dans les fichiers sprite et entity, n'y touchait pas !
+REMARQUE :
