@@ -26,7 +26,9 @@
 /*               |            |  - Ajout d'un numéro pour chaque niveau        					*/
 /*               |            |  - Ajout d'un paramètre pour stocker le nom du fichier level    */
 /*               |            | Création de la fonction Kr_Level_GetLevelNumber  				*/
-/*               |            |Passage des fichiers levels en version: Level Version 1.1 		*/
+/*               |            | Passage des fichiers levels en version: Level Version 1.1 		*/
+/* Herrou        | 05/04/2015 | Suppression de Kr_Level_Event et Kr_GetLevelNumber				*/
+/*               |            | Kr_Level_Change, prend en paramètre le numéro du level			*/
 /* ============================================================================================ */
 
 #ifndef __KR_LEVEL_H__
@@ -70,7 +72,7 @@ void	  Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel);
 
 /* Sauvegarde etc */
 Boolean	  Kr_Level_Save(Kr_Level *pLevel);
-Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Renderer *pRenderer);
+Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Uint32 iCurrentLevelNumber, SDL_Renderer *pRenderer);
 
 /* Gestion des collisions */
 Uint32  Kr_Collision_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
@@ -79,11 +81,8 @@ Boolean Kr_Collision_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint
 void    Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
 
 /* Détection d'évenement sur la carte */
-Uint32 Kr_Level_Event(Kr_Level *pLevel, SDL_Rect *pRect);
 Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y);
 
-
-Uint32 Kr_Level_GetLevelNumber(char *szLevelFile);
 
 
 #endif /* __KR_LEVEL_H__ */

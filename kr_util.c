@@ -240,6 +240,33 @@ void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, ch
 }
 
 
+/*!
+*  \fn     Sint32 UTIL_StrToUint32(char *szString)
+*  \brief  Function to convert a string to a Uint32
+*
+*  \param  szString  the string to convert
+*  \return the Uint32 if everything is ok, -1 otherwise
+*/
+Sint32 UTIL_StrToUint32(char *szString)
+{
+	char  *p_conv;
+	Sint32 iValue = 0;
+
+	// Convertir avec strtol la chaine en chiffre 
+	iValue = strtol(szString, &p_conv, 10); // Conversion en base 10
+	if (p_conv != NULL)
+	{
+		if (*p_conv == '\0') // La conversion à réussi
+		{
+		}
+		else // La conversion à échoué
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "Can't convert the string '%s' to an integer, error is : %s\n ", szString, p_conv);
+			return -1;
+		}
+	}
+	return iValue;
+}
 /* ========================================================================= */
 
 /* ========================================================================= */
