@@ -5,4 +5,4 @@ BUG :
 
 ERROR :
 
-REMARQUE : Je modifie actuellement le fichier entity pour gérer les collisions entity/décor (05/04/2015, 16:30)
+REMARQUE :

@@ -105,7 +105,7 @@ Boolean Entity_Draw(SDL_Renderer * pRenderer, Entity *entite){
 	SDL_Rect frameToDraw;
 
 	//Création d'un int permettant de sélectionner la bonne frame
-	int largeur = entite->pSprEntity->iFrameWidth / entite->pSprEntity->iNbFrames;
+	Uint32 largeur = entite->pSprEntity->iFrameWidth / entite->pSprEntity->iNbFrames;
 
 	if ((largeur < 0) || (entite == NULL)){
 		Kr_Log_Print(KR_LOG_ERROR, "Impossible to access to the entity\n");
@@ -115,14 +115,14 @@ Boolean Entity_Draw(SDL_Renderer * pRenderer, Entity *entite){
 	frameToDraw.y = 0;
 	frameToDraw.h = entite->pSprEntity->iFrameHeight;
 	frameToDraw.w = largeur;
-	Kr_Log_Print(KR_LOG_INFO, "Frame : { x = %d ; y = %d ; h = %d ; w = %d }\n", frameToDraw.x, frameToDraw.y, frameToDraw.h, frameToDraw.w);
+//	Kr_Log_Print(KR_LOG_INFO, "Frame : { x = %d ; y = %d ; h = %d ; w = %d }\n", frameToDraw.x, frameToDraw.y, frameToDraw.h, frameToDraw.w);
 
 	//Affichage de l'entite sur l'écran
 	if (SDL_RenderCopy(pRenderer, entite->pSprEntity->pTextureSprite, &frameToDraw, entite->pSprEntity->pRectPosition) == -1){
 		Kr_Log_Print(KR_LOG_ERROR, "The entity %s hasn't been draw on the window\n", entite->strEntityName);
 		return FALSE;
 	}
-	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window\n", entite->strEntityName);
+//	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window\n", entite->strEntityName);
 	return TRUE;
 
 }
@@ -173,7 +173,7 @@ Direction foundDirection(Sint32 vx, Sint32 vy){
 }
 
 /*!
-*  \fn     void updateEntityVector(Kr_Input myEvent,Kr_Level *pLevel, Entity *entie, int *tempoAnim, SDL_Renderer *pRenderer)
+*  \fn     void updateEntityVector(Kr_Input myEvent,Kr_Level *pLevel, Entity *entie, Uint32 *tempoAnim, SDL_Renderer *pRenderer)
 *  \brief  Function to update the direction and the position on the map of the entite
 *
 *	\todo rajouter la fonction de gestion des collisions
@@ -184,48 +184,49 @@ Direction foundDirection(Sint32 vx, Sint32 vy){
 *  \param pRenderer a pointer to the renderer
 *  \return Boolean true if the vector has been updated false either
 */
-Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, int *tempoAnim, SDL_Renderer *pRenderer){
+Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, Uint32 *tempoAnim, SDL_Renderer *pRenderer){
 	Sint32 vx, vy;
 
 	//Obtention des déplacements générés par le clavier
 	getVector(myEvent, &vx, &vy);
-	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
+//	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
 
 	//Gestion des collisions (à venir)
-	//Kr_Collision_Move(pLevel, entite->pSprEntity->pRectPosition, vx, vy);
+	if (Kr_Collision_Move(pLevel, entite->pSprEntity->pRectPosition, vx, vy) == 3)
+	{
+		vx = vy = 0;
+	}
 
 	// Changement de l'animation
 	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
 		entite->mouvement = 0;									//
 		entite->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
 		*tempoAnim = 0;											// reset de la tempo
-		Kr_Log_Print(KR_LOG_INFO, " the entity %s hasn't moved\n", entite->strEntityName);
+//		Kr_Log_Print(KR_LOG_INFO, " the entity %s hasn't moved\n", entite->strEntityName);
 		return TRUE;
 	}
 	else{												//Sinon
 		entite->mouvement = 1;
 		*tempoAnim += 1;
-		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
+//		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
 
 		if (*tempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
 			entite->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
 			if (entite->pSprEntity->iCurrentFrame == entite->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
 				entite->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
-			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
+//			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
 
 
 			*tempoAnim = 0;
 
-			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
+//			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
 		}
 
 		//Deplacement final prévu
-		entite->iCoordXEntity += vx;							//on change les coordonnées de l'entité :
-		entite->iCoordYEntity += vy;							//		- à la fois dans la structure entité
-		entite->pSprEntity->pRectPosition->x += vx;				//		- mais aussi dans la sdl_rect du sprite (c'est lui qui sert vraiment à l'affichage)
-		entite->pSprEntity->pRectPosition->y += vy;
+		entite->iCoordXEntity = entite->pSprEntity->pRectPosition->x; // Modification des coordonnées de l'entité, celles du sprite sont modifiées par les fonctions de collision
+		entite->iCoordYEntity = entite->pSprEntity->pRectPosition->y;
 		switchTextureFromDirection(entite, vx, vy, pRenderer);
-		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", entite->strEntityName, vx, vy, entite->iCoordXEntity, entite->iCoordYEntity);
+//		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", entite->strEntityName, vx, vy, entite->iCoordXEntity, entite->iCoordYEntity);
 		return TRUE;
 	}
 
@@ -245,7 +246,7 @@ void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Render
 	// Nouveau sprite potentiel suivant la direction
 	char newSprFileName[SIZE_MAX_NAME];
 	Direction newDir = foundDirection(vx, vy);			//  - on cherche la nouvelle direction
-	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
+//	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
 
 	strcpy(newSprFileName, entite->pSprEntity->strName); //Nécessaire de l'initialiser même si après la direction change
 	switch (newDir){									// Suivant la nouvelle direction :
@@ -287,7 +288,7 @@ void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Render
 	//if (entite->pSprEntity->strName != NULL) free(entite->pSprEntity->strName); // On va devoir réalloué la taille du string
 
 	strcpy(entite->pSprEntity->strName, newSprFileName);//on change le nom du sprite (par le lien sprites/image.png pour que ca soit plus clair
-	Kr_Log_Print(KR_LOG_INFO, "Sprite %s has been loaded\n", entite->pSprEntity->strName);
-	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
+//	Kr_Log_Print(KR_LOG_INFO, "Sprite %s has been loaded\n", entite->pSprEntity->strName);
+//	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 
 }
