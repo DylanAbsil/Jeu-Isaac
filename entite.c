@@ -14,23 +14,11 @@
 /*               |            | Mise en forme et corrections                 */
 /*               |            | Ajout du SDL_Renderer pour updateEntityVector*/
 /*               |            | Prévention des inclusions multiples          */
+/* Herrou        | 04/04/2015 | Initialisation du nom faite par UTIL_CopyStr */
+/*               |            | Le nom du sprite est donnée à Entite_Init    */
+/*               |            |    et non pas à Entite_Load                  */
+/* Herrou        | 05/04/2015 | Ajout du param Entity à foundDirection       */
 /* ========================================================================= */
-
-
-/*
-Commentaire: il faut mettre à jour les prototypes des fonctions pour que les fonctions du projet soient cohérentes, il faut qu'on comprennent à quoi les fonctions s'appliquent, si c'est une entité on commence par Entite_, si c'est un level Level_ etc, sinon le main va devenir incompréhensible
-             - Entite_Init, Entite_Load, Entite_Free, Entite_Draw, Entite_GetVector, Entite_FoundDirection etc etc
-			 - Il faut une seule fonction pour déplacer TOUT type d'entité, aussi bien le personnage que les monstres
-Tant que les fonctions ne fonctionnent pas pour tout type de monstre on ne peut pas commencer à gérer les déplacements entre les niveaux, ni gérer les collisions...
-
-
-
-
-*/
-
-
-
-
 
 
 
@@ -39,17 +27,19 @@ Tant que les fonctions ne fonctionnent pas pour tout type de monstre on ne peut 
 #include "kr_level.h"
 
 /*!
-*  \fn     Entity * Entity_Init()
+*  \fn     Entity * Entity_Init(char* szFileName)
 *  \brief  Function to init an entity
 *
 *  \todo   use this function at first to create an entity then load
 *
-*  \param  none
-*  \return Entity* a pointer to the empty created entity 
+*  \param szFileName the name of the sprite file must be allocated in the initialization
+*  \return Entity* a pointer to the empty created entity
 */
-Entity * Entity_Init(){
+Entity * Entity_Init(char* szFileName){
+	Uint32 iNameLen = strlen(szFileName);
 	Entity * entite = (Entity *)malloc(sizeof(Entity));
-	entite->strEntityName = "Nom indefini";
+	
+	entite->strEntityName = UTIL_CopyStr(szFileName, iNameLen);
 	entite->pSprEntity = NULL;
 	entite->state = normal;
 	entite->iEntityLife = 0;
@@ -59,25 +49,23 @@ Entity * Entity_Init(){
 }
 
 /*!
-*  \fn     void Entity_Load(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite)
+*  \fn     void Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Kr_Sprite *sprite)
 *  \brief  Function to load the entity
 *
 *  \todo   use this function after the entity had been inited
 *
 *  \param entite a pointer to an entity
-*  \param name the name of the entity
 *  \param life his life with an integer
 *  \param armor his armor with an integer
 *  \param sprite a pointer to the sprite of the entity
 *  \return boolean it verify if the load is correct or not
 */
-Boolean Entity_Load(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_Sprite *sprite){
-	entite->strEntityName = name;
-	entite->iEntityLife = life;
+Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprite){
+		entite->iEntityLife = life;
 	entite->iArmor = armor;
 	entite->pSprEntity = sprite;
 	if (sprite == NULL){
-		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s in the entity %s !\n", sprite->strName, name);
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s in the entity %s !\n", sprite->strName, entite->strEntityName);
 		return FALSE;
 	}
 	entite->state = normal;
@@ -99,6 +87,7 @@ Boolean Entity_Load(Entity *entite, char * name, Uint32 life, Uint32 armor, Kr_S
 *  \return none
 */
 void Entity_Free(Entity *entite){
+	UTIL_Free(entite->strEntityName);
 	Kr_Sprite_Free(entite->pSprEntity);
 	UTIL_Free(entite);
 }
@@ -117,7 +106,7 @@ Boolean Entity_Draw(SDL_Renderer * pRenderer, Entity *entite){
 	SDL_Rect frameToDraw;
 
 	//Création d'un int permettant de sélectionner la bonne frame
-	int largeur = entite->pSprEntity->iFrameWidth / entite->pSprEntity->iNbFrames;
+	Uint32 largeur = entite->pSprEntity->iFrameWidth / entite->pSprEntity->iNbFrames;
 
 	if ((largeur < 0) || (entite == NULL)){
 		Kr_Log_Print(KR_LOG_ERROR, "Impossible to access to the entity\n");
@@ -127,14 +116,14 @@ Boolean Entity_Draw(SDL_Renderer * pRenderer, Entity *entite){
 	frameToDraw.y = 0;
 	frameToDraw.h = entite->pSprEntity->iFrameHeight;
 	frameToDraw.w = largeur;
-	Kr_Log_Print(KR_LOG_INFO, "Frame : { x = %d ; y = %d ; h = %d ; w = %d }\n", frameToDraw.x, frameToDraw.y, frameToDraw.h, frameToDraw.w);
-	
+//	Kr_Log_Print(KR_LOG_INFO, "Frame : { x = %d ; y = %d ; h = %d ; w = %d }\n", frameToDraw.x, frameToDraw.y, frameToDraw.h, frameToDraw.w);
+
 	//Affichage de l'entite sur l'écran
 	if (SDL_RenderCopy(pRenderer, entite->pSprEntity->pTextureSprite, &frameToDraw, entite->pSprEntity->pRectPosition) == -1){
 		Kr_Log_Print(KR_LOG_ERROR, "The entity %s hasn't been draw on the window\n", entite->strEntityName);
 		return FALSE;
 	}
-	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window\n", entite->strEntityName);
+//	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window\n", entite->strEntityName);
 	return TRUE;
 
 }
@@ -164,15 +153,16 @@ void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy){
 
 
 /*!
- *	\fn	    Direction foundDirection(Sint32 vx, Sint32 vy)
- *  \brief  Function to get a direction from a vector
- *
- *  \param vx a move in x
- *  \param vy a move in y
- *  \return Direction the direction associated to the vector
- */
-Direction foundDirection(Sint32 vx, Sint32 vy){
-	Direction newDir;
+*	\fn	    Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity)
+*  \brief  Function to get a direction from a vector
+*
+*  \param vx       a move in x
+*  \param vy       a move in y
+*  \param pEntity  a pointer to the entity structure
+*  \return Direction the direction associated to the vector
+*/
+Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
+	Direction newDir = pEntity->direction; // défaut
 	if (vy > 0)
 		newDir = sud;
 	if (vy < 0)
@@ -185,7 +175,7 @@ Direction foundDirection(Sint32 vx, Sint32 vy){
 }
 
 /*!
-*  \fn     void updateEntityVector(Kr_Input myEvent,Kr_Level *pLevel, Entity *entie, int *tempoAnim, SDL_Renderer *pRenderer)
+*  \fn     void updateEntityVector(Kr_Input myEvent,Kr_Level *pLevel, Entity *entie, Uint32 *tempoAnim, SDL_Renderer *pRenderer)
 *  \brief  Function to update the direction and the position on the map of the entite
 *
 *	\todo rajouter la fonction de gestion des collisions
@@ -196,51 +186,52 @@ Direction foundDirection(Sint32 vx, Sint32 vy){
 *  \param pRenderer a pointer to the renderer
 *  \return Boolean true if the vector has been updated false either
 */
-Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, int *tempoAnim, SDL_Renderer *pRenderer){
+Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, Uint32 *tempoAnim, SDL_Renderer *pRenderer){
 	Sint32 vx, vy;
 
 	//Obtention des déplacements générés par le clavier
 	getVector(myEvent, &vx, &vy);
-	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
+//	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
 
+	switchTextureFromDirection(entite, vx, vy, pRenderer);
 	//Gestion des collisions (à venir)
-	//Kr_Collision_Move(pLevel, pPlayer, vx, vy);
-
+	if (Kr_Collision_Move(pLevel, entite->pSprEntity->pRectPosition, vx, vy) == 3)
+	{
+		vx = vy = 0;
+	}
 	// Changement de l'animation
-	if ( (vx == 0) && (vy ==0) ){						//Si pas de mouvement :
+	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
 		entite->mouvement = 0;									//
 		entite->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
 		*tempoAnim = 0;											// reset de la tempo
-		Kr_Log_Print(KR_LOG_INFO, " the entity %s hasn't moved\n", entite->strEntityName);
+//		Kr_Log_Print(KR_LOG_INFO, " the entity %s hasn't moved\n", entite->strEntityName);
 		return TRUE;
 	}
 	else{												//Sinon
 		entite->mouvement = 1;
 		*tempoAnim += 1;
-		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
-		
+//		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
+
 		if (*tempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
 			entite->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
 			if (entite->pSprEntity->iCurrentFrame == entite->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
 				entite->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
-			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
-			
+//			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
+
 
 			*tempoAnim = 0;
 
-			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
+//			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
 		}
-		
+
 		//Deplacement final prévu
-		entite->iCoordXEntity += vx;							//on change les coordonnées de l'entité :
-		entite->iCoordYEntity += vy;							//		- à la fois dans la structure entité
-		entite->pSprEntity->pRectPosition->x += vx;				//		- mais aussi dans la sdl_rect du sprite (c'est lui qui sert vraiment à l'affichage)
-		entite->pSprEntity->pRectPosition->y += vy;
-		
-		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", entite->strEntityName, vx, vy, entite->iCoordXEntity, entite->iCoordYEntity);
+		entite->iCoordXEntity = entite->pSprEntity->pRectPosition->x; // Modification des coordonnées de l'entité, celles du sprite sont modifiées par les fonctions de collision
+		entite->iCoordYEntity = entite->pSprEntity->pRectPosition->y;
+		switchTextureFromDirection(entite, vx, vy, pRenderer);
+//		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", entite->strEntityName, vx, vy, entite->iCoordXEntity, entite->iCoordYEntity);
 		return TRUE;
-	}	
-	
+	}
+
 }
 
 /*!
@@ -256,10 +247,10 @@ Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, i
 void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer){
 	// Nouveau sprite potentiel suivant la direction
 	char newSprFileName[SIZE_MAX_NAME];
-		
-	Direction newDir = foundDirection(vx, vy);			//  - on cherche la nouvelle direction
-	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
+	Direction newDir = foundDirection(vx, vy, entite);			//  - on cherche la nouvelle direction
+//	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
 
+	strcpy(newSprFileName, entite->pSprEntity->strName); //Nécessaire de l'initialiser même si après la direction change
 	switch (newDir){									// Suivant la nouvelle direction :
 	case nord:
 		if (entite->direction != nord){						// if direction différente
@@ -296,8 +287,10 @@ void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Render
 	default:
 		break;
 	}
-	entite->pSprEntity->strName = newSprFileName;					//on change le nom du sprite (par le lien sprites/image.png pour que ca soit plus clair
-	Kr_Log_Print(KR_LOG_INFO, "Sprite %s has been loaded\n", entite->pSprEntity->strName);
-	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
+	//if (entite->pSprEntity->strName != NULL) free(entite->pSprEntity->strName); // On va devoir réalloué la taille du string
+
+	strcpy(entite->pSprEntity->strName, newSprFileName);//on change le nom du sprite (par le lien sprites/image.png pour que ca soit plus clair
+//	Kr_Log_Print(KR_LOG_INFO, "Sprite %s has been loaded\n", entite->pSprEntity->strName);
+//	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 
 }

@@ -10,6 +10,7 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Creation.                                    */
+/* Herrou        | 04/04/2015 | Correction typo                              */
 /*               |            |                                              */
 /*               |            |                                              */
 /*               |            |                                              */
@@ -39,7 +40,7 @@
 	void   InitEvents(Kr_Input* inEvent); 
 	void   UpdateEvents(Kr_Input* inEvent ); 
 
-#endif /* __KR_UTIL_H__ */
+#endif /* __KR_INPUT_H__ */
 
 /* ========================================================================= */
 

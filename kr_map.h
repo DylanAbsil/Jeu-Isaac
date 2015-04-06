@@ -10,8 +10,8 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 22/03/2015 | Creation.                                    */
-/*               |            | Ajout de Kr_GetNeighbor                      */
-/*               |            |                                              */
+/* Herrou        | 05/04/2015 | Ajout de Kr_Map_ShouldChangeLevel    		 */
+/*               |            | Ajout de Kr_Map_GetNeighborOfLevel           */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -25,6 +25,7 @@
 #include "kr_util.h"
 #include "kr_log.h"
 #include "kr_input.h"
+#include "entite.h"
 
 /*!
 * \struct Kr_Map
@@ -42,7 +43,8 @@ typedef struct
 Kr_Map *Kr_Map_Init(char *szMapFile);
 void	Kr_Map_Free(Kr_Map *pMap);
 void    Kr_Map_Log(Kr_Map *pMap);
-void	Kr_Map_GetNeighbor(Kr_Level *pLevel, Uint32 *iNumNord, Uint32 *iNumSud, Uint32 *iNumEst, Uint32 *iNumOuest);
+void	Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord, Uint32 *iNumSud, Uint32 *iNumEst, Uint32 *iNumOuest);
+Uint32  Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity);
 
 
 #endif /* __KR_MAP_H__ */

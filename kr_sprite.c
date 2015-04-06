@@ -14,21 +14,29 @@
 /*               |            | Mise en forme et corrections                 */
 /*               |            | Kr_Sprite_Load add param SDL_Renderer        */
 /*               |            | Prévention des inclusions multiples          */
+/* Herrou        | 04/04/2015 | Initialisation du nom faite par strcpy       */
+/*               |            | Le nom du sprite est donnée à Sprite_Init    */
+/*               |            |    et non pas à Sprite_Load                  */
+/*               |            | Le nom du sprite n'est plus alloué dynamiquement*/
 /* ========================================================================= */
 
 #include "kr_sprite.h"
 
 /*!
-*  \fn     Kr_Sprite *Kr_Sprite_Init()
+*  \fn     Kr_Sprite *Kr_Sprite_Init(char *szFileName)
 *  \brief  Function to init a sprite
 *
 *  \todo   use this function at first to create a sprite then load
 *
+*  \param szFileName the name of the sprite file must be allocated in the initialization
 *  \return Kr_Sprite* a pointer to the empty created entity
 */
-Kr_Sprite *Kr_Sprite_Init(){
+Kr_Sprite *Kr_Sprite_Init(char *szFileName)
+{
+
 	Kr_Sprite * pSprite = UTIL_Malloc(sizeof(Kr_Sprite));		//allocation mémoire
-	pSprite->strName = "Nom indefini";
+
+	strcpy(pSprite->strName, szFileName);
 	pSprite->pTextureSprite = NULL;
 	pSprite->iFrameHeight = 0;
 	pSprite->iFrameWidth = 0;
@@ -39,13 +47,12 @@ Kr_Sprite *Kr_Sprite_Init(){
 }
 
 /*!
-*  \fn     Boolean Kr_Sprite_Load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition)
+*  \fn     Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition)
 *  \brief  Function to load the sprite
 *
 *  \todo   use this function after the sprite had been initialized
 *
 *  \param  sprite         a pointer to a sprite
-*  \param  name           the name of the sprite (name of the path)
 *  \param  frameHeight    the height of the frame
 *  \param  frameWidth     the width of the frame
 *  \param  nbFrames       the numper of frames of the animation
@@ -53,12 +60,12 @@ Kr_Sprite *Kr_Sprite_Init(){
 *  \param  pRenderer      a pointer to the renderer  
 *  \return TRUE if everything is ok, FALSE otherwise
 */
-Boolean Kr_Sprite_Load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition, SDL_Renderer *pRenderer){
+Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition, SDL_Renderer *pRenderer){
 	// Creation d'un nouveau sprite et d'une nouvelle texture juste a partir du nom
 	SDL_Texture *pSpriteEntite = NULL;
 	char newSprFileName[SIZE_MAX_NAME];
 
-	sprintf(newSprFileName, "sprites/%s_sud.png", name);
+	sprintf(newSprFileName, "sprites/%s_sud.png", sprite->strName);
 
 	pSpriteEntite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
 	if (pSpriteEntite == NULL){
@@ -67,7 +74,7 @@ Boolean Kr_Sprite_Load(Kr_Sprite *sprite, char *name, Uint32 frameHeight, Uint32
 	}
 
 	// Integration dans la structure
-	sprite->strName        = newSprFileName;
+	strcpy(sprite->strName, newSprFileName);
 	sprite->pTextureSprite = pSpriteEntite;
 	sprite->iFrameHeight   = frameHeight;
 	sprite->iFrameWidth    = frameWidth;

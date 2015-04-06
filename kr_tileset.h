@@ -44,7 +44,7 @@ typedef struct
 */
 typedef struct
 {
-	const char  *szTilesetName;		/*!< Name of the tileset */
+	char		*szTilesetName;		/*!< Name of the tileset */
 	Sint32       iTilesWidth;		/*!< Width of a Tile */
 	Sint32       iTilesHeight;		/*!< Height of a Tile */
 	Sint32       iNbTilesX;			/*!< Number of Tiles on X axe on the tileset */
