@@ -349,10 +349,42 @@ void Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer *p
 			Rect_dest.w = pLevel->pLevel_Tileset->iTilesWidth;
 			if (i > 0 || i <= pLevel->iLevel_TileWidth || j > 0 || j <= pLevel->iLevel_TileHeight)
 			{
-				SDL_RenderCopy(pRenderer, pGrid->pTexture, NULL, &Rect_dest); // En arrière plan si la fonction Kr_Map_Draw est appelé au tout début
+				SDL_RenderCopy(pRenderer, pGrid->pTexture, NULL, &Rect_dest); 
 			}
 		}
 	}	
 }
 
 
+/*!
+*  \fn     void Level_Editor_DrawTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer)
+*  \brief  Function to print the tiles
+*
+*  \param  pTileset   a pointer to the tileset
+*  \param  bMustPrint Must we print the tiles ?
+*  \param  pRenderer  a pointer to the renderer
+*  \return none
+*/
+void Level_Editor_DrawTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer)
+{
+	Sint32   i, j, iNumTile;
+	SDL_Rect Rect_dest;
+
+	if (!bMustPrint) return;
+	iNumTile = 0;
+		
+	for (j = 0; j < pTileset->iNbTilesY; j++)
+	{
+		for (i = 0; i < pTileset->iNbTilesX; i++)
+		{
+			Kr_Log_Print(KR_LOG_INFO, "INumTile %d\n", iNumTile);
+			Rect_dest.x = i*pTileset->iTilesWidth;
+			Rect_dest.y = j*pTileset->iTilesHeight;
+			Rect_dest.h = pTileset->iTilesHeight;
+			Rect_dest.w = pTileset->iTilesWidth;
+			SDL_RenderCopy(pRenderer, pTileset->pTextureTileset, &(pTileset->pTilesProp[iNumTile].rTile), &Rect_dest);
+			iNumTile++;
+
+		}
+	}
+}
