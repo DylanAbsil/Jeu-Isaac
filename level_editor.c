@@ -1,7 +1,7 @@
 /* ========================================================================= */
 /*!
-* \file    map_editor.c
-* \brief   Contains the functions to handle the map editor.
+* \file    level_editor.c
+* \brief   Contains the functions to handle the level editor.
 * \author  Olivier Herrou
 * \version 1.0
 * \date    06 Avril 2015
@@ -19,5 +19,5 @@
 /* ===============================================================================================================  */
 
 
-#include "map_editor.h"
+#include "level_editor.h"
 

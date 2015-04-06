@@ -1,6 +1,6 @@
 /*!
-* \file    map_editor.h
-* \brief   Contains the structure to handle the map editor.
+* \file    level_editor.h
+* \brief   Contains the structure to handle the level editor.
 * \author  Olivier Herrou
 * \version 1.0
 * \date    06 Avril 2015
@@ -17,23 +17,31 @@
 /*               |            |         																			*/
 /* ===============================================================================================================  */
 
-#ifndef __MAP_EDITOR_H__
-#define __MAP_EDITOR_H__
+#ifndef __LEVEL_EDITOR_H__
+#define __LEVEL_EDITOR_H__
 
 #include "kr_common.h"
 #include "kr_log.h"
 
 /*!
-* \struct Map_Editor
-* \brief  Structure to handle the map editor.
+* \struct Level_Editor
+* \brief  Structure to handle the level editor.
 */
 typedef struct
 {
-	char           *szTmp;		/*!< Name  */
-}Map_Editor;
+	char *szEditorFile;		/*!< The name of the editor file */
+	char *szLevelVersion;	/*!< The version of the level the editor will generate */
+	char *szLevelNumber;	/*!< The number of the level */
+	char *szLevelName;		/*!< The name of the level */
+	char *szTilesetName;	/*!< The name of the tileset file */
+	Uint32 iTileWidth;		/*!< The number of tile (horizontal) of the level */
+	Uint32 iTileHeight;		/*!< The number of tile (vertical) of the level */
+	Uint32 iStandardTile;	/*!< The number of the standard tile (background) */
+
+}Level_Editor;
 
 
 
 
 
-#endif /* __KR_LEVEL_H__ */
+#endif /* __LEVEL_EDITOR_H__ */
