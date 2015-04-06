@@ -95,7 +95,6 @@ Boolean	Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer)
 		*/
 		return TRUE;
 	}
-	UTIL_CloseFile(&pFile);
 	Kr_Log_Print(KR_LOG_INFO, "The level %s does not exist !\n", szPath);
 	Kr_Log_Print(KR_LOG_INFO, "Creating the level %s !\n", szPath);
 	if(!Level_Editor_LoadLevel(pEditor, szLevelFile, pRenderer))
@@ -161,6 +160,7 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 	Kr_Log_Print(KR_LOG_INFO, "Opening level editor file %s\n", szPath);
 	pFile = UTIL_OpenFile(szPath, "r"); 
 	if (!pFile) return FALSE;
+	//rewind(pFile); // remise du curseur au top
 
 	// Initialisation du level
 	pEditor->pLevel = Kr_Level_Init(szLevelFile);
@@ -169,6 +169,7 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 	fscanf(pFile, "%d", &pEditor->pLevel->iLevelNum);
 
 	// Nom du level
+	fgets(szBuf, CACHE_SIZE, pFile); // On récupère le caractère \n
 	fgets(szBuf, CACHE_SIZE, pFile);
 	szBuf[strcspn(szBuf, "\n")] = '\0'; //retirer \n
 	iNameLen = strlen(szBuf) - 1;      // Il faut retirer 1 car il ne faut pas envoyer à UTIL_CopyStr \0
@@ -204,6 +205,12 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 		return FALSE; // Dimension de la carte trop grande, limité à KR_WIDTH_WINDOW et KR_HEIGHT_WINDOW
 	}
 
+	/* Allocation du tableau 2D szLayout */
+	pEditor->pLevel->szLayout = malloc(pEditor->pLevel->iLevel_TileWidth*sizeof(Uint32*));
+	for (i = 0; i<pEditor->pLevel->iLevel_TileWidth; i++)
+		pEditor->pLevel->szLayout[i] = malloc(pEditor->pLevel->iLevel_TileHeight*sizeof(Uint32));
+
+
 	/*Affectation des données level au schema */
 	for (j = 0; j<pEditor->pLevel->iLevel_TileHeight; j++)
 	{
@@ -236,7 +243,7 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 	Sint32 i = 0, j = 0;
 
 	sprintf(szPath, "maps\\%s.txt", pLevel->szLevelFile);
-	pFile = UTIL_OpenFile(pLevel->szLevelFile, "w"); // Ouverture en écriture 
+	pFile = UTIL_OpenFile(szPath, "w"); // Ouverture en écriture 
 	if (!pFile) return FALSE;
 
 	fprintf(pFile, "%s\n", KR_LEVEL_VERSION);
