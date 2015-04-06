@@ -58,6 +58,6 @@ Grid  *Grid_Init(char *szFileName, Kr_Level *pLevel, SDL_Renderer *pRenderer);
 void   Grid_Free(Grid *pGrid);
 void   Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer *pRenderer);
 
-void Level_Editor_DrawTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer);
+void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer);
 
 #endif /* __LEVEL_EDITOR_H__ */

@@ -357,7 +357,7 @@ void Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer *p
 
 
 /*!
-*  \fn     void Level_Editor_DrawTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer)
+*  \fn     void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer)
 *  \brief  Function to print the tiles
 *
 *  \param  pTileset   a pointer to the tileset
@@ -365,7 +365,7 @@ void Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer *p
 *  \param  pRenderer  a pointer to the renderer
 *  \return none
 */
-void Level_Editor_DrawTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer)
+void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer)
 {
 	Sint32   i, j, iNumTile;
 	SDL_Rect Rect_dest;
@@ -384,7 +384,6 @@ void Level_Editor_DrawTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Render
 			Rect_dest.w = pTileset->iTilesWidth;
 			SDL_RenderCopy(pRenderer, pTileset->pTextureTileset, &(pTileset->pTilesProp[iNumTile].rTile), &Rect_dest);
 			iNumTile++;
-
 		}
 	}
 }
