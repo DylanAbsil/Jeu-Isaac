@@ -130,7 +130,7 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 	/* Déterminer le numéro du level actuel */
 	strcpy(szArray, pMap->szMapLayout[pLevel->iLevelNum - 1]);
 	
-	Kr_Log_Print(KR_LOG_INFO, "The current level %d is connected to %s, lenght : %d\n", pLevel->iLevelNum, szArray, iArrayLen);
+	Kr_Log_Print(KR_LOG_INFO, "The current level %d is connected to %s\n", pLevel->iLevelNum, szArray);
 
 	for (i = 0; i < 4; i++)
 	{
@@ -148,7 +148,7 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 		else if (i == 1) pLevel->iNumSud = iNum;
 		else if (i == 2) pLevel->iNumEst = iNum;
 		else if (i == 3) pLevel->iNumOuest = iNum;
-		UTIL_SousChaine(szArray, strlen(szBuf)+1, iArrayLen, szArray); // On supprime de la chaine la partie traité
+		if(i < 3) UTIL_SousChaine(szArray, strlen(szBuf)+1, iArrayLen, szArray); // On supprime de la chaine la partie traité
 	}
 	
 }
