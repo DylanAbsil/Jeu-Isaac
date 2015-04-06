@@ -16,6 +16,7 @@
 /*				 |            | var global, il est mit en paramètre          */
 /*               |            | Add UTIL_SousChaine                          */
 /* Herrou        | 05/04/2015 | Add UTIL_StrToUint32						 */
+/* Herrou        | 06/04/2015 | Remove gpRenderer  							 */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -25,8 +26,6 @@
 
     #include "kr_common.h"
 
-extern SDL_Renderer *gpRenderer; // Renderer is a global var from main
-    
     Uint32       UTIL_Sqrt32( Uint32 iValue );
     FILE*        UTIL_OpenFile( const char *szPath, const char *szMode );
     void         UTIL_CloseFile( FILE **ppFile );

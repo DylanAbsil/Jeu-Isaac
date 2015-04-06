@@ -98,12 +98,10 @@ Boolean	Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer)
 	UTIL_CloseFile(&pFile);
 	Kr_Log_Print(KR_LOG_INFO, "The level %s does not exist !\n", szPath);
 	Kr_Log_Print(KR_LOG_INFO, "Creating the level %s !\n", szPath);
-	Level_Editor_LoadLevel(pEditor, szLevelFile, pRenderer);
-	
-
-
-
-
+	if(!Level_Editor_LoadLevel(pEditor, szLevelFile, pRenderer))
+	{
+		return FALSE;
+	}
 	return TRUE;
 }
 
@@ -117,7 +115,8 @@ Boolean	Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer)
 */
 void Level_Editor_Free(Level_Editor *pEditor)
 {
-
+	Kr_Level_Free(pEditor->pLevel);
+	UTIL_Free(pEditor);
 }
 
 
@@ -151,12 +150,11 @@ void Level_Editor_Log(Level_Editor *pEditor)
 Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Renderer *pRenderer)
 {
 	Uint32 iNameLen = 0;
-	char   szBuf[CACHE_SIZE];  // Buffer
+	char   szBuf[CACHE_SIZE];
 	char   szPath[50];
 	FILE  *pFile;
-	Uint32 iNameLen = 0;
 	Uint32 iTmp = 0;
-	Uint32 i, j;
+	Sint32 i = 0, j = 0;
 
 	/* Ouverture du fichier level_editor */
 	sprintf(szPath, "maps\\%s.txt", pEditor->szEditorFile);
@@ -216,8 +214,11 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 	}
 	Kr_Log_Print(KR_LOG_INFO, "Kr_Level_Layout: Done\n");
 	Kr_Log_Print(KR_LOG_INFO, "Creating the level file with the loaded data !\n");
-	return TRUE;
-	
+	if (!Level_Editor_CreateLevelFile(pEditor->pLevel))
+	{
+		return FALSE;
+	}
+	return TRUE;	
 }
 
 
@@ -230,6 +231,35 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 */
 Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 {
+	FILE *pFile;
+	char szPath[50];
+	Sint32 i = 0, j = 0;
+
+	sprintf(szPath, "maps\\%s.txt", pLevel->szLevelFile);
+	pFile = UTIL_OpenFile(pLevel->szLevelFile, "w"); // Ouverture en écriture 
+	if (!pFile) return FALSE;
+
+	fprintf(pFile, "%s\n", KR_LEVEL_VERSION);
+	fprintf(pFile, "#property\n");
+	fprintf(pFile, "%s\n", pLevel->szLevelName);
+	fprintf(pFile, "#tileset\n");
+	fprintf(pFile, "%s\n", pLevel->pLevel_Tileset->szTilesetName);
+	fprintf(pFile, "#layout\n");
+	fprintf(pFile, "%d %d\n", pLevel->iLevel_TileWidth, pLevel->iLevel_TileHeight);
+	
+	for (j = 0; j<pLevel->iLevel_TileHeight; j++)
+	{
+		for (i = 0; i<pLevel->iLevel_TileWidth; i++)
+		{
+			fprintf(pFile, "%d ", pLevel->szLayout[i][j]);
+		}
+		fprintf(pFile,"\n");
+	}
+	fprintf(pFile, "#entity\n");
+	fprintf(pFile, "#end\n");
+
+	UTIL_CloseFile(&pFile);
+	Kr_Log_Print(KR_LOG_INFO, "File %s has been created \n",szPath);
 	return TRUE;
 }
 
