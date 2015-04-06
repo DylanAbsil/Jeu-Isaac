@@ -40,7 +40,7 @@ Commentaire :
 
 /*!
 *  \fn     Kr_Tileset *Kr_Level_Init(char *szFileName)
-*  \brief  Function to load initialize a Level thanks to the level file
+*  \brief  Function to initialize a Level thanks to the level file
 *
 *  \param  szFileName the name of the level file
 *  \return the initialize structure

@@ -21,6 +21,9 @@
 #define __LEVEL_EDITOR_H__
 
 #include "kr_common.h"
+#include "kr_util.h"
+#include "kr_tileset.h"
+#include "kr_level.h"
 #include "kr_log.h"
 
 /*!
@@ -29,18 +32,21 @@
 */
 typedef struct
 {
-	char *szEditorFile;		/*!< The name of the editor file */
-	char *szLevelVersion;	/*!< The version of the level the editor will generate */
-	char *szLevelNumber;	/*!< The number of the level */
-	char *szLevelName;		/*!< The name of the level */
-	char *szTilesetName;	/*!< The name of the tileset file */
-	Uint32 iTileWidth;		/*!< The number of tile (horizontal) of the level */
-	Uint32 iTileHeight;		/*!< The number of tile (vertical) of the level */
-	Uint32 iStandardTile;	/*!< The number of the standard tile (background) */
+	char	*szEditorFile;		/*!< The name of the editor file */
+	char	*szLevelVersion;	/*!< The version of the level the editor will generate */
+	char	*szLevelName;		/*!< The name of the level */
+	char	*szTilesetName;		/*!< The name of the tileset file */
+	Uint32	*iLevelNumber;		/*!< The number of the level */
+	Uint32	 iTileWidth;		/*!< The number of tile (horizontal) of the level */
+	Uint32	 iTileHeight;		/*!< The number of tile (vertical) of the level */
+	Uint32	 iStandardTile;		/*!< The number of the standard tile (background) */
 
 }Level_Editor;
 
-
+Level_Editor *Level_Editor_Init(char *szEditorFile);
+Boolean		  Level_Editor_Load(Level_Editor *pEditor);
+void		  Level_Editor_Log(Level_Editor *pEditor);
+void		  Level_Editor_Free(Level_Editor *pEditor);
 
 
 
