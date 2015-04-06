@@ -87,12 +87,17 @@ Boolean	Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer)
 	{
 		Kr_Log_Print(KR_LOG_INFO, "The level already exist, loading %s for modification !\n", szPath);
 		UTIL_CloseFile(&pFile);
-		/*
-		
-		  ICI ENVOYER VERS LA FONCTION QUI GERE DIRECTEMENT LES MODIFICATIONS DES LEVELS
-		  IL FAUT CEPENDANT CHARGER LE LEVEL AVANT !
-
-		*/
+		pEditor->pLevel = Kr_Level_Init(szLevelFile);
+		if (pEditor->pLevel == NULL)
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the level\n", szLevelFile);
+			return FALSE;
+		}
+		if (!Kr_Level_Load(pEditor->pLevel, pRenderer))
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "Can't load the level\n", szLevelFile);
+			return FALSE;
+		}
 		return TRUE;
 	}
 	Kr_Log_Print(KR_LOG_INFO, "The level %s does not exist !\n", szPath);
@@ -164,6 +169,11 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 
 	// Initialisation du level
 	pEditor->pLevel = Kr_Level_Init(szLevelFile);
+	if (pEditor->pLevel == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the level\n", szLevelFile);
+		return FALSE;
+	}
 
 	// Numero du level
 	fscanf(pFile, "%d", &pEditor->pLevel->iLevelNum);
