@@ -40,8 +40,6 @@
 #include "kr_tileset.h"
 
 #define KR_LEVEL_VERSION "Level Version 1.1"
-#define KR_WIDTH_WINDOW  16*80 // 1280
-#define KR_HEIGHT_WINDOW 16*44 // 704
 /*!
 * \struct Kr_Level
 * \brief  Structure to handle the level.

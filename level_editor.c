@@ -35,7 +35,7 @@ Level_Editor *Level_Editor_Init(char *szEditorFile)
 
 	Uint32 iNameLen = strlen(szEditorFile);
 	pEditor = (Level_Editor *)UTIL_Malloc(sizeof(Level_Editor));
-
+	if (pEditor == NULL) return NULL;
 	pEditor->szEditorFile	= UTIL_CopyStr(szEditorFile, iNameLen);
 	pEditor->iStandardTile	= 0;
 	pEditor->pLevel			= NULL;
@@ -282,5 +282,77 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 
 
 
+/*!
+*  \fn     Grid *Grid_Init(char *szFileName, Kr_Level *pLevel, SDL_Renderer *pRenderer)
+*  \brief  Function to initialize a Grid structure
+*
+*  \param  szFileName the name of the image which we'll use to do the grid with the extension
+*  \param  pLevel    the level structure 
+*  \param  pRenderer a pointer to the renderer
+*  \return the initialized structure, NULL otherwise
+*/
+Grid *Grid_Init(char *szFileName, Kr_Level *pLevel, SDL_Renderer *pRenderer)
+{
+	Grid *pGrid = NULL;
+	char szPath[50];
+	sprintf(szPath, "sprites\\%s", szFileName);
+
+	pGrid = (Grid *)UTIL_Malloc(sizeof(Grid));
+	if (pGrid == NULL) return NULL;
+	pGrid->Rect.x = 0;
+	pGrid->Rect.y = 0;
+	pGrid->Rect.h = pLevel->pLevel_Tileset->iTilesHeight;
+	pGrid->Rect.w = pLevel->pLevel_Tileset->iTilesWidth;
+	pGrid->pTexture = UTIL_LoadTexture(pRenderer, szPath, NULL, &pGrid->Rect); // Le redimensionnement de la texture sera fait dans cette fonction
+
+	return pGrid;
+}
+
+/*!
+*  \fn     void Grid_Free(Grid *pGrid)
+*  \brief  Function to free a Grid structure
+*
+*  \param  pGrid  the Grid structure to free
+*  \return none
+*/
+void Grid_Free(Grid *pGrid)
+{
+	UTIL_FreeTexture(&pGrid->pTexture);
+	UTIL_Free(pGrid);
+}
+
+
+/*!
+*  \fn     void Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer *pRenderer)
+*  \brief  Function to Draw a Grid on a level
+*
+*  \param  pGrid     the Grid structure 
+*  \param  pLevel    the level structure 
+*  \param  bMustDraw Must we draw the grid?
+*  \param  pRenderer a pointer to the renderer
+*  \return none
+*/
+void Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer *pRenderer)
+{
+	Sint32   i, j;
+	SDL_Rect Rect_dest;
+
+	if (!bMustDraw) return;
+	
+	for (i = 0; i <= pLevel->iLevel_TileWidth; i++)
+	{
+		for (j = 0; j <= pLevel->iLevel_TileHeight; j++)
+		{
+			Rect_dest.x = i*pLevel->pLevel_Tileset->iTilesWidth;
+			Rect_dest.y = j*pLevel->pLevel_Tileset->iTilesHeight;
+			Rect_dest.h = pLevel->pLevel_Tileset->iTilesHeight;
+			Rect_dest.w = pLevel->pLevel_Tileset->iTilesWidth;
+			if (i > 0 || i <= pLevel->iLevel_TileWidth || j > 0 || j <= pLevel->iLevel_TileHeight)
+			{
+				SDL_RenderCopy(pRenderer, pGrid->pTexture, NULL, &Rect_dest); // En arrière plan si la fonction Kr_Map_Draw est appelé au tout début
+			}
+		}
+	}	
+}
 
 
