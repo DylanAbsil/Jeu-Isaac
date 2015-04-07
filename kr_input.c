@@ -10,6 +10,7 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Creation.                                    */
+/* Herrou        | 07/04/2015 | Gestion de la molette de la souris.          */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -56,6 +57,9 @@ void UpdateEvents(Kr_Input* inEvent)
 			break;
 		case SDL_QUIT:
 			inEvent->bQuit = 1;
+			break;
+		case SDL_MOUSEWHEEL:
+			inEvent->iScrollVertical = event.wheel.y;
 			break;
 		default:
 			break;

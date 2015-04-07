@@ -11,6 +11,7 @@
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 01/03/2015 | Creation.                                    */
 /* Herrou        | 04/04/2015 | Correction typo                              */
+/* Herrou        | 07/04/2015 | Ajout du paramètre iScrollVertical           */
 /*               |            |                                              */
 /*               |            |                                              */
 /*               |            |                                              */
@@ -32,6 +33,7 @@
 		Uint32  iMouseY;				   /*!< Integer to indicate the absolute position of the mouse on Y. */
 		Uint32  iMouseXRel; 			   /*!< Integer to indicate the relative position of the mouse on X. */
 		Uint32  iMouseYRel;				   /*!< Integer to indicate the relative position of the mouse on Y. */
+		Sint32  iScrollVertical;		   /*!< Integer to indicate the amount scrolled vertically, positive away from the user and negative toward the user. */
 		char    szMouseButtons[8];         /*!< Array to indicate the status of each buttons of the mouse */
 		Boolean bQuit;                     /*!< Boolean to indicate if we quit. */
 	} Kr_Input; 
