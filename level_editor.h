@@ -9,7 +9,7 @@
 /* Developers    | Date       | Comments																			*/
 /* --------------+------------+------------------------------------------------------------------------------------ */
 /* Herrou        | 06/04/2015 | Création																			*/
-/*               |            |         																			*/
+/* Herrou        | 07/04/2015 | Add Level_Editor_GetTile        													*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -59,5 +59,5 @@ void   Grid_Free(Grid *pGrid);
 void   Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer *pRenderer);
 
 void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer);
-
+Sint32 Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean tilesetIsShown);
 #endif /* __LEVEL_EDITOR_H__ */

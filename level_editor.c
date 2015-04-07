@@ -10,7 +10,7 @@
 /* Developers    | Date       | Comments																			*/
 /* --------------+------------+------------------------------------------------------------------------------------ */
 /* Herrou        | 06/04/2015 | Création																			*/
-/*               |            |         																			*/
+/* Herrou        | 07/04/2015 | Add Level_Editor_GetTile        													*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -377,7 +377,6 @@ void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Rende
 	{
 		for (i = 0; i < pTileset->iNbTilesX; i++)
 		{
-			Kr_Log_Print(KR_LOG_INFO, "INumTile %d\n", iNumTile);
 			Rect_dest.x = i*pTileset->iTilesWidth;
 			Rect_dest.y = j*pTileset->iTilesHeight;
 			Rect_dest.h = pTileset->iTilesHeight;
@@ -386,4 +385,37 @@ void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Rende
 			iNumTile++;
 		}
 	}
+}
+
+
+
+/*!
+*  \fn     Sint32 Level_Editor_GetTile(Level_Editor *pEditor,Uint32 x, Uint32 y, Boolean tilesetIsShown)
+*  \brief  Function to get the tile on the renderer from coordinate
+*
+*  \param  x			  coordinate
+*  \param  y			  coordinate
+*  \param  tilesetIsShown is the tileset shown ?
+*  \param  pEditor        a pointer to the Level_Editor structure
+*  \return The tile number, -1 if error
+*/
+Sint32 Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean tilesetIsShown)
+{
+	Uint32 iNumTilesX, iNumTilesY, iTileNum = 0;
+
+	//Si le tileset n'est pas affiché on récupère directement la tile du level, de même si le curseur est hors du tileset bien qu'affiché
+	if ((!tilesetIsShown) || (x > (pEditor->pLevel->pLevel_Tileset->iNbTilesX *pEditor->pLevel->pLevel_Tileset->iTilesWidth))
+		|| (y > (pEditor->pLevel->pLevel_Tileset->iNbTilesY *pEditor->pLevel->pLevel_Tileset->iTilesHeight)))
+	{
+		Kr_Log_Print(KR_LOG_INFO, "You clicked out of the tileset or the tileset is not shown \n");
+		return Kr_Level_GetTile(pEditor->pLevel, x, y);
+	}
+	
+	// récupération du tile sur le tileset
+	// Obtenir les numéros des tiles
+	Kr_Log_Print(KR_LOG_INFO, "Fetching the tile on the tileset\n");
+	iNumTilesX = x / pEditor->pLevel->pLevel_Tileset->iTilesWidth;
+	iNumTilesY = y / pEditor->pLevel->pLevel_Tileset->iTilesHeight;
+	iTileNum = (pEditor->pLevel->pLevel_Tileset->iNbTilesX * iNumTilesY) + iNumTilesX;
+	return iTileNum;
 }
