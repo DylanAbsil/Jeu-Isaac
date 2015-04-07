@@ -60,4 +60,5 @@ void   Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer 
 
 void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer);
 Sint32 Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean tilesetIsShown);
+void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer);
 #endif /* __LEVEL_EDITOR_H__ */

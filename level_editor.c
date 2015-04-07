@@ -407,15 +407,45 @@ Sint32 Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean t
 	if ((!tilesetIsShown) || (x > (pEditor->pLevel->pLevel_Tileset->iNbTilesX *pEditor->pLevel->pLevel_Tileset->iTilesWidth))
 		|| (y > (pEditor->pLevel->pLevel_Tileset->iNbTilesY *pEditor->pLevel->pLevel_Tileset->iTilesHeight)))
 	{
-		Kr_Log_Print(KR_LOG_INFO, "You clicked out of the tileset or the tileset is not shown \n");
+		//Kr_Log_Print(KR_LOG_INFO, "You clicked out of the tileset or the tileset is not shown \n");
 		return Kr_Level_GetTile(pEditor->pLevel, x, y);
 	}
 	
 	// récupération du tile sur le tileset
 	// Obtenir les numéros des tiles
-	Kr_Log_Print(KR_LOG_INFO, "Fetching the tile on the tileset\n");
+	//Kr_Log_Print(KR_LOG_INFO, "Fetching the tile on the tileset\n");
 	iNumTilesX = x / pEditor->pLevel->pLevel_Tileset->iTilesWidth;
 	iNumTilesY = y / pEditor->pLevel->pLevel_Tileset->iTilesHeight;
 	iTileNum = (pEditor->pLevel->pLevel_Tileset->iNbTilesX * iNumTilesY) + iNumTilesX;
 	return iTileNum;
+}
+
+
+/*!
+*  \fn     void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer)
+*  \brief  Function to draw the current tile on the renderer from coordinate
+*
+*  \param  pEditor        a pointer to the Level_Editor structure
+*  \param  iNumTile       the number of the tile we want to draw
+*  \param  x			  coordinate
+*  \param  y			  coordinate
+*  \param  bMustDraw      must we draw the tile ?
+*  \param  pRenderer      a pointer to the renderer
+*  \return none
+*/
+void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer)
+{
+	Uint32 iNumTilesX, iNumTilesY;
+	SDL_Rect Rect_dest;
+
+	if (!bMustDraw) return;
+
+	iNumTilesX = x / pEditor->pLevel->pLevel_Tileset->iTilesWidth;
+	iNumTilesY = y / pEditor->pLevel->pLevel_Tileset->iTilesHeight;
+
+	Rect_dest.x = iNumTilesX * pEditor->pLevel->pLevel_Tileset->iTilesWidth;
+	Rect_dest.y = iNumTilesY * pEditor->pLevel->pLevel_Tileset->iTilesHeight;
+	Rect_dest.h = pEditor->pLevel->pLevel_Tileset->iTilesHeight;
+	Rect_dest.w = pEditor->pLevel->pLevel_Tileset->iTilesWidth;
+	SDL_RenderCopy(pRenderer, pEditor->pLevel->pLevel_Tileset->pTextureTileset, &(pEditor->pLevel->pLevel_Tileset->pTilesProp[iNumTile].rTile), &Rect_dest);
 }
