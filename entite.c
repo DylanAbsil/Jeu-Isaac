@@ -258,6 +258,7 @@ void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Render
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "nord"); //on va chercher le bon fichier image
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);							// on libère l'ancienne texture
 			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);	//on load la nouvelle texture asssociéee à la nouvelle direction
+			entite->pSprEntity->iFrameWidth = 144;
 		}
 		break;
 	case sud:
@@ -266,6 +267,7 @@ void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Render
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "sud");
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
 			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
+			entite->pSprEntity->iFrameWidth = 136;
 		}
 		break;
 	case ouest:
@@ -274,6 +276,7 @@ void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Render
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "ouest");
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
 			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
+			entite->pSprEntity->iFrameWidth = 160 ;
 		}
 		break;
 	case est:
@@ -282,6 +285,7 @@ void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Render
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "est");
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
 			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
+			entite->pSprEntity->iFrameWidth = 160 ;
 		}
 		break;
 	default:

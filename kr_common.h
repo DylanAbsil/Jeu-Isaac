@@ -42,7 +42,7 @@
 #define KR_WIDTH_WINDOW  16*80 // 1280
 #define KR_HEIGHT_WINDOW 16*44 // 704
 #define MOVESPEED 5
-#define RESET_FRAME 5
+#define RESET_FRAME 10
 #define SIZE_MAX_NAME 100
 
     /*! 
