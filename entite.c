@@ -194,11 +194,7 @@ Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, U
 //	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
 
 	switchTextureFromDirection(entite, vx, vy, pRenderer);
-	//Gestion des collisions (à venir)
-	if (Kr_Collision_Move(pLevel, entite->pSprEntity->pRectPosition, vx, vy) == 3)
-	{
-		vx = vy = 0;
-	}
+
 	// Changement de l'animation
 	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
 		entite->mouvement = 0;									//
@@ -223,7 +219,11 @@ Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, U
 
 //			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
 		}
-
+		//Gestion des collisions (à venir)
+		if (Kr_Collision_Move(pLevel, entite->pSprEntity->pRectPosition, vx, vy) == 3)
+		{
+			vx = vy = 0;
+		}
 		//Deplacement final prévu
 		entite->iCoordXEntity = entite->pSprEntity->pRectPosition->x; // Modification des coordonnées de l'entité, celles du sprite sont modifiées par les fonctions de collision
 		entite->iCoordYEntity = entite->pSprEntity->pRectPosition->y;
