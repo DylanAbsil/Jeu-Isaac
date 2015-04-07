@@ -16,6 +16,7 @@
 /*               |            | Add UTIL_SousChaine															*/
 /* Herrou        | 04/04/2015 | Modification UTIL_SousChaine :											    */
 /*               |            |  - La chaine à traiter ne doit pas contenir de caractère particulier		*/
+/* Herrou        | 07/04/2015 | Add UTIL_FileCopy 															*/
 /* ======================================================================================================== */
 #include "kr_util.h"
 
@@ -267,6 +268,32 @@ Sint32 UTIL_StrToUint32(char *szString)
 	}
 	return iValue;
 }
+
+
+
+
+/*!
+*  \fn     Boolean UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd)
+*  \brief  Function to convert a string to a Uint32
+*
+*  \remarks : Longueur maximale d'une ligne 1000octets, les file pointer ne sont pas fermé
+* 
+*  \param  pFileSrc   file pointer to the source file
+*  \param  pFileDst   file pointer to the source file
+*  \param  szEnd      When this string is detected the copy of the file is stopped
+*  \return TRUE if everything is ok, FALSE otherwise
+*/
+Boolean UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd)
+{
+	char szBuf[1000];
+	do
+	{
+		fgets(szBuf, sizeof(szBuf), pFileSrc);
+		fputs(szBuf, pFileDst);
+	}while (strstr(szBuf, szEnd) == NULL);
+	return TRUE;
+}
+
 /* ========================================================================= */
 
 /* ========================================================================= */

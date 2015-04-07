@@ -449,3 +449,87 @@ void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, 
 	Rect_dest.w = pEditor->pLevel->pLevel_Tileset->iTilesWidth;
 	SDL_RenderCopy(pRenderer, pEditor->pLevel->pLevel_Tileset->pTextureTileset, &(pEditor->pLevel->pLevel_Tileset->pTilesProp[iNumTile].rTile), &Rect_dest);
 }
+
+
+
+/*!
+*  \fn     void Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y)
+*  \brief  Function to rewrite in the layout of the level
+*
+*  \param  pEditor        a pointer to the Level_Editor structure
+*  \param  iNumTile       the number of the tile we want to draw
+*  \param  x			  coordinate
+*  \param  y			  coordinate
+*  \return none
+*/
+void Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y)
+{
+	Uint32 iNumTilesX, iNumTilesY;
+
+	iNumTilesX = x / pEditor->pLevel->pLevel_Tileset->iTilesWidth;
+	iNumTilesY = y / pEditor->pLevel->pLevel_Tileset->iTilesHeight;
+
+	//Kr_Log_Print(KR_LOG_INFO, "Writing %d at %d %d\n", iNumTile, iNumTilesX, iNumTilesY);
+	pEditor->pLevel->szLayout[iNumTilesX][iNumTilesY] = iNumTile;
+}
+
+
+/*!
+*  \fn     Boolean Level_Editor_SaveLayout(Level_Editor *pEditor)
+*  \brief  Function to rewrite in the layout of the level
+*
+*  \param  pEditor        a pointer to the Level_Editor structure
+*  \return TRUE if everything is ok, FALSE otherwise
+*/
+Boolean Level_Editor_SaveLayout(Level_Editor *pEditor)
+{
+	char   szPath1[50];
+	char   szPath2[50];
+	FILE  *pFileSrc;
+	FILE  *pFileDst;
+	Uint32 i, j; 
+
+	Kr_Log_Print(KR_LOG_INFO, "Saving the Layout !\n");
+	/* Ouverture du fichier temporaire*/
+	sprintf(szPath1, "maps\\level%d.tmp", pEditor->pLevel->iLevelNum);
+	pFileDst = UTIL_OpenFile(szPath1, "w"); //écriture
+	if (!pFileDst) return FALSE;
+
+
+	/* Ouverture du fichier level */
+	sprintf(szPath2, "maps\\level%d.txt", pEditor->pLevel->iLevelNum);
+	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szPath2);
+	pFileSrc = UTIL_OpenFile(szPath2, "r"); //Lecture 
+	if (!pFileDst)
+	{
+		UTIL_CloseFile(&pFileSrc);
+		return FALSE;
+	}
+
+	if (!UTIL_FileCopy(pFileSrc, pFileDst, "#layout")) return FALSE; // copie de la partie précédent le layout
+	UTIL_CloseFile(&pFileSrc);
+	UTIL_CloseFile(&pFileDst);
+	if (remove(szPath2)) Kr_Log_Print(KR_LOG_ERROR, "Failed to delete %s !\n", szPath1);
+	if (rename(szPath1, szPath2)) Kr_Log_Print(KR_LOG_ERROR, "Failed to rename %s to %s !\n",szPath1, szPath2);
+
+
+	/* Ouverture du fichier temporaire*/
+	sprintf(szPath1, "maps\\level%d.txt", pEditor->pLevel->iLevelNum);
+	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szPath2);
+	pFileSrc = UTIL_OpenFile(szPath1, "r+");
+	if (!pFileSrc) return FALSE;
+	fseek(pFileSrc, 0, SEEK_END);
+	fprintf(pFileSrc, "%d %d\n", pEditor->pLevel->iLevel_TileWidth, pEditor->pLevel->iLevel_TileHeight);
+	// Remplissage du nouveau Layout
+	for (j = 0; j< pEditor->pLevel->iLevel_TileHeight; j++)
+	{
+		for (i = 0; i< pEditor->pLevel->iLevel_TileWidth; i++)
+		{
+			fprintf(pFileSrc, "%d ", pEditor->pLevel->szLayout[i][j]);
+		}
+		fprintf(pFileSrc, "\n");
+	}
+	fprintf(pFileSrc, "#entity\n#end");
+	UTIL_CloseFile(&pFileSrc);
+	return TRUE;
+}

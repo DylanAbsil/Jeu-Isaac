@@ -17,6 +17,7 @@
 /*               |            | Add UTIL_SousChaine                          */
 /* Herrou        | 05/04/2015 | Add UTIL_StrToUint32						 */
 /* Herrou        | 06/04/2015 | Remove gpRenderer  							 */
+/* Herrou        | 07/04/2015 | Add UTIL_FileCopy 							 */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -36,6 +37,7 @@
     char*        UTIL_CopyStr( const char *szSrc, size_t iSrcLen );
 	void		 UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, char *p_szExtrait);
 	Sint32		 UTIL_StrToUint32(char *szString);
+	Boolean		 UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd);
 
     /*! Macro to free memory block. */
     #define      UTIL_Free(x) do { free( x ); x = NULL; } while( 0 )
