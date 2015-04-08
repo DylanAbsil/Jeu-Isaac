@@ -97,7 +97,7 @@ Direction	foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity);
 void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
 void		switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer);
 
-Boolean		updateEntityVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *entite, Uint32 *tempoAnim, SDL_Renderer *pRenderer);
+Boolean		updatePlayerVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *pPlayer, Uint32 *tempoAnim, SDL_Renderer *pRenderer);
 
 
 #endif /* __KR_ENTITE_H__ */
