@@ -16,6 +16,8 @@
 /* Herrou        | 05/04/2015 | Ajout de Kr_Map_ShouldChangeLevel    		 */
 /*               |            | Ajout de Kr_Map_GetNeighborOfLevel           */
 /*               |            | Gestion du changement de Map ok	             */
+/* Herrou        | 08/04/2015 | Le changement de niveau se détecte sur 		 */
+/*               |            | les bords, quelque soit la tile		         */
 /* ========================================================================= */
 
 #include "kr_map.h"
@@ -75,6 +77,7 @@ Kr_Map *Kr_Map_Init(char *szMapFile)
 	return pMap;
 }
 
+
 /*!
 *  \fn     void Kr_Map_Free(Kr_Map *pMap);
 *  \brief  Function to free a Kr_Map structure
@@ -92,6 +95,7 @@ void Kr_Map_Free(Kr_Map *pMap)
 	UTIL_Free(pMap);
 }
 
+
 /*!
 *  \fn     void Kr_Map_Log(Kr_Map *pMap);
 *  \brief  Function to log a Kr_Map structure
@@ -108,6 +112,7 @@ void Kr_Map_Log(Kr_Map *pMap)
 		Kr_Log_Print(KR_LOG_INFO, "[level%d] : %s\n",i+1, pMap->szMapLayout[i]);
 	}
 }
+
 
 /*!
 *  \fn     void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord, Uint32 *iNumSud, Uint32 *iNumEst, Uint32 *iNumOuest)
@@ -130,7 +135,7 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 	/* Déterminer le numéro du level actuel */
 	strcpy(szArray, pMap->szMapLayout[pLevel->iLevelNum - 1]);
 	
-	Kr_Log_Print(KR_LOG_INFO, "The current level %d is connected to %s\n", pLevel->iLevelNum, szArray);
+	//Kr_Log_Print(KR_LOG_INFO, "The current level %d is connected to %s\n", pLevel->iLevelNum, szArray);
 
 	for (i = 0; i < 4; i++)
 	{
@@ -154,7 +159,6 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 }
 
 
-
 /*!
 *  \fn     Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 *  \brief  Function to check if the level should be changed
@@ -166,45 +170,41 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 {
 	Sint32 x, y, iTmp;
-	Sint32 iTilesID;
 
 	iTmp = 0;
 	// Calcule des coordonnées du milieu du rectangle
 	x = pEntity->pSprEntity->pRectPosition->x + pEntity->pSprEntity->pRectPosition->w / 2;
 	y = pEntity->pSprEntity->pRectPosition->y + pEntity->pSprEntity->pRectPosition->h / 2;
-	iTilesID = Kr_Level_GetTile(pLevel, x, y);
-	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel && iTilesID != -1)// Le tile est-il un Tile pour changer de level ?
+
+	// On vérifie que le joueur est sur une extrémité de la map
+	if ((x < pLevel->pLevel_Tileset->iTilesWidth) || (y < pLevel->pLevel_Tileset->iTilesHeight) ||
+		(x > KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth) || (y > KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight))
 	{
 		Kr_Map_GetNeighborOfLevel(pMap, pLevel, &pLevel->iNumNord, &pLevel->iNumSud, &pLevel->iNumEst, &pLevel->iNumOuest);
-		if (pEntity->direction == nord && (y < pLevel->pLevel_Tileset->iTilesHeight))
+		if (pEntity->direction == nord && (y < pLevel->pLevel_Tileset->iTilesHeight) && pLevel->iNumNord != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - pEntity->pSprEntity->pRectPosition->h - 1; // Pour éviter les collisions également
-			pEntity->iCoordYEntity = KR_HEIGHT_WINDOW - pEntity->pSprEntity->pRectPosition->h - 1;
+			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - pEntity->pSprEntity->pRectPosition->h ; // Pour éviter les collisions également
+			pEntity->iCoordYEntity = KR_HEIGHT_WINDOW - pEntity->pSprEntity->pRectPosition->h ;
 			return pLevel->iNumNord;
 		}
-		else if (pEntity->direction == sud && (y >(KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight)))
+		else if (pEntity->direction == sud && (y >(KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight)) && pLevel->iNumSud != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->y = 1; //1 et non 0 pour éviter des collisions dans le mur dès le respawn
-			pEntity->iCoordYEntity = 1;
+			pEntity->pSprEntity->pRectPosition->y = 0; //1 et non 0 pour éviter des collisions dans le mur dès le respawn
+			pEntity->iCoordYEntity = 0;
 			return pLevel->iNumSud;
 		}
-		else if (pEntity->direction == est && (x > (KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth)))
+		else if (pEntity->direction == est && (x > (KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth)) && pLevel->iNumEst != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->x = 1;
-			pEntity->iCoordXEntity = 1;
+			pEntity->pSprEntity->pRectPosition->x = 0;
+			pEntity->iCoordXEntity = 0;
 			return pLevel->iNumEst;
 		}
-		else if (pEntity->direction == ouest && (x < pLevel->pLevel_Tileset->iTilesWidth))
+		else if (pEntity->direction == ouest && (x < pLevel->pLevel_Tileset->iTilesWidth) && pLevel->iNumOuest != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - pEntity->pSprEntity->pRectPosition->w - 1;
-			pEntity->iCoordXEntity = KR_WIDTH_WINDOW - pEntity->pSprEntity->pRectPosition->w - 1;
+			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - pEntity->pSprEntity->pRectPosition->w ;
+			pEntity->iCoordXEntity = KR_WIDTH_WINDOW - pEntity->pSprEntity->pRectPosition->w ;
 			return pLevel->iNumOuest;
 		}
-		return 0;
 	}
-
-
-	/* Autre événement */
-
 	return 0;
 }
