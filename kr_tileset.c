@@ -13,6 +13,8 @@
 /* Herrou        | 22/03/2015 | MAJ tiles properties                         */
 /* Herrou        | 23/03/2015 | MAJ tiles properties, iPorteLevel            */
 /* Herrou        | 04/04/2015 | Initialisation du nom faite par UTIL_CopyStr */
+/* Herrou        | 08/04/2015 | Tiles Properties : Remove iPorteLevel        */
+/*               |            | Tiles Properties : Add    iPorteMaison       */
 /*               |            |                                              */
 /* ========================================================================= */
 
@@ -130,12 +132,12 @@ Boolean Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer)
 			
 			pTileset->pTilesProp[iNumTile].iPlein = 1;
 			pTileset->pTilesProp[iNumTile].iWater = 0;
-			pTileset->pTilesProp[iNumTile].iPorteLevel = 0;
-			if ((strcmp(szBuf2, "sol") == 0)   || (strcmp(szBuf2, "porteLevel") == 0) ||
+			pTileset->pTilesProp[iNumTile].iPorteMaison = 0;
+			if ((strcmp(szBuf2, "sol") == 0)   ||
 				(strcmp(szBuf2, "fleur") == 0) || (strcmp(szBuf2, "NONE") == 0)  ||
 				(strcmp(szBuf2, "porteMaison") == 0)) pTileset->pTilesProp[iNumTile].iPlein = 0;
 			if ((strcmp(szBuf2, "eau") == 0)) pTileset->pTilesProp[iNumTile].iWater = 1;
-			if ((strcmp(szBuf2, "porteLevel") == 0)) pTileset->pTilesProp[iNumTile].iPorteLevel = 1;
+			if ((strcmp(szBuf2, "porteMaison") == 0)) pTileset->pTilesProp[iNumTile].iPorteMaison= 1;
 
 		}
 	}
