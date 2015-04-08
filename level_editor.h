@@ -63,4 +63,6 @@ Sint32  Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean 
 void	Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer);
 void    Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y);
 Boolean	Level_Editor_SaveLayout(Level_Editor *pEditor);
+
+
 #endif /* __LEVEL_EDITOR_H__ */

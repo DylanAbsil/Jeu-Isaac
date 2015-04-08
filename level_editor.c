@@ -261,6 +261,7 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 	fprintf(pFile, "%s\n", pLevel->szLevelName);
 	fprintf(pFile, "#tileset\n");
 	fprintf(pFile, "%s\n", pLevel->pLevel_Tileset->szTilesetName);
+	fprintf(pFile, "#entity\n");
 	fprintf(pFile, "#layout\n");
 	fprintf(pFile, "%d %d\n", pLevel->iLevel_TileWidth, pLevel->iLevel_TileHeight);
 	
@@ -529,7 +530,7 @@ Boolean Level_Editor_SaveLayout(Level_Editor *pEditor)
 		}
 		fprintf(pFileSrc, "\n");
 	}
-	fprintf(pFileSrc, "#entity\n#end");
+	fprintf(pFileSrc, "#end");
 	UTIL_CloseFile(&pFileSrc);
 	return TRUE;
 }

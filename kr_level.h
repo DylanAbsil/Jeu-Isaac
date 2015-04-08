@@ -39,7 +39,7 @@
 #include "kr_log.h"
 #include "kr_tileset.h"
 
-#define KR_LEVEL_VERSION "Level Version 1.1"
+#define KR_LEVEL_VERSION "Level Version 1.2"
 /*!
 * \struct Kr_Level
 * \brief  Structure to handle the level.
