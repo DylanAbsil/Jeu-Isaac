@@ -175,7 +175,7 @@ Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
 }
 
 /*!
-*  \fn     void updateEntityVector(Kr_Input myEvent,Kr_Level *pLevel, Entity *entie, Uint32 *tempoAnim, SDL_Renderer *pRenderer)
+*  \fn     void updatePlayerVector(Kr_Input myEvent,Kr_Level *pLevel, Entity *pPlyer, Uint32 *tempoAnim, SDL_Renderer *pRenderer)
 *  \brief  Function to update the direction and the position on the map of the entite
 *
 *	\todo rajouter la fonction de gestion des collisions
@@ -186,32 +186,31 @@ Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
 *  \param pRenderer a pointer to the renderer
 *  \return Boolean true if the vector has been updated false either
 */
-Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, Uint32 *tempoAnim, SDL_Renderer *pRenderer){
+Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, Uint32 *tempoAnim, SDL_Renderer *pRenderer){
 	Sint32 vx, vy;
 
 	//Obtention des déplacements générés par le clavier
 	getVector(myEvent, &vx, &vy);
 //	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
 
-	switchTextureFromDirection(entite, vx, vy, pRenderer);
 
 	// Changement de l'animation
 	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
-		entite->mouvement = 0;									//
-		entite->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
+		pPlayer->mouvement = 0;									//
+		pPlayer->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
 		*tempoAnim = 0;											// reset de la tempo
 //		Kr_Log_Print(KR_LOG_INFO, " the entity %s hasn't moved\n", entite->strEntityName);
 		return TRUE;
 	}
 	else{												//Sinon
-		entite->mouvement = 1;
+		pPlayer->mouvement = 1;
 		*tempoAnim += 1;
 //		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
 
 		if (*tempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
-			entite->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
-			if (entite->pSprEntity->iCurrentFrame == entite->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
-				entite->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
+			pPlayer->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
+			if (pPlayer->pSprEntity->iCurrentFrame == pPlayer->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
+				pPlayer->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
 //			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
 
 
@@ -219,18 +218,35 @@ Boolean updateEntityVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *entite, U
 
 //			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
 		}
+		
+		switchTextureFromDirection(pPlayer, vx, vy, pRenderer);
+
 		//Gestion des collisions (à venir)
-		if (Kr_Collision_Move(pLevel, entite->pSprEntity->pRectPosition, vx, vy) == 3)
+		if (Kr_Collision_Move(pLevel, pPlayer->pSprEntity->pRectPosition, vx, vy) == 3)
 		{
 			vx = vy = 0;
 		}
 		//Deplacement final prévu
-		entite->iCoordXEntity = entite->pSprEntity->pRectPosition->x; // Modification des coordonnées de l'entité, celles du sprite sont modifiées par les fonctions de collision
-		entite->iCoordYEntity = entite->pSprEntity->pRectPosition->y;
-		switchTextureFromDirection(entite, vx, vy, pRenderer);
+		pPlayer->iCoordXEntity = pPlayer->pSprEntity->pRectPosition->x; // Modification des coordonnées de l'entité, celles du sprite sont modifiées par les fonctions de collision
+		pPlayer->iCoordYEntity = pPlayer->pSprEntity->pRectPosition->y;
+		
 //		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", entite->strEntityName, vx, vy, entite->iCoordXEntity, entite->iCoordYEntity);
 		return TRUE;
 	}
+
+}
+
+/*!
+*  \fn     void updateEntityVector(Kr_Level *pLevel, Entity *entie, Uint32 *tempoAnim, SDL_Renderer *pRenderer)
+*  \brief  Function to update the direction and the position on the map of the entite
+*
+*  \param  pLevel  a pointer to the Level
+*  \param  pEntity  a pointer to the entity
+*  \param  tempoAnim an int to make a temporisation of the animation
+*  \param  pRenderer a pointer to the renderer
+*  \return Boolean true if the vector has been updated false either
+*/
+Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Uint32 *tempoAnim, SDL_Renderer *pRenderer){
 
 }
 
