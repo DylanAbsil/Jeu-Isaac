@@ -57,6 +57,7 @@ typedef struct
 	Uint32          iNumSud;		    /*!< The numero of the level with which is connected to the south */
 	Uint32          iNumEst;		    /*!< The numero of the level with which is connected to the east */
 	Uint32          iNumOuest;		    /*!< The numero of the level with which is connected to the west */
+	
 }Kr_Level;
 
 
