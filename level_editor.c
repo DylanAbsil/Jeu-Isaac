@@ -470,7 +470,8 @@ void Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, 
 	iNumTilesX = x / pEditor->pLevel->pLevel_Tileset->iTilesWidth;
 	iNumTilesY = y / pEditor->pLevel->pLevel_Tileset->iTilesHeight;
 
-	//Kr_Log_Print(KR_LOG_INFO, "Writing %d at %d %d\n", iNumTile, iNumTilesX, iNumTilesY);
+	if (iNumTilesX >= pEditor->pLevel->iLevel_TileWidth || iNumTilesY >= pEditor->pLevel->iLevel_TileHeight) return; // On vérifie que l'on est bien sur la carte
+
 	pEditor->pLevel->szLayout[iNumTilesX][iNumTilesY] = iNumTile;
 }
 
@@ -610,7 +611,7 @@ Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Edito
 
 	//Sauvegarde dans le tableau iTabCursor des valeurs iNbTiles et iNbTilesY
 
-	Kr_Log_Print(KR_LOG_INFO, "Selected : %d * %d tiles\n", iNbTilesX, iNbTilesY);
+	//Kr_Log_Print(KR_LOG_INFO, "Selected : %d * %d tiles\n", iNbTilesX, iNbTilesY);
 	if (iNbTilesX * iNbTilesY > LEVEL_EDITOR_MAX_SELECTION) return FALSE;
 	for (i = 0; i < iNbTilesY; i++) // ligne du level
 	{
@@ -662,4 +663,40 @@ void Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 		Level_Editor_PreDrawTile(pEditor, iTabTile[i], iCoordX, iCoordY, bPreDraw, pRenderer);
 		i++;
 	}
+}
+
+
+
+/*!
+*  \fn     void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Sint32 *iTabCursor);
+*  \brief  Function to write the current group selection in the layout
+*
+*  \param  pEditor        a pointer to the Level_Editor structure
+*  \param  iTabTile       array of tile number to draw
+*  \param  x			  coordinate
+*  \param  y			  coordinate
+*  \param  iTabNbTiles    an array which two first case indicate the nb of tiles on X and Y
+*  \return none
+*/
+void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Sint32 *iTabCursor)
+{
+	Uint32 i = 0, iCoordX = x, iCoordY = y - pEditor->pLevel->pLevel_Tileset->iTilesHeight;
+
+	while (iTabTile[i] != -1)
+	{
+
+		if (i % (iTabCursor[0])) //détection numéro de la ligne
+		{
+			iCoordX += pEditor->pLevel->pLevel_Tileset->iTilesWidth; // colonne suivante
+		}
+		else
+		{
+			iCoordY += pEditor->pLevel->pLevel_Tileset->iTilesHeight; // Ligne suivante
+			iCoordX = x; // remise à 0 de la colonne
+		}
+		Level_Editor_WriteLayout(pEditor, iTabTile[i],iCoordX,iCoordY);
+		i++;
+	}
+			
+	return TRUE;
 }

@@ -72,4 +72,6 @@ Boolean	Level_Editor_SaveLayout(Level_Editor *pEditor);
 Boolean Level_Editor_SelectingGroup(Sint32 *iTabCursor, Kr_Input *inEvent);
 Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Editor *pEditor, Boolean tilesetIsShown);
 void    Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw, SDL_Renderer *pRenderer, Sint32 *iTabNbTiles);
+void    Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Sint32 *iTabCursor);
+
 #endif /* __LEVEL_EDITOR_H__ */
