@@ -25,6 +25,10 @@
 #include "kr_tileset.h"
 #include "kr_level.h"
 #include "kr_log.h"
+#include "kr_input.h"
+
+/*!< The max number of tile in a group selection */
+#define LEVEL_EDITOR_MAX_SELECTION 100
 
 /*!
 * \struct Level_Editor
@@ -64,5 +68,8 @@ void	Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, 
 void    Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y);
 Boolean	Level_Editor_SaveLayout(Level_Editor *pEditor);
 
-
+/* Group selection*/
+Boolean Level_Editor_SelectingGroup(Sint32 *iTabCursor, Kr_Input *inEvent);
+Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Editor *pEditor, Boolean tilesetIsShown);
+void    Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw, SDL_Renderer *pRenderer, Sint32 *iTabNbTiles);
 #endif /* __LEVEL_EDITOR_H__ */

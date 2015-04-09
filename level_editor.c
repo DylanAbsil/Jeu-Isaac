@@ -534,3 +534,132 @@ Boolean Level_Editor_SaveLayout(Level_Editor *pEditor)
 	UTIL_CloseFile(&pFileSrc);
 	return TRUE;
 }
+
+
+/*!
+*  \fn     Boolean Level_Editor_SelectingGroup(Sint32 *iTabCursor, Kr_Input *inEvent)
+*  \brief  Function to check the area of tile the user is selecting
+*
+*  \param  iTabCursor   array of position of the cursor
+*  \param  inEvent      Structure which handle the input
+*  \return TRUE if everything is ok, FALSE otherwise
+*/
+Boolean Level_Editor_SelectingGroup(Sint32 *iTabCursor, Kr_Input *inEvent)
+{
+	Boolean bLeave = FALSE;
+	Boolean bReturn = FALSE;
+	while (!bLeave)
+	{
+		UpdateEvents(inEvent);
+		if (inEvent->szMouseButtons[0] && inEvent->szKey[SDL_SCANCODE_LSHIFT])
+		{
+			iTabCursor[2] = inEvent->iMouseX;
+			iTabCursor[3] = inEvent->iMouseY;
+			bLeave = TRUE;
+			bReturn = TRUE;
+		}
+		if (inEvent->szKey[SDL_SCANCODE_ESCAPE])
+		{
+			bLeave = TRUE;
+			bReturn = FALSE;
+			inEvent->szKey[SDL_SCANCODE_ESCAPE] = 0;
+		}
+	}
+	return bReturn;
+}
+
+/*!
+*  \fn    Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Editor *pEditor, Boolean tilesetIsShown);
+*  \brief  Function to fill an array with the number of the tile of each block of the group selection
+*
+*  \param  iTabTile    array with the number of the tile of each block of the group selection
+*  \param  iTabCursor   array of position of the cursor
+*  \param  tilesetIsShown is the tileset shown ?
+*  \param  pEditor        a pointer to the Level_Editor structure
+*  \return TRUE if everything is ok, FALSE otherwise
+*/
+Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Editor *pEditor, Boolean tilesetIsShown)
+{
+	Sint32 iDiffX = 0, iDiffY = 0, iTmp = 0, iTmp2 = 0, iNumTile = -1;
+	Uint32 iNbTilesX = 0, iNbTilesY = 0, i, j,z=0;
+	
+	// On range dans l'ordre croissant les valeurs de X et Y tel que tab[0]=minX, tab[1]=minY, tab[2]=maxX, tab[3]=maxY
+
+	if (iTabCursor[0] > iTabCursor[2])
+	{
+		iTmp = iTabCursor[0];
+		iTabCursor[0] = iTabCursor[2];
+		iTabCursor[2] = iTmp;
+	
+	}
+	if (iTabCursor[1] > iTabCursor[3])
+	{
+		iTmp = iTabCursor[1];
+		iTabCursor[1] = iTabCursor[3];
+		iTabCursor[3] = iTmp;
+	}
+	// calcul de la différence (positive)
+	
+	iNbTilesX = iTabCursor[2] / pEditor->pLevel->pLevel_Tileset->iTilesWidth - iTabCursor[0] / pEditor->pLevel->pLevel_Tileset->iTilesWidth + 1;
+	iNbTilesY = iTabCursor[3] / pEditor->pLevel->pLevel_Tileset->iTilesHeight - iTabCursor[1] / pEditor->pLevel->pLevel_Tileset->iTilesHeight + 1;
+	//Kr_Log_Print(KR_LOG_ERROR, "%d %d %d %d\n", iTabCursor[0], iTabCursor[1], iTabCursor[2], iTabCursor[3]);
+	// Calcul du nombre de tiles de la sélection sur X et Y
+
+	
+	
+
+	//Sauvegarde dans le tableau iTabCursor des valeurs iNbTiles et iNbTilesY
+
+	Kr_Log_Print(KR_LOG_INFO, "Selected : %d * %d tiles\n", iNbTilesX, iNbTilesY);
+	if (iNbTilesX * iNbTilesY > LEVEL_EDITOR_MAX_SELECTION) return FALSE;
+	for (i = 0; i < iNbTilesY; i++) // ligne du level
+	{
+		for (j = 0; j < iNbTilesX; j++) //Colonne du level
+		{
+			//Kr_Log_Print(KR_LOG_ERROR, "%d %d", iTabCursor[0] * j, iTabCursor[1] * i);
+			iTabTile[z] = Level_Editor_GetTile(pEditor, iTabCursor[0] + j * pEditor->pLevel->pLevel_Tileset->iTilesWidth, iTabCursor[1] + i *pEditor->pLevel->pLevel_Tileset->iTilesHeight, tilesetIsShown);
+			if (iTabTile[z] == -1) return FALSE;
+			//Kr_Log_Print(KR_LOG_INFO, "Tiles : %d\n", iTabTile[z]);
+			z++;
+		}
+	}
+	iTabCursor[0] = iNbTilesX;
+	iTabCursor[1] = iNbTilesY;
+	return TRUE;
+}
+
+
+
+/*!
+*  \fn     void    Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw,SDL_Renderer *pRendererSint32, *iTabNbTiles)
+*  \brief  Function to draw the current group selection on the renderer
+*
+*  \param  pEditor        a pointer to the Level_Editor structure
+*  \param  iTabTile       array of tile number to draw
+*  \param  x			  coordinate
+*  \param  y			  coordinate
+*  \param  bMustDraw      must we draw the tile ?
+*  \param  pRenderer      a pointer to the renderer
+*  \param  iTabNbTiles    an array which two first case indicate the nb of tiles on X and Y
+*  \return none
+*/
+void Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw, SDL_Renderer *pRenderer, Sint32 *iTabNbTiles)
+{
+	Uint32 i = 0, iCoordX = x, iCoordY = y - pEditor->pLevel->pLevel_Tileset->iTilesHeight;
+	
+	while (iTabTile[i] != -1)
+	{
+		
+		if (i % (iTabNbTiles[0])) //détection numéro de la ligne
+		{
+			iCoordX += pEditor->pLevel->pLevel_Tileset->iTilesWidth; // colonne suivante
+		}		
+		else
+		{	
+			iCoordY += pEditor->pLevel->pLevel_Tileset->iTilesHeight; // Ligne suivante
+			iCoordX = x; // remise à 0 de la colonne
+		}
+		Level_Editor_PreDrawTile(pEditor, iTabTile[i], iCoordX, iCoordY, bPreDraw, pRenderer);
+		i++;
+	}
+}
