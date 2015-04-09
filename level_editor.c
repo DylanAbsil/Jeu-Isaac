@@ -11,6 +11,7 @@
 /* --------------+------------+------------------------------------------------------------------------------------ */
 /* Herrou        | 06/04/2015 | Création																			*/
 /* Herrou        | 07/04/2015 | Add Level_Editor_GetTile        													*/
+/* Herrou        | 09/04/2015 | Sauvegarde des données, gestion de la sélection de groupe de tiles					*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -282,7 +283,6 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 }
 
 
-
 /*!
 *  \fn     Grid *Grid_Init(char *szFileName, Kr_Level *pLevel, SDL_Renderer *pRenderer)
 *  \brief  Function to initialize a Grid structure
@@ -389,7 +389,6 @@ void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Rende
 }
 
 
-
 /*!
 *  \fn     Sint32 Level_Editor_GetTile(Level_Editor *pEditor,Uint32 x, Uint32 y, Boolean tilesetIsShown)
 *  \brief  Function to get the tile on the renderer from coordinate
@@ -450,7 +449,6 @@ void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, 
 	Rect_dest.w = pEditor->pLevel->pLevel_Tileset->iTilesWidth;
 	SDL_RenderCopy(pRenderer, pEditor->pLevel->pLevel_Tileset->pTextureTileset, &(pEditor->pLevel->pLevel_Tileset->pTilesProp[iNumTile].rTile), &Rect_dest);
 }
-
 
 
 /*!
@@ -569,14 +567,15 @@ Boolean Level_Editor_SelectingGroup(Sint32 *iTabCursor, Kr_Input *inEvent)
 	return bReturn;
 }
 
+
 /*!
 *  \fn    Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Editor *pEditor, Boolean tilesetIsShown);
 *  \brief  Function to fill an array with the number of the tile of each block of the group selection
 *
-*  \param  iTabTile    array with the number of the tile of each block of the group selection
-*  \param  iTabCursor   array of position of the cursor
-*  \param  tilesetIsShown is the tileset shown ?
-*  \param  pEditor        a pointer to the Level_Editor structure
+*  \param  iTabTile			array with the number of the tile of each block of the group selection
+*  \param  iTabCursor		array of position of the cursor
+*  \param  tilesetIsShown	is the tileset shown ?
+*  \param  pEditor			a pointer to the Level_Editor structure
 *  \return TRUE if everything is ok, FALSE otherwise
 */
 Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Editor *pEditor, Boolean tilesetIsShown)
@@ -585,7 +584,6 @@ Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Edito
 	Uint32 iNbTilesX = 0, iNbTilesY = 0, i, j,z=0;
 	
 	// On range dans l'ordre croissant les valeurs de X et Y tel que tab[0]=minX, tab[1]=minY, tab[2]=maxX, tab[3]=maxY
-
 	if (iTabCursor[0] > iTabCursor[2])
 	{
 		iTmp = iTabCursor[0];
@@ -599,28 +597,17 @@ Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Edito
 		iTabCursor[1] = iTabCursor[3];
 		iTabCursor[3] = iTmp;
 	}
-	// calcul de la différence (positive)
-	
+
 	iNbTilesX = iTabCursor[2] / pEditor->pLevel->pLevel_Tileset->iTilesWidth - iTabCursor[0] / pEditor->pLevel->pLevel_Tileset->iTilesWidth + 1;
 	iNbTilesY = iTabCursor[3] / pEditor->pLevel->pLevel_Tileset->iTilesHeight - iTabCursor[1] / pEditor->pLevel->pLevel_Tileset->iTilesHeight + 1;
-	//Kr_Log_Print(KR_LOG_ERROR, "%d %d %d %d\n", iTabCursor[0], iTabCursor[1], iTabCursor[2], iTabCursor[3]);
-	// Calcul du nombre de tiles de la sélection sur X et Y
 
-	
-	
-
-	//Sauvegarde dans le tableau iTabCursor des valeurs iNbTiles et iNbTilesY
-
-	//Kr_Log_Print(KR_LOG_INFO, "Selected : %d * %d tiles\n", iNbTilesX, iNbTilesY);
 	if (iNbTilesX * iNbTilesY > LEVEL_EDITOR_MAX_SELECTION) return FALSE;
 	for (i = 0; i < iNbTilesY; i++) // ligne du level
 	{
 		for (j = 0; j < iNbTilesX; j++) //Colonne du level
 		{
-			//Kr_Log_Print(KR_LOG_ERROR, "%d %d", iTabCursor[0] * j, iTabCursor[1] * i);
 			iTabTile[z] = Level_Editor_GetTile(pEditor, iTabCursor[0] + j * pEditor->pLevel->pLevel_Tileset->iTilesWidth, iTabCursor[1] + i *pEditor->pLevel->pLevel_Tileset->iTilesHeight, tilesetIsShown);
 			if (iTabTile[z] == -1) return FALSE;
-			//Kr_Log_Print(KR_LOG_INFO, "Tiles : %d\n", iTabTile[z]);
 			z++;
 		}
 	}
@@ -628,7 +615,6 @@ Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Edito
 	iTabCursor[1] = iNbTilesY;
 	return TRUE;
 }
-
 
 
 /*!
@@ -666,7 +652,6 @@ void Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 }
 
 
-
 /*!
 *  \fn     void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Sint32 *iTabCursor);
 *  \brief  Function to write the current group selection in the layout
@@ -675,7 +660,7 @@ void Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 *  \param  iTabTile       array of tile number to draw
 *  \param  x			  coordinate
 *  \param  y			  coordinate
-*  \param  iTabNbTiles    an array which two first case indicate the nb of tiles on X and Y
+*  \param  iTabCursor     an array which two first case indicate the nb of tiles on X and Y
 *  \return none
 */
 void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Sint32 *iTabCursor)
@@ -684,7 +669,6 @@ void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 
 	while (iTabTile[i] != -1)
 	{
-
 		if (i % (iTabCursor[0])) //détection numéro de la ligne
 		{
 			iCoordX += pEditor->pLevel->pLevel_Tileset->iTilesWidth; // colonne suivante
@@ -696,7 +680,5 @@ void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 		}
 		Level_Editor_WriteLayout(pEditor, iTabTile[i],iCoordX,iCoordY);
 		i++;
-	}
-			
-	return TRUE;
+	}	
 }

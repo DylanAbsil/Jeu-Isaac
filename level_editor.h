@@ -10,7 +10,7 @@
 /* --------------+------------+------------------------------------------------------------------------------------ */
 /* Herrou        | 06/04/2015 | Création																			*/
 /* Herrou        | 07/04/2015 | Add Level_Editor_GetTile        													*/
-/*               |            |         																			*/
+/* Herrou        | 09/04/2015 | Sauvegarde des données, gestion de la sélection de groupe de tiles					*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
