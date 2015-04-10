@@ -12,6 +12,7 @@
 /* Herrou        | 06/04/2015 | Création																			*/
 /* Herrou        | 07/04/2015 | Add Level_Editor_GetTile        													*/
 /* Herrou        | 09/04/2015 | Sauvegarde des données, gestion de la sélection de groupe de tiles					*/
+/* Herrou        | 10/04/2015 | Ajout de la fonction Editor		 													*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -464,7 +465,7 @@ void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, 
 */
 void Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y)
 {
-	Uint32 iNumTilesX, iNumTilesY;
+	Sint32 iNumTilesX, iNumTilesY;
 
 	iNumTilesX = x / pEditor->pLevel->pLevel_Tileset->iTilesWidth;
 	iNumTilesY = y / pEditor->pLevel->pLevel_Tileset->iTilesHeight;
@@ -488,7 +489,7 @@ Boolean Level_Editor_SaveLayout(Level_Editor *pEditor)
 	char   szPath2[50];
 	FILE  *pFileSrc;
 	FILE  *pFileDst;
-	Uint32 i, j; 
+	Sint32 i, j; 
 
 	Kr_Log_Print(KR_LOG_INFO, "Saving the Layout !\n");
 	/* Ouverture du fichier temporaire*/
@@ -682,4 +683,322 @@ void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 		Level_Editor_WriteLayout(pEditor, iTabTile[i],iCoordX,iCoordY);
 		i++;
 	}	
+}
+
+
+
+/*!
+*  \fn     int Editor(void)
+*  \brief  Function to launch the level editor
+*
+*  \return EXIT_SUCCESS if everything is ok, EXIT_FAILURE otherwise
+*/
+int Editor(void)
+{
+	SDL_Window *pWindow = NULL;
+	if (!Kr_Init())
+	{
+		exit(EXIT_FAILURE);
+	}
+	/* ========================================================================= */
+	/*                           CONFIGURATION GENERALE                          */
+	/* ========================================================================= */
+
+	Kr_Input inEvent; // Structure pour la gestion des événements
+
+	/* Création de la fenêtre */
+	pWindow = SDL_CreateWindow("LEVEL EDITOR", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW, SDL_WINDOW_SHOWN); // SDL_WINDOW_FULLSCREEN
+	if (pWindow == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Window : %s\n", SDL_GetError());
+		SDL_Quit();
+	}
+	SDL_Surface *pscreenSurface = SDL_GetWindowSurface(pWindow);
+	if (pscreenSurface == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Surface Window : %s\n", SDL_GetError());
+		SDL_Quit();
+	}
+	/* Création du renderer */
+	SDL_Renderer *pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
+	if (pRenderer == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Renderer", SDL_GetError());
+		SDL_Quit();
+	}
+	/* Initialisation de la structure pour gérer les événements*/
+	InitEvents(&inEvent);
+
+	/* ========================================================================= */
+	/*                                LEVEL EDITOR                               */
+	/* ========================================================================= */
+
+	Kr_Log_Print(KR_LOG_INFO, "Launching the Level Editor \n\n");
+	Level_Editor *pEditor = NULL;
+
+	// Chargement du level Editor
+	pEditor = Level_Editor_Init("level_editor");
+	if (pEditor == NULL)
+	{
+		Kr_Log_Print(KR_LOG_INFO, "Can't initialize a Level_Editor structure \n\n");
+		SDL_Quit();
+	}
+	if (!Level_Editor_Load(pEditor, pRenderer))
+	{
+		Kr_Log_Print(KR_LOG_INFO, "Can't Load a Level_Editor structure \n\n");
+		SDL_Quit();
+	}
+
+	/* Préparation d'une Texture contenant un message via util.c*/
+	SDL_Rect     textPosition;
+	SDL_Rect     textPosition2;
+	SDL_Color    couleur = { 247, 7, 7 };
+	SDL_Color    couleur2 = { 255, 255, 0 };
+	SDL_Texture *pTextureText = NULL;
+	TTF_Font    *pFont = NULL;
+	char         szCompteur[100] = " ";// Tableau contenant la valeur du compteur
+	textPosition.x = 0;
+	textPosition.y = 0;
+	textPosition2.x = 350;
+	textPosition2.y = 0;
+	pFont = Kr_Text_OpenFont("cour", 20);
+	TTF_SetFontStyle(pFont, TTF_STYLE_NORMAL);
+
+	/* Préparation de la gestion des FPS */
+	SDL_Texture *pTextureFPS = NULL;
+	TTF_Font	*pFontFPS = NULL;
+	Kr_Fps		*pFPS = NULL;
+	SDL_Color    colorFPS = { 0, 10, 220 };
+	SDL_Rect	 rectPositionFPS;
+	Uint32       iPreviousTime = 0, iCurrentTime = 0;
+
+	rectPositionFPS.x = 1150;
+	rectPositionFPS.y = 685;
+	pFontFPS = Kr_Text_OpenFont("cour", 18);
+	TTF_SetFontStyle(pFontFPS, TTF_STYLE_ITALIC);
+
+	pFPS = Kr_Fps_Init(pRenderer, pFontFPS, &rectPositionFPS, colorFPS, TRUE);
+	if (pFPS == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the FPS structure\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* Gestion de la grille */
+	Grid *pGrid = NULL;
+	Boolean bGridShow = TRUE;
+	pGrid = Grid_Init("quadrillage32.png", pEditor->pLevel, pRenderer);
+	if (pGrid == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the Grid structure\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* Affichage des tiles*/
+	Boolean bTilesShow = FALSE; // Affichage ou non du tileset
+	Boolean bPreDraw = TRUE;    // Visualiser ou non le tile actuel
+	Boolean bSelection = FALSE;
+	/* Divers */
+	Sint32 iNumTile = 0;
+	Sint32 iTabCursor[4] = { 0, 0, 0, 0 };
+	Sint32 iTabTile[LEVEL_EDITOR_MAX_SELECTION];
+	Uint32 i = 0, j = 0;
+	SDL_Texture *pTextureSelected = NULL;
+	pTextureSelected = UTIL_LoadTexture(pRenderer, "sprites\\SelectionEditor32.png", NULL, NULL);
+	if (pTextureSelected == NULL)
+	{
+		Kr_Log_Print(KR_LOG_INFO, "Can't load the SelectionEditor32.png texture !\n");
+		SDL_Quit();
+	}
+	/* ========================================================================= */
+	/*                                 EVENEMENT                                 */
+	/* ========================================================================= */
+	while (!inEvent.szKey[SDL_SCANCODE_ESCAPE] && !inEvent.bQuit)
+	{
+
+		UpdateEvents(&inEvent);
+		// SELECTION D'UN GROUPE DE TILES
+		if (inEvent.szMouseButtons[0] && inEvent.szKey[SDL_SCANCODE_LSHIFT])
+		{
+			iTabCursor[0] = inEvent.iMouseX;
+			iTabCursor[1] = inEvent.iMouseY;
+			inEvent.szMouseButtons[0] = 0;
+			bSelection = FALSE;
+			sprintf(szCompteur, "SELECTING A GROUP OF TILES - PRESS ESCAPE TO CANCEL");
+			pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szCompteur, couleur2, TRUE, &textPosition2); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
+			SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition2);
+			SDL_RenderPresent(pRenderer);
+			if (Level_Editor_SelectingGroup(iTabCursor, &inEvent)) // Si la sélection d'une zone est confirmé
+			{
+				for (i = 0; i < LEVEL_EDITOR_MAX_SELECTION; i++) iTabTile[i] = -1; // initialisation du tableau contenant les tiles à -1;
+				if (Level_Editor_GroupFill(iTabTile, iTabCursor, pEditor, bTilesShow)) // si le remplissage du tableau s'est bien passé
+				{
+					bSelection = TRUE;
+					bPreDraw = FALSE;
+				}
+				bTilesShow = FALSE;
+			}
+			inEvent.szMouseButtons[0] = 0;
+			inEvent.szKey[SDL_SCANCODE_LSHIFT] = 0;
+		}
+
+		// SELECTION DES TILES 
+		if (inEvent.szMouseButtons[0] && inEvent.szKey[SDL_SCANCODE_LCTRL])
+		{
+			iNumTile = Level_Editor_GetTile(pEditor, inEvent.iMouseX, inEvent.iMouseY, bTilesShow);
+			Kr_Log_Print(KR_LOG_INFO, "Select tiles : %d\n", iNumTile);
+			inEvent.szKey[SDL_SCANCODE_LCTRL] = 0;
+			inEvent.szMouseButtons[0] = 0;
+		}
+
+		if (inEvent.szMouseButtons[0])
+		{
+			if (bTilesShow) // Menu des tiles ouverts = Sélection d'une tile
+			{
+				iNumTile = Level_Editor_GetTile(pEditor, inEvent.iMouseX, inEvent.iMouseY, bTilesShow);
+				Kr_Log_Print(KR_LOG_INFO, "Select tiles : %d\n", iNumTile);
+				inEvent.szKey[SDL_SCANCODE_TAB] = 1; // Forcer la fermeture du menu tiles
+				inEvent.szMouseButtons[0] = 0;
+			}
+			else // Affecter un tile à la map
+			{
+				if (bSelection) // Appliquer un groupe de tiles
+				{
+					Level_Editor_WriteLayoutSelection(pEditor, iTabTile, inEvent.iMouseX, inEvent.iMouseY, iTabCursor);
+					bSelection = FALSE;
+					inEvent.szMouseButtons[0] = 0;
+				}
+				else
+				{
+					Level_Editor_WriteLayout(pEditor, iNumTile, inEvent.iMouseX, inEvent.iMouseY);
+					bPreDraw = TRUE;
+				}
+			}
+		}
+
+		// MODIFIER TILE STANDARD
+		if (inEvent.szMouseButtons[1])
+		{
+			pEditor->iStandardTile = Level_Editor_GetTile(pEditor, inEvent.iMouseX, inEvent.iMouseY, bTilesShow);
+			bPreDraw = TRUE;
+			inEvent.szMouseButtons[1] = 0;
+		}
+
+		// APPLIQUER LE TILE STANDARD
+		if (inEvent.szMouseButtons[2])
+		{
+			Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
+			if (!bTilesShow) // Remettre le tile standard
+			{
+				Level_Editor_WriteLayout(pEditor, pEditor->iStandardTile, inEvent.iMouseX, inEvent.iMouseY);
+				bPreDraw = FALSE;
+			}
+			else
+			{
+				inEvent.szMouseButtons[2] = 0;
+			}
+		}
+
+		// Gestion de l'affichage des FPS
+		if (inEvent.szKey[SDL_SCANCODE_F])
+		{
+			if (pFPS->bMustShow) pFPS->bMustShow = FALSE;
+			else pFPS->bMustShow = TRUE;
+			inEvent.szKey[SDL_SCANCODE_F] = 0;
+		}
+
+		// Gestion de la grille
+		if (inEvent.szKey[SDL_SCANCODE_G])
+		{
+			if (bGridShow) bGridShow = FALSE;
+			else bGridShow = TRUE;
+			inEvent.szKey[SDL_SCANCODE_G] = 0;
+		}
+
+		// Gestion de l'affichage des tiles
+		if (inEvent.szKey[SDL_SCANCODE_TAB])
+		{
+			if (bTilesShow)
+			{
+				bTilesShow = FALSE;
+				bPreDraw = TRUE;
+			}
+			else
+			{
+				bTilesShow = TRUE;
+				bPreDraw = FALSE;
+			}
+			inEvent.szKey[SDL_SCANCODE_TAB] = 0;
+		}
+
+		// Roulette en avant
+		if (inEvent.iScrollVertical < 0)
+		{
+			if (iNumTile >= (pEditor->pLevel->pLevel_Tileset->iNbTilesX * pEditor->pLevel->pLevel_Tileset->iNbTilesY - 1))
+			{
+				iNumTile = 0;
+			}
+			else iNumTile++;
+			inEvent.iScrollVertical = 0;
+			bPreDraw = TRUE;
+		}
+
+		// Roulette en arrière
+		if (inEvent.iScrollVertical > 0)
+		{
+			if (iNumTile <= 0)
+			{
+				iNumTile = (pEditor->pLevel->pLevel_Tileset->iNbTilesX * pEditor->pLevel->pLevel_Tileset->iNbTilesY) - 1;
+			}
+			else iNumTile--;
+			inEvent.iScrollVertical = 0;
+			bPreDraw = TRUE;
+		}
+
+		//Sauvegarder la map
+		if (inEvent.szKey[SDL_SCANCODE_S])
+		{
+			Level_Editor_SaveLayout(pEditor);
+			inEvent.szKey[SDL_SCANCODE_S] = 0;
+		}
+
+		/* ========================================================================= */
+		/*                                    FPS                                    */
+		/* ========================================================================= */
+
+		Kr_Fps_Wait(pFPS, &iCurrentTime, &iPreviousTime, KR_FPS);
+
+
+		/* ========================================================================= */
+		/*                                  DIVERS                                   */
+		/* ========================================================================= */
+
+		pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
+		sprintf(szCompteur, "Level%d: %s", pEditor->pLevel->iLevelNum, pEditor->pLevel->szLevelName);
+
+		/* ========================================================================= */
+		/*                                  RENDER                                   */
+		/* ========================================================================= */
+
+		SDL_RenderClear(pRenderer);
+		Kr_Level_Draw(pRenderer, pEditor->pLevel);
+		Level_Editor_PreDrawTile(pEditor, iNumTile, inEvent.iMouseX, inEvent.iMouseY, bPreDraw, pRenderer, pTextureSelected);
+		if (bSelection) Level_Editor_PreDrawTileSelection(pEditor, iTabTile, inEvent.iMouseX, inEvent.iMouseY, TRUE, pRenderer, iTabCursor, pTextureSelected);
+		Level_Editor_PrintTiles(pEditor->pLevel->pLevel_Tileset, bTilesShow, pRenderer);
+		Grid_Draw(pGrid, pEditor->pLevel, bGridShow, pRenderer);
+		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
+		Kr_FPS_Show(pFPS);
+		SDL_RenderPresent(pRenderer);
+		UTIL_FreeTexture(&pTextureText);
+	}
+	UTIL_FreeTexture(&pTextureSelected);
+	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
+	SDL_DestroyRenderer(pRenderer);		// Libération mémoire du renderer
+	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
+	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
+	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
+	Level_Editor_Free(pEditor);
+	Grid_Free(pGrid);
+
+	return EXIT_SUCCESS;
 }

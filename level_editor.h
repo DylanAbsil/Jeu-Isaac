@@ -11,7 +11,7 @@
 /* Herrou        | 06/04/2015 | Création																			*/
 /* Herrou        | 07/04/2015 | Add Level_Editor_GetTile        													*/
 /* Herrou        | 09/04/2015 | Sauvegarde des données, gestion de la sélection de groupe de tiles					*/
-/*               |            |         																			*/
+/* Herrou        | 10/04/2015 | Ajout de la fonction Editor															*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -26,6 +26,8 @@
 #include "kr_level.h"
 #include "kr_log.h"
 #include "kr_input.h"
+#include "kr_fps.h"
+#include "kr_config.h"
 
 /*!< The max number of tile in a group selection */
 #define LEVEL_EDITOR_MAX_SELECTION 100
@@ -51,6 +53,7 @@ typedef struct
 	SDL_Rect     Rect;				/*!< The rectangle*/
 }Grid;
 
+int Editor(void);
 Level_Editor *Level_Editor_Init(char *szEditorFile);
 Boolean		  Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer);
 void		  Level_Editor_Log(Level_Editor *pEditor);
@@ -73,5 +76,6 @@ Boolean Level_Editor_SelectingGroup(Sint32 *iTabCursor, Kr_Input *inEvent);
 Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Editor *pEditor, Boolean tilesetIsShown);
 void    Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw, SDL_Renderer *pRenderer, Sint32 *iTabNbTiles, SDL_Texture *pTextureSelected);
 void    Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Sint32 *iTabCursor);
+
 
 #endif /* __LEVEL_EDITOR_H__ */
