@@ -422,7 +422,7 @@ Sint32 Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean t
 
 
 /*!
-*  \fn     void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer)
+*  \fn     void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer, SDL_Texture *pTextureSelected)
 *  \brief  Function to draw the current tile on the renderer from coordinate
 *
 *  \param  pEditor        a pointer to the Level_Editor structure
@@ -433,7 +433,7 @@ Sint32 Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean t
 *  \param  pRenderer      a pointer to the renderer
 *  \return none
 */
-void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer)
+void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer, SDL_Texture *pTextureSelected)
 {
 	Uint32 iNumTilesX, iNumTilesY;
 	SDL_Rect Rect_dest;
@@ -448,6 +448,7 @@ void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, 
 	Rect_dest.h = pEditor->pLevel->pLevel_Tileset->iTilesHeight;
 	Rect_dest.w = pEditor->pLevel->pLevel_Tileset->iTilesWidth;
 	SDL_RenderCopy(pRenderer, pEditor->pLevel->pLevel_Tileset->pTextureTileset, &(pEditor->pLevel->pLevel_Tileset->pTilesProp[iNumTile].rTile), &Rect_dest);
+	SDL_RenderCopy(pRenderer, pTextureSelected,NULL, &Rect_dest);
 }
 
 
@@ -618,7 +619,7 @@ Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Edito
 
 
 /*!
-*  \fn     void    Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw,SDL_Renderer *pRendererSint32, *iTabNbTiles)
+*  \fn     void    Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw,SDL_Renderer *pRendererSint32, *iTabNbTiles,SDL_Texture *pTextureSelected)
 *  \brief  Function to draw the current group selection on the renderer
 *
 *  \param  pEditor        a pointer to the Level_Editor structure
@@ -630,7 +631,7 @@ Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Edito
 *  \param  iTabNbTiles    an array which two first case indicate the nb of tiles on X and Y
 *  \return none
 */
-void Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw, SDL_Renderer *pRenderer, Sint32 *iTabNbTiles)
+void Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw, SDL_Renderer *pRenderer, Sint32 *iTabNbTiles, SDL_Texture *pTextureSelected)
 {
 	Uint32 i = 0, iCoordX = x, iCoordY = y - pEditor->pLevel->pLevel_Tileset->iTilesHeight;
 	
@@ -646,7 +647,7 @@ void Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 			iCoordY += pEditor->pLevel->pLevel_Tileset->iTilesHeight; // Ligne suivante
 			iCoordX = x; // remise à 0 de la colonne
 		}
-		Level_Editor_PreDrawTile(pEditor, iTabTile[i], iCoordX, iCoordY, bPreDraw, pRenderer);
+		Level_Editor_PreDrawTile(pEditor, iTabTile[i], iCoordX, iCoordY, bPreDraw, pRenderer, pTextureSelected);
 		i++;
 	}
 }

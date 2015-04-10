@@ -64,14 +64,14 @@ void   Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer 
 
 void	Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer);
 Sint32  Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean tilesetIsShown);
-void	Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer);
+void	Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer, SDL_Texture *pTextureSelected);
 void    Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y);
 Boolean	Level_Editor_SaveLayout(Level_Editor *pEditor);
 
 /* Group selection*/
 Boolean Level_Editor_SelectingGroup(Sint32 *iTabCursor, Kr_Input *inEvent);
 Boolean Level_Editor_GroupFill(Sint32 *iTabTile, Sint32 *iTabCursor, Level_Editor *pEditor, Boolean tilesetIsShown);
-void    Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw, SDL_Renderer *pRenderer, Sint32 *iTabNbTiles);
+void    Level_Editor_PreDrawTileSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Boolean bPreDraw, SDL_Renderer *pRenderer, Sint32 *iTabNbTiles, SDL_Texture *pTextureSelected);
 void    Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, Uint32 x, Uint32 y, Sint32 *iTabCursor);
 
 #endif /* __LEVEL_EDITOR_H__ */
