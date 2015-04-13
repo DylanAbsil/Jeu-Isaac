@@ -813,10 +813,16 @@ int Editor(void)
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
 	/* ========================================================================= */
-	while (!inEvent.szKey[SDL_SCANCODE_ESCAPE] && !inEvent.bQuit)
+	while (!inEvent.bQuit)
 	{
 
 		UpdateEvents(&inEvent);
+		//Annuler une sélection de groupe
+		if (inEvent.szKey[SDL_SCANCODE_ESCAPE])
+		{
+			bSelection = FALSE;
+			inEvent.szKey[SDL_SCANCODE_ESCAPE] = 0;
+		}
 		// SELECTION D'UN GROUPE DE TILES
 		if (inEvent.szMouseButtons[0] && inEvent.szKey[SDL_SCANCODE_LSHIFT])
 		{
@@ -842,13 +848,12 @@ int Editor(void)
 			inEvent.szKey[SDL_SCANCODE_LSHIFT] = 0;
 		}
 
-		// SELECTION DES TILES 
-		if (inEvent.szMouseButtons[0] && inEvent.szKey[SDL_SCANCODE_LCTRL])
+		// Modifier le tile Strandard
+		if (inEvent.szMouseButtons[2] && inEvent.szKey[SDL_SCANCODE_LCTRL])
 		{
-			iNumTile = Level_Editor_GetTile(pEditor, inEvent.iMouseX, inEvent.iMouseY, bTilesShow);
-			Kr_Log_Print(KR_LOG_INFO, "Select tiles : %d\n", iNumTile);
-			inEvent.szKey[SDL_SCANCODE_LCTRL] = 0;
-			inEvent.szMouseButtons[0] = 0;
+			pEditor->iStandardTile = Level_Editor_GetTile(pEditor, inEvent.iMouseX, inEvent.iMouseY, bTilesShow);
+			bPreDraw = FALSE;
+			inEvent.szMouseButtons[2] = 0;
 		}
 
 		if (inEvent.szMouseButtons[0])
@@ -870,24 +875,33 @@ int Editor(void)
 				}
 				else
 				{
-					Level_Editor_WriteLayout(pEditor, iNumTile, inEvent.iMouseX, inEvent.iMouseY);
-					bPreDraw = TRUE;
+					if (bPreDraw == FALSE) // Dans le cas d'un clique droit sans affichage du tile courant
+					{
+						bPreDraw = TRUE;
+						inEvent.szMouseButtons[0] = 0;
+					}
+					else
+					{
+						Level_Editor_WriteLayout(pEditor, iNumTile, inEvent.iMouseX, inEvent.iMouseY);
+					}					
 				}
 			}
 		}
 
-		// MODIFIER TILE STANDARD
+		// Selectionner une tile
 		if (inEvent.szMouseButtons[1])
 		{
-			pEditor->iStandardTile = Level_Editor_GetTile(pEditor, inEvent.iMouseX, inEvent.iMouseY, bTilesShow);
+			iNumTile = Level_Editor_GetTile(pEditor, inEvent.iMouseX, inEvent.iMouseY, bTilesShow);
+			inEvent.szKey[SDL_SCANCODE_LCTRL] = 0;
+			inEvent.szMouseButtons[1] = 0;		
 			bPreDraw = TRUE;
-			inEvent.szMouseButtons[1] = 0;
+			if (bTilesShow) bTilesShow = FALSE;
 		}
 
 		// APPLIQUER LE TILE STANDARD
 		if (inEvent.szMouseButtons[2])
 		{
-			Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
+			
 			if (!bTilesShow) // Remettre le tile standard
 			{
 				Level_Editor_WriteLayout(pEditor, pEditor->iStandardTile, inEvent.iMouseX, inEvent.iMouseY);
