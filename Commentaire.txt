@@ -5,4 +5,5 @@ BUG :
 
 ERROR :
 
-REMARQUE :
+REMARQUE :	- J'ai rajouté un tableau d'entité dans le kr_level + le include
+			- J'ai changé la structure entity pour quelle comprenne un int tempo (plus besoin de creer des tempo s'anim dazns le main)

@@ -44,6 +44,7 @@ Entity * Entity_Init(char* szFileName){
 	entite->state = normal;
 	entite->iEntityLife = 0;
 	entite->iSpeedEntity = 0;
+	entite->iTempoAnim = 0;
 	//entite->wpnName = NULL; ??
 	return entite;
 }
@@ -175,18 +176,17 @@ Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
 }
 
 /*!
-*  \fn     void updatePlayerVector(Kr_Input myEvent,Kr_Level *pLevel, Entity *pPlyer, Uint32 *tempoAnim, SDL_Renderer *pRenderer)
+*  \fn     void updatePlayerVector(Kr_Input myEvent,Kr_Level *pLevel, Entity *pPlyer, SDL_Renderer *pRenderer)
 *  \brief  Function to update the direction and the position on the map of the entite
 *
 *	\todo rajouter la fonction de gestion des collisions
 *  \param  inEvent Structure which handle the input
 *  \param  pLevel  a pointer to the Level
 *  \param  pPlayer  a pointer to the player
-*  \param tempoAnim an int to make a temporisation of the animation
 *  \param pRenderer a pointer to the renderer
 *  \return Boolean true if the vector has been updated false either
 */
-Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, Uint32 *tempoAnim, SDL_Renderer *pRenderer){
+Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, SDL_Renderer *pRenderer){
 	Sint32 vx, vy;
 
 	//Obtention des déplacements générés par le clavier
@@ -198,23 +198,23 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, 
 	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
 		pPlayer->mouvement = 0;									//
 		pPlayer->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
-		*tempoAnim = 0;											// reset de la tempo
+		pPlayer->iTempoAnim = 0;											// reset de la tempo
 //		Kr_Log_Print(KR_LOG_INFO, " the entity %s hasn't moved\n", entite->strEntityName);
 		return TRUE;
 	}
 	else{												//Sinon
 		pPlayer->mouvement = 1;
-		*tempoAnim += 1;
+		pPlayer->iTempoAnim += 1;
 //		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
 
-		if (*tempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
+		if (pPlayer->iTempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
 			pPlayer->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
 			if (pPlayer->pSprEntity->iCurrentFrame == pPlayer->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
 				pPlayer->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
 //			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
 
 
-			*tempoAnim = 0;
+			pPlayer->iTempoAnim = 0;
 
 //			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
 		}
@@ -237,16 +237,35 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, 
 }
 
 /*!
-*  \fn     void updateEntityVector(Kr_Level *pLevel, Entity *entie, Uint32 *tempoAnim, SDL_Renderer *pRenderer)
+*  \fn     void updateAllEntities(Kr_Level *pLevel, Entity *entite, Uint32 *tempoAnim, SDL_Renderer *pRenderer)
+*  \brief  Function to update the direction and the position on the map of the entite
+*
+*  \param  pLevel  a pointer to the Level
+*  \param  pRenderer a pointer to the renderer
+*  \return Boolean true if the entites have all been updated false either
+*/
+Boolean updateAllEntites(Kr_Level *pLevel, SDL_Renderer *pRenderer){
+	int *i = pLevel->aListEntity;
+	Boolean goodupdate = TRUE;
+	for (i+1; i < pLevel->iNbEntity; i++){
+		if (updateEntityVector(pLevel, *i, pRenderer) == FALSE){
+			goodupdate = FALSE;
+			break;
+		}
+	}
+	return goodupdate;
+}
+
+/*!
+*  \fn     void updateEntityVector(Kr_Level *pLevel, Entity *entite, SDL_Renderer *pRenderer)
 *  \brief  Function to update the direction and the position on the map of the entite
 *
 *  \param  pLevel  a pointer to the Level
 *  \param  pEntity  a pointer to the entity
-*  \param  tempoAnim an int to make a temporisation of the animation
 *  \param  pRenderer a pointer to the renderer
 *  \return Boolean true if the vector has been updated false either
 */
-Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Uint32 *tempoAnim, SDL_Renderer *pRenderer){
+Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, SDL_Renderer *pRenderer){
 
 }
 
