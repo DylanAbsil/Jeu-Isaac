@@ -1,8 +1,7 @@
 /* ========================================================================= */
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
-/* Herrou        | 18/02/2015 | TTF encapsuler dans kr_text                  */
-/*               |            | Renderer en variable global ? Si oui où ?    */
+/* Herrou        | 06/04/2015 | Main pour le jeu Isaac		                 */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -27,28 +26,45 @@
 #include "kr_sprite.h"
 #include "HUD.h"
 #include "Menu.h"
-
-
-
-
-//void UpdatePlayerVector(Kr_Input inEvent, Kr_Level *pLevel, SDL_Rect *pPlayer);
-//void GetVector(Kr_Input inEvent, Sint32 *vx, Sint32 *vy);
-
+#include "level_editor.h"
+//http://noproblo.dayjo.org/ZeldaSounds/
  
+
+#define GAME 1
+
+int Isaac(int*argc, char**argv);
+int Editor(int*argc, char**argv);
+
 int main(int argc, char** argv)
 {
 
 	Kr_Log_Init(KR_LOG_INFO); // Mise en place d'un fichier de log
 
-	/* ========================================================================= */
-	/*                          INITIALISATION DE LA SDL                         */
-	/* ========================================================================= */
+	if (GAME) Isaac(&argc, argv);
+	else Editor(&argc, argv);
+
+	Mix_CloseAudio();	// On quitte SDL_MIXER
+	TTF_Quit();			// On quitte SDL_TTF
+	SDL_Quit();			// On quitte SDL
+	Kr_Log_Quit();		// On ferme les logs
+
+	return EXIT_SUCCESS;
+}
+
+
+/*!
+*  \fn     int Isaac(int *argc, char **argv)
+*  \brief  Function to launch the game
+*
+*  \return EXIT_SUCCESS if everything is ok, EXIT_FAILURE otherwise
+*/
+int Isaac(int *argc, char **argv)
+{
 	SDL_Window *pWindow = NULL;
 	if (!Kr_Init())
 	{
 		exit(EXIT_FAILURE);
 	}
-
 	/* ========================================================================= */
 	/*                           CONFIGURATION GENERALE                          */
 	/* ========================================================================= */
@@ -61,14 +77,12 @@ int main(int argc, char** argv)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Window : %s\n", SDL_GetError());
 		SDL_Quit();
-		return FALSE;
 	}
 	SDL_Surface *pscreenSurface = SDL_GetWindowSurface(pWindow);
 	if (pscreenSurface == NULL)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Surface Window : %s\n", SDL_GetError());
 		SDL_Quit();
-		return FALSE;
 	}
 	/* Création du renderer */
 	SDL_Renderer *pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
@@ -76,7 +90,6 @@ int main(int argc, char** argv)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Renderer", SDL_GetError());
 		SDL_Quit();
-		return FALSE;
 	}
 	/* Initialisation de la structure pour gérer les événements*/
 	InitEvents(&inEvent);
@@ -98,8 +111,8 @@ int main(int argc, char** argv)
 
 	/* Chargement des sprites */
 	pSpriteZelda = Kr_Sprite_Init("zelda");			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
-	
-	if (Kr_Sprite_Load(pSpriteZelda, 26, 240, 8, &rectPositionZelda, pRenderer) == FALSE)
+
+	if (Kr_Sprite_Load(pSpriteZelda, 26, 136, 8, &rectPositionZelda, pRenderer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
@@ -157,11 +170,11 @@ int main(int argc, char** argv)
 
 	/* Préparation de la gestion des FPS */
 	SDL_Texture *pTextureFPS = NULL;
-	TTF_Font	*pFontFPS	 = NULL;
-	Kr_Fps		*pFPS		 = NULL;
-	SDL_Color    colorFPS	 = { 0, 10, 220 };
+	TTF_Font	*pFontFPS = NULL;
+	Kr_Fps		*pFPS = NULL;
+	SDL_Color    colorFPS = { 0, 10, 220 };
 	SDL_Rect	 rectPositionFPS;
-	Uint32   iPreviousTime = 0, iCurrentTime = 0; 
+	Uint32       iPreviousTime = 0, iCurrentTime = 0;
 
 	rectPositionFPS.x = 1150;
 	rectPositionFPS.y = 685;
@@ -174,7 +187,7 @@ int main(int argc, char** argv)
 		Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the FPS structure\n");
 		exit(EXIT_FAILURE);
 	}
-	
+
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
 	/* ========================================================================= */
@@ -190,7 +203,7 @@ int main(int argc, char** argv)
 		UpdateEvents(&inEvent);
 
 		/* Mise à jour des coordonnées du personnage*/
-		if (updateEntityVector(inEvent, pCurrentLevel, pZelda, &tempoAnim, pRenderer) == FALSE){				//Update la position et l'animation du perso principal
+		if (updatePlayerVector(inEvent, pCurrentLevel, pZelda, &tempoAnim, pRenderer) == FALSE){				//Update la position et l'animation du perso principal
 			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update player vector\n");
 			SDL_Quit();
 			return FALSE;
@@ -217,7 +230,7 @@ int main(int argc, char** argv)
 		if (inEvent.szKey[SDL_SCANCODE_KP_1])
 		{
 			bChangeLevel = TRUE;
-			iCurrentLevelNumber = 4;
+			iCurrentLevelNumber = 3;
 			inEvent.szKey[SDL_SCANCODE_KP_1] = 0;
 		}
 		if (inEvent.szKey[SDL_SCANCODE_KP_2])
@@ -234,12 +247,13 @@ int main(int argc, char** argv)
 		}
 		if (inEvent.szKey[SDL_SCANCODE_E])
 		{
-			iCurrentLevelNumber = Kr_Map_ShouldChangeLevel(pMap, pCurrentLevel, pZelda);
-			if (iCurrentLevelNumber)
-			{
-				bChangeLevel = TRUE;
-			}
+			
 			inEvent.szKey[SDL_SCANCODE_E] = 0;
+		}
+		iCurrentLevelNumber = Kr_Map_ShouldChangeLevel(pMap, pCurrentLevel, pZelda);
+		if (iCurrentLevelNumber)
+		{
+			bChangeLevel = TRUE;
 		}
 
 		/* ========================================================================= */
@@ -252,9 +266,9 @@ int main(int argc, char** argv)
 		/* ========================================================================= */
 		/*                                  DIVERS                                   */
 		/* ========================================================================= */
-	
+
 		pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
-		sprintf(szCompteur, "Cursor : X : %d Y : %d   %s %d", pZelda->pSprEntity->pRectPosition->x, pZelda->pSprEntity->pRectPosition->y, pCurrentLevel->szLevelName,pCurrentLevel->iLevelNum);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
+		sprintf(szCompteur, "Cursor : X : %d Y : %d   %s %d", pZelda->pSprEntity->pRectPosition->x, pZelda->pSprEntity->pRectPosition->y, pCurrentLevel->szLevelName, pCurrentLevel->iLevelNum);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
 		// inEvent.iMouseX, inEvent.iMouseY
 		/* ========================================================================= */
 		/*                                  RENDER                                   */
@@ -268,7 +282,7 @@ int main(int argc, char** argv)
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
-	
+
 	}
 
 
@@ -276,7 +290,6 @@ int main(int argc, char** argv)
 	/*                            LIBERATION MEMOIRE                             */
 	/* ========================================================================= */
 
-	//UTIL_FreeTexture(&pBackground);		// Libération mémoire de la texture 
 	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
 	SDL_DestroyRenderer(pRenderer);	// Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
@@ -285,81 +298,9 @@ int main(int argc, char** argv)
 	Kr_Level_Free(pCurrentLevel);
 	Kr_Sound_Free(&pSon);			// Libération mémoire du son !!
 	Entity_Free(pZelda);				// Libération mémoire du zelda
-
 	Kr_Map_Free(pMap);
-	Mix_CloseAudio();	// On quitte SDL_MIXER
-	TTF_Quit();			// On quitte SDL_TTF
-	SDL_Quit();			// On quitte SDL
-	Kr_Log_Quit();		// On ferme les logs
+
+
 	return EXIT_SUCCESS;
 }
 
-
-
-
-/*!
-*  \fn     void GetVector(Kr_Input inEvent, Sint32 *vx, Sint32 *vy)
-*  \brief  Function to get the vector of the player
-*
-*  \todo   Update this function when the Player structure will be define
-*
-*  \param  inEvent Structure which handle the input
-*  \param  vx      a pointer to the vector on X
-*  \param  vy      a pointer to the vector on Y
-*  \return none
-*/
-/*
-void GetVector(Kr_Input inEvent, Sint32 *vx, Sint32 *vy)
-{
-
-	*vx = *vy = 0;
-	if (inEvent.szKey[SDL_SCANCODE_UP])
-		*vy = -MOVESPEED;
-	if (inEvent.szKey[SDL_SCANCODE_DOWN])
-		*vy = MOVESPEED;
-	if (inEvent.szKey[SDL_SCANCODE_LEFT])
-		*vx = -MOVESPEED;
-	if (inEvent.szKey[SDL_SCANCODE_RIGHT])
-		*vx = MOVESPEED;
-}
-*/
-
-/*!
-*  \fn     void UpdatePlayerVector(Kr_Input inEvent,Kr_Level *pLevel, SDL_Rect *pPlayer)
-*  \brief  Function to get the vector of the player
-*
-*  \todo   Update this function when the Player structure will be define
-*
-*  \param  inEvent Structure which handle the input
-*  \param  pLevel  a pointer to the Level
-*  \param  pPlayer  a pointer to the player
-*  \return none
-*/
-/*
-void UpdatePlayerVector(Kr_Input inEvent, Kr_Level *pLevel, SDL_Rect *pPlayer)
-{
-	Sint32 vx, vy;
-	GetVector(inEvent, &vx, &vy);
-	Kr_Collision_Move(pLevel, pPlayer, vx, vy);
-}
-*/
-/*
-
-// Préparation d'une image que l'on souhaitera afficher via kr_util
-SDL_Texture *pBackground = NULL;
-SDL_Rect     rectPositionImage;
-
-rectPositionImage.x = 0;
-rectPositionImage.y = 0;
-rectPositionImage.w = 20; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
-rectPositionImage.h = 20;
-
-pBackground = UTIL_LoadTexture(pRenderer, "Personnage.jpg", NULL, NULL);
-if (pBackground == NULL)
-{
-	exit(EXIT_FAILURE);
-}
-
-
-
-*/
