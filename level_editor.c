@@ -13,6 +13,7 @@
 /* Herrou        | 07/04/2015 | Add Level_Editor_GetTile        													*/
 /* Herrou        | 09/04/2015 | Sauvegarde des données, gestion de la sélection de groupe de tiles					*/
 /* Herrou        | 10/04/2015 | Ajout de la fonction Editor		 													*/
+/* Herrou        | 14/04/2015 | MAJ fonction createFile, on créer deux fois #entity									*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -275,7 +276,6 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 		}
 		fprintf(pFile,"\n");
 	}
-	fprintf(pFile, "#entity\n");
 	fprintf(pFile, "#end\n");
 
 	UTIL_CloseFile(&pFile);
@@ -762,7 +762,7 @@ int Editor(void)
 	textPosition2.x = 350;
 	textPosition2.y = 0;
 	pFont = Kr_Text_OpenFont("cour", 20);
-	TTF_SetFontStyle(pFont, TTF_STYLE_NORMAL);
+	TTF_SetFontStyle(pFont, TTF_STYLE_BOLD);
 
 	/* Préparation de la gestion des FPS */
 	SDL_Texture *pTextureFPS = NULL;
@@ -803,6 +803,7 @@ int Editor(void)
 	Sint32 iTabCursor[4] = { 0, 0, 0, 0 };
 	Sint32 iTabTile[LEVEL_EDITOR_MAX_SELECTION];
 	Uint32 i = 0, j = 0;
+	Sint32 iNumCursor = 0;
 	SDL_Texture *pTextureSelected = NULL;
 	pTextureSelected = UTIL_LoadTexture(pRenderer, "sprites\\SelectionEditor32.png", NULL, NULL);
 	if (pTextureSelected == NULL)
@@ -986,9 +987,9 @@ int Editor(void)
 		/* ========================================================================= */
 		/*                                  DIVERS                                   */
 		/* ========================================================================= */
-
-		pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
-		sprintf(szCompteur, "Level%d: %s", pEditor->pLevel->iLevelNum, pEditor->pLevel->szLevelName);
+		iNumCursor = Kr_Level_GetTile(pEditor->pLevel, inEvent.iMouseX, inEvent.iMouseY);
+		pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szCompteur, couleur, TRUE, &textPosition);  
+		sprintf(szCompteur, "Level%d: %s | Collision : %d", pEditor->pLevel->iLevelNum, pEditor->pLevel->szLevelName, pEditor->pLevel->pLevel_Tileset->pTilesProp[iNumCursor].iPlein);
 
 		/* ========================================================================= */
 		/*                                  RENDER                                   */

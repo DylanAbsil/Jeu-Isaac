@@ -18,6 +18,9 @@
 /*               |            | Gestion du changement de Map ok	             */
 /* Herrou        | 08/04/2015 | Le changement de niveau se détecte sur 		 */
 /*               |            | les bords, quelque soit la tile		         */
+/* Herrou        | 15/08/2015 | Lors d'un changement de level, le personnage */
+/*               |            |  est légèrement en avant de sa zone d'arrivé */
+/*               |            |  afin d'éviter des calculs inutiles	         */
 /* ========================================================================= */
 
 #include "kr_map.h"
@@ -183,26 +186,26 @@ Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 		Kr_Map_GetNeighborOfLevel(pMap, pLevel, &pLevel->iNumNord, &pLevel->iNumSud, &pLevel->iNumEst, &pLevel->iNumOuest);
 		if (pEntity->direction == nord && (y < pLevel->pLevel_Tileset->iTilesHeight) && pLevel->iNumNord != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - pEntity->pSprEntity->pRectPosition->h ; // Pour éviter les collisions également
-			pEntity->iCoordYEntity = KR_HEIGHT_WINDOW - pEntity->pSprEntity->pRectPosition->h ;
+			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h ; // Pour éviter les collisions également
+			pEntity->iCoordYEntity = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h ;
 			return pLevel->iNumNord;
 		}
 		else if (pEntity->direction == sud && (y >(KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight)) && pLevel->iNumSud != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->y = 0; //1 et non 0 pour éviter des collisions dans le mur dès le respawn
-			pEntity->iCoordYEntity = 0;
+			pEntity->pSprEntity->pRectPosition->y = pEntity->pSprEntity->pRectPosition->h; // On le place un peu en avant/arrière pour éviter de refaire les vérifications
+			pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->h;
 			return pLevel->iNumSud;
 		}
 		else if (pEntity->direction == est && (x > (KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth)) && pLevel->iNumEst != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->x = 0;
-			pEntity->iCoordXEntity = 0;
+			pEntity->pSprEntity->pRectPosition->x = pEntity->pSprEntity->pRectPosition->w;
+			pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->w;
 			return pLevel->iNumEst;
 		}
 		else if (pEntity->direction == ouest && (x < pLevel->pLevel_Tileset->iTilesWidth) && pLevel->iNumOuest != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - pEntity->pSprEntity->pRectPosition->w ;
-			pEntity->iCoordXEntity = KR_WIDTH_WINDOW - pEntity->pSprEntity->pRectPosition->w ;
+			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w ;
+			pEntity->iCoordXEntity = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w ;
 			return pLevel->iNumOuest;
 		}
 	}
