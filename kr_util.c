@@ -17,6 +17,7 @@
 /* Herrou        | 04/04/2015 | Modification UTIL_SousChaine :											    */
 /*               |            |  - La chaine à traiter ne doit pas contenir de caractère particulier		*/
 /* Herrou        | 07/04/2015 | Add UTIL_FileCopy 															*/
+/* Herrou        | 15/04/2015 | Modification UTIL_SousChaine : Insertion d'un \0 en fin de chaine retournée */
 /* ======================================================================================================== */
 #include "kr_util.h"
 
@@ -226,7 +227,15 @@ char* UTIL_CopyStr( const char *szSrc, size_t iSrcLen )
 void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, char *p_szExtrait)
 {
 	Uint32 iLengthChaine = 0, i = 0, j = 0;
+	//"Vide" la chaine p_szExtrait
+	/*iLengthChaine = strlen(p_szExtrait);
+	for (i = 0; i < iLengthChaine; i++)
+	{
+		*(p_szExtrait + j)
+	}*/
+	
 	iLengthChaine = strlen(szChaine1);
+
 	if (iPosDebut<0 || iPosFin> iLengthChaine  || iPosFin<iPosDebut) // Gestion des valeurs des positions
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "UTIL_sousChaine : Can't extract the string, wrong position! \n");
@@ -238,6 +247,7 @@ void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, ch
 		*(p_szExtrait + j) = szChaine1[i];
 		j++;
 	}
+	*(p_szExtrait+j) = '\0';
 }
 
 
