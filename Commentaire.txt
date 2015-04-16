@@ -5,5 +5,14 @@ BUG :
 
 ERROR :
 
-REMARQUE :	- J'ai rajouté un tableau d'entité dans le kr_level + le include
-			- J'ai changé la structure entity pour quelle comprenne un int tempo (plus besoin de creer des tempo s'anim dazns le main)
+REMARQUE :	- J'ai changé la structure entity pour quelle comprenne un int tempo (plus besoin de creer des tempo s'anim dazns le main)
+			- Pour afficher les dragons à chaque entrée de map il faut :
+					* dans le main rajouter Level_State *pCurrentLevelState; pCurrentLevelState = Level_State_Init(); après le  chargement du niveau
+					* dans le main rajouter Level_State_Load(pCurrentLevelState, pCurrentLevel, pRenderer); après le Level_Change dans la boucle
+					* dans le main rajouter drawAllEntities(pCurrentLevelState, pRenderer); dans l'affichage
+					* rajouter dans les fichiers map le nbre de dragon qu'il faut rajouter comme suit:
+							#entity
+							dragon 366 24 8 "savie" "sonarmure" "coordx" "coordy"
+							dragon 366 ...
+							#layout
+				Normalement ca suffit le free n'est pas encore au point'
