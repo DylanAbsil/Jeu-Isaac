@@ -62,10 +62,10 @@ Entity * Entity_Init(char* szFileName){
 *  \return boolean it verify if the load is correct or not
 */
 Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprite){
-		entite->iEntityLife = life;
+	entite->iEntityLife = life;
 	entite->iArmor = armor;
 	entite->pSprEntity = sprite;
-	if (sprite == NULL){
+	if (entite->pSprEntity == NULL){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s in the entity %s !\n", sprite->strName, entite->strEntityName);
 		return FALSE;
 	}
@@ -124,7 +124,7 @@ Boolean Entity_Draw(SDL_Renderer * pRenderer, Entity *entite){
 		Kr_Log_Print(KR_LOG_ERROR, "The entity %s hasn't been draw on the window\n", entite->strEntityName);
 		return FALSE;
 	}
-//	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window\n", entite->strEntityName);
+	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window on coordonates x = %d and y = %d\n", entite->strEntityName, entite->pSprEntity->pRectPosition->x, entite->pSprEntity->pRectPosition->y);
 	return TRUE;
 
 }
@@ -233,28 +233,9 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, 
 //		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", entite->strEntityName, vx, vy, entite->iCoordXEntity, entite->iCoordYEntity);
 		return TRUE;
 	}
-
 }
 
-/*!
-*  \fn     void updateAllEntities(Kr_Level *pLevel, Entity *entite, Uint32 *tempoAnim, SDL_Renderer *pRenderer)
-*  \brief  Function to update the direction and the position on the map of the entite
-*
-*  \param  pLevel  a pointer to the Level
-*  \param  pRenderer a pointer to the renderer
-*  \return Boolean true if the entites have all been updated false either
-*/
-Boolean updateAllEntites(Kr_Level *pLevel, SDL_Renderer *pRenderer){
-	int *i = pLevel->aListEntity;
-	Boolean goodupdate = TRUE;
-	for (i+1; i < pLevel->iNbEntity; i++){
-		if (updateEntityVector(pLevel, *i, pRenderer) == FALSE){
-			goodupdate = FALSE;
-			break;
-		}
-	}
-	return goodupdate;
-}
+
 
 /*!
 *  \fn     void updateEntityVector(Kr_Level *pLevel, Entity *entite, SDL_Renderer *pRenderer)
@@ -266,7 +247,7 @@ Boolean updateAllEntites(Kr_Level *pLevel, SDL_Renderer *pRenderer){
 *  \return Boolean true if the vector has been updated false either
 */
 Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, SDL_Renderer *pRenderer){
-
+	return TRUE;
 }
 
 /*!

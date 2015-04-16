@@ -23,11 +23,11 @@
 #ifndef __ENTITE_H__
 #define __ENTITE_H__
 
+#include "kr_common.h"
 #include "kr_sprite.h"
 #include "kr_input.h"
 #include "kr_level.h"
 #include "kr_log.h"
-
 
 /*!
 * \enum EntityState
@@ -85,7 +85,7 @@ typedef struct {
 	Uint32	iSpeedEntity;
 	Direction direction;
 	Boolean mouvement;			/* Mouvement : 0 static, 1 in movement */
-	Uint32	iTempoAnim			/*! int for the temporisation of the animation */
+	Uint32	iTempoAnim;			/*! int for the temporisation of the animation */
 }Entity;
 
 Entity *	Entity_Init(char *szFileName);
@@ -99,7 +99,6 @@ void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
 void		switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer);
 
 Boolean		updatePlayerVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *pPlayer, SDL_Renderer *pRenderer);
-Boolean		updateAllEntites(Kr_Level *pLevel, SDL_Renderer *pRenderer);
 Boolean		updateEntityVector(Kr_Level *pLevel, Entity *pEntity, SDL_Renderer *pRenderer);
 
 #endif /* __KR_ENTITE_H__ */

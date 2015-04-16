@@ -38,7 +38,6 @@
 #include "kr_util.h"
 #include "kr_log.h"
 #include "kr_tileset.h"
-#include "entite.h"
 
 #define KR_LEVEL_VERSION "Level Version 1.2"
 /*!
@@ -54,8 +53,6 @@ typedef struct
 	Sint32          iLevel_TileHeight;  /*!< Height of the level in Tile number */
 	Uint32        **szLayout;			/*!< 2D array of the level (sizeof(Uint32) tiles possible */
 	Kr_Tileset     *pLevel_Tileset;		/*!< pointer to the tileset of this level */
-	Entity		  **aListEntity;		/*!< array of the list of the entities actually in the level */
-	Uint32			iNbEntity;			/*!< Number of entities currently in the level (include the player) */
 	Uint32          iNumNord;		    /*!< The numero of the level with which is connected to the north */
 	Uint32          iNumSud;		    /*!< The numero of the level with which is connected to the south */
 	Uint32          iNumEst;		    /*!< The numero of the level with which is connected to the east */

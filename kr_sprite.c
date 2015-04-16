@@ -31,7 +31,7 @@
 *  \param szFileName the name of the sprite file must be allocated in the initialization
 *  \return Kr_Sprite* a pointer to the empty created entity
 */
-Kr_Sprite *Kr_Sprite_Init(char *szFileName)
+Kr_Sprite * Kr_Sprite_Init(char *szFileName)
 {
 
 	Kr_Sprite * pSprite = UTIL_Malloc(sizeof(Kr_Sprite));		//allocation mémoire
