@@ -29,6 +29,7 @@
     #include <stdarg.h>
     #include <string.h>
     #include <time.h>
+	#include <math.h>
 
 	#include <SDL2/SDL.h>
 	#include <SDL2/SDL_mixer.h>
@@ -41,8 +42,6 @@
 #define KR_FPS 30// Nombre de FPS
 #define KR_WIDTH_WINDOW  16*80 // 1280
 #define KR_HEIGHT_WINDOW 16*44 // 704
-#define MOVESPEED 5
-#define RESET_FRAME 10
 #define SIZE_MAX_NAME 100
 
     /*! 

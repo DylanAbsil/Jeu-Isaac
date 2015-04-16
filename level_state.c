@@ -56,9 +56,9 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 	Uint32	iArmor = 0;
 	Uint32	iCoordX = 0;
 	Uint32	iCoordY = 0;
-	char   szLevelPath[50];
+	char    szLevelPath[50];
 
-	FILE  *pFile;
+	FILE   *pFile;
 	char    szBuf[CACHE_SIZE];  // Buffer
 	char    szEntityName[CACHE_SIZE];
 
@@ -83,7 +83,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 			pLevelSt->aSpriteLevel = (Kr_Sprite **)malloc((iNbEntities + 1)*sizeof(Kr_Sprite*));
 			pLevelSt->aRectPositionEntity = (SDL_Rect**)malloc((iNbEntities + 1)*sizeof(SDL_Rect*));
 
-			int i = 0;
+			Uint32 i = 0;
 			Kr_Sprite **aSprite = pLevelSt->aSpriteLevel;
 			Entity    **aEntity = pLevelSt->aEntityLevel;
 			SDL_Rect  **aRect = pLevelSt->aRectPositionEntity;
@@ -117,13 +117,13 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 */
 void Level_State_Free(Level_State *pLevelSt){
 	UTIL_Free(pLevelSt->szLevelStName);
-	int i = 0;
+	Uint32 i = 0;
 	Kr_Sprite **aSprite = pLevelSt->aSpriteLevel;
 	Entity    **aEntity = pLevelSt->aEntityLevel;
 	SDL_Rect  **aRect = pLevelSt->aRectPositionEntity;
 	for (i = 1; i < pLevelSt->iNbEntities; i++){
 		Entity_Free(*(aEntity + i));
-		Kr_Sprite_Free(*(aSprite+i));
+		UTIL_Free(*(aSprite + i));
 		UTIL_Free(*(aRect+i));
 	}
 	UTIL_Free(pLevelSt);
@@ -137,17 +137,18 @@ void Level_State_Free(Level_State *pLevelSt){
 *  \param  pRenderer a pointer to the renderer
 *  \return Boolean true if the entites have all been updated false either
 */
-/*Boolean updateAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer){
-	int *i = pLevelSt->pLevel->aListEntity;
-	Boolean goodupdate = TRUE;
-	for (i + 1; i < pLevelSt->pLevel->iNbEntity; i += 1){
-		if (updateEntityVector(pLevelSt->pLevel, *i, pRenderer) == FALSE){
-			goodupdate = FALSE;
-			break;
+Boolean updateAllEntities(Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer){
+	Uint32      i = 0;
+	Entity **aEntity = pLevelSt->aEntityLevel;
+	
+	for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
+		if (updateEntityVector(pLevelSt->pLevel, *(aEntity + i), pPlayer, pRenderer) == FALSE){
+			Kr_Log_Print(KR_LOG_ERROR, "The entity %d couldn't have been updated", i - 1);
+			return FALSE;
 		}
 	}
-	return goodupdate;
-}*/
+	return TRUE;
+}
 
 
 
@@ -160,7 +161,7 @@ void Level_State_Free(Level_State *pLevelSt){
 *  \return boolean if the entities have been draw on the screen or not
 */
 Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer){
-	int i = 0;
+	Uint32 i = 0;
 	Entity **aEntity = pLevelSt->aEntityLevel;
 	for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
 		Entity_Draw(pRenderer, *(aEntity+i));

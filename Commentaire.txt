@@ -16,3 +16,5 @@ REMARQUE :	- J'ai changé la structure entity pour quelle comprenne un int tempo 
 							dragon 366 ...
 							#layout
 				Normalement ca suffit le free n'est pas encore au point'
+
+			- J'ai ajoutée une petite fonction signe'
