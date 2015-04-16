@@ -292,11 +292,7 @@ Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, S
 		//Gestion des collisions
 		if (Kr_Collision_Move(pLevel, pEntity->pSprEntity->pRectPosition, vx, vy) == 3)
 		{
-			getVectorToPlayer(pEntity, pPlayer, &vx, &vy);
-			if ()
-				vy = UTIL_SGN(vy) * MOB_MOVESPEED;
-			else
-				vx = UTIL_SGN(vx) * MOB_MOVESPEED;
+			vx = vy = 0;
 		}
 
 		//Deplacement final prévu
