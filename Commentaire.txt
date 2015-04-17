@@ -18,3 +18,5 @@ REMARQUE :	- J'ai changé la structure entity pour quelle comprenne un int tempo 
 				Normalement ca suffit le free n'est pas encore au point'
 
 			- J'ai ajoutée une petite fonction signe'
+
+			- Olivier.H : Je vais effectuer des modifications dans le fichiers kr_level dans la journée, essayer de pas le modifier !
