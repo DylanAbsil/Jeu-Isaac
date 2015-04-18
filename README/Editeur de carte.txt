@@ -1,0 +1,93 @@
+I/ Introduction
+
+  L'éditeur de carte permet de créer des cartes à partir d'un tileset quelconque tout en respectant la structure des fichiers levelX.txt définit dans le fichier "Structure des fichiers level.txt"
+
+
+II/ Fichier d'édition et contraintes
+
+
+A/ Description du fichier level_editor.txt
+
+Pour configurer l'éditeur de carte il faut décrire dans le fichier level_editor.txt situé dans le dossiers /maps les caractéristiques du niveau que vous souhaitez créer.
+La structure de ce fichier est la suivante :
+ numéro du niveau
+ nom du niveau
+ nom du fichier tilesets avec son extension
+ nombre de tiles du niveau en largeur
+ nombre de tiles du niveau en hauteur
+ numéro de la tiles qui initialisera le niveau
+
+Ainsi un exemple de configuration peut être: 
+ 2
+ Le lac
+ tileset_zelda32.tls
+ 40
+ 22
+ 162
+
+Cette configuration permet de créer un fichier level2.txt respectant la structure des fichiers levelX.txt actuel, le nom du niveau sera "Le lac".
+Le tileset "tileset_zelda32.tls" sera utilisé pour créer ce niveau.
+Les dimensions du niveau sont données par les chiffres 40 et 22.
+La tile de base sera la tile 162
+
+Remarque : Si un fichier level2.txt existe déjà dans ce cas ce niveau est chargé avec sa propre configuration décrite dans le fichier level2.txt (les paramètres du fichier level_editor ne sont pas appliqué).
+           Il reste possible d'effectuer des modifications dans ce level et de le sauvegarder.
+
+
+B/ Contraintes
+
+L'éditeur de carte ne peut pas accepter n'importe qu'elle type de donnée : 
+ - Le fichier level_editor.txt doit respecter la mise en forme imposé (cf partie XXXXXXXX)
+ - La taille de la carte que vous souhaitez créer doit être au minimum aussi grande que le tileset que vous avez choisi.
+     ie : Un tileset de 16x16 avec 20 blocs en longueur et 10 en largeur, impose une taille minimum de la carte de (20*16) par (10*16)
+ - La taille de la carte ne peut pas dépasser la résolution imposé par les #defines dans kr_common.h : 
+    - #define KR_WIDTH_WINDOW  
+    - #define KR_HEIGHT_WINDOW
+ - Le numéro du niveau doit être compris entre 1 et 999 (inclus)
+
+
+III/ Utilisation
+
+Après avoir configuré le fichier level_editor.txt il suffit de lancer l'executable pour commencer à créer/modifier un niveau.
+
+ A/ Clavier & Souris
+
+La configuration des touches pour utiliser l'éditeur de carte est la suivante :
+
+// Général
+F   : Afficher/Cacher les FPS
+G   : Afficher/Cacher la Grille
+TAB : Afficher/Cacher le tileset
+S   : Sauvegarder les modifications apportées
+
+// Sélection simple
+MOLETTE-AVANT   : Sélectionne la tile précédente sur le clique gauche
+MOLETTE-ARRIERE : Sélectionne la tile suivante sur le clique gauche
+CLIQUE-MOLETTE : Sélectionne une tile sur le clique gauche
+CLIQUE-MOLETTE + CTRL : Sélectionne une tile sur le clique droit
+CLIQUE-GAUCHE + Tileset affiché : Sélectionne une tile sur le clique gauche
+
+// Sélection de groupe
+SHIFT + CLIQUE-GAUCHE : Sélectionne un groupe de tiles sur le clique gauche
+ESCAPE: Annuler la sélection d'un groupe
+
+// Remplacer
+CLIQUE-GAUCHE : Remplace la tile survolé par celle en mémoire sur le clique gauche
+CLIQUE-DROIT: Remplace la tile survolé par celle en mémoire sur le clique droit
+
+ B/ Sélection d'un groupe de tiles
+
+La sélection d'un groupe de tiles est toujours rectangulaire et limité à une sélection de 100 tiles.
+Pour sélectionner un groupe de tile la manipulation est la suivante : 
+ - Positionner votre curseur sur la première tile que vous souhaitez sélectionner
+ - Appuyer sur SHIFT + CLIQUE-GAUCHE pour sélectionner cette tile
+ - Vous entrez ainsi dans une séquence permettant de sélectionner un groupe de tile. Vous pouvez quitter cette séquence en appuyant sur ESCAPE à tout moment.
+ - Appuyer sur SHIFT + CLIQUE-GAUCHE pour sélectionner la dernière tile de la sélection. 
+ - Le groupe sélectionner apparaitra ensuite en surbrillance. 
+ - Vous pouvez annuler la sélection de ce groupe en appuyant sur ESCAPE encore une fois
+ - L'outil de prévisualisation vous permettra de savoir où vous allez placer votre groupe de tiles.
+ - Effectuer un CLIQUE-GAUCHE pour remplacer les tiles survolées par votre sélection.
+
+IV/ Divers
+
+Aucun bug n'a été détecté pour le moment, il est cependant conseillé de sauvegarder régulièrement vos modifications

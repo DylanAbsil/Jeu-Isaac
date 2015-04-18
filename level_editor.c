@@ -850,11 +850,11 @@ int Editor(void)
 		}
 
 		// Modifier le tile Strandard
-		if (inEvent.szMouseButtons[2] && inEvent.szKey[SDL_SCANCODE_LCTRL])
+		if (inEvent.szMouseButtons[1] && inEvent.szKey[SDL_SCANCODE_LCTRL])
 		{
 			pEditor->iStandardTile = Level_Editor_GetTile(pEditor, inEvent.iMouseX, inEvent.iMouseY, bTilesShow);
 			bPreDraw = FALSE;
-			inEvent.szMouseButtons[2] = 0;
+			inEvent.szMouseButtons[1] = 0;
 		}
 
 		if (inEvent.szMouseButtons[0])
