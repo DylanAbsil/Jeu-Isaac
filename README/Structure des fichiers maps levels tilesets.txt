@@ -1,0 +1,98 @@
+I/ Description des tilesets
+
+Le tileset est un fichier image regroupant toutes les tiles dont nous pouvons avoir besoin pour créer notre niveau.
+Il reste nécessaire de pouvoir caractériser les propriétés des tiles de ce tileset (est-ce une tile que l'on peut traverser, interragir avec etc). Pour cela nous utilisons un fichier .tls dont la structure est la suivante:
+Version du tileset
+ Image du tileset associé au fichier .tls
+ Nombre_Tiles_Largeur_dans_tileset Nombre_Tiles_Hauteur_dans_tileset
+ tile0: caractéristique
+ tile1: caractéristique
+ ....
+ tileX: caractéristique
+
+Exemple :
+Tileset Version 1.0
+tileset_zelda32.png
+2 2
+tile0: eau (Première ligne, première colonne)
+tile1: sol (Première ligne, deuxième colonne)
+tile2: eau (Deuxième ligne, première colonne)
+tile3: sol (Deuxième ligne, deuxième colonne)
+
+C'est à l'utilisateur de définir les caractèristiques qu'il souhaite donner à chaque tiles. Il faudra ensuite adapter les fichiers kr_tileset.h et .c en conséquence.
+
+
+II/ Description des niveaux (levels)
+
+Les fichiers levelX.txt situé dans le répertoire /maps permettent de caractériser les niveaux de par leurs aspects mais égalements leurs contenues (objet "interactif", monstres...)
+La structure d'un fichier de niveau est la suivante (VERSION 1.2):
+ Version du fichier level
+ #property (balise)
+ Nom du niveau
+ #tileset ( balise)
+ Fichier tilesets utilisé par le niveau (avec l'extension .tls)
+ #entity (balise)
+ #layout (balise)
+ Nombre_de_tiles_en_largueur_du_niveau Nombre_de_tiles_en_hauteur_du_niveau
+ Description du "layout" (voir plus bas)
+ #end (balise)
+
+Voici un exemple : 
+Level Version 1.2
+#property
+Un nouveau départ
+#tileset
+tileset_zelda32.tls
+#entity
+#layout
+4 2
+10 10 2 10
+5 3 4 123
+#end
+
+La description du "layout" représente la disposition des tiles dans le niveau sous forme d'un tableau ligne par ligne.
+Nous décrivons ainsi quelles tiles du tileset sera affiché à un emplacement particulier de l'écran.
+
+B/ Contraintes sur les fichiers levelX.txt
+ - Leur nom doit être levelX.txt où X est le numéro du niveau
+ - Le numéro 0 pour un level est interdit, celui ci doit être compris entre 1 et 999 inclus
+ - La taille des niveaux ne peut pas dépasser la résolution imposé par les #defines dans kr_common.h : 
+    - #define KR_WIDTH_WINDOW  
+    - #define KR_HEIGHT_WINDOW
+ - La structure du fichier levelX.txt doit respecter celle imposé par le code source qui le génère. Il est déconseillé de le modifié manuellement au risque de le corrompre
+
+
+III/ Description de la carte (map)
+
+ Pour définir comment les niveaux sont reliés entre eux nous utilisons un fichier dont la structure nous donne les informations souhaitées.
+Ce fichier est maps_world.txt situé dans le dossier /maps
+
+La structure de ce fichier est la suivante :
+ nombre de niveau total
+ #array (balise)
+ description level1
+ ...
+ description levelX
+ #end (balise)
+ 
+Voici un exemple d'une carte composé de 3 niveaux
+ 3
+ #array
+ 0 0 2 0
+ 3 0 0 1
+ 0 2 0 0
+ #end
+
+La lecture de la description de la ligne de chaque niveau se fait ainsi :
+ ie : pour le level1 
+  - le level1 est relié au niveau 0 par le NORD (le niveau 0 ne peut pas exister, il commence à 1, cela signifie qu'il n'est relié à rien)
+  - le level1 est relié au niveau 0 par le SUD
+  - le level1 est relié au niveau 2 par l'EST
+  - le level1 est relié au niveau 0 par l'OUEST
+ ie : pour le level2 
+  - le level2 est relié au niveau 3 par le NORD
+  - le level2 est relié au niveau 0 par le SUD
+  - le level2 est relié au niveau 0 par l'EST
+  - le level2 est relié au niveau 1 par l'OUEST
+etc...
+C'est au créateur de la carte de créer ce fichier pour définir comment les fichiers sont reliés entre eux

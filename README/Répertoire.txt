@@ -1,0 +1,11 @@
+Fichier son     : .wav dans le répertoire sounds\
+Fichier musique : .mp3 dans le répertoire sounds\
+Fichier level   : .txt dans le répertoire maps\
+Fichier police  : .ttf dans le répertoire fonts\
+Fichier tileset : dans le répertoire tilesets\
+ - Un tileset se définit par un fichier .tls et une image .png
+Fichier sprite  : dans le répertoire sprites\ 
+ - tout type de fichier image supporté par SDL_image
+
+
+

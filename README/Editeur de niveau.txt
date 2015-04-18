@@ -1,6 +1,6 @@
 I/ Introduction
 
-  L'éditeur de carte permet de créer des cartes à partir d'un tileset quelconque tout en respectant la structure des fichiers levelX.txt définit dans le fichier "Structure des fichiers level.txt"
+  L'éditeur de niveau permet de créer des cartes à partir d'un tileset quelconque tout en respectant la structure des fichiers levelX.txt définit dans le fichier "Structure des fichiers maps levels tilesets.txt"
 
 
 II/ Fichier d'édition et contraintes
@@ -8,7 +8,7 @@ II/ Fichier d'édition et contraintes
 
 A/ Description du fichier level_editor.txt
 
-Pour configurer l'éditeur de carte il faut décrire dans le fichier level_editor.txt situé dans le dossiers /maps les caractéristiques du niveau que vous souhaitez créer.
+Pour configurer l'éditeur de niveau il faut décrire dans le fichier level_editor.txt situé dans le dossiers /maps les caractéristiques du niveau que vous souhaitez créer.
 La structure de ce fichier est la suivante :
  numéro du niveau
  nom du niveau
@@ -36,11 +36,11 @@ Remarque : Si un fichier level2.txt existe déjà dans ce cas ce niveau est chargé
 
 B/ Contraintes
 
-L'éditeur de carte ne peut pas accepter n'importe qu'elle type de donnée : 
+L'éditeur de niveau ne peut pas accepter n'importe qu'elle type de donnée : 
  - Le fichier level_editor.txt doit respecter la mise en forme imposé (cf partie XXXXXXXX)
- - La taille de la carte que vous souhaitez créer doit être au minimum aussi grande que le tileset que vous avez choisi.
-     ie : Un tileset de 16x16 avec 20 blocs en longueur et 10 en largeur, impose une taille minimum de la carte de (20*16) par (10*16)
- - La taille de la carte ne peut pas dépasser la résolution imposé par les #defines dans kr_common.h : 
+ - La taille du niveau que vous souhaitez créer doit être au minimum aussi grande que le tileset que vous avez choisi.
+     ie : Un tileset de 16x16 avec 20 blocs en longueur et 10 en largeur, impose une taille minimum du niveau de (20*16) par (10*16)
+ - La taille du niveau ne peut pas dépasser la résolution imposé par les #defines dans kr_common.h : 
     - #define KR_WIDTH_WINDOW  
     - #define KR_HEIGHT_WINDOW
  - Le numéro du niveau doit être compris entre 1 et 999 (inclus)
@@ -52,7 +52,7 @@ Après avoir configuré le fichier level_editor.txt il suffit de lancer l'executab
 
  A/ Clavier & Souris
 
-La configuration des touches pour utiliser l'éditeur de carte est la suivante :
+La configuration des touches pour utiliser l'éditeur de niveau est la suivante :
 
 // Général
 F   : Afficher/Cacher les FPS
