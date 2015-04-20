@@ -29,6 +29,7 @@
 /*               |            | Passage des fichiers levels en version: Level Version 1.1 		*/
 /* Herrou        | 05/04/2015 | Suppression de Kr_Level_Event et Kr_GetLevelNumber				*/
 /*               |            | Kr_Level_Change, prend en paramètre le numéro du level			*/
+/* Herrou        | 20/04/2015 | Transfert des fonctions SaveLayout et WriteLayout dans Kr_Level	*/
 /* ============================================================================================ */
 
 #ifndef __KR_LEVEL_H__
@@ -69,9 +70,11 @@ void	  Kr_Level_Free(Kr_Level *pLevel);
 Boolean	  Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile);
 void	  Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel);
 
-/* Sauvegarde etc */
-Boolean	  Kr_Level_Save(Kr_Level *pLevel);
 Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Uint32 iCurrentLevelNumber, SDL_Renderer *pRenderer);
+/* Sauvegarde */
+void Kr_Level_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y);
+Boolean Kr_Level_SaveLayout(Kr_Level *pLevel);
+
 
 /* Gestion des collisions */
 Uint32  Kr_Collision_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);

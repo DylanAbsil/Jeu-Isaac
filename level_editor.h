@@ -12,6 +12,7 @@
 /* Herrou        | 07/04/2015 | Add Level_Editor_GetTile        													*/
 /* Herrou        | 09/04/2015 | Sauvegarde des données, gestion de la sélection de groupe de tiles					*/
 /* Herrou        | 10/04/2015 | Ajout de la fonction Editor															*/
+/* Herrou        | 20/04/2015 | Transfert des fonctions SaveLayout et WriteLayout dans Kr_Level						*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -68,8 +69,7 @@ void   Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer 
 void	Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer);
 Sint32  Level_Editor_GetTile(Level_Editor *pEditor, Sint32 x, Sint32 y, Boolean tilesetIsShown);
 void	Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer, SDL_Texture *pTextureSelected);
-void    Level_Editor_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y);
-Boolean	Level_Editor_SaveLayout(Kr_Level *pLevel);
+
 
 /* Group selection*/
 Boolean Level_Editor_SelectingGroup(Sint32 *iTabCursor, Kr_Input *inEvent);
