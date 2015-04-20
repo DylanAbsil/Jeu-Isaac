@@ -14,6 +14,7 @@
 /* Herrou        | 09/04/2015 | Sauvegarde des données, gestion de la sélection de groupe de tiles					*/
 /* Herrou        | 10/04/2015 | Ajout de la fonction Editor		 													*/
 /* Herrou        | 14/04/2015 | MAJ fonction createFile, on créer deux fois #entity									*/
+/* Herrou        | 20/04/2015 | MAJ fonction pour prendre en paramètre le level plutot que le Level_Editor dans certain cas*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -391,7 +392,7 @@ void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Rende
 
 
 /*!
-*  \fn     Sint32 Level_Editor_GetTile(Level_Editor *pEditor,Uint32 x, Uint32 y, Boolean tilesetIsShown)
+*  \fn     Sint32 Level_Editor_GetTile(Level_Editor *pEditor,Sint32 x, Sint32 y, Boolean tilesetIsShown)
 *  \brief  Function to get the tile on the renderer from coordinate
 *
 *  \param  x			  coordinate
@@ -400,9 +401,9 @@ void Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Rende
 *  \param  pEditor        a pointer to the Level_Editor structure
 *  \return The tile number, -1 if error
 */
-Sint32 Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean tilesetIsShown)
+Sint32 Level_Editor_GetTile(Level_Editor *pEditor, Sint32 x, Sint32 y, Boolean tilesetIsShown)
 {
-	Uint32 iNumTilesX, iNumTilesY, iTileNum = 0;
+	Sint32 iNumTilesX, iNumTilesY, iTileNum = 0;
 
 	//Si le tileset n'est pas affiché on récupère directement la tile du level, de même si le curseur est hors du tileset bien qu'affiché
 	if ((!tilesetIsShown) || (x > (pEditor->pLevel->pLevel_Tileset->iNbTilesX *pEditor->pLevel->pLevel_Tileset->iTilesWidth))
@@ -457,33 +458,33 @@ void Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, 
 *  \fn     void Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y)
 *  \brief  Function to rewrite in the layout of the level
 *
-*  \param  pEditor        a pointer to the Level_Editor structure
+*  \param  pLevel         a pointer to the level
 *  \param  iNumTile       the number of the tile we want to draw
 *  \param  x			  coordinate
 *  \param  y			  coordinate
 *  \return none
 */
-void Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y)
+void Level_Editor_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y)
 {
 	Sint32 iNumTilesX, iNumTilesY;
 
-	iNumTilesX = x / pEditor->pLevel->pLevel_Tileset->iTilesWidth;
-	iNumTilesY = y / pEditor->pLevel->pLevel_Tileset->iTilesHeight;
+	iNumTilesX = x / pLevel->pLevel_Tileset->iTilesWidth;
+	iNumTilesY = y / pLevel->pLevel_Tileset->iTilesHeight;
 
-	if (iNumTilesX >= pEditor->pLevel->iLevel_TileWidth || iNumTilesY >= pEditor->pLevel->iLevel_TileHeight) return; // On vérifie que l'on est bien sur la carte
+	if (iNumTilesX >= pLevel->iLevel_TileWidth || iNumTilesY >= pLevel->iLevel_TileHeight) return; // On vérifie que l'on est bien sur la carte
 
-	pEditor->pLevel->szLayout[iNumTilesX][iNumTilesY] = iNumTile;
+	pLevel->szLayout[iNumTilesX][iNumTilesY] = iNumTile;
 }
 
 
 /*!
-*  \fn     Boolean Level_Editor_SaveLayout(Level_Editor *pEditor)
-*  \brief  Function to rewrite in the layout of the level
+*  \fn     Boolean Level_Editor_SaveLayout(Kr_Level *pLevel)
+*  \brief  Function to save the layout of the level
 *
-*  \param  pEditor        a pointer to the Level_Editor structure
+*  \param  pLevel    a pointer to the level
 *  \return TRUE if everything is ok, FALSE otherwise
 */
-Boolean Level_Editor_SaveLayout(Level_Editor *pEditor)
+Boolean Level_Editor_SaveLayout(Kr_Level *pLevel)
 {
 	char   szPath1[50];
 	char   szPath2[50];
@@ -493,13 +494,13 @@ Boolean Level_Editor_SaveLayout(Level_Editor *pEditor)
 
 	Kr_Log_Print(KR_LOG_INFO, "Saving the Layout !\n");
 	/* Ouverture du fichier temporaire*/
-	sprintf(szPath1, "maps\\level%d.tmp", pEditor->pLevel->iLevelNum);
+	sprintf(szPath1, "maps\\level%d.tmp", pLevel->iLevelNum);
 	pFileDst = UTIL_OpenFile(szPath1, "w"); //écriture
 	if (!pFileDst) return FALSE;
 
 
 	/* Ouverture du fichier level */
-	sprintf(szPath2, "maps\\level%d.txt", pEditor->pLevel->iLevelNum);
+	sprintf(szPath2, "maps\\level%d.txt", pLevel->iLevelNum);
 	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szPath2);
 	pFileSrc = UTIL_OpenFile(szPath2, "r"); //Lecture 
 	if (!pFileDst)
@@ -516,18 +517,18 @@ Boolean Level_Editor_SaveLayout(Level_Editor *pEditor)
 
 
 	/* Ouverture du fichier temporaire*/
-	sprintf(szPath1, "maps\\level%d.txt", pEditor->pLevel->iLevelNum);
+	sprintf(szPath1, "maps\\level%d.txt",pLevel->iLevelNum);
 	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szPath2);
 	pFileSrc = UTIL_OpenFile(szPath1, "r+");
 	if (!pFileSrc) return FALSE;
 	fseek(pFileSrc, 0, SEEK_END);
-	fprintf(pFileSrc, "%d %d\n", pEditor->pLevel->iLevel_TileWidth, pEditor->pLevel->iLevel_TileHeight);
+	fprintf(pFileSrc, "%d %d\n", pLevel->iLevel_TileWidth, pLevel->iLevel_TileHeight);
 	// Remplissage du nouveau Layout
-	for (j = 0; j< pEditor->pLevel->iLevel_TileHeight; j++)
+	for (j = 0; j< pLevel->iLevel_TileHeight; j++)
 	{
-		for (i = 0; i< pEditor->pLevel->iLevel_TileWidth; i++)
+		for (i = 0; i< pLevel->iLevel_TileWidth; i++)
 		{
-			fprintf(pFileSrc, "%d ", pEditor->pLevel->szLayout[i][j]);
+			fprintf(pFileSrc, "%d ", pLevel->szLayout[i][j]);
 		}
 		fprintf(pFileSrc, "\n");
 	}
@@ -680,7 +681,7 @@ void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 			iCoordY += pEditor->pLevel->pLevel_Tileset->iTilesHeight; // Ligne suivante
 			iCoordX = x; // remise à 0 de la colonne
 		}
-		Level_Editor_WriteLayout(pEditor, iTabTile[i],iCoordX,iCoordY);
+		Level_Editor_WriteLayout(pEditor->pLevel, iTabTile[i],iCoordX,iCoordY);
 		i++;
 	}	
 }
@@ -883,7 +884,7 @@ int Editor(void)
 					}
 					else
 					{
-						Level_Editor_WriteLayout(pEditor, iNumTile, inEvent.iMouseX, inEvent.iMouseY);
+						Level_Editor_WriteLayout(pEditor->pLevel, iNumTile, inEvent.iMouseX, inEvent.iMouseY);
 					}					
 				}
 			}
@@ -905,7 +906,7 @@ int Editor(void)
 			
 			if (!bTilesShow) // Remettre le tile standard
 			{
-				Level_Editor_WriteLayout(pEditor, pEditor->iStandardTile, inEvent.iMouseX, inEvent.iMouseY);
+				Level_Editor_WriteLayout(pEditor->pLevel, pEditor->iStandardTile, inEvent.iMouseX, inEvent.iMouseY);
 				bPreDraw = FALSE;
 			}
 			else
@@ -973,7 +974,7 @@ int Editor(void)
 		//Sauvegarder la map
 		if (inEvent.szKey[SDL_SCANCODE_S])
 		{
-			Level_Editor_SaveLayout(pEditor);
+			Level_Editor_SaveLayout(pEditor->pLevel);
 			inEvent.szKey[SDL_SCANCODE_S] = 0;
 		}
 

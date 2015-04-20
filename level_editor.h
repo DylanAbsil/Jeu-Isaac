@@ -66,10 +66,10 @@ void   Grid_Free(Grid *pGrid);
 void   Grid_Draw(Grid *pGrid, Kr_Level *pLevel, Boolean bMustDraw, SDL_Renderer *pRenderer);
 
 void	Level_Editor_PrintTiles(Kr_Tileset *pTileset, Boolean bMustPrint, SDL_Renderer *pRenderer);
-Sint32  Level_Editor_GetTile(Level_Editor *pEditor, Uint32 x, Uint32 y, Boolean tilesetIsShown);
+Sint32  Level_Editor_GetTile(Level_Editor *pEditor, Sint32 x, Sint32 y, Boolean tilesetIsShown);
 void	Level_Editor_PreDrawTile(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y, Boolean bMustDraw, SDL_Renderer *pRenderer, SDL_Texture *pTextureSelected);
-void    Level_Editor_WriteLayout(Level_Editor *pEditor, Uint32 iNumTile, Uint32 x, Uint32 y);
-Boolean	Level_Editor_SaveLayout(Level_Editor *pEditor);
+void    Level_Editor_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y);
+Boolean	Level_Editor_SaveLayout(Kr_Level *pLevel);
 
 /* Group selection*/
 Boolean Level_Editor_SelectingGroup(Sint32 *iTabCursor, Kr_Input *inEvent);
