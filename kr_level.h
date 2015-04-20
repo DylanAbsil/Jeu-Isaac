@@ -71,8 +71,9 @@ Boolean	  Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile);
 void	  Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel);
 
 Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Uint32 iCurrentLevelNumber, SDL_Renderer *pRenderer);
+
 /* Sauvegarde */
-void Kr_Level_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y);
+void    Kr_Level_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y);
 Boolean Kr_Level_SaveLayout(Kr_Level *pLevel);
 
 
@@ -85,6 +86,6 @@ void    Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint3
 /* Détection d'évenement sur la carte */
 Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y);
 
-
+Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Uint32 CoordEntityX, Uint32 CoordEntityY, Uint32);
 
 #endif /* __KR_LEVEL_H__ */
