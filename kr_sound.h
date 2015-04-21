@@ -10,6 +10,7 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 28/03/2015 | Creation.                                    */
+/* Herrou        | 21/04/2015 | Ajout de define pour la gestion des canaux   */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -19,6 +20,8 @@
 #define __KR_SOUND_H__
     
     #include "kr_common.h"
+	
+#define KR_SOUND_MAP_EVENT_CANAL 0
 
     /*! 
      * \struct Kr_Sound
@@ -36,7 +39,7 @@
     void       Kr_Sound_Free( Kr_Sound **ppSound );
 	Mix_Chunk* Kr_Sound_LoadChunk(const char *szPath);
 	void       Kr_Sound_FreeChunk(Mix_Chunk **ppChunk);
-
+	void	   Kr_Sound_PlayOnce(const char *szSndName, Uint32 iChannel, Uint32 iVolume);
 
 	Mix_Music* Kr_Sound_LoadMusic(const char *szPath);
 	void       Kr_Sound_FreeMusic(Mix_Music **ppMusic);
