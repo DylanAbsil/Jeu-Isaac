@@ -13,7 +13,7 @@
 /* ========================================================================= */
 
 #ifndef __LEVEL_STATE_H__
-#define __LEVEL_SATE_H__
+#define __LEVEL_STATE_H__
 
 
 #include "entite.h"
