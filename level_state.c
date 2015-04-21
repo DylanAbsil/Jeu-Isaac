@@ -123,9 +123,11 @@ void Level_State_Free(Level_State *pLevelSt){
 	SDL_Rect  **aRect = pLevelSt->aRectPositionEntity;
 	for (i = 1; i < pLevelSt->iNbEntities; i++){
 		Entity_Free(*(aEntity + i));
-		UTIL_Free(*(aSprite + i));
 		UTIL_Free(*(aRect+i));
 	}
+	UTIL_Free(pLevelSt->aEntityLevel);
+	UTIL_Free(pLevelSt->aSpriteLevel);
+	UTIL_Free(pLevelSt->aRectPositionEntity);
 	UTIL_Free(pLevelSt);
 }
 
@@ -146,6 +148,7 @@ Boolean updateAllEntities(Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *
 			Kr_Log_Print(KR_LOG_ERROR, "The entity %d couldn't have been updated", i - 1);
 			return FALSE;
 		}
+		UpdateAllProjectiles((*(aEntity + i))->pWeapon);
 	}
 	return TRUE;
 }

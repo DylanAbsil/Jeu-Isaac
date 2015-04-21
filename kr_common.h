@@ -54,6 +54,18 @@
         TRUE  = 1  /*!< Value for 'true' */
     } Boolean;
 
+	/*!
+	* \enum Direction
+	* \brief Enumaration to describe the direction of the mouvement of the entity
+	*/
+	typedef enum {
+		nord,
+		est,
+		sud,
+		ouest,
+	}Direction;
+
+
     /*! Macro to set bits. */
     #define KR_BIT_SET(x,bits)   ( x |= bits )
     /*! Macro to get bits. */

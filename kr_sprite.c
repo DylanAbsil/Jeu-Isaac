@@ -93,6 +93,8 @@ Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Uint32 frameHeight, Uint32 frameWidth,
 *  \return none
 */
 void Kr_Sprite_Free(Kr_Sprite *pSprite){
-	UTIL_FreeTexture(&pSprite->pTextureSprite);
-	UTIL_Free(pSprite);
+	if (pSprite != NULL){
+		UTIL_FreeTexture(&pSprite->pTextureSprite);
+		UTIL_Free(pSprite);
+	}
 }

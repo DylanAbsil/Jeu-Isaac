@@ -23,12 +23,11 @@
 #ifndef __ENTITE_H__
 #define __ENTITE_H__
 
-#include "kr_common.h"
-#include "kr_sprite.h"
+
+
+#include "weapon.h"
 #include "kr_input.h"
 #include "kr_level.h"
-#include "kr_log.h"
-#include "kr_util.h"
 
 
 #define MOVESPEED 5
@@ -47,43 +46,11 @@ typedef enum {
 	poisoned,
 }EntityState;
 
-/*!
-* \enum Direction
-* \brief Enumaration to describe the direction of the mouvement of the entity
-*/
-typedef enum {
-	nord,
-	est,
-	sud,
-	ouest,
-}Direction;
-
-
-typedef struct {
-	char	*strNamePrj;
-	Sint32	*iDamagePrj;
-	Uint32	*iSpeedPrj;
-	Kr_Sprite *pSprProjectile;
-	Sint32	iCoordPrj_XStart;
-	Sint32	iCoordPrj_YStart;
-	Sint32	iCoordPrj_XCurrent;
-	Sint32	iCoordPrj_YCurrent;
-}Projectile;
-
-
-typedef struct {
-	char	*strNameWeapon;
-	Uint32	iRangeWeapon;
-	Sint32	iMunitionWeapon;
-	Sint32	iDamageWeapon;
-}Weapon;
-
-
 typedef struct {
 	char		*strEntityName;		/*! Name of the entity */
 	Uint32		iEntityLife;		/* Life of the entity */
 	Uint32		iArmor;				/* Armor of the entity */
-	Weapon		wpnName;
+	Weapon	   *pWeapon;
 	Kr_Sprite  *pSprEntity;
 	EntityState	state;
 	Sint32		iCoordXEntity;

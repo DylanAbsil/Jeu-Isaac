@@ -1,6 +1,6 @@
 /* ========================================================================= */
 /*!
-* \file    kr_entite.c
+* \file    entite.c
 * \brief   Contains the structure to handle the entities.
 * \author  Alexandre Robin
 * \version 1.0
@@ -21,10 +21,8 @@
 /* ========================================================================= */
 
 
-
 #include "entite.h"
-#include "kr_input.h"
-#include "kr_level.h"
+
 
 /*!
 *  \fn     Entity * Entity_Init(char* szFileName)
@@ -89,9 +87,11 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprit
 *  \return none
 */
 void Entity_Free(Entity *entite){
-	UTIL_Free(entite->strEntityName);
-	Kr_Sprite_Free(entite->pSprEntity);
-	UTIL_Free(entite);
+	if (entite != NULL){
+		UTIL_Free(entite->strEntityName);
+		Kr_Sprite_Free(entite->pSprEntity);
+		UTIL_Free(entite);
+	}
 }
 
 /*!
@@ -125,7 +125,7 @@ Boolean Entity_Draw(SDL_Renderer * pRenderer, Entity *entite){
 		Kr_Log_Print(KR_LOG_ERROR, "The entity %s hasn't been draw on the window\n", entite->strEntityName);
 		return FALSE;
 	}
-	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window on coordonates x = %d and y = %d\n", entite->strEntityName, entite->pSprEntity->pRectPosition->x, entite->pSprEntity->pRectPosition->y);
+//	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window on coordonates x = %d and y = %d\n", entite->strEntityName, entite->pSprEntity->pRectPosition->x, entite->pSprEntity->pRectPosition->y);
 	return TRUE;
 
 }
@@ -220,14 +220,14 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, 
 		pPlayer->mouvement = 0;									//
 		pPlayer->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
 		pPlayer->iTempoAnim = 0;											// reset de la tempo
-		Kr_Log_Print(KR_LOG_INFO, "The entity %s hasn't moved\n", pPlayer->strEntityName);
+//		Kr_Log_Print(KR_LOG_INFO, "The entity %s hasn't moved\n", pPlayer->strEntityName);
 		return TRUE;
 	}
 	else{												//Sinon
 		pPlayer->mouvement = 1;
-		pPlayer->iTempoAnim += 1;
-//		Kr_Log_Print(KR_LOG_INFO, "tempoAnim = %d\n", *tempoAnim);
 
+		//Gestion de l'animation
+		pPlayer->iTempoAnim += 1;
 		if (pPlayer->iTempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
 			pPlayer->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
 			if (pPlayer->pSprEntity->iCurrentFrame == pPlayer->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
@@ -268,12 +268,12 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, 
 *  \return Boolean true if the vector has been updated false either
 */
 Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer){
-	Sint32 vx, vy;
+	Sint32 movex, movey;
 
 	//Obtention de la nouvelle trajectoire du monstre
-	getVectorToPlayer(pEntity, pPlayer, &vx, &vy);
+	getVectorToPlayer(pEntity, pPlayer, &movex, &movey);
 
-	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
+	if ((movex == 0) && (movey == 0)){						//Si pas de mouvement :
 		pEntity->mouvement = 0;									//
 		pEntity->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
 		pEntity->iTempoAnim = 0;
@@ -281,6 +281,8 @@ Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, S
 	}
 	else{
 		pEntity->mouvement = 1;
+
+		//Gestion de l'animation
 		pEntity->iTempoAnim += 1;
 		if (pEntity->iTempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
 			pEntity->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
@@ -290,14 +292,14 @@ Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, S
 		}
 				
 		//Gestion des collisions
-		if (Kr_Collision_Move(pLevel, pEntity->pSprEntity->pRectPosition, vx, vy) == 3)
+		if (Kr_Collision_Move(pLevel, pEntity->pSprEntity->pRectPosition, movex, movey) == 3)
 		{
-			vx = vy = 0;
+			movex = movey = 0;
 		}
 
 		//Deplacement final prévu
-		pEntity->iCoordXEntity += vx;
-		pEntity->iCoordYEntity += vy;
+		pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->x; // Modification des coordonnées de l'entité, celles du sprite sont modifiées par les fonctions de collision
+		pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->y;
 
 	}
 

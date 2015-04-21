@@ -15,8 +15,9 @@
 #ifndef __LEVEL_STATE_H__
 #define __LEVEL_SATE_H__
 
-#include "kr_level.h"
+
 #include "entite.h"
+
 
 #define LEVEL_MAX_ENTITY 10
 
