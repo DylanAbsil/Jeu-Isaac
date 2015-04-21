@@ -86,6 +86,4 @@ void    Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint3
 /* Détection d'évenement sur la carte */
 Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y);
 
-Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Uint32 CoordEntityX, Uint32 CoordEntityY, Uint32);
-
 #endif /* __KR_LEVEL_H__ */

@@ -148,7 +148,7 @@ Boolean updateAllEntities(Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *
 			Kr_Log_Print(KR_LOG_ERROR, "The entity %d couldn't have been updated", i - 1);
 			return FALSE;
 		}
-		UpdateAllProjectiles((*(aEntity + i))->pWeapon);
+		//UpdateAllProjectiles((*(aEntity + i))->pWeapon);
 	}
 	return TRUE;
 }
@@ -172,3 +172,40 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer){
 	return TRUE;
 }
 
+
+/*!
+*  \fn    Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer);
+*  \brief  Function to handle the interraction of an entity on the map
+*
+*  \param  pLevel   a pointer to the level
+*  \param  pPlayer  a pointer to the entity
+*  \return the value of the "interraction" cf code
+*/
+Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
+{
+	Sint32 iNumTile = -1;
+	Uint32 x = pPlayer->pSprEntity->pRectPosition->x + pPlayer->pSprEntity->pRectPosition->w / 2, y = pPlayer->pSprEntity->pRectPosition->y + pPlayer->pSprEntity->pRectPosition->h / 2;
+	// recherche du bloc que l'entité à devant lui
+	if (pPlayer->direction == nord)
+	{
+		y = y - pPlayer->pSprEntity->pRectPosition->h; 
+	}
+	else if (pPlayer->direction == sud)
+	{
+		y = y + pPlayer->pSprEntity->pRectPosition->h;
+	}
+	else if (pPlayer->direction == est)
+	{
+		x = x + pPlayer->pSprEntity->pRectPosition->w;
+	}
+	else if (pPlayer->direction == ouest)
+	{
+		x = x - pPlayer->pSprEntity->pRectPosition->w;
+	}
+
+	iNumTile = Kr_Level_GetTile(pLevel, x, y);
+	Kr_Log_Print(KR_LOG_INFO, "Interraction with iTiles: %d\n",iNumTile);
+	if (iNumTile == -1) return 0; // Rien à analyser
+
+	return iNumTile;
+}
