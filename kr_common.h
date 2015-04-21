@@ -50,8 +50,8 @@
      */
     typedef enum
     { 
-        FALSE = 0, /*!< Value for 'false' */ 
-        TRUE  = 1  /*!< Value for 'true' */
+        FALSE = 0, /*< Value for 'false' >*/ 
+        TRUE  = 1  /*< Value for 'true' >*/
     } Boolean;
 
 	/*!
@@ -59,6 +59,7 @@
 	* \brief Enumaration to describe the direction of the mouvement of the entity
 	*/
 	typedef enum {
+		unknown,
 		nord,
 		est,
 		sud,

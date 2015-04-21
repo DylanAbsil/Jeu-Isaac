@@ -17,11 +17,11 @@
 #define CACHE_SIZE 15000
 
 /*!
- * \fn		Level_State * Level_State_Init()
- * \brief	Function to init a struct handling the level data
- *
- * \return Level_State a pointer to the Level_State created
- */
+* \fn		Level_State * Level_State_Init()
+* \brief	Function to init a struct handling the level data
+*
+* \return Level_State a pointer to the Level_State created
+*/
 Level_State * Level_State_Init(){
 	Level_State *pLevelSt = UTIL_Malloc(sizeof(Level_State));
 
@@ -38,14 +38,14 @@ Level_State * Level_State_Init(){
 
 
 /*!
- * \fn	   Boolean Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *pRenderer)
- * \brief  Function to load the Level_State from the Kr_Level and the file related
- *
- * \param  *pLevelSt	a pointer to the data non initialized
- * \param  *pLevel		a pointer to the level
- * \param  *pRenderer	a pointer to the renderer
- * \return TRUE if everything is OK, FALSE otherwise
- */
+* \fn	   Boolean Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *pRenderer)
+* \brief  Function to load the Level_State from the Kr_Level and the file related
+*
+* \param  *pLevelSt	a pointer to the data non initialized
+* \param  *pLevel		a pointer to the level
+* \param  *pRenderer	a pointer to the renderer
+* \return TRUE if everything is OK, FALSE otherwise
+*/
 Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *pRenderer){
 	Uint32	iNameLen = strlen(pLevel->szLevelName);
 	Uint32	iNbEntities = 0;
@@ -96,7 +96,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 				(*(aRect + i))->y = iCoordY;
 				(*(aRect + i))->h = 64;
 				(*(aRect + i))->w = 64;
-				Kr_Sprite_Load(*(aSprite + i), iFrameHeight, iFrameWidth, iNbFrames, *(aRect + i), pRenderer);
+				Kr_Sprite_Load(*(aSprite + i), unknown, iFrameHeight, iFrameWidth, iNbFrames, *(aRect + i), pRenderer);
 				Entity_Load(*(aEntity + i), iLife, iArmor, *(aSprite + i));
 			}
 
@@ -123,7 +123,7 @@ void Level_State_Free(Level_State *pLevelSt){
 	SDL_Rect  **aRect = pLevelSt->aRectPositionEntity;
 	for (i = 1; i < pLevelSt->iNbEntities; i++){
 		Entity_Free(*(aEntity + i));
-		UTIL_Free(*(aRect+i));
+		UTIL_Free(*(aRect + i));
 	}
 	UTIL_Free(pLevelSt->aEntityLevel);
 	UTIL_Free(pLevelSt->aSpriteLevel);
@@ -142,13 +142,13 @@ void Level_State_Free(Level_State *pLevelSt){
 Boolean updateAllEntities(Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer){
 	Uint32      i = 0;
 	Entity **aEntity = pLevelSt->aEntityLevel;
-	
+
 	for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
 		if (updateEntityVector(pLevelSt->pLevel, *(aEntity + i), pPlayer, pRenderer) == FALSE){
 			Kr_Log_Print(KR_LOG_ERROR, "The entity %d couldn't have been updated", i - 1);
 			return FALSE;
 		}
-		UpdateAllProjectiles((*(aEntity + i))->pWeapon);
+		//UpdateAllProjectiles((*(aEntity + i))->pWeapon);
 	}
 	return TRUE;
 }
@@ -167,8 +167,56 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer){
 	Uint32 i = 0;
 	Entity **aEntity = pLevelSt->aEntityLevel;
 	for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
-		Entity_Draw(pRenderer, *(aEntity+i));
+		Entity_Draw(pRenderer, *(aEntity + i));
 	}
 	return TRUE;
 }
 
+
+/*!
+*  \fn    Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer);
+*  \brief  Function to handle the interraction of an entity on the map
+*
+*  \param  pLevel   a pointer to the level
+*  \param  pPlayer  a pointer to the entity
+*  \return the value of the "interraction" cf code
+*/
+Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
+{
+	Sint32 iTilesID = -1;
+	Uint32 x = pPlayer->pSprEntity->pRectPosition->x + pPlayer->pSprEntity->pRectPosition->w / 2, y = pPlayer->pSprEntity->pRectPosition->y + pPlayer->pSprEntity->pRectPosition->h / 2;
+	// recherche du bloc que l'entité à devant lui
+	if (pPlayer->direction == nord)
+	{
+		y = y - pPlayer->pSprEntity->pRectPosition->h;
+	}
+	else if (pPlayer->direction == sud)
+	{
+		y = y + pPlayer->pSprEntity->pRectPosition->h;
+	}
+	else if (pPlayer->direction == est)
+	{
+		x = x + pPlayer->pSprEntity->pRectPosition->w;
+	}
+	else if (pPlayer->direction == ouest)
+	{
+		x = x - pPlayer->pSprEntity->pRectPosition->w;
+	}
+
+	iTilesID = Kr_Level_GetTile(pLevel, x, y);
+	Kr_Log_Print(KR_LOG_INFO, "Interraction with iTiles: %d\n", iTilesID);
+	if (iTilesID == -1) return 0; // Rien à analyser
+
+	// Ouverture des coffres
+	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iCoffreFerme == 1)
+	{
+		Kr_Log_Print(KR_LOG_INFO, "Ouverture d'un coffre ! \n");
+	}
+
+	// Lecture des panneaux
+	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPanneau == 1)
+	{
+		Kr_Log_Print(KR_LOG_INFO, "Lecture d'un panneau ! \n");
+	}
+	return iTilesID;
+}

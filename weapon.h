@@ -17,33 +17,54 @@
 #include "kr_common.h"
 #include "kr_sprite.h"
 
-#define PROJECTILE_SPEED 10
+#define PROJECTILE_SPEED 10		/*< Number to handle the projectile movement*/
+#define ATTACK_SPEED 20			/*< Number to handle how many projectile do you fire at the same time >*/
 
 typedef struct {
-	char		*strNamePrj;
-	Sint32	    iDamagePrj;
-	Uint32	    iSpeedPrj;
-	Direction	direction;
-	Kr_Sprite	*pSprProjectile;
-	Sint32		iCoordPrj_XStart;
-	Sint32		iCoordPrj_YStart;
-	Sint32		iCoordPrj_XCurrent;
-	Sint32		iCoordPrj_YCurrent;
-	Sint32		iCoordPrj_XEnd;
-	Sint32		iCoordPrj_YEnd;
+	char		*strNamePrj;			/*< Name of the projectile >*/
+	Sint32	    iDamagePrj;				/*< Damage of the projectile >*/
+	Uint32	    iSpeedPrj;				/*< Speed of the projectile >*/
+	Direction	direction;				/*< Direction of the projectile's movement >*/
+	Kr_Sprite	*pSprProjectile;		/*< A pointer to the sprite of the projectile >*/
+	Sint32		iCoordPrj_XStart;		/**/
+	Sint32		iCoordPrj_YStart;		/**/
+	Sint32		iCoordPrj_XCurrent;		/*< Current position of the projectile in x>*/
+	Sint32		iCoordPrj_YCurrent;		/*< Current position of the projectile in y>*/
+	Sint32		iCoordPrj_XEnd;			/*< Limit position of the projectile in x>*/
+	Sint32		iCoordPrj_YEnd;			/*< Limit position of the projectile in y*/
 }Projectile;
 
+/*! \struct nodeListProjectile
+* \brief Data element of a list, containing a projectile
+*/
+typedef struct{
+	Projectile * p;				/*!< A pointer to a projectile */
+	struct NodeListProj * next;	/*!< A pointer to the next projectile in the list*/
+}NodeListProj;
+
+
+/*! \struct list
+* \brief list of projectile nodes
+*/
+typedef struct{
+	NodeListProj *first;		/*!< A pointer to the first list element*/
+	NodeListProj *current;		/*!< A pointer to the current list element*/
+	NodeListProj *last;			/*!< A pointer to the last list element*/
+}ListProj;
 
 typedef struct {
-	char		*strNameWeapon;
-	char		*strNameProjectile;
-	Uint32		iRangeWeapon;
-	Sint32		iMunitionWeapon;
-	Sint32		iDamageWeapon;
-	Uint32	    iSpeedPrj;
-	Uint32		inbProjectile;
-	Projectile	**aCurrentProjectiles;
+	char		*strNameWeapon;			/*< Name of the weapon >*/
+	char		*strNameProjectile;		/*< Name of the projective contained in the weapon >*/
+	Uint32		iRangeWeapon;			/*< Range of the weapon >*/
+	Sint32		iMunitionWeapon;		/*< Munitions currently in the weapon >*/
+	Sint32		iDamageWeapon;			/*< Damage of the weapon <*/
+	Uint32	    iSpeedPrj;				/*< Speed of the projectile >*/
+	ListProj	*plProjectile;			/*< Liste containing all the projectile currently still fired (under range of the weapon and before collisions >*/
 }Weapon;
+
+/* ======================================== */
+/*				PROJECTILES					*/
+/* ======================================== */
 
 Projectile* Projectile_Init(char *strProjName);
 Boolean		Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint32 speed, SDL_Rect *pRect, SDL_Renderer *pRenderer);
@@ -52,12 +73,43 @@ Boolean		Projectile_Draw(SDL_Renderer *pRenderer, Projectile *pProj);
 
 Boolean		UpdateProjectile(Projectile *pProj);
 
-Weapon *	Weapon_Init(char *strWeaponName);
-Boolean		Weapon_Load(Weapon *weapon, char *strProjName, Uint32 range, Uint32 munition, Uint32 damage);
-void		Weapon_Free(Weapon *weapon);
 
-Boolean		Shoot(Weapon *pWeapon);
-Boolean		UpdateAllProjectiles(Weapon *pWeapon);
+/* ======================================== */
+/*			LIST OF PROJECTILES				*/
+/* ======================================== */
+
+NodeListProj *	newNodeListProj(Projectile *p, NodeListProj *n);
+void			deleteNodeListProj(NodeListProj * n);
+
+void			initList(ListProj *lProj);
+void			deleteList(ListProj *lProj);
+
+Boolean			emptyList(ListProj *lProj);
+Boolean			first(ListProj *lProj);
+Boolean			last(ListProj *lProj);
+Boolean			outOfList(ListProj *lProj);
+
+void			setOnFirst(ListProj *lProj);
+void			setOnLast(ListProj *lProj);
+void			next(ListProj *lProj);
+Projectile *	getCurrentProj(ListProj *lProj);
+
+void			deleteCurrent(ListProj *lProj);
+
+Boolean			insertLast(ListProj *lProj, Projectile *p);
+
+Boolean			drawAllProjectiles(ListProj *lProj, SDL_Renderer *pRenderer);
+
+/* ======================================== */
+/*				  WEAPONS				    */
+/* ======================================== */
+
+
+Weapon *		Weapon_Init(char *strWeaponName);
+Boolean			Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 munition, Uint32 damage);
+void			Weapon_Free(Weapon *pWeapon);
+
+Boolean			UpdateAllProjectiles(Weapon *pWeapon, SDL_Renderer *pRenderer);
 
 
 #endif

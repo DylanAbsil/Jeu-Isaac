@@ -43,7 +43,7 @@ Entity * Entity_Init(char* szFileName){
 	entite->iEntityLife = 0;
 	entite->iSpeedEntity = 0;
 	entite->iTempoAnim = 0;
-	//entite->wpnName = NULL; ??
+	entite->iTempoAtk = 0;
 	return entite;
 }
 
@@ -73,11 +73,12 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprit
 	entite->direction = sud;
 	entite->mouvement = 0;
 	entite->iSpeedEntity = MOB_MOVESPEED;
+	entite->iTempoAtk = ATTACK_SPEED;
 
 	Kr_Log_Print(KR_LOG_INFO, "Entity %s with sprite %s has been loaded !\n", entite->strEntityName, entite->pSprEntity->strName);
 	return TRUE;
 }
-//Rajouter le load d'une arme plus tard ou utiliser une fonction differente
+
 
 /*!
 *  \fn     void Entity_Free(Entity *entite)
@@ -214,6 +215,8 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, 
 	getVector(myEvent, &vx, &vy);
 //	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
 
+	//  - on cherche la nouvelle direction
+	Direction newDir = foundDirection(vx, vy, pPlayer);			
 
 	// Changement de l'animation
 	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
@@ -240,7 +243,7 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, 
 //			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
 		}
 		
-		switchTextureFromDirection(pPlayer, vx, vy, pRenderer);
+		switchTextureFromDirection(pPlayer, newDir, pRenderer);
 
 		//Gestion des collisions (à venir)
 		if (Kr_Collision_Move(pLevel, pPlayer->pSprEntity->pRectPosition, vx, vy) == 3)
@@ -308,20 +311,18 @@ Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, S
 }
 
 /*!
-*  \fn     void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer){
+*  \fn     void switchTextureFromDirection(Entity *entite, Direction dir, SDL_Renderer *pRenderer){
 *  \brief  Function to switch the texture of the entity according to the new direction
 *
 *  \param  enite  a pointer to the entity
-*  \param  vx the vector in x
-*  \param  vy the vector in y
+*  \param  dir	  the new direction
 *  \param  pRenderer the renderer
 *  \return none
 */
-void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer){
+void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *pRenderer){
 	// Nouveau sprite potentiel suivant la direction
 	char newSprFileName[SIZE_MAX_NAME];
-	Direction newDir = foundDirection(vx, vy, entite);			//  - on cherche la nouvelle direction
-//	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
+	//	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
 
 	strcpy(newSprFileName, entite->pSprEntity->strName); //Nécessaire de l'initialiser même si après la direction change
 	switch (newDir){									// Suivant la nouvelle direction :
@@ -370,4 +371,103 @@ void switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Render
 //	Kr_Log_Print(KR_LOG_INFO, "Sprite %s has been loaded\n", entite->pSprEntity->strName);
 //	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 
+}
+
+/*!
+*  \fn     Boolean	Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer)
+*  \brief  if the player use zqsd to shoot, load a new projectile
+*
+*  \param	myEvent	the new event
+*  \param	pEntity a pointer to the entity who wanted to fire
+*  \param	pRender a pointer to the renderer
+*  \return	TRUE if the entity has fired, FALSE otherwise
+*/
+Boolean	Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
+	UpdateAllProjectiles(pEntity->pWeapon, pRenderer);
+	if (myEvent.szKey[SDL_SCANCODE_W]){
+			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
+				Projectile * newProj = Projectile_Init(pEntity->pWeapon->strNameProjectile);
+				Projectile_Load(newProj, pEntity->pWeapon, nord, pEntity->pWeapon->iSpeedPrj, pEntity->pSprEntity->pRectPosition, pRenderer);
+				insertLast(pEntity->pWeapon->plProjectile, newProj);
+				pEntity->pWeapon->iMunitionWeapon -= 1;
+				pEntity->iTempoAtk = 0;
+
+				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a été tiré en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
+				return TRUE;
+			}
+			else{
+				if (pEntity->iTempoAtk < ATTACK_SPEED)
+					pEntity->iTempoAtk += 1;
+				return FALSE;
+			}
+	}
+	else if (myEvent.szKey[SDL_SCANCODE_A]){
+			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
+				Projectile * newProj = Projectile_Init(pEntity->pWeapon->strNameProjectile);
+				Projectile_Load(newProj, pEntity->pWeapon, ouest, pEntity->pWeapon->iSpeedPrj, pEntity->pSprEntity->pRectPosition, pRenderer);
+				insertLast(pEntity->pWeapon->plProjectile, newProj);
+				pEntity->pWeapon->iMunitionWeapon -= 1;
+				pEntity->iTempoAtk = 0;
+
+				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a été tiré en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
+				return TRUE;
+			}
+			else{
+				if (pEntity->iTempoAtk < ATTACK_SPEED)
+					pEntity->iTempoAtk += 1;
+				return FALSE;
+			}
+	}
+	else if (myEvent.szKey[SDL_SCANCODE_S]){
+			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
+				Projectile * newProj = Projectile_Init(pEntity->pWeapon->strNameProjectile);
+				Projectile_Load(newProj, pEntity->pWeapon, sud, pEntity->pWeapon->iSpeedPrj, pEntity->pSprEntity->pRectPosition, pRenderer);
+				insertLast(pEntity->pWeapon->plProjectile, newProj);
+				pEntity->pWeapon->iMunitionWeapon -= 1;
+				pEntity->iTempoAtk = 0;
+
+				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a été tiré en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
+				return TRUE;
+			}
+			else{
+				if (pEntity->iTempoAtk < ATTACK_SPEED)
+					pEntity->iTempoAtk += 1;
+				return FALSE;
+			}
+	}
+	else if (myEvent.szKey[SDL_SCANCODE_D]){
+			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
+				Projectile * newProj = Projectile_Init(pEntity->pWeapon->strNameProjectile);
+				Projectile_Load(newProj, pEntity->pWeapon, est, pEntity->pWeapon->iSpeedPrj, pEntity->pSprEntity->pRectPosition, pRenderer);
+				insertLast(pEntity->pWeapon->plProjectile, newProj);
+				pEntity->pWeapon->iMunitionWeapon -= 1;
+				pEntity->iTempoAtk = 0;
+
+				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a été tiré en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
+				return TRUE;
+			}
+			else{
+				if (pEntity->iTempoAtk < ATTACK_SPEED)
+					pEntity->iTempoAtk += 1;
+				return FALSE;
+			}
+	}
+	else{
+		if (pEntity->iTempoAtk < ATTACK_SPEED)
+			pEntity->iTempoAtk += 1;
+		return FALSE;
+	}
+}
+
+/*  \fn Boolean	ChangeWeapon(Entity *pEntity, Weapon *pWeapon)
+ *  \brief function to change the weapon of an entity
+ *  
+ *  \param	pEntity	a pointer the entity which you want to change the weapon
+ *  \param	pWeapon	a pointer to the new weapon
+ *  \return	TRUE 
+ */
+Boolean	ChangeWeapon(Entity *pEntity, Weapon *pWeapon){
+	pEntity->pWeapon = pWeapon;
+	Kr_Log_Print(KR_LOG_INFO, "The entity %s with weapon %s has been changed in %s\n", pEntity->strEntityName, pEntity->pWeapon->strNameWeapon, pEntity->pWeapon->strNameProjectile);
+	return TRUE;
 }

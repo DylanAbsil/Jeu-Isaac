@@ -30,13 +30,13 @@
 #include "kr_level.h"
 
 
-#define MOVESPEED 5
-#define MOB_MOVESPEED 5
-#define RESET_FRAME 10
+#define MOVESPEED 5		/*< Movespeed of the player >*/
+#define MOB_MOVESPEED 5 /*< Basic movespeed of the monstres >*/
+#define RESET_FRAME 10	/*< Number to handle the reset of the frame >*/
 
 /*!
 * \enum EntityState
-* \brief Enumeration to describe the stae of the entity.
+* \brief Enumeration to describe the state of the entity.
 */
 typedef enum {
 	normal,
@@ -47,22 +47,23 @@ typedef enum {
 }EntityState;
 
 typedef struct {
-	char		*strEntityName;		/*! Name of the entity */
-	Uint32		iEntityLife;		/* Life of the entity */
-	Uint32		iArmor;				/* Armor of the entity */
-	Weapon	   *pWeapon;
-	Kr_Sprite  *pSprEntity;
-	EntityState	state;
-	Sint32		iCoordXEntity;
+	char		*strEntityName;		/*< Name of the entity >*/
+	Uint32		iEntityLife;		/*< Life of the entity >*/
+	Uint32		iArmor;				/*< Armor of the entity >*/
+	Weapon		*pWeapon;			/*< A pointer to his weapon (can be NULL) >*/
+	Kr_Sprite	*pSprEntity;		/*<	A pointer to his sprite >*/
+	EntityState	state;				/*< State of the entity : normal, invincible, slowed, ...) >*/
+	Sint32		iCoordXEntity;		
 	Sint32		iCoordYEntity;
-	Uint32		iSpeedEntity;
-	Direction	direction;
-	Boolean		mouvement;			/* Mouvement : 0 static, 1 in movement */
-	Uint32		iTempoAnim;			/*! int for the temporisation of the animation */
+	Uint32		iSpeedEntity;		/*< */
+	Direction	direction;			/*< Direction which the entity is facing >*/
+	Boolean		mouvement;			/*< Mouvement : 0 (static) or 1 (in movement) >*/
+	Uint32		iTempoAnim;			/*< Int for the temporisation of the animation >*/
+	Uint32		iTempoAtk;			/*< Int to handle the attack speed >*/
 }Entity;
 
 Entity *	Entity_Init(char *szFileName);
-Boolean		Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*!< creationd'une entite >*/
+Boolean		Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*< création d'une entite >*/
 void		Entity_Free(Entity *entite);
 Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
 
@@ -70,9 +71,12 @@ Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
 Direction	foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity);
 void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
 void		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy);
-void		switchTextureFromDirection(Entity *entite, Sint32 vx, Sint32 vy, SDL_Renderer *pRenderer);
+void		switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer *pRenderer);
 
 Boolean		updatePlayerVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *pPlayer, SDL_Renderer *pRenderer);
 Boolean		updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer);
+
+Boolean		Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer);
+Boolean		ChangeWeapon(Entity *pEntity, Weapon *pWeapon);
 
 #endif /* __KR_ENTITE_H__ */
