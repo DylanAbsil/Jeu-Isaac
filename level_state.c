@@ -183,7 +183,7 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer){
 */
 Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 {
-	Sint32 iNumTile = -1;
+	Sint32 iTilesID = -1;
 	Uint32 x = pPlayer->pSprEntity->pRectPosition->x + pPlayer->pSprEntity->pRectPosition->w / 2, y = pPlayer->pSprEntity->pRectPosition->y + pPlayer->pSprEntity->pRectPosition->h / 2;
 	// recherche du bloc que l'entité à devant lui
 	if (pPlayer->direction == nord)
@@ -203,9 +203,20 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 		x = x - pPlayer->pSprEntity->pRectPosition->w;
 	}
 
-	iNumTile = Kr_Level_GetTile(pLevel, x, y);
-	Kr_Log_Print(KR_LOG_INFO, "Interraction with iTiles: %d\n",iNumTile);
-	if (iNumTile == -1) return 0; // Rien à analyser
+	iTilesID = Kr_Level_GetTile(pLevel, x, y);
+	Kr_Log_Print(KR_LOG_INFO, "Interraction with iTiles: %d\n", iTilesID);
+	if (iTilesID == -1) return 0; // Rien à analyser
 
-	return iNumTile;
+	// Ouverture des coffres
+	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iCoffreFerme == 1)
+	{
+		Kr_Log_Print(KR_LOG_INFO, "Ouverture d'un coffre ! \n");
+	}
+
+	// Lecture des panneaux
+	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPanneau == 1)
+	{
+		Kr_Log_Print(KR_LOG_INFO, "Lecture d'un panneau ! \n");
+	}
+	return iTilesID;
 }
