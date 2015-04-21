@@ -21,6 +21,7 @@
 
 #define LEVEL_MAX_ENTITY 10
 
+
 typedef struct {
 	char		   *szLevelStName;		/* Name of the level  */
 	Sint32          iLevelNum;          /* Number of the level */
