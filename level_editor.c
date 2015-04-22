@@ -16,6 +16,7 @@
 /* Herrou        | 14/04/2015 | MAJ fonction createFile, on créer deux fois #entity									*/
 /* Herrou        | 20/04/2015 | MAJ fonction pour prendre en paramètre le level plutot que le Level_Editor dans certain cas*/
 /* Herrou        | 20/04/2015 | Transfert des fonctions SaveLayout et WriteLayout dans Kr_Level						*/
+/* Herrou        | 22/04/2015 | Renommer le fichier level_editor.txt en editor.txt									*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -655,7 +656,7 @@ int Editor(void)
 	Level_Editor *pEditor = NULL;
 
 	// Chargement du level Editor
-	pEditor = Level_Editor_Init("level_editor");
+	pEditor = Level_Editor_Init("editor");
 	if (pEditor == NULL)
 	{
 		Kr_Log_Print(KR_LOG_INFO, "Can't initialize a Level_Editor structure \n\n");
