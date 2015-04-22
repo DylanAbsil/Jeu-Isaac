@@ -33,10 +33,10 @@
 */
 Kr_Sprite * Kr_Sprite_Init(char *szFileName)
 {
-
+	Uint32 iNameLen = strlen(szFileName);
 	Kr_Sprite * pSprite = UTIL_Malloc(sizeof(Kr_Sprite));		//allocation mémoire
 
-	strcpy(pSprite->strName, szFileName);
+	pSprite->strSpriteName = UTIL_CopyStr(szFileName, iNameLen);
 	pSprite->pTextureSprite = NULL;
 	pSprite->iFrameHeight = 0;
 	pSprite->iFrameWidth = 0;
@@ -63,24 +63,25 @@ Kr_Sprite * Kr_Sprite_Init(char *szFileName)
 Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Direction dir, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition, SDL_Renderer *pRenderer){
 	// Creation d'un nouveau sprite et d'une nouvelle texture juste a partir du nom
 	SDL_Texture *pSpriteEntite = NULL;
-	char newSprFileName[SIZE_MAX_NAME];
 
+	char newSprFileName[SIZE_MAX_NAME];
+	
 	switch (dir)
 	{
 	case nord:
-		sprintf(newSprFileName, "sprites/%s_nord.png", sprite->strName);
+		sprintf(newSprFileName, "sprites/%s_nord.png", sprite->strSpriteName);
 		break;
 	case est:
-		sprintf(newSprFileName, "sprites/%s_est.png", sprite->strName);
+		sprintf(newSprFileName, "sprites/%s_est.png", sprite->strSpriteName);
 		break;
 	case sud:
-		sprintf(newSprFileName, "sprites/%s_sud.png", sprite->strName);
+		sprintf(newSprFileName, "sprites/%s_sud.png", sprite->strSpriteName);
 		break;
 	case ouest:
-		sprintf(newSprFileName, "sprites/%s_ouest.png", sprite->strName);
+		sprintf(newSprFileName, "sprites/%s_ouest.png", sprite->strSpriteName);
 		break;
 	default:
-		sprintf(newSprFileName, "sprites/%s.png", sprite->strName);
+		sprintf(newSprFileName, "sprites/%s.png", sprite->strSpriteName);
 		break;
 	}
 	
@@ -91,12 +92,15 @@ Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Direction dir, Uint32 frameHeight, Uin
 	}
 
 	// Integration dans la structure
-	strcpy(sprite->strName, newSprFileName);
-	sprite->pTextureSprite = pSpriteEntite;
-	sprite->iFrameHeight   = frameHeight;
-	sprite->iFrameWidth    = frameWidth;
-	sprite->iNbFrames      = nbFrames;
-	sprite->pRectPosition  = pRectPosition;
+	if (sprite->strSpriteName != NULL)
+		UTIL_Free(sprite->strSpriteName);
+	Uint32 iNameLen = strlen(newSprFileName);
+	sprite->strSpriteName	= UTIL_CopyStr(newSprFileName, iNameLen);
+	sprite->pTextureSprite	= pSpriteEntite;
+	sprite->iFrameHeight	= frameHeight;
+	sprite->iFrameWidth		= frameWidth;
+	sprite->iNbFrames		= nbFrames;
+	sprite->pRectPosition	= pRectPosition;
 
 //	Kr_Log_Print(KR_LOG_INFO, "Sprite %s of %d by %d has been loaded !\n", sprite->strName, sprite->iFrameWidth, sprite->iFrameHeight);
 	return TRUE;

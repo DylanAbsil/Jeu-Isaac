@@ -64,7 +64,7 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprit
 	entite->iArmor = armor;
 	entite->pSprEntity = sprite;
 	if (entite->pSprEntity == NULL){
-		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s in the entity %s !\n", sprite->strName, entite->strEntityName);
+//		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s in the entity %s !\n", sprite->strSpriteName, entite->strEntityName);
 		return FALSE;
 	}
 	entite->state = normal;
@@ -75,7 +75,7 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprit
 	entite->iSpeedEntity = MOB_MOVESPEED;
 	entite->iTempoAtk = ATTACK_SPEED;
 
-	Kr_Log_Print(KR_LOG_INFO, "Entity %s with sprite %s has been loaded !\n", entite->strEntityName, entite->pSprEntity->strName);
+//	Kr_Log_Print(KR_LOG_INFO, "Entity %s with sprite %s has been loaded !\n", entite->strEntityName, entite->pSprEntity->strName);
 	return TRUE;
 }
 
@@ -210,7 +210,7 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 	char newSprFileName[SIZE_MAX_NAME];
 	//	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
 
-	strcpy(newSprFileName, entite->pSprEntity->strName); //Nécessaire de l'initialiser même si après la direction change
+	strcpy(newSprFileName, entite->pSprEntity->strSpriteName); //Nécessaire de l'initialiser même si après la direction change
 	switch (newDir){									// Suivant la nouvelle direction :
 	case nord:
 		if (entite->direction != nord){						// if direction différente
@@ -251,12 +251,13 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 	default:
 		break;
 	}
-	//if (entite->pSprEntity->strName != NULL) free(entite->pSprEntity->strName); // On va devoir réalloué la taille du string
+	if (entite->pSprEntity->strSpriteName != NULL) 
+		UTIL_Free(entite->pSprEntity->strSpriteName); // On va devoir réalloué la taille du string
+	Uint32 iNameLen = strlen(newSprFileName);
+	entite->pSprEntity->strSpriteName = UTIL_CopyStr(newSprFileName, iNameLen);//on change le nom du sprite (par le lien sprites/image.png pour que ca soit plus clair
 
-	strcpy(entite->pSprEntity->strName, newSprFileName);//on change le nom du sprite (par le lien sprites/image.png pour que ca soit plus clair
 //	Kr_Log_Print(KR_LOG_INFO, "Sprite %s has been loaded\n", entite->pSprEntity->strName);
 //	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
-
 }
 
 void infightingDamage(Entity *pGiver, Entity *pReceiver);
