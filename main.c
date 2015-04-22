@@ -27,13 +27,13 @@
 #include "HUD.h"
 #include "Menu.h"
 #include "level_editor.h"
+#include "level_state.h"
+#include "weapon.h"
 //http://noproblo.dayjo.org/ZeldaSounds/
  
 
-#define GAME 1
-
 int Isaac(int*argc, char**argv);
-int Editor(int*argc, char**argv);
+int Editor(void);
 
 int main(int argc, char** argv)
 {
@@ -41,7 +41,7 @@ int main(int argc, char** argv)
 	Kr_Log_Init(KR_LOG_INFO); // Mise en place d'un fichier de log
 
 	if (GAME) Isaac(&argc, argv);
-	else Editor(&argc, argv);
+	else Editor();
 
 	Mix_CloseAudio();	// On quitte SDL_MIXER
 	TTF_Quit();			// On quitte SDL_TTF
@@ -94,6 +94,12 @@ int Isaac(int *argc, char **argv)
 	/* Initialisation de la structure pour gérer les événements*/
 	InitEvents(&inEvent);
 
+	/* Copie des fichiers maps au besoin */
+	if (Kr_Map_CopyLevelFiles(LOAD_BACKUP_LEVEL) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't copy all the levels from /maps/backup");
+		SDL_Quit();
+	}
 	/* ========================================================================= */
 	/*                                  PRECACHE                                 */
 	/* ========================================================================= */
@@ -102,17 +108,16 @@ int Isaac(int *argc, char **argv)
 	Kr_Sprite	 *pSpriteZelda = NULL;
 	Entity		 *pZelda = NULL;
 	SDL_Rect     rectPositionZelda;
-	Uint32		 tempoAnim = 0;
 
-	rectPositionZelda.x = 0;
-	rectPositionZelda.y = 0;
+	rectPositionZelda.x = 250;
+	rectPositionZelda.y = 200;
 	rectPositionZelda.w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
 	rectPositionZelda.h = 32;
 
+
 	/* Chargement des sprites */
 	pSpriteZelda = Kr_Sprite_Init("zelda");			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
-
-	if (Kr_Sprite_Load(pSpriteZelda, 26, 136, 8, &rectPositionZelda, pRenderer) == FALSE)
+	if (Kr_Sprite_Load(pSpriteZelda, sud, 26, 136, 8, &rectPositionZelda, pRenderer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
@@ -130,13 +135,17 @@ int Isaac(int *argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 
+	/*Chargement de l'arme */
+	Weapon *pistoletLumière = Weapon_Init("pistolet lumière");
+	Weapon_Load(pistoletLumière, "bullet", 100, 50, 500);
+	ChangeWeapon(pZelda, pistoletLumière);
 
 	/* Préparation d'une Texture contenant un message via util.c*/
 	SDL_Rect     textPosition;
 	SDL_Color    couleur = { 123, 255, 0 };
 	SDL_Texture *pTextureText = NULL;
 	TTF_Font    *pFont = NULL;
-	char         szCompteur[100] = " ";// Tableau contenant la valeur du compteur
+	char         szCompteur[100] = " ";
 	textPosition.x = 0;
 	textPosition.y = 0;
 	pFont = Kr_Text_OpenFont("cour", 25);
@@ -146,7 +155,7 @@ int Isaac(int *argc, char **argv)
 
 	/* Chargement de la map */
 	Kr_Map *pMap = NULL;
-	pMap = Kr_Map_Init("maps_world");
+	pMap = Kr_Map_Init("world");
 	if (!pMap)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load the map\n");
@@ -157,16 +166,10 @@ int Isaac(int *argc, char **argv)
 	Boolean   bChangeLevel = TRUE;
 	Kr_Level *pCurrentLevel = NULL;
 	Uint32    iCurrentLevelNumber = 1;
+	Level_State *pCurrentLevelState;
 
-	/* Chargement des sons*/
-	Kr_Sound *pSon = NULL; // Initialisation
-	Mix_AllocateChannels(1); // Allocation du nombre de cannaux
+	pCurrentLevelState = Level_State_Init();
 
-	pSon = Kr_Sound_Alloc("arrow_x"); // Cette fonction va renvoyé une structure Kr_Sound avec le son chargé, ou NULL si une erreur
-	if (!pSon)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Le son n'a pas été chargé correctement\n");
-	}
 
 	/* Préparation de la gestion des FPS */
 	SDL_Texture *pTextureFPS = NULL;
@@ -198,17 +201,28 @@ int Isaac(int *argc, char **argv)
 		{
 			bChangeLevel = FALSE;
 			pCurrentLevel = Kr_Level_Change(pCurrentLevel, iCurrentLevelNumber, pRenderer);
+			Level_State_Free(pCurrentLevelState);
+			pCurrentLevelState = Level_State_Init();
+			Level_State_Load(pCurrentLevelState, pCurrentLevel, pRenderer);
 		}
 
 		UpdateEvents(&inEvent);
 
 		/* Mise à jour des coordonnées du personnage*/
-		if (updatePlayerVector(inEvent, pCurrentLevel, pZelda, &tempoAnim, pRenderer) == FALSE){				//Update la position et l'animation du perso principal
+		if (updatePlayerVector(inEvent, pCurrentLevel, pZelda, pRenderer) == FALSE){				//Update la position et l'animation du perso principal
 			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update player vector\n");
 			SDL_Quit();
 			return FALSE;
 		}
+		/* Mise à jour des coordonnées des autres monstres */
+		if (updateAllEntities(pCurrentLevelState, pZelda, pRenderer) == FALSE){
+			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update all entities\n");
+			SDL_Quit();
+			return FALSE;
+		}
 
+		/* Controle du tir du personnage */
+		Shoot(inEvent, pZelda, pRenderer);
 
 		if (inEvent.szMouseButtons[0])
 		{
@@ -222,23 +236,6 @@ int Isaac(int *argc, char **argv)
 			//Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
 		}
-		if (inEvent.szKey[SDL_SCANCODE_P])
-		{
-			inEvent.szKey[SDL_SCANCODE_P] = 0;
-			Kr_Sound_Play(pSon, 0, 100, 0); // Joue le son contenu dans la structure pSon, sur le channel 0 avec un volume de 100 et 0 répétions
-		}
-		if (inEvent.szKey[SDL_SCANCODE_KP_1])
-		{
-			bChangeLevel = TRUE;
-			iCurrentLevelNumber = 3;
-			inEvent.szKey[SDL_SCANCODE_KP_1] = 0;
-		}
-		if (inEvent.szKey[SDL_SCANCODE_KP_2])
-		{
-			bChangeLevel = TRUE;
-			iCurrentLevelNumber = 4;
-			inEvent.szKey[SDL_SCANCODE_KP_2] = 0;
-		}
 		if (inEvent.szKey[SDL_SCANCODE_F]) // Gestion de l'affichage des FPS
 		{
 			if (pFPS->bMustShow) pFPS->bMustShow = FALSE;
@@ -247,9 +244,10 @@ int Isaac(int *argc, char **argv)
 		}
 		if (inEvent.szKey[SDL_SCANCODE_E])
 		{
-			
+			Kr_Level_Interraction(pCurrentLevel, pZelda);
 			inEvent.szKey[SDL_SCANCODE_E] = 0;
 		}
+
 		iCurrentLevelNumber = Kr_Map_ShouldChangeLevel(pMap, pCurrentLevel, pZelda);
 		if (iCurrentLevelNumber)
 		{
@@ -268,7 +266,7 @@ int Isaac(int *argc, char **argv)
 		/* ========================================================================= */
 
 		pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
-		sprintf(szCompteur, "Cursor : X : %d Y : %d   %s %d", pZelda->pSprEntity->pRectPosition->x, pZelda->pSprEntity->pRectPosition->y, pCurrentLevel->szLevelName, pCurrentLevel->iLevelNum);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
+		sprintf(szCompteur, "Cursor : X : %d Y : %d   %s %d | Tile %d", pZelda->pSprEntity->pRectPosition->x, pZelda->pSprEntity->pRectPosition->y, pCurrentLevel->szLevelName, pCurrentLevel->iLevelNum, Kr_Level_GetTile(pCurrentLevel, inEvent.iMouseX, inEvent.iMouseY));//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
 		// inEvent.iMouseX, inEvent.iMouseY
 		/* ========================================================================= */
 		/*                                  RENDER                                   */
@@ -277,12 +275,12 @@ int Isaac(int *argc, char **argv)
 		SDL_RenderClear(pRenderer); // Dans un premier temps on Clear le renderer
 		Kr_Level_Draw(pRenderer, pCurrentLevel);
 		Entity_Draw(pRenderer, pZelda);
-		//SDL_RenderCopy(pRenderer, pBackground, NULL, &rectPositionImage);
+		drawAllEntities(pCurrentLevelState, pRenderer);
+		drawAllProjectiles(pZelda->pWeapon->plProjectile, pRenderer);
 		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
-
 	}
 
 
@@ -296,8 +294,8 @@ int Isaac(int *argc, char **argv)
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
 	Kr_Text_CloseFont(&pFontFPS);			// Libération mémoire de la police
 	Kr_Level_Free(pCurrentLevel);
-	Kr_Sound_Free(&pSon);			// Libération mémoire du son !!
 	Entity_Free(pZelda);				// Libération mémoire du zelda
+	Level_State_Free(pCurrentLevelState); // Libération mémoire des données du niveau
 	Kr_Map_Free(pMap);
 
 
