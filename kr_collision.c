@@ -103,7 +103,7 @@ Boolean Kr_CollisionLevel_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx,
 	test.y += vy;
 	if (Kr_CollisionLevel_IsCollisionDecor(pLevel, &test) == FALSE)
 	{
-		*pRect1 = test;
+		//*pRect1 = test;
 		return TRUE;
 	}
 	return FALSE;
