@@ -23,21 +23,21 @@
 *  \param  pRect1 a pointer to the rectangle you want to move
 *  \param  vx     the vector on X
 *  \param  vy     the vector on Y
-*  \return TRUE if the rectangle and the map are colliding, FALSE otherwise
+*  \return 1, 2 or 3 
 */
-Boolean Kr_CollisionLevel_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy)
+Uint32 Kr_CollisionLevel_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy)
 {
 	/* Gestion des dépassements très rapides, pour ne pas passer au dela du mur*/
 	if (UTIL_ABS(vx) >= pLevel->pLevel_Tileset->iTilesWidth || UTIL_ABS(vy) >= pLevel->pLevel_Tileset->iTilesHeight) // Prendre valeur absolu sinon cela fonctionnera pas pour des vecteurs négatifs
 	{
 		Kr_CollisionLevel_Move(pLevel, pRect1, vx / 2, vy / 2);
 		Kr_CollisionLevel_Move(pLevel, pRect1, vx - vx / 2, vy - vy / 2);
-		return FALSE;
+		return 1;
 	}
-	if (Kr_CollisionLevel_TryMove(pLevel, pRect1, vx, vy) == TRUE) return FALSE;
+	if (Kr_CollisionLevel_TryMove(pLevel, pRect1, vx, vy) == FALSE) return 2;
 
 	Kr_CollisionLevel_Affine(pLevel, pRect1, vx, vy);
-	return TRUE;
+	return 3;
 }
 
 /*!
@@ -91,7 +91,7 @@ Boolean Kr_CollisionLevel_IsCollisionDecor(Kr_Level *pLevel, SDL_Rect *pRect1)
 *  \param  pRect1  a pointer to the first rectangle you want to test
 *  \param  vx      the vector on X
 *  \param  vy      the vector on Y
-*  \return TRUE if the two rectangle are NOT colliding, FALSE otherwise
+*  \return TRUE if the two rectangle are  colliding, FALSE otherwise
 */
 Boolean Kr_CollisionLevel_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy)
 {
@@ -101,10 +101,10 @@ Boolean Kr_CollisionLevel_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx,
 	test.y += vy;
 	if (Kr_CollisionLevel_IsCollisionDecor(pLevel, &test) == FALSE)
 	{
-		//*pRect1 = test;
-		return TRUE;
+		*pRect1 = test;
+		return FALSE;
 	}
-	return FALSE;
+	return TRUE;
 }
 
 
@@ -123,12 +123,12 @@ void Kr_CollisionLevel_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sin
 	Sint32 i;
 	for (i = 0; i<UTIL_ABS(vx); i++)
 	{
-		if (Kr_CollisionLevel_TryMove(pLevel, pRect1, UTIL_SGN(vx), 0) == FALSE)
+		if (Kr_CollisionLevel_TryMove(pLevel, pRect1, UTIL_SGN(vx), 0) == TRUE)
 			break;
 	}
 	for (i = 0; i<UTIL_ABS(vy); i++)
 	{
-		if (Kr_CollisionLevel_TryMove(pLevel, pRect1, 0, UTIL_SGN(vy)) == FALSE)
+		if (Kr_CollisionLevel_TryMove(pLevel, pRect1, 0, UTIL_SGN(vy)) == TRUE)
 			break;
 	}
 }
@@ -142,28 +142,28 @@ void Kr_CollisionLevel_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sin
 
 
 /*!
-*  \fn     Boolean Kr_CollisionRect_Move(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy)
+*  \fn     Uint32 Kr_CollisionRect_Move(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy)
 *  \brief  Function to check if two rectangle are colliding
 *
 *  \param  pRect1 a pointer to the first rectangle which is moving
 *  \param  pRect2 a pointer to the second rectangle which is not moving
 *  \param  vx     the vector on X
 *  \param  vy     the vector on Y
-*  \return TRUE if the rectangles are colliding, FALSE otherwise
+*  \return 1 2 3
 */
-Boolean Kr_CollisionRect_Move(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy)
+Uint32 Kr_CollisionRect_Move(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy)
 {
 	/* Gestion des dépassements très rapides, pour ne pas passer au dela du mur*/
 	if (UTIL_ABS(vx) >= pRect2->w || UTIL_ABS(vy) >= pRect2->h) // Prendre valeur absolu sinon cela fonctionnera pas pour des vecteurs négatifs
 	{
 		Kr_CollisionRect_Move(pRect1, pRect2, vx / 2, vy / 2);
 		Kr_CollisionRect_Move(pRect1, pRect2, vx - vx / 2, vy - vy / 2);
-		return FALSE;
+		return 1;
 	}
-	if (Kr_CollisionRect_TryMove(pRect1, pRect2, vx, vy) == TRUE) return FALSE;
+	if (Kr_CollisionRect_TryMove(pRect1, pRect2, vx, vy) == FALSE) return 2;
 
 	Kr_CollisionRect_Affine(pRect1, pRect2, vx, vy);
-	return TRUE;
+	return 3;
 }
 
 
@@ -175,7 +175,7 @@ Boolean Kr_CollisionRect_Move(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sin
 *  \param  pRect2 a pointer to the second rectangle
 *  \param  vx      the vector on X
 *  \param  vy      the vector on Y
-*  \return TRUE if the two rectangle are NOT colliding, FALSE otherwise
+*  \return TRUE if the two rectangle are colliding, FALSE otherwise
 */
 Boolean Kr_CollisionRect_TryMove(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy)
 {
@@ -183,11 +183,29 @@ Boolean Kr_CollisionRect_TryMove(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, 
 	test = *pRect1;
 	test.x += vx;
 	test.y += vy;
-	if (((test.x >= pRect2->x) && (test.x <= (pRect2->x + pRect2->w))) ||
-		((test.y >= pRect2->y) && (test.y <= (pRect2->y + pRect2->h))))
+	if (Kr_CollisionRect_Check(pRect2, &test) == FALSE)
 	{
-		return TRUE;
+		*pRect1 = test;
+		 return FALSE;
 	}
+	return TRUE;
+}
+
+
+
+/*!
+*  \fn     Kr_CollisionRect_Check(SDL_Rect *pRect2, SDL_Rect *pRect1)
+*  \brief  Function to detect if the rectangle is colliding with the level tiles
+*
+*  \param  pRect1  a pointer to the rectangle which is not moving
+*  \param  pRect1  a pointer to the rectangle which is moving
+*  \return TRUE if the two rectangle are colliding, FALSE otherwise
+*/
+Boolean Kr_CollisionRect_Check(SDL_Rect *pRect2, SDL_Rect *pRect1)
+{
+	Uint32 iMinX, iMinY, iMaxX, iMaxY, i, j;
+
+	
 	return FALSE;
 }
 
@@ -207,12 +225,12 @@ void Kr_CollisionRect_Affine(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint
 	Sint32 i;
 	for (i = 0; i<UTIL_ABS(vx); i++)
 	{
-		if (Kr_CollisionRect_TryMove(pRect1, pRect2, UTIL_SGN(vx), 0) == FALSE)
+		if (Kr_CollisionRect_TryMove(pRect1, pRect2, UTIL_SGN(vx), 0) == TRUE)
 			break;
 	}
 	for (i = 0; i<UTIL_ABS(vy); i++)
 	{
-		if (Kr_CollisionRect_TryMove(pRect1, pRect2, 0, UTIL_SGN(vy)) == FALSE)
+		if (Kr_CollisionRect_TryMove(pRect1, pRect2, 0, UTIL_SGN(vy)) == TRUE)
 			break;
 	}
 }

@@ -164,7 +164,7 @@ Boolean updateAllEntities(Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *
 */
 Boolean updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer){
 	Sint32 movex, movey;
-
+	Uint32 i = 0;
 	//Obtention de la nouvelle trajectoire du monstre
 	getVectorToPlayer(pEntity, pPlayer, &movex, &movey);
 
@@ -187,12 +187,12 @@ Boolean updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlay
 		}
 
 		//Gestion des collisions
-		if (Kr_CollisionLevel_Move(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, movex, movey) == TRUE){
+		if (Kr_CollisionLevel_Move(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, movex, movey) == 3){
 			//findWayToPlayer(pEntity, pPlayer, &movex, &movey);
 			movex = movey = 0;
 		}
 
-		Uint32 i = 0;
+		
 		Entity **aEntity = pLevelSt->aEntityLevel;
 		for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
 			if (Kr_CollisionRect_Move(pEntity->pSprEntity->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == TRUE){
@@ -201,10 +201,12 @@ Boolean updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlay
 		}
 
 		//Deplacement final prévu
-		pEntity->pSprEntity->pRectPosition->x += movex;
-		pEntity->pSprEntity->pRectPosition->y += movey;
-		pEntity->iCoordXEntity += movex;
-		pEntity->iCoordYEntity += movey;
+		pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->x;
+		pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->y;
+		//pEntity->pSprEntity->pRectPosition->x += movex;
+		//pEntity->pSprEntity->pRectPosition->y += movey;
+		//pEntity->iCoordXEntity += movex;
+		//pEntity->iCoordYEntity += movey;
 
 	}
 
@@ -225,7 +227,7 @@ Boolean updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlay
 */
 Boolean updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer){
 	Sint32 movex, movey;
-
+	Uint32 i = 0;
 	//Obtention des déplacements générés par le clavier
 	getVector(myEvent, &movex, &movey);
 //	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", movex, movey);
@@ -260,26 +262,24 @@ Boolean updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPla
 		switchTextureFromDirection(pPlayer, newDir, pRenderer);
 
 		//Gestion des collisions
-		if (Kr_CollisionLevel_Move(pLevelSt->pLevel, pPlayer->pSprEntity->pRectPosition, movex, movey) == TRUE){
+		if (Kr_CollisionLevel_Move(pLevelSt->pLevel, pPlayer->pSprEntity->pRectPosition, movex, movey) == 3){
 			movex = movey = 0;
 		}
 
-		Uint32 i = 0;
+		/*
 		Entity **aEntity = pLevelSt->aEntityLevel;
 		for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
 			if (Kr_CollisionRect_Move(pPlayer->pSprEntity->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == TRUE){
 				//infightingDamage(*(aEntity + i), pPlayer);
 				movex = movey = 0;
 			}
-		}
+		}*/
 
 		//Deplacement final prévu
-		pPlayer->pSprEntity->pRectPosition->x += movex;
-		pPlayer->pSprEntity->pRectPosition->y += movey;
-		pPlayer->iCoordXEntity += movex;
-		pPlayer->iCoordYEntity += movey;
-
-		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", pPlayer->strEntityName, movex, movey, pPlayer->iCoordXEntity, pPlayer->iCoordYEntity);
+		pPlayer->iCoordXEntity = pPlayer->pSprEntity->pRectPosition->x;
+		pPlayer->iCoordYEntity = pPlayer->pSprEntity->pRectPosition->y;
+		//Kr_Log_Print(KR_LOG_INFO, "RectX : %d  RectY : %d  |  CoordX : %d  CoordY : %d\n", pPlayer->pSprEntity->pRectPosition->x,pPlayer->pSprEntity->pRectPosition->y,pPlayer->iCoordXEntity,pPlayer->iCoordYEntity);
+		//Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", pPlayer->strEntityName, movex, movey, pPlayer->iCoordXEntity, pPlayer->iCoordYEntity);
 		return TRUE;
 	}
 }
