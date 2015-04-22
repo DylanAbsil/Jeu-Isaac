@@ -43,6 +43,7 @@
 #define KR_WIDTH_WINDOW  16*80 // 1280
 #define KR_HEIGHT_WINDOW 16*44 // 704
 #define SIZE_MAX_NAME 100
+#define LOAD_BACKUP_LEVEL 0 // Prend la valeur 1 pour recharger les niveaux
 
     /*! 
      * \enum  Boolean
