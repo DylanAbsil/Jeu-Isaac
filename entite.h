@@ -18,6 +18,7 @@
 /*               |            | Le nom du sprite est donnée à Sprite_Init    */
 /*               |            |    et non pas à Entity_Load                  */
 /* Herrou        | 05/04/2015 | Ajout du param Entity à foundDirection       */
+/* Herrou        | 22/04/2015 | Ajout de l'include kr_collision			     */
 /* ========================================================================= */
 
 #ifndef __ENTITE_H__
@@ -28,7 +29,7 @@
 #include "weapon.h"
 #include "kr_input.h"
 #include "kr_level.h"
-
+#include "kr_collision.h"
 
 #define MOVESPEED 5		/*< Movespeed of the player >*/
 #define MOB_MOVESPEED 3 /*< Basic movespeed of the monstres >*/
