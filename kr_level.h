@@ -29,6 +29,7 @@
 /*               |            | Passage des fichiers levels en version: Level Version 1.1 		*/
 /* Herrou        | 05/04/2015 | Suppression de Kr_Level_Event et Kr_GetLevelNumber				*/
 /*               |            | Kr_Level_Change, prend en paramètre le numéro du level			*/
+/* Herrou        | 20/04/2015 | Transfert des fonctions SaveLayout et WriteLayout dans Kr_Level	*/
 /* ============================================================================================ */
 
 #ifndef __KR_LEVEL_H__
@@ -39,9 +40,7 @@
 #include "kr_log.h"
 #include "kr_tileset.h"
 
-#define KR_LEVEL_VERSION "Level Version 1.1"
-#define KR_WIDTH_WINDOW  16*80 // 1280
-#define KR_HEIGHT_WINDOW 16*44 // 704
+#define KR_LEVEL_VERSION "Level Version 1.2"
 /*!
 * \struct Kr_Level
 * \brief  Structure to handle the level.
@@ -59,6 +58,7 @@ typedef struct
 	Uint32          iNumSud;		    /*!< The numero of the level with which is connected to the south */
 	Uint32          iNumEst;		    /*!< The numero of the level with which is connected to the east */
 	Uint32          iNumOuest;		    /*!< The numero of the level with which is connected to the west */
+	
 }Kr_Level;
 
 
@@ -70,9 +70,12 @@ void	  Kr_Level_Free(Kr_Level *pLevel);
 Boolean	  Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile);
 void	  Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel);
 
-/* Sauvegarde etc */
-Boolean	  Kr_Level_Save(Kr_Level *pLevel);
 Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Uint32 iCurrentLevelNumber, SDL_Renderer *pRenderer);
+
+/* Sauvegarde */
+void    Kr_Level_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y);
+Boolean Kr_Level_SaveLayout(Kr_Level *pLevel);
+
 
 /* Gestion des collisions */
 Uint32  Kr_Collision_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
@@ -82,7 +85,5 @@ void    Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint3
 
 /* Détection d'évenement sur la carte */
 Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y);
-
-
 
 #endif /* __KR_LEVEL_H__ */

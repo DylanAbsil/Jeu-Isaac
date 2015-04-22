@@ -27,18 +27,18 @@
 #include "kr_log.h"
 
 typedef struct {
-	char		strName[SIZE_MAX_NAME];		/* Name of the sprite (contenant la direction ex : zelda_sud) */
-	SDL_Texture *pTextureSprite;			/* Texture of the sprite */
-	Uint32		iFrameHeight;				/* Frame height of the sprite */
-	Uint32		iFrameWidth;				/* Frame width of the sprite */  // Un sprite n'a qu'une seule largeur
-	Uint32		iNbFrames;					/* Number of frames in the sprite */
-	Uint32		iCurrentFrame;				/* The current frame */
-	SDL_Rect	*pRectPosition;				/* Sprite position on the window */
+	char		strName[SIZE_MAX_NAME];		/*< Name of the sprite (contenant la direction ex : zelda_sud) >*/
+	SDL_Texture *pTextureSprite;			/*< Texture of the sprite >*/
+	Uint32		iFrameHeight;				/*< Frame height of the sprite >*/
+	Uint32		iFrameWidth;				/*< Frame width of the sprite >*/  // Un sprite n'a qu'une seule largeur
+	Uint32		iNbFrames;					/*< Number of frames in the sprite >*/
+	Uint32		iCurrentFrame;				/*< The current frame >*/
+	SDL_Rect	*pRectPosition;				/*< Sprite position on the window >*/
 }Kr_Sprite;
 
 
 Kr_Sprite *Kr_Sprite_Init(char* szFileName);
-Boolean    Kr_Sprite_Load(Kr_Sprite *sprite, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectposition, SDL_Renderer *pRenderer);
+Boolean    Kr_Sprite_Load(Kr_Sprite *sprite, Direction dir, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectposition, SDL_Renderer *pRenderer);
 void       Kr_Sprite_Free(Kr_Sprite *pSprite);
 
 

@@ -16,6 +16,11 @@
 /* Herrou        | 05/04/2015 | Ajout de Kr_Map_ShouldChangeLevel    		 */
 /*               |            | Ajout de Kr_Map_GetNeighborOfLevel           */
 /*               |            | Gestion du changement de Map ok	             */
+/* Herrou        | 08/04/2015 | Le changement de niveau se détecte sur 		 */
+/*               |            | les bords, quelque soit la tile		         */
+/* Herrou        | 15/08/2015 | Lors d'un changement de level, le personnage */
+/*               |            |  est légèrement en avant de sa zone d'arrivé */
+/*               |            |  afin d'éviter des calculs inutiles	         */
 /* ========================================================================= */
 
 #include "kr_map.h"
@@ -75,6 +80,7 @@ Kr_Map *Kr_Map_Init(char *szMapFile)
 	return pMap;
 }
 
+
 /*!
 *  \fn     void Kr_Map_Free(Kr_Map *pMap);
 *  \brief  Function to free a Kr_Map structure
@@ -92,6 +98,7 @@ void Kr_Map_Free(Kr_Map *pMap)
 	UTIL_Free(pMap);
 }
 
+
 /*!
 *  \fn     void Kr_Map_Log(Kr_Map *pMap);
 *  \brief  Function to log a Kr_Map structure
@@ -108,6 +115,7 @@ void Kr_Map_Log(Kr_Map *pMap)
 		Kr_Log_Print(KR_LOG_INFO, "[level%d] : %s\n",i+1, pMap->szMapLayout[i]);
 	}
 }
+
 
 /*!
 *  \fn     void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord, Uint32 *iNumSud, Uint32 *iNumEst, Uint32 *iNumOuest)
@@ -130,7 +138,7 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 	/* Déterminer le numéro du level actuel */
 	strcpy(szArray, pMap->szMapLayout[pLevel->iLevelNum - 1]);
 	
-	Kr_Log_Print(KR_LOG_INFO, "The current level %d is connected to %s, lenght : %d\n", pLevel->iLevelNum, szArray, iArrayLen);
+	//Kr_Log_Print(KR_LOG_INFO, "The current level %d is connected to %s\n", pLevel->iLevelNum, szArray);
 
 	for (i = 0; i < 4; i++)
 	{
@@ -148,63 +156,111 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 		else if (i == 1) pLevel->iNumSud = iNum;
 		else if (i == 2) pLevel->iNumEst = iNum;
 		else if (i == 3) pLevel->iNumOuest = iNum;
-		UTIL_SousChaine(szArray, strlen(szBuf)+1, iArrayLen, szArray); // On supprime de la chaine la partie traité
+		if(i < 3) UTIL_SousChaine(szArray, strlen(szBuf)+1, iArrayLen, szArray); // On supprime de la chaine la partie traité
 	}
 	
 }
 
 
-
 /*!
 *  \fn     Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
-*  \brief  Function to check some event
+*  \brief  Function to check if the level should be changed
 *
 *  \param  pLevel  a pointer to a the level structure
 *  \param  pEntity a pointer to the entity
-*  \return 1 if we must change the level, 0 otherwise
+*  \return the number of the level if we must change, 0 otherwise
 */
 Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 {
 	Sint32 x, y, iTmp;
-	Sint32 iTilesID;
 
 	iTmp = 0;
 	// Calcule des coordonnées du milieu du rectangle
 	x = pEntity->pSprEntity->pRectPosition->x + pEntity->pSprEntity->pRectPosition->w / 2;
 	y = pEntity->pSprEntity->pRectPosition->y + pEntity->pSprEntity->pRectPosition->h / 2;
-	iTilesID = Kr_Level_GetTile(pLevel, x, y);
-	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel && iTilesID != -1)// Le tile est-il un Tile pour changer de level ?
+
+	// On vérifie que le joueur est sur une extrémité de la map
+	if ((x < pLevel->pLevel_Tileset->iTilesWidth) || (y < pLevel->pLevel_Tileset->iTilesHeight) ||
+		(x > KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth) || (y > KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight))
 	{
 		Kr_Map_GetNeighborOfLevel(pMap, pLevel, &pLevel->iNumNord, &pLevel->iNumSud, &pLevel->iNumEst, &pLevel->iNumOuest);
-		if (pEntity->direction == nord && (y < pLevel->pLevel_Tileset->iTilesHeight))
+		if (pEntity->direction == nord && (y < pLevel->pLevel_Tileset->iTilesHeight) && pLevel->iNumNord != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - pEntity->pSprEntity->pRectPosition->h - 1; // Pour éviter les collisions également
-			pEntity->iCoordYEntity = KR_HEIGHT_WINDOW - pEntity->pSprEntity->pRectPosition->h - 1;
+			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h ; // Pour éviter les collisions également
+			pEntity->iCoordYEntity = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h ;
 			return pLevel->iNumNord;
 		}
-		else if (pEntity->direction == sud && (y >(KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight)))
+		else if (pEntity->direction == sud && (y >(KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight)) && pLevel->iNumSud != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->y = 1; //1 et non 0 pour éviter des collisions dans le mur dès le respawn
-			pEntity->iCoordYEntity = 1;
+			pEntity->pSprEntity->pRectPosition->y = pEntity->pSprEntity->pRectPosition->h; // On le place un peu en avant/arrière pour éviter de refaire les vérifications
+			pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->h;
 			return pLevel->iNumSud;
 		}
-		else if (pEntity->direction == est && (x > (KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth)))
+		else if (pEntity->direction == est && (x > (KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth)) && pLevel->iNumEst != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->x = 1;
-			pEntity->iCoordXEntity = 1;
+			pEntity->pSprEntity->pRectPosition->x = pEntity->pSprEntity->pRectPosition->w;
+			pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->w;
 			return pLevel->iNumEst;
 		}
-		else if (pEntity->direction == ouest && (x < pLevel->pLevel_Tileset->iTilesWidth))
+		else if (pEntity->direction == ouest && (x < pLevel->pLevel_Tileset->iTilesWidth) && pLevel->iNumOuest != 0)
 		{
-			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - pEntity->pSprEntity->pRectPosition->w - 1;
-			pEntity->iCoordXEntity = KR_WIDTH_WINDOW - pEntity->pSprEntity->pRectPosition->w - 1;
+			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w ;
+			pEntity->iCoordXEntity = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w ;
 			return pLevel->iNumOuest;
 		}
-		return 0;
 	}
-
-
-	/* Autre événement */
-
 	return 0;
+}
+
+/*!
+*  \fn     Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
+*  \brief  This function remove the current maps file and copy the backup ones in maps/save
+*
+*  \param  bMustLoad  a boolean to tell if we must load the backup file or continue with the current one
+*  \return TRUE if everything is ok, FALSE otherwise
+*/
+Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
+{
+	Uint32 i = 0;
+	char   szBuf[100] = "";
+	FILE  *pFile = NULL;
+	FILE  *pFileDst = NULL;
+	if (bMustLoad == FALSE) return TRUE;
+
+	for (i = 1; i <= 999; i++) // On considère qu'il y a au maximum 999 levels
+	{
+		Kr_Log_Print(KR_LOG_INFO, "level%d\n", i);
+		// Ce level existe-t-il dans /maps ?
+		sprintf(szBuf, "maps\\level%d.txt",i);	
+		pFile = UTIL_OpenFile(szBuf, "r"); // Ouverture en read
+		if (pFile)
+		{	
+			// Suppression depuis /maps
+			UTIL_CloseFile(&pFile);
+			if (remove(szBuf)) // erreur lors de la suppresion
+			{
+				Kr_Log_Print(KR_LOG_WARNING, "Could not delete the file %s !\n",szBuf);
+			}
+		}
+
+		// Ce level existe-il dans /maps/backup ?
+		sprintf(szBuf, "maps\\backup\\level%d.txt", i);
+		pFile = UTIL_OpenFile(szBuf, "w"); // Ouverture en write de la copie
+		if (pFile)
+		{
+			sprintf(szBuf, "maps\\level%d.txt", i); 
+			pFileDst = UTIL_OpenFile(szBuf, "w"); // Ouverture en write d'un nouveau fichier
+			if(!pFileDst)
+			{
+				UTIL_CloseFile(&pFile);
+				Kr_Log_Print(KR_LOG_ERROR, "Could not copy the backup file to %s !\n", szBuf);
+				return FALSE;
+			}
+			// Copie de l'original vers /maps
+			UTIL_FileCopy(pFile, pFileDst, NULL);
+			UTIL_CloseFile(&pFile);
+			UTIL_CloseFile(&pFileDst);			
+		}		
+	}
+	return TRUE;
 }
