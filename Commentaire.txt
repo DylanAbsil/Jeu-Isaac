@@ -1,1 +1,1 @@
-Bug connu : Crash lors de la libération des entitées, lors d'un changement entre deux niveaux, lorsque l'on quitte l'application
+Bug connu : Crash lors de la libération de zelda lorsque l'on quitte l'application

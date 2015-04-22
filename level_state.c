@@ -123,7 +123,6 @@ void Level_State_Free(Level_State *pLevelSt){
 	SDL_Rect  **aRect = pLevelSt->aRectPositionEntity;
 	for (i = 1; i < pLevelSt->iNbEntities; i++){
 		Entity_Free(*(aEntity + i));
-		UTIL_Free(*(aRect + i));
 	}
 	UTIL_Free(pLevelSt->aEntityLevel);
 	UTIL_Free(pLevelSt->aSpriteLevel);
