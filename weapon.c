@@ -251,7 +251,9 @@ Boolean drawAllProjectiles(ListProj *lProj, SDL_Renderer *pRenderer){
 			Projectile_Draw(pRenderer, lProj->current->p);
 			next(lProj);
 		}
+		return TRUE;
 	}
+	else return FALSE;
 }
 
 

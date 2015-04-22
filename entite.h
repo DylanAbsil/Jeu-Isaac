@@ -31,7 +31,7 @@
 
 
 #define MOVESPEED 5		/*< Movespeed of the player >*/
-#define MOB_MOVESPEED 5 /*< Basic movespeed of the monstres >*/
+#define MOB_MOVESPEED 3 /*< Basic movespeed of the monstres >*/
 #define RESET_FRAME 10	/*< Number to handle the reset of the frame >*/
 
 /*!
