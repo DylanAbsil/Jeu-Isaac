@@ -195,7 +195,7 @@ Boolean updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlay
 		Uint32 i = 0;
 		Entity **aEntity = pLevelSt->aEntityLevel;
 		for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
-			if (Kr_CollisionRect_Move(RECT1, RECT2, movex, movey) == TRUE){
+			if (Kr_CollisionRect_Move(pEntity->pSprEntity->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == TRUE){
 				movex = movey = 0;
 			}
 		}
@@ -267,7 +267,7 @@ Boolean updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPla
 		Uint32 i = 0;
 		Entity **aEntity = pLevelSt->aEntityLevel;
 		for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
-			if (Kr_CollisionEntity(pLevelSt->pLevel, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == TRUE){
+			if (Kr_CollisionRect_Move(pPlayer->pSprEntity->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == TRUE){
 				//infightingDamage(*(aEntity + i), pPlayer);
 				movex = movey = 0;
 			}
@@ -279,7 +279,7 @@ Boolean updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPla
 		pPlayer->iCoordXEntity += movex;
 		pPlayer->iCoordYEntity += movey;
 
-//		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", pPlayer->strEntityName, movex, movey, pPlayer->iCoordXEntity, pPlayer->iCoordYEntity);
+		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", pPlayer->strEntityName, movex, movey, pPlayer->iCoordXEntity, pPlayer->iCoordYEntity);
 		return TRUE;
 	}
 }
