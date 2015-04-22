@@ -107,17 +107,17 @@ int Isaac(int *argc, char **argv)
 	/* Préparation d'images que l'on souhaitera afficher */
 	Kr_Sprite	 *pSpriteZelda = NULL;
 	Entity		 *pZelda = NULL;
-	SDL_Rect     rectPositionZelda;
+	SDL_Rect     *pRectPositionZelda = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
 
-	rectPositionZelda.x = 250;
-	rectPositionZelda.y = 200;
-	rectPositionZelda.w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
-	rectPositionZelda.h = 32;
+	pRectPositionZelda->x = 250;
+	pRectPositionZelda->y = 200;
+	pRectPositionZelda->w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
+	pRectPositionZelda->h = 32;
 
 
 	/* Chargement des sprites */
 	pSpriteZelda = Kr_Sprite_Init("zelda");			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
-	if (Kr_Sprite_Load(pSpriteZelda, sud, 26, 136, 8, &rectPositionZelda, pRenderer) == FALSE)
+	if (Kr_Sprite_Load(pSpriteZelda, sud, 26, 136, 8, pRectPositionZelda, pRenderer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
