@@ -45,6 +45,6 @@ void	Kr_Map_Free(Kr_Map *pMap);
 void    Kr_Map_Log(Kr_Map *pMap);
 void	Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord, Uint32 *iNumSud, Uint32 *iNumEst, Uint32 *iNumOuest);
 Uint32  Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity);
-
+Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad);
 
 #endif /* __KR_MAP_H__ */

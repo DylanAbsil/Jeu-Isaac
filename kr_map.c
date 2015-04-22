@@ -211,3 +211,56 @@ Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 	}
 	return 0;
 }
+
+/*!
+*  \fn     Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
+*  \brief  This function remove the current maps file and copy the backup ones in maps/save
+*
+*  \param  bMustLoad  a boolean to tell if we must load the backup file or continue with the current one
+*  \return TRUE if everything is ok, FALSE otherwise
+*/
+Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
+{
+	Uint32 i = 0;
+	char   szBuf[100] = "";
+	FILE  *pFile = NULL;
+	FILE  *pFileDst = NULL;
+	if (bMustLoad == FALSE) return TRUE;
+
+	for (i = 1; i <= 999; i++) // On considère qu'il y a au maximum 999 levels
+	{
+		Kr_Log_Print(KR_LOG_INFO, "level%d\n", i);
+		// Ce level existe-t-il dans /maps ?
+		sprintf(szBuf, "maps\\level%d.txt",i);	
+		pFile = UTIL_OpenFile(szBuf, "r"); // Ouverture en read
+		if (pFile)
+		{	
+			// Suppression depuis /maps
+			UTIL_CloseFile(&pFile);
+			if (remove(szBuf)) // erreur lors de la suppresion
+			{
+				Kr_Log_Print(KR_LOG_WARNING, "Could not delete the file %s !\n",szBuf);
+			}
+		}
+
+		// Ce level existe-il dans /maps/backup ?
+		sprintf(szBuf, "maps\\backup\\level%d.txt", i);
+		pFile = UTIL_OpenFile(szBuf, "w"); // Ouverture en write de la copie
+		if (pFile)
+		{
+			sprintf(szBuf, "maps\\level%d.txt", i); 
+			pFileDst = UTIL_OpenFile(szBuf, "w"); // Ouverture en write d'un nouveau fichier
+			if(!pFileDst)
+			{
+				UTIL_CloseFile(&pFile);
+				Kr_Log_Print(KR_LOG_ERROR, "Could not copy the backup file to %s !\n", szBuf);
+				return FALSE;
+			}
+			// Copie de l'original vers /maps
+			UTIL_FileCopy(pFile, pFileDst, NULL);
+			UTIL_CloseFile(&pFile);
+			UTIL_CloseFile(&pFileDst);			
+		}		
+	}
+	return TRUE;
+}
