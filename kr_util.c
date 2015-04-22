@@ -297,9 +297,7 @@ Sint32 UTIL_StrToUint32(char *szString)
 Boolean UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd)
 {
 	char szBuf[1000];
-	Boolean b = FALSE;
-	
-	if (szEnd == NULL) b = TRUE;
+
 	do
 	{
 		if (feof(pFileSrc))//détecte la fin du fichier
@@ -308,7 +306,7 @@ Boolean UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd)
 		}
 		fgets(szBuf, sizeof(szBuf), pFileSrc);
 		fputs(szBuf, pFileDst);
-	}while ((strstr(szBuf, szEnd) == NULL) || b);
+	}while (strstr(szBuf, szEnd) == NULL);
 	return TRUE;
 }
 

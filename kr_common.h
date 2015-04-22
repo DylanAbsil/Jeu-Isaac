@@ -39,11 +39,12 @@
 
 // Banque de son : http://www.wavsource.com/
 // Utiliser Uint32 gérer la portabilité !!!
+#define GAME 1 // 1 pour jouer 0 pour l'éditeur
 #define KR_FPS 30// Nombre de FPS
 #define KR_WIDTH_WINDOW  16*80 // 1280
 #define KR_HEIGHT_WINDOW 16*44 // 704
 #define SIZE_MAX_NAME 100
-#define LOAD_BACKUP_LEVEL 1 // Prend la valeur 1 pour recharger les niveaux
+#define LOAD_BACKUP_LEVEL 0 // Prend la valeur 1 pour recharger les niveaux
 
     /*! 
      * \enum  Boolean
