@@ -260,7 +260,25 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 //	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 }
 
-void infightingDamage(Entity *pGiver, Entity *pReceiver);
+/*  \fn void meleeDamage(Entity *pGiver, Entity *pReceiver)
+*  \brief function to inflict damage to an entity by being touched by another entity
+*
+*  \param	pGiver		a pointer to the giver of the damage
+*  \param	pReceiver	a pointer to the receiver of the damage
+*  \return none
+*/
+void meleeDamage(Entity *pGiver, Entity *pReceiver){
+	if (pReceiver->iArmor > MOB_INFIGHTING_DAMAGE)
+		pReceiver->iArmor -= MOB_INFIGHTING_DAMAGE;
+	else if (pReceiver->iArmor > 0){
+		Uint32 truedamage = MOB_INFIGHTING_DAMAGE - pReceiver->iArmor;
+		pReceiver->iArmor = 0;
+		pReceiver->iEntityLife -= truedamage;
+	}
+	else
+		pReceiver->iEntityLife -= MOB_INFIGHTING_DAMAGE;
+}
+
 
 /*!
 *  \fn     Boolean	Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer)
