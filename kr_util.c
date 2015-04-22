@@ -18,6 +18,7 @@
 /*               |            |  - La chaine à traiter ne doit pas contenir de caractère particulier		*/
 /* Herrou        | 07/04/2015 | Add UTIL_FileCopy 															*/
 /* Herrou        | 15/04/2015 | Modification UTIL_SousChaine : Insertion d'un \0 en fin de chaine retournée */
+/* Herrou        | 22/04/2015 | Modification UTIL_FileCopy pour s'arrêter en cas de EOF						*/
 /* ======================================================================================================== */
 #include "kr_util.h"
 
@@ -296,8 +297,13 @@ Sint32 UTIL_StrToUint32(char *szString)
 Boolean UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd)
 {
 	char szBuf[1000];
+
 	do
 	{
+		if (feof(pFileSrc))//détecte la fin du fichier
+		{
+			return TRUE;
+		}
 		fgets(szBuf, sizeof(szBuf), pFileSrc);
 		fputs(szBuf, pFileDst);
 	}while (strstr(szBuf, szEnd) == NULL);
