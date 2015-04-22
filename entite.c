@@ -246,7 +246,7 @@ Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, 
 		switchTextureFromDirection(pPlayer, newDir, pRenderer);
 
 		//Gestion des collisions (à venir)
-		if (Kr_Collision_Move(pLevel, pPlayer->pSprEntity->pRectPosition, vx, vy) == 3)
+		if (Kr_CollisionLevel_Move(pLevel, pPlayer->pSprEntity->pRectPosition, vx, vy) == TRUE)
 		{
 			vx = vy = 0;
 		}
@@ -295,7 +295,7 @@ Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, S
 		}
 				
 		//Gestion des collisions
-		if (Kr_Collision_Move(pLevel, pEntity->pSprEntity->pRectPosition, movex, movey) == 3)
+		if (Kr_CollisionLevel_Move(pLevel, pEntity->pSprEntity->pRectPosition, movex, movey) == TRUE)
 		{
 			movex = movey = 0;
 		}

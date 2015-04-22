@@ -30,6 +30,7 @@
 /* Herrou        | 05/04/2015 | Suppression de Kr_Level_Event et Kr_GetLevelNumber				*/
 /*               |            | Kr_Level_Change, prend en paramètre le numéro du level			*/
 /* Herrou        | 20/04/2015 | Transfert des fonctions SaveLayout et WriteLayout dans Kr_Level	*/
+/* Herrou        | 22/04/2015 | Gestion des collisions effectués dans kr_collision				*/
 /* ============================================================================================ */
 
 #ifndef __KR_LEVEL_H__
@@ -75,13 +76,6 @@ Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Uint32 iCurrentLevelNumber, S
 /* Sauvegarde */
 void    Kr_Level_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y);
 Boolean Kr_Level_SaveLayout(Kr_Level *pLevel);
-
-
-/* Gestion des collisions */
-Uint32  Kr_Collision_Move(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
-Boolean Kr_Collision_IsCollisionDecor(Kr_Level *pLevel, SDL_Rect *pRect1);
-Boolean Kr_Collision_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
-void    Kr_Collision_Affine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy);
 
 /* Détection d'évenement sur la carte */
 Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y);
