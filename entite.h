@@ -34,6 +34,7 @@
 #define MOVESPEED 5		/*< Movespeed of the player >*/
 #define MOB_MOVESPEED 3 /*< Basic movespeed of the monstres >*/
 #define RESET_FRAME 10	/*< Number to handle the reset of the frame >*/
+#define MOB_INFIGHTING_DAMAGE 15
 
 /*!
 * \enum EntityState
@@ -76,7 +77,7 @@ void		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy
 void		switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer *pRenderer);
 
 
-void		infightingDamage(Entity *pGiver, Entity *pReceiver);
+void		meleeDamage(Entity *pGiver, Entity *pReceiver);
 Boolean		Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer);
 Boolean		ChangeWeapon(Entity *pEntity, Weapon *pWeapon);
 
