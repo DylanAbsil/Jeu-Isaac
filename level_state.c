@@ -188,14 +188,14 @@ Boolean updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlay
 
 		//Gestion des collisions
 		if (Kr_CollisionLevel_Move(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, movex, movey) == TRUE){
-			findWayToPlayer(pEntity, pPlayer, &movex, &movey);
+			//findWayToPlayer(pEntity, pPlayer, &movex, &movey);
 			movex = movey = 0;
 		}
 
 		Uint32 i = 0;
 		Entity **aEntity = pLevelSt->aEntityLevel;
 		for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
-			if(Kr_CollisionEntity(pLevelSt->pLevel, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == TRUE){
+			if (Kr_CollisionRect_Move(RECT1, RECT2, movex, movey) == TRUE){
 				movex = movey = 0;
 			}
 		}
@@ -268,7 +268,7 @@ Boolean updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPla
 		Entity **aEntity = pLevelSt->aEntityLevel;
 		for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
 			if (Kr_CollisionEntity(pLevelSt->pLevel, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == TRUE){
-				infightingDamage(*(aEntity + i), pPlayer);
+				//infightingDamage(*(aEntity + i), pPlayer);
 				movex = movey = 0;
 			}
 		}
