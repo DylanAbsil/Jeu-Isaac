@@ -183,8 +183,8 @@ Boolean Kr_CollisionRect_TryMove(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, 
 	test = *pRect1;
 	test.x += vx;
 	test.y += vy;
-	if ( ((test.x >= pRect2->x) && (test.x <= (pRect2->x + pRect2->w))) ||
-		 ((test.y >= pRect2->y) && (test.y <= (pRect2->y + pRect2->h))) )
+	if (((test.x >= pRect2->x) && (test.x <= (pRect2->x + pRect2->w))) ||
+		((test.y >= pRect2->y) && (test.y <= (pRect2->y + pRect2->h))))
 	{
 		return TRUE;
 	}
