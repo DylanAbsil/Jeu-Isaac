@@ -70,13 +70,13 @@ Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
 
 
 Direction	foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity);
+void		foundWayToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 movex, Sint32 movey);
 void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
 void		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy);
 void		switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer *pRenderer);
 
-Boolean		updatePlayerVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *pPlayer, SDL_Renderer *pRenderer);
-Boolean		updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer);
 
+void		infightingDamage(Entity *pGiver, Entity *pReceiver);
 Boolean		Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer);
 Boolean		ChangeWeapon(Entity *pEntity, Weapon *pWeapon);
 

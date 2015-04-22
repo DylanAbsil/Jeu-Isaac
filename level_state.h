@@ -38,6 +38,9 @@ void			Level_State_Free(Level_State *pLevelSt);
 
 Boolean			drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer);
 Boolean			updateAllEntities(Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer);
+Boolean			updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer);
+Boolean			updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer);
+
 
 Uint32			Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer);
 

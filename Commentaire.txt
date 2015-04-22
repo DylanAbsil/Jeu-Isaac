@@ -1,1 +1,3 @@
 Bug connu : Crash lors de la libération de zelda lorsque l'on quitte l'application
+
+j'ai déplacer pas mal de fonction pour pouvoir utiliser la collision 

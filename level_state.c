@@ -93,11 +93,11 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 				*(aEntity + i) = Entity_Init(szEntityName);
 				*(aRect + i) = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 				(*(aRect + i))->x = iCoordX;
-				(*(aRect + i))->y = iCoordY;
-				(*(aRect + i))->h = 64;
-				(*(aRect + i))->w = 64;
-				Kr_Sprite_Load(*(aSprite + i), unknown, iFrameHeight, iFrameWidth, iNbFrames, *(aRect + i), pRenderer);
-				Entity_Load(*(aEntity + i), iLife, iArmor, *(aSprite + i));
+(*(aRect + i))->y = iCoordY;
+(*(aRect + i))->h = 64;
+(*(aRect + i))->w = 64;
+Kr_Sprite_Load(*(aSprite + i), unknown, iFrameHeight, iFrameWidth, iNbFrames, *(aRect + i), pRenderer);
+Entity_Load(*(aEntity + i), iLife, iArmor, *(aSprite + i));
 			}
 
 		}
@@ -143,15 +143,146 @@ Boolean updateAllEntities(Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *
 	Entity **aEntity = pLevelSt->aEntityLevel;
 
 	for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
-		if (updateEntityVector(pLevelSt->pLevel, *(aEntity + i), pPlayer, pRenderer) == FALSE){
+		if (updateEntityVector(pLevelSt, *(aEntity + i), pPlayer, pRenderer) == FALSE){
 			Kr_Log_Print(KR_LOG_ERROR, "The entity %d couldn't have been updated", i - 1);
 			return FALSE;
 		}
-		//UpdateAllProjectiles((*(aEntity + i))->pWeapon);
+		//UpdateAllProjectiles((*(aEntity + i))->pWeapon, pRenderer);
 	}
 	return TRUE;
 }
 
+/*!
+*  \fn     void updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer)
+*  \brief  Function to update the direction and the position on the map of the entite
+*
+*  \param	pLevelSt	a pointer to the Level State
+*  \param	pEntity		a pointer to the entity
+*  \param	pPlayer		a pointer to the player
+*  \param	pRenderer	a pointer to the renderer
+*  \return Boolean true if the vector has been updated false either
+*/
+Boolean updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer){
+	Sint32 movex, movey;
+
+	//Obtention de la nouvelle trajectoire du monstre
+	getVectorToPlayer(pEntity, pPlayer, &movex, &movey);
+
+	if ((movex == 0) && (movey == 0)){						//Si pas de mouvement :
+		pEntity->mouvement = 0;									//
+		pEntity->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
+		pEntity->iTempoAnim = 0;
+		return TRUE;
+	}
+	else{
+		pEntity->mouvement = 1;
+
+		//Gestion de l'animation
+		pEntity->iTempoAnim += 1;
+		if (pEntity->iTempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
+			pEntity->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
+			if (pEntity->pSprEntity->iCurrentFrame == pEntity->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
+				pEntity->pSprEntity->iCurrentFrame = 0;
+			pEntity->iTempoAnim = 0;
+		}
+
+		//Gestion des collisions
+		if (Kr_CollisionLevel_Move(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, movex, movey) == TRUE){
+			findWayToPlayer(pEntity, pPlayer, &movex, &movey);
+			movex = movey = 0;
+		}
+
+		Uint32 i = 0;
+		Entity **aEntity = pLevelSt->aEntityLevel;
+		for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
+			if(Kr_CollisionEntity(pLevelSt->pLevel, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == TRUE){
+				movex = movey = 0;
+			}
+		}
+
+		//Deplacement final prévu
+		pEntity->pSprEntity->pRectPosition->x += movex;
+		pEntity->pSprEntity->pRectPosition->y += movey;
+		pEntity->iCoordXEntity += movex;
+		pEntity->iCoordYEntity += movey;
+
+	}
+
+	//	Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", pEntity->strEntityName, movex, movey, pEntity->iCoordXEntity, pEntity->iCoordYEntity);
+	return TRUE;
+}
+
+/*!
+*  \fn     void updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPlyer, SDL_Renderer *pRenderer)
+*  \brief  Function to update the direction and the position on the map of the entite
+*
+*	\todo rajouter la fonction de gestion des collisions
+*  \param  inEvent  Structure which handle the input
+*  \param  pLevelSt a pointer to the Level State
+*  \param  pPlayer  a pointer to the player
+*  \param pRenderer a pointer to the renderer
+*  \return Boolean true if the vector has been updated false either
+*/
+Boolean updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer){
+	Sint32 movex, movey;
+
+	//Obtention des déplacements générés par le clavier
+	getVector(myEvent, &movex, &movey);
+//	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", movex, movey);
+
+	Direction newDir = foundDirection(movex, movey, pPlayer);	//On cherche la nouvelle direction
+
+	// Changement de l'animation
+	if ((movex == 0) && (movey == 0)){						//Si pas de mouvement :
+		pPlayer->mouvement = 0;									//
+		pPlayer->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
+		pPlayer->iTempoAnim = 0;											// reset de la tempo
+//		Kr_Log_Print(KR_LOG_INFO, "The entity %s hasn't moved\n", pPlayer->strEntityName);
+		return TRUE;
+	}
+	else{												//Sinon
+		pPlayer->mouvement = 1;
+
+		//Gestion de l'animation
+		pPlayer->iTempoAnim += 1;
+		if (pPlayer->iTempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
+			pPlayer->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
+			if (pPlayer->pSprEntity->iCurrentFrame == pPlayer->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
+				pPlayer->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
+//			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
+
+
+			pPlayer->iTempoAnim = 0;
+
+//			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
+		}
+
+		switchTextureFromDirection(pPlayer, newDir, pRenderer);
+
+		//Gestion des collisions
+		if (Kr_CollisionLevel_Move(pLevelSt->pLevel, pPlayer->pSprEntity->pRectPosition, movex, movey) == TRUE){
+			movex = movey = 0;
+		}
+
+		Uint32 i = 0;
+		Entity **aEntity = pLevelSt->aEntityLevel;
+		for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
+			if (Kr_CollisionEntity(pLevelSt->pLevel, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == TRUE){
+				infightingDamage(*(aEntity + i), pPlayer);
+				movex = movey = 0;
+			}
+		}
+
+		//Deplacement final prévu
+		pPlayer->pSprEntity->pRectPosition->x += movex;
+		pPlayer->pSprEntity->pRectPosition->y += movey;
+		pPlayer->iCoordXEntity += movex;
+		pPlayer->iCoordYEntity += movey;
+
+//		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", pPlayer->strEntityName, movex, movey, pPlayer->iCoordXEntity, pPlayer->iCoordYEntity);
+		return TRUE;
+	}
+}
 
 
 /*!

@@ -196,120 +196,6 @@ Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
 	return newDir;
 }
 
-
-/*!
-*  \fn     void updatePlayerVector(Kr_Input myEvent,Kr_Level *pLevel, Entity *pPlyer, SDL_Renderer *pRenderer)
-*  \brief  Function to update the direction and the position on the map of the entite
-*
-*	\todo rajouter la fonction de gestion des collisions
-*  \param  inEvent Structure which handle the input
-*  \param  pLevel  a pointer to the Level
-*  \param  pPlayer  a pointer to the player
-*  \param pRenderer a pointer to the renderer
-*  \return Boolean true if the vector has been updated false either
-*/
-Boolean updatePlayerVector(Kr_Input myEvent, Kr_Level *pLevel, Entity *pPlayer, SDL_Renderer *pRenderer){
-	Sint32 vx, vy;
-
-	//Obtention des déplacements générés par le clavier
-	getVector(myEvent, &vx, &vy);
-//	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", vx, vy);
-
-	//  - on cherche la nouvelle direction
-	Direction newDir = foundDirection(vx, vy, pPlayer);			
-
-	// Changement de l'animation
-	if ((vx == 0) && (vy == 0)){						//Si pas de mouvement :
-		pPlayer->mouvement = 0;									//
-		pPlayer->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
-		pPlayer->iTempoAnim = 0;											// reset de la tempo
-//		Kr_Log_Print(KR_LOG_INFO, "The entity %s hasn't moved\n", pPlayer->strEntityName);
-		return TRUE;
-	}
-	else{												//Sinon
-		pPlayer->mouvement = 1;
-
-		//Gestion de l'animation
-		pPlayer->iTempoAnim += 1;
-		if (pPlayer->iTempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
-			pPlayer->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
-			if (pPlayer->pSprEntity->iCurrentFrame == pPlayer->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
-				pPlayer->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
-//			Kr_Log_Print(KR_LOG_INFO, "Frame counter = %d\n", entite->pSprEntity->iCurrentFrame);
-
-
-			pPlayer->iTempoAnim = 0;
-
-//			Kr_Log_Print(KR_LOG_INFO, "The animation has changed to the next frame\n");
-		}
-		
-		switchTextureFromDirection(pPlayer, newDir, pRenderer);
-
-		//Gestion des collisions (à venir)
-		if (Kr_CollisionLevel_Move(pLevel, pPlayer->pSprEntity->pRectPosition, vx, vy) == TRUE)
-		{
-			vx = vy = 0;
-		}
-		//Deplacement final prévu
-		pPlayer->iCoordXEntity = pPlayer->pSprEntity->pRectPosition->x; // Modification des coordonnées de l'entité, celles du sprite sont modifiées par les fonctions de collision
-		pPlayer->iCoordYEntity = pPlayer->pSprEntity->pRectPosition->y;
-		
-//		Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", pPlayer->strEntityName, vx, vy, pPlayer->iCoordXEntity, pPlayer->iCoordYEntity);
-		return TRUE;
-	}
-}
-
-
-
-/*!
-*  \fn     void updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer)
-*  \brief  Function to update the direction and the position on the map of the entite
-*
-*  \param  pLevel  a pointer to the Level
-*  \param  pEntity  a pointer to the entity
-*  \param  pRenderer a pointer to the renderer
-*  \return Boolean true if the vector has been updated false either
-*/
-Boolean updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer){
-	Sint32 movex, movey;
-
-	//Obtention de la nouvelle trajectoire du monstre
-	getVectorToPlayer(pEntity, pPlayer, &movex, &movey);
-
-	if ((movex == 0) && (movey == 0)){						//Si pas de mouvement :
-		pEntity->mouvement = 0;									//
-		pEntity->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
-		pEntity->iTempoAnim = 0;
-		return TRUE;
-	}
-	else{
-		pEntity->mouvement = 1;
-
-		//Gestion de l'animation
-		pEntity->iTempoAnim += 1;
-		if (pEntity->iTempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
-			pEntity->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
-			if (pEntity->pSprEntity->iCurrentFrame == pEntity->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
-				pEntity->pSprEntity->iCurrentFrame = 0;	
-			pEntity->iTempoAnim = 0;
-		}
-				
-		//Gestion des collisions
-		if (Kr_CollisionLevel_Move(pLevel, pEntity->pSprEntity->pRectPosition, movex, movey) == TRUE)
-		{
-			movex = movey = 0;
-		}
-
-		//Deplacement final prévu
-		pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->x; // Modification des coordonnées de l'entité, celles du sprite sont modifiées par les fonctions de collision
-		pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->y;
-
-	}
-
-//	Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", pEntity->strEntityName, vx, vy, pEntity->iCoordXEntity, pEntity->iCoordYEntity);
-	return TRUE;
-}
-
 /*!
 *  \fn     void switchTextureFromDirection(Entity *entite, Direction dir, SDL_Renderer *pRenderer){
 *  \brief  Function to switch the texture of the entity according to the new direction
@@ -372,6 +258,8 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 //	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 
 }
+
+void infightingDamage(Entity *pGiver, Entity *pReceiver);
 
 /*!
 *  \fn     Boolean	Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer)

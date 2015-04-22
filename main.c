@@ -209,7 +209,7 @@ int Isaac(int *argc, char **argv)
 		UpdateEvents(&inEvent);
 
 		/* Mise à jour des coordonnées du personnage*/
-		if (updatePlayerVector(inEvent, pCurrentLevel, pZelda, pRenderer) == FALSE){				//Update la position et l'animation du perso principal
+		if (updatePlayerVector(inEvent, pCurrentLevelState, pZelda, pRenderer) == FALSE){				//Update la position et l'animation du perso principal
 			Kr_Log_Print(KR_LOG_ERROR, "Couldn't update player vector\n");
 			SDL_Quit();
 			return FALSE;
