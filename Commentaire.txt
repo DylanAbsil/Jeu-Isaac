@@ -1,3 +1,6 @@
 Bug connu : Crash lors de la libération de zelda lorsque l'on quitte l'application
 
-j'ai déplacer pas mal de fonction pour pouvoir utiliser la collision 
+j'ai déplacer pas mal de fonction pour pouvoir utiliser la collision
+
+
+-> 23/04 : Je modifie Kr_Collision, pas touche 
