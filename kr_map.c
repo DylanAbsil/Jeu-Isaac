@@ -229,7 +229,6 @@ Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
 
 	for (i = 1; i <= 999; i++) // On considère qu'il y a au maximum 999 levels
 	{
-		Kr_Log_Print(KR_LOG_INFO, "level%d\n", i);
 		// Ce level existe-t-il dans /maps ?
 		sprintf(szBuf, "maps\\level%d.txt",i);	
 		pFile = UTIL_OpenFile(szBuf, "r"); // Ouverture en read
@@ -245,7 +244,7 @@ Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
 
 		// Ce level existe-il dans /maps/backup ?
 		sprintf(szBuf, "maps\\backup\\level%d.txt", i);
-		pFile = UTIL_OpenFile(szBuf, "w"); // Ouverture en write de la copie
+		pFile = UTIL_OpenFile(szBuf, "r"); // Ouverture en write de la copie
 		if (pFile)
 		{
 			sprintf(szBuf, "maps\\level%d.txt", i); 
@@ -257,7 +256,7 @@ Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
 				return FALSE;
 			}
 			// Copie de l'original vers /maps
-			UTIL_FileCopy(pFile, pFileDst, NULL);
+			UTIL_FileCopy(pFile, pFileDst, "#end");
 			UTIL_CloseFile(&pFile);
 			UTIL_CloseFile(&pFileDst);			
 		}		

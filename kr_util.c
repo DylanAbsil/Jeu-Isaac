@@ -68,8 +68,8 @@ FILE* UTIL_OpenFile( const char *szPath, const char *szMode )
     
     if( pFile == NULL )
     {
-        Kr_Log_Print( KR_LOG_ERROR, "Can't open a file ( Mode : %s ) !\n", strchr( szMode, 'r' ) ? "Read" : "Write" );
-        Kr_Log_Print( KR_LOG_ERROR, ">> Path \"%s\".\n", szPath );
+        Kr_Log_Print(KR_LOG_WARNING, "Can't open a file ( Mode : %s ) !\n", strchr( szMode, 'r' ) ? "Read" : "Write" );
+		Kr_Log_Print(KR_LOG_WARNING, ">> Path \"%s\".\n", szPath);
     }
     
     return pFile;
