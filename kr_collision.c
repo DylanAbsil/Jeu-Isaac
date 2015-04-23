@@ -150,7 +150,7 @@ void Kr_CollisionRect_Affine(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint
 Uint32 Kr_Collision(Kr_Level *pLevel, SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
 {
 	Uint32 iRetour = 0;
-	/*
+
 	if (pRect2)
 	{
 		// diminution du vecteur vitesse pour vérifier une collision à "grande vitesse"
@@ -158,18 +158,19 @@ Uint32 Kr_Collision(Kr_Level *pLevel, SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32
 		{
 			Kr_Collision(pLevel, pRect1, pRect2, vx / 2, vy / 2, NewVx, NewVy);
 			Kr_Collision(pLevel, pRect1, pRect2, vx - vx / 2, vy - vy / 2, NewVx, NewVy);
+			return 0;
 		}
-		test = *pRect1;
-		test.x += vx;
-		test.y += vy;
-		if (Kr_Collision_RectangleDetect(pRect2, pRect1) == FALSE) // Pas de collision avec le rectangle
+		if (Kr_Collision_RectTry(pRect1, pRect2, vx, vy, NewVx, NewVy) == FALSE)
 		{
-			*NewVx += vx;
-			*NewVy += vy;
-			iRetour = 1;
+			iRetour = iRetour + 1; // Pas de collision avec le level
 		}
-		else iRetour = 2; // Collision avec le rectangle 2
-	}*/
+		else
+		{
+			iRetour = iRetour + 2; // Collision avec le level
+			Kr_Collision_RectAffine(pRect1, pRect2, vx, vy, NewVx, NewVy);  //Affinage du déplacement
+		}
+		return iRetour;
+	}
 
 	if (pLevel)
 	{
@@ -195,14 +196,14 @@ Uint32 Kr_Collision(Kr_Level *pLevel, SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32
 }
 
 /*!
-*  \fn     Boolean Kr_Collision_RectangleDetect(SDL_Rect *pRect2, SDL_Rect *pRect1)
+*  \fn     Boolean Kr_Collision_RectDetect(SDL_Rect *pRect2, SDL_Rect *pRect1)
 *  \brief  Function to detect if the Rect2 is colliding with Rect1
 *
 *  \param  pRect2  a pointer to the rectangle which is not moving
 *  \param  pRect1  a pointer to the rectangle which is moving
 *  \return TRUE if the two rectangle are colliding, FALSE otherwise
 */
-Boolean Kr_Collision_RectangleDetect(SDL_Rect *pRect2, SDL_Rect *pRect1)
+Boolean Kr_Collision_RectDetect(SDL_Rect *pRect2, SDL_Rect *pRect1)
 {
 	if ((pRect2->x >= pRect1->x + pRect1->w)      // trop à droite
 		|| (pRect2->x + pRect2->w <= pRect1->x)   // trop à gauche
@@ -255,7 +256,7 @@ Boolean Kr_Collision_LevelDetect(Kr_Level *pLevel, SDL_Rect *pRect1)
 }
 
 /*!
-*  \fn     Boolean Kr_CollisionRect_TryMove(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
+*  \fn     Boolean Kr_Collision_LevelTry(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
 *  \brief  Function to try to move a rectangle with a certain vector speed and check if it's colliding with the level tiles
 *
 *  \param  pLevel  a pointer to the level
@@ -306,6 +307,64 @@ void Kr_Collision_LevelAffine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sin
 	for (i = 0; i<UTIL_ABS(vy); i++)
 	{
 		if (Kr_Collision_LevelTry(pLevel, &test, 0, UTIL_SGN(vy), NewVx, NewVy) == TRUE) break;
+		test.y += UTIL_SGN(vy);
+	}
+}
+
+
+
+/*!
+*  \fn     Boolean Kr_Collision_RectTry(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
+*  \brief  Function to try to move a rectangle with a certain vector speed and check if it's colliding with the level tiles
+*
+*  \param  pRect1  a pointer to the rectangle which is moving
+*  \param  pRect2  a pointer to the rectangle which is not moving
+*  \param  vx      the movement vector on X you want to move the rectangle 1
+*  \param  vy      the movement vector on Y you want to move the rectangle 1
+*  \param  NewVx   the new movement vector on X, which might get modified by the function, you MUST sent NULL as a parameter
+*  \param  NewVy   the new movement vector on Y, which might get modified by the function, you MUST sent NULL as a parameter
+*  \return TRUE if the the rectangle and the level background are colliding, FALSE otherwise
+*/
+Boolean Kr_Collision_RectTry(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
+{
+	SDL_Rect test;
+	test = *pRect1;
+	test.x += vx;
+	test.y += vy;
+	if (Kr_Collision_RectDetect(pRect2, &test) == FALSE) // Pas de collision avec le level
+	{
+		*NewVx += vx;
+		*NewVy += vy;
+		return FALSE;
+	}
+	return TRUE;
+}
+
+/*!
+*  \fn     void Kr_Collision_RectAffine(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
+*  \brief  Function to reduce the vector speed to check if there is a collision between the rectangle and the level background
+*
+*  \param  pRect1  a pointer to the rectangle which is moving
+*  \param  pRect2  a pointer to the rectangle which is not moving
+*  \param  vx      the movement vector on X you want to move the rectangle 1
+*  \param  vy      the movement vector on Y you want to move the rectangle 1
+*  \param  NewVx   the new movement vector on X, which might get modified by the function, you MUST sent NULL as a parameter
+*  \param  NewVy   the new movement vector on Y, which might get modified by the function, you MUST sent NULL as a parameter
+*  \return none
+*/
+void Kr_Collision_RectAffine(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
+{
+	Sint32 i;
+	SDL_Rect test;
+	test = *pRect1;
+	for (i = 0; i<UTIL_ABS(vx); i++)
+	{
+		if (Kr_Collision_RectTry(pRect2, &test, UTIL_SGN(vx), 0, NewVx, NewVy) == TRUE) break;
+		test.x += UTIL_SGN(vx);
+	}
+	for (i = 0; i<UTIL_ABS(vy); i++)
+	{
+		if (Kr_Collision_RectTry(pRect2, &test, 0, UTIL_SGN(vy), NewVx, NewVy) == TRUE) break;
 		test.y += UTIL_SGN(vy);
 	}
 }

@@ -28,7 +28,9 @@ Boolean Kr_CollisionRect_TryMove(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, 
 void    Kr_CollisionRect_Affine(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy);
 
 Uint32 Kr_Collision(Kr_Level *pLevel, SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy);
-Boolean Kr_Collision_RectangleDetect(SDL_Rect *pRect2, SDL_Rect *pRect1);
+Boolean Kr_Collision_RectDetect(SDL_Rect *pRect2, SDL_Rect *pRect1);
+Boolean Kr_Collision_RectTry(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy);
+void    Kr_Collision_RectAffine(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy);
 Boolean Kr_Collision_LevelDetect(Kr_Level *pLevel, SDL_Rect *pRect1);
 Boolean Kr_Collision_LevelTry(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy);
 void    Kr_Collision_LevelAffine(Kr_Level *pLevel, SDL_Rect *pRect1, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy);
