@@ -25,8 +25,6 @@
 Level_State * Level_State_Init(){
 	Level_State *pLevelSt = UTIL_Malloc(sizeof(Level_State));
 
-	pLevelSt->szLevelStName = NULL;
-	pLevelSt->iLevelNum = 0;
 	pLevelSt->pLevel = NULL;
 	pLevelSt->aEntityLevel = NULL;
 	pLevelSt->aSpriteLevel = NULL;
@@ -62,8 +60,6 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 	char    szBuf[CACHE_SIZE];  // Buffer
 	char    szEntityName[CACHE_SIZE];
 
-	pLevelSt->szLevelStName = UTIL_CopyStr(pLevel->szLevelName, iNameLen);
-	pLevelSt->iLevelNum = pLevel->iLevelNum;
 	pLevelSt->pLevel = pLevel;
 
 	/* Ouverture du fichier level */
@@ -103,7 +99,7 @@ Entity_Load(*(aEntity + i), iLife, iArmor, *(aSprite + i));
 		}
 	} while (strstr(szBuf, "#layout") == NULL); // Identification de la fin des entites
 
-	Kr_Log_Print(KR_LOG_INFO, "Level_State : %s has been loaded !\n", pLevelSt->szLevelStName);
+	Kr_Log_Print(KR_LOG_INFO, "Level_State : %s has been loaded !\n", pLevelSt->pLevel->szLevelName);
 	UTIL_CloseFile(&pFile);
 	return TRUE;
 }
@@ -116,7 +112,6 @@ Entity_Load(*(aEntity + i), iLife, iArmor, *(aSprite + i));
 * \return none
 */
 void Level_State_Free(Level_State *pLevelSt){
-	UTIL_Free(pLevelSt->szLevelStName);
 	Uint32 i = 0;
 	Kr_Sprite **aSprite = pLevelSt->aSpriteLevel;
 	Entity    **aEntity = pLevelSt->aEntityLevel;

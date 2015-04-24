@@ -23,8 +23,6 @@
 
 
 typedef struct {
-	char		   *szLevelStName;		/* Name of the level  */
-	Sint32          iLevelNum;          /* Number of the level */
 	Kr_Level	   *pLevel;				/* Pointer to the level associated */
 	Entity		  **aEntityLevel;		/* Array containing pointers on all entities currently in the level */
 	Kr_Sprite	  **aSpriteLevel;		/* Array containing pointers on all sprites related to the entites */
