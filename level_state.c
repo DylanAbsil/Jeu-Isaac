@@ -17,18 +17,19 @@
 #define CACHE_SIZE 15000
 
 /*!
-* \fn		Level_State * Level_State_Init()
-* \brief	Function to init a struct handling the level data
+* \fn	  Level_State * Level_State_Init(Entity *pPlayer)
+* \brief  Function to init a struct handling the level data
 *
+* \param  pPlayer a pointer to the player
 * \return Level_State a pointer to the Level_State created
 */
-Level_State * Level_State_Init(){
+Level_State * Level_State_Init(Entity *pPlayer)
+{
 	Level_State *pLevelSt = UTIL_Malloc(sizeof(Level_State));
 
+	pLevelSt->pPlayer = pPlayer;
 	pLevelSt->pLevel = NULL;
 	pLevelSt->aEntityLevel = NULL;
-	pLevelSt->aSpriteLevel = NULL;
-	pLevelSt->aRectPositionEntity = NULL;
 	pLevelSt->iNbEntities = 0;
 
 	return pLevelSt;
@@ -39,9 +40,9 @@ Level_State * Level_State_Init(){
 * \fn	   Boolean Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *pRenderer)
 * \brief  Function to load the Level_State from the Kr_Level and the file related
 *
-* \param  *pLevelSt	a pointer to the data non initialized
-* \param  *pLevel		a pointer to the level
-* \param  *pRenderer	a pointer to the renderer
+* \param  pLevelSt	a pointer to the data non initialized
+* \param  pLevel	a pointer to the level
+* \param  pRenderer	a pointer to the renderer
 * \return TRUE if everything is OK, FALSE otherwise
 */
 Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *pRenderer){
@@ -52,13 +53,15 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 	Uint32	iNbFrames = 0;
 	Uint32	iLife = 0;
 	Uint32	iArmor = 0;
-	Uint32	iCoordX = 0;
-	Uint32	iCoordY = 0;
 	char    szLevelPath[50];
 
 	FILE   *pFile;
 	char    szBuf[CACHE_SIZE];  // Buffer
 	char    szEntityName[CACHE_SIZE];
+	Uint32 i = 0;
+
+	Kr_Sprite *pSprite = NULL;
+	SDL_Rect  Rect;
 
 	pLevelSt->pLevel = pLevel;
 
@@ -76,24 +79,31 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 			fscanf(pFile, "%d\n", &iNbEntities);
 			pLevelSt->iNbEntities = iNbEntities;
 			pLevelSt->aEntityLevel = (Entity **)malloc((iNbEntities + 1)*sizeof(Entity*));
-			pLevelSt->aSpriteLevel = (Kr_Sprite **)malloc((iNbEntities + 1)*sizeof(Kr_Sprite*));
-			pLevelSt->aRectPositionEntity = (SDL_Rect**)malloc((iNbEntities + 1)*sizeof(SDL_Rect*));
-
-			Uint32 i = 0;
-			Kr_Sprite **aSprite = pLevelSt->aSpriteLevel;
 			Entity    **aEntity = pLevelSt->aEntityLevel;
-			SDL_Rect  **aRect = pLevelSt->aRectPositionEntity;
-			for (i = 1; i < iNbEntities + 1; i++){
-				fscanf(pFile, "%s %d %d %d %d %d %d %d \n", szEntityName, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &iCoordX, &iCoordY);
-				*(aSprite + i) = Kr_Sprite_Init(szEntityName);
+
+			for (i = 0; i < iNbEntities; i++)
+			{
+				fscanf(pFile, "%s %d %d %d %d %d %d %d \n", szEntityName, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &Rect.x, &Rect.y);
+				Rect.h = iFrameHeight;
+				Rect.w = iFrameWidth / iNbFrames;
+
+				/* Chargement des sprites */
+				pSprite = Kr_Sprite_Init(szEntityName);	
+				if (Kr_Sprite_Load(pSprite, unknown, iFrameHeight, iFrameWidth, iNbFrames, &Rect, pRenderer) == FALSE)
+				{
+					Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
+					return FALSE;
+				}
+
+				/* Création de l'entité */
 				*(aEntity + i) = Entity_Init(szEntityName);
-				*(aRect + i) = (SDL_Rect*)malloc(sizeof(SDL_Rect));
-				(*(aRect + i))->x = iCoordX;
-(*(aRect + i))->y = iCoordY;
-(*(aRect + i))->h = 64;
-(*(aRect + i))->w = 64;
-Kr_Sprite_Load(*(aSprite + i), unknown, iFrameHeight, iFrameWidth, iNbFrames, *(aRect + i), pRenderer);
-Entity_Load(*(aEntity + i), iLife, iArmor, *(aSprite + i));
+
+				if (Entity_Load(*(aEntity + i), iLife, iArmor, pSprite) == FALSE)
+				{
+					Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
+					return FALSE;
+				}
+				Entity_Log(*(aEntity + i));
 			}
 
 		}
@@ -105,173 +115,53 @@ Entity_Load(*(aEntity + i), iLife, iArmor, *(aSprite + i));
 }
 
 /*!
-* \fn		void Level_State_Free(Level_State *pLevelSt)
-* \brief	Function to freed the level data
+* \fn		void Level_State_Free(Level_State *pLevelSt,Boolean bFreePlayer)
+* \brief	Function to freed the level state
 *
-* \param pLevelSt a pointer to the level data
+* \param pLevelSt    a pointer to the level state
+* \param bFreePlayer must we free the player entity ?
 * \return none
 */
-void Level_State_Free(Level_State *pLevelSt){
+void Level_State_Free(Level_State *pLevelSt,Boolean bFreePlayer)
+{
 	Uint32 i = 0;
-	Kr_Sprite **aSprite = pLevelSt->aSpriteLevel;
 	Entity    **aEntity = pLevelSt->aEntityLevel;
-	SDL_Rect  **aRect = pLevelSt->aRectPositionEntity;
-	for (i = 1; i < pLevelSt->iNbEntities; i++){
+	for (i = 0; i < pLevelSt->iNbEntities; i++){
 		Entity_Free(*(aEntity + i));
 	}
-	UTIL_Free(pLevelSt->aEntityLevel);
-	UTIL_Free(pLevelSt->aSpriteLevel);
-	UTIL_Free(pLevelSt->aRectPositionEntity);
+	if (bFreePlayer) Entity_Free(pLevelSt->pPlayer);
 	UTIL_Free(pLevelSt);
 }
 
 /*!
-*  \fn     void updateAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
-*  \brief  Function to update the direction and the position on the map of the entite
+*  \fn     Boolean updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent)
+*  \brief  Function to update all the entities of the current level
 *
-*  \param  pLevel  a pointer to the Level
+*  \param  pLevelSt  a pointer to the Level_State structure
 *  \param  pRenderer a pointer to the renderer
-*  \return Boolean true if the entites have all been updated false either
+*  \param  myEvent   the Kr_Input Structure
+*  \return Boolean TRUE if the entities have all been updated, FALSE otherwise
 */
-Boolean updateAllEntities(Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer){
-	Uint32      i = 0;
-	Entity **aEntity = pLevelSt->aEntityLevel;
+Boolean updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent)
+{
+	Uint32     i = 0;
+	Entity   **aEntity = pLevelSt->aEntityLevel;
 
-	for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
-		if (updateEntityVector(pLevelSt, *(aEntity + i), pPlayer, pRenderer) == FALSE){
-			Kr_Log_Print(KR_LOG_ERROR, "The entity %d couldn't have been updated", i - 1);
+	if (updateEntity(pRenderer, pLevelSt, myEvent, pLevelSt->pPlayer, TRUE) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "The entity PLAYER haven't been updated", i);
+		return FALSE;
+	}
+
+	for (i = 0; i < pLevelSt->iNbEntities; i++)
+	{
+		if (updateEntity(pRenderer, pLevelSt, myEvent, *(aEntity + i), FALSE) == FALSE)
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "The entity %d haven't been updated",i);
 			return FALSE;
 		}
-		//UpdateAllProjectiles((*(aEntity + i))->pWeapon, pRenderer);
 	}
 	return TRUE;
-}
-
-/*!
-*  \fn     void updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer)
-*  \brief  Function to update the direction and the position on the map of the entite
-*
-*  \param	pLevelSt	a pointer to the Level State
-*  \param	pEntity		a pointer to the entity
-*  \param	pPlayer		a pointer to the player
-*  \param	pRenderer	a pointer to the renderer
-*  \return Boolean true if the vector has been updated false either
-*/
-Boolean updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer){
-	Sint32 movex, movey;
-	Uint32 i = 0;
-	//Obtention de la nouvelle trajectoire du monstre
-	getVectorToPlayer(pEntity, pPlayer, &movex, &movey);
-	//movex = movey = 0;
-	if ((movex == 0) && (movey == 0)){						//Si pas de mouvement :
-		pEntity->mouvement = 0;									//
-		pEntity->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
-		pEntity->iTempoAnim = 0;
-		return TRUE;
-	}
-	else{
-		pEntity->mouvement = 1;
-
-		//Gestion de l'animation
-		pEntity->iTempoAnim += 1;
-		if (pEntity->iTempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
-			pEntity->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
-			if (pEntity->pSprEntity->iCurrentFrame == pEntity->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
-				pEntity->pSprEntity->iCurrentFrame = 0;
-			pEntity->iTempoAnim = 0;
-		}
-
-		//Gestion des collisions
-	/*	if (Kr_CollisionLevel_Move(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, movex, movey) == 3){
-			//findWayToPlayer(pEntity, pPlayer, &movex, &movey);
-			movex = movey = 0;
-		}
-
-		
-		Entity **aEntity = pLevelSt->aEntityLevel;
-		for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
-			if (Kr_CollisionRect_Move(pEntity->pSprEntity->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey) == 3){
-				movex = movey = 0;
-			}
-		}*/
-
-		//Deplacement final prévu
-		//pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->x;
-		//pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->y;
-		/*pEntity->pSprEntity->pRectPosition->x += movex;
-		pEntity->pSprEntity->pRectPosition->y += movey;
-		pEntity->iCoordXEntity += movex;
-		pEntity->iCoordYEntity += movey;*/
-	}
-
-	//	Kr_Log_Print(KR_LOG_INFO, "The entity %s has moved of %d in x and of %d in y\nNew Position : %d ; %d\n", pEntity->strEntityName, movex, movey, pEntity->iCoordXEntity, pEntity->iCoordYEntity);
-	return TRUE;
-}
-
-/*!
-*  \fn     void updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPlyer, SDL_Renderer *pRenderer)
-*  \brief  Function to update the direction and the position on the map of the entite
-*
-*	\todo rajouter la fonction de gestion des collisions
-*  \param  inEvent  Structure which handle the input
-*  \param  pLevelSt a pointer to the Level State
-*  \param  pPlayer  a pointer to the player
-*  \param pRenderer a pointer to the renderer
-*  \return Boolean true if the vector has been updated false either
-*/
-Boolean updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer){
-	Sint32 movex, movey;
-	Uint32 i = 0;
-	Sint32 NewVx = 0;
-	Sint32 NewVy = 0;
-	Uint32 iTmp = 0;
-
-	//Obtention des déplacements générés par le clavier
-	getVector(myEvent, &movex, &movey);
-//	Kr_Log_Print(KR_LOG_INFO, "Move vector = { %d , %d }\n", movex, movey);
-
-	Direction newDir = foundDirection(movex, movey, pPlayer);	//On cherche la nouvelle direction
-
-	// Changement de l'animation
-	if ((movex == 0) && (movey == 0)){						//Si pas de mouvement :
-		pPlayer->mouvement = 0;									//
-		pPlayer->pSprEntity->iCurrentFrame = 0;					// reset de l'animation
-		pPlayer->iTempoAnim = 0;											// reset de la tempo
-//		Kr_Log_Print(KR_LOG_INFO, "The entity %s hasn't moved\n", pPlayer->strEntityName);
-		return TRUE;
-	}
-	else{												//Sinon
-		pPlayer->mouvement = 1;
-		//Gestion de l'animation
-		pPlayer->iTempoAnim += 1;
-		if (pPlayer->iTempoAnim == RESET_FRAME){						//Si la tempo est arrivée à son terme :
-			pPlayer->pSprEntity->iCurrentFrame += 1;				//	- Frame suivante
-			if (pPlayer->pSprEntity->iCurrentFrame == pPlayer->pSprEntity->iNbFrames)   //Si l'animation est arrivée au bout 
-				pPlayer->pSprEntity->iCurrentFrame = 0;								  //	-> on revient au début
-			pPlayer->iTempoAnim = 0;
-		}
-
-		switchTextureFromDirection(pPlayer, newDir, pRenderer);
-
-		//Gestion des collisions
-		iTmp = Kr_Collision(pLevelSt->pLevel, pPlayer->pSprEntity->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
-		
-		Entity **aEntity = pLevelSt->aEntityLevel;
-		for (i = 1; i < pLevelSt->iNbEntities + 1; i++)
-		{
-			movex = NewVx;
-			movey = NewVy;
-			NewVx = NewVy = 0;
-			iTmp = Kr_Collision(NULL, pPlayer->pSprEntity->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
-			//infightingDamage(*(aEntity + i), pPlayer);
-		}
-		//Deplacement final prévu
-		pPlayer->pSprEntity->pRectPosition->x += NewVx;
-		pPlayer->pSprEntity->pRectPosition->y += NewVy;
-		pPlayer->iCoordXEntity = pPlayer->pSprEntity->pRectPosition->x;
-		pPlayer->iCoordYEntity = pPlayer->pSprEntity->pRectPosition->y;
-		return TRUE;
-	}
 }
 
 
@@ -286,11 +176,111 @@ Boolean updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPla
 Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer){
 	Uint32 i = 0;
 	Entity **aEntity = pLevelSt->aEntityLevel;
-	for (i = 1; i < pLevelSt->iNbEntities + 1; i++){
+	Entity_Draw(pRenderer, pLevelSt->pPlayer);
+	for (i = 0; i < pLevelSt->iNbEntities; i++){
 		Entity_Draw(pRenderer, *(aEntity + i));
 	}
 	return TRUE;
 }
+
+
+
+
+
+
+/*!
+*  \fn     Boolean  updateEntity(Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
+*  \brief  This function will update the data about the entity
+*
+*  \param  pRenderer	a pointer to the renderer
+*  \param  pLevelSt		a pointer to the Level_State structure
+*  \param  myEvent		the Kr_Input structure
+*  \param  pEntity		the Entity which must be updated
+*  \param  bIsPlayer	is the entity the player ?
+
+*  \return boolean if data have been upadated
+*/
+Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
+{
+	Sint32		movex = 0, movey = 0, NewVx = 0, NewVy = 0;
+	Uint32		i = 0, iTmp = 0;
+	Direction	newDir	= sud; //Défaut
+	Entity	  **aEntity = pLevelSt->aEntityLevel;
+
+	// Calcul des vecteurs de déplacement
+	if (bIsPlayer) //Player
+	{
+		getVector(myEvent, &movex, &movey);
+	}
+	else // Monster
+	{
+		//getVectorToPlayer(pEntity, &movex, &movey);
+		/* Nécessaire que cette fonction connaisse les coordonnées du joueur*/
+	}
+
+
+	newDir = foundDirection(movex, movey, pEntity);
+	if ((movex == 0) && (movey == 0)) // Aucun déplacement
+	{					
+		pEntity->mouvement = 0;	
+		pEntity->pSprEntity->iCurrentFrame = 0;	
+		pEntity->iTempoAnim = 0;
+		return TRUE;
+	}
+	else
+	{
+		pEntity->mouvement = 1;
+		pEntity->iTempoAnim += 1;
+		if (pEntity->iTempoAnim == RESET_FRAME)	//Si la tempo est arrivée à son terme :
+		{					
+			pEntity->pSprEntity->iCurrentFrame += 1; //	- Frame suivante
+			if (pEntity->pSprEntity->iCurrentFrame == pEntity->pSprEntity->iNbFrames) //Si l'animation est arrivée au bout 
+			{
+				pEntity->pSprEntity->iCurrentFrame = 0;
+			}				
+			pEntity->iTempoAnim = 0;
+		}
+
+		//Gestion de la direction, seulement pour le personnage pour le moment
+		if(bIsPlayer) switchTextureFromDirection(pEntity, newDir, pRenderer); 
+
+		// Collision avec le level
+		iTmp = Kr_Collision(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
+
+		// Collision avec les autres entités du level
+		for (i = 0; i < pLevelSt->iNbEntities; i++)
+		{
+			if (pEntity != *(aEntity + i)) // On vérifie que l'on détecte pas une collision avec sois même
+			{ 
+				movex = NewVx;
+				movey = NewVy;
+				NewVx = NewVy = 0;
+				iTmp = Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
+			}
+		}
+		
+		// Déplacement de l'entité 
+		pEntity->pSprEntity->pRectPosition->x += NewVx;
+		pEntity->pSprEntity->pRectPosition->y += NewVy;
+		pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->x;
+		pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->y;
+		return TRUE;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*!

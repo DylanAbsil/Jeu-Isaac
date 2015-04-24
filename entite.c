@@ -96,6 +96,27 @@ void Entity_Free(Entity *entite){
 }
 
 /*!
+*  \fn     void  Entity_Log(Entity *pEntity)
+*  \brief  Function to log an entity
+*
+*  \param  pEntity a pointer to the Entity to free
+*  \return none
+*/
+void  Entity_Log(Entity *pEntity)
+{
+	Kr_Log_Print(KR_LOG_INFO, "Entity loaded : %s!\n", pEntity->strEntityName);
+	Kr_Log_Print(KR_LOG_INFO, "			Life		: %d!\n", pEntity->iEntityLife);
+	Kr_Log_Print(KR_LOG_INFO, "			Armor		: %d!\n", pEntity->iArmor);
+	Kr_Log_Print(KR_LOG_INFO, "			CoordX		: %d!\n", pEntity->iCoordXEntity);
+	Kr_Log_Print(KR_LOG_INFO, "			CoordY		: %d!\n", pEntity->iCoordYEntity);
+	Kr_Log_Print(KR_LOG_INFO, "			iSpeedEntity: %d!\n", pEntity->iSpeedEntity);
+}
+
+
+
+
+
+/*!
 *  \fn     Entity_Draw(SDL_Renderer * renderer, Entity *entite)
 *  \brief  Function to draw an entity
 *

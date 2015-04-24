@@ -68,7 +68,7 @@ Entity *	Entity_Init(char *szFileName);
 Boolean		Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*< création d'une entite >*/
 void		Entity_Free(Entity *entite);
 Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
-
+void        Entity_Log(Entity *pEntity);
 
 Direction	foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity);
 void		foundWayToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 movex, Sint32 movey);

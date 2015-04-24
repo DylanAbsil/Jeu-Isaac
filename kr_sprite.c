@@ -116,7 +116,7 @@ Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Direction dir, Uint32 frameHeight, Uin
 void Kr_Sprite_Free(Kr_Sprite *pSprite){
 	if (pSprite != NULL){
 		UTIL_FreeTexture(&pSprite->pTextureSprite);
-		UTIL_Free(pSprite->pRectPosition);
+		//UTIL_Free(pSprite->pRectPosition);
 		UTIL_Free(pSprite);
 	}
 }

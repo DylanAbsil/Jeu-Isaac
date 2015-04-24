@@ -24,21 +24,20 @@
 
 typedef struct {
 	Kr_Level	   *pLevel;				/* Pointer to the level associated */
-	Entity		  **aEntityLevel;		/* Array containing pointers on all entities currently in the level */
-	Kr_Sprite	  **aSpriteLevel;		/* Array containing pointers on all sprites related to the entites */
-	SDL_Rect	  **aRectPositionEntity;/* Array containing pointers on all rectPosition related to the sprites of entities */
+	Entity		   *pPlayer;			/* Pointer to the player */
+	Entity		  **aEntityLevel;		/* Array containing pointers on all entities currently in the level*/
 	Uint32			iNbEntities;		/* Number of entities currently in the map (the player not include) */
+
 }Level_State;
 
-Level_State *   Level_State_Init();
+Level_State *   Level_State_Init(Entity *pPlayer);
 Boolean			Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *pRenderer);
-void			Level_State_Free(Level_State *pLevelSt);
+void			Level_State_Free(Level_State *pLevelSt, Boolean bFreePlayer);
 
 Boolean			drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer);
-Boolean			updateAllEntities(Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer);
-Boolean			updateEntityVector(Level_State *pLevelSt, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer);
-Boolean			updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPlayer, SDL_Renderer *pRenderer);
+Boolean			updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent);
 
+Boolean			updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer);
 
 Uint32			Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer);
 
