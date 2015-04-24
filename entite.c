@@ -75,6 +75,7 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprit
 	entite->iSpeedEntity = MOB_MOVESPEED;
 	entite->iTempoAtk = ATTACK_SPEED;
 
+	Entity_Log(entite);
 //	Kr_Log_Print(KR_LOG_INFO, "Entity %s with sprite %s has been loaded !\n", entite->strEntityName, entite->pSprEntity->strName);
 	return TRUE;
 }

@@ -61,6 +61,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 	Uint32 i = 0;
 
 	Kr_Sprite *pSprite = NULL;
+	Sint32 iCoordX = 0, iCoordY = 0;
 	SDL_Rect  Rect;
 
 	pLevelSt->pLevel = pLevel;
@@ -83,7 +84,9 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 
 			for (i = 0; i < iNbEntities; i++)
 			{
-				fscanf(pFile, "%s %d %d %d %d %d %d %d \n", szEntityName, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &Rect.x, &Rect.y);
+				fscanf(pFile, "%s %d %d %d %d %d %d %d \n", szEntityName, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &iCoordX, &iCoordY);
+				Rect.x = iCoordX;
+				Rect.y = iCoordY;
 				Rect.h = iFrameHeight;
 				Rect.w = iFrameWidth / iNbFrames;
 
@@ -103,6 +106,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 					Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
 					return FALSE;
 				}
+				pSprite = NULL;
 			}
 
 		}
@@ -225,7 +229,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 	}
 	else // Monster
 	{
-		getVectorToPlayer(pEntity, pLevelSt->pPlayer,&movex, &movey);
+		//getVectorToPlayer(pEntity, pLevelSt->pPlayer,&movex, &movey);
 	}
 
 
