@@ -5,3 +5,5 @@ j'ai déplacer pas mal de fonction pour pouvoir utiliser la collision
 
 -> 24/04 : Ce que l'on pensait être une duplication de la vitesse n'en ai pas, j'ai essayé avec 10FPS et on arrive "parfois" à se déplacer uniquement de une fois la distance. 
            C'est simplement la détection continue des touches qui est trop rapide, on peut pas simuler nous même une seule impulsion
+
+-> Fuite de mémoire lorsque l'on change de niveau et qu'il y a des entités dans les niveaux !
