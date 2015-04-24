@@ -144,7 +144,7 @@ void Level_State_Free(Level_State *pLevelSt,Boolean bFreePlayer)
 Boolean updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent)
 {
 	Uint32     i = 0;
-	Entity   **aEntity = pLevelSt->aEntityLevel;
+	Entity    **aEntity = pLevelSt->aEntityLevel;
 
 	if (updateEntity(pRenderer, pLevelSt, myEvent, pLevelSt->pPlayer, TRUE) == FALSE)
 	{
@@ -159,6 +159,7 @@ Boolean updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Inp
 			Kr_Log_Print(KR_LOG_ERROR, "The entity %d haven't been updated",i);
 			return FALSE;
 		}
+		Entity_Log(*(aEntity + i));
 	}
 	return TRUE;
 }
@@ -172,14 +173,23 @@ Boolean updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Inp
 *  \param  pRenderer
 *  \return boolean if the entities have been draw on the screen or not
 */
-Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer){
-	Uint32 i = 0;
-	Entity **aEntity = pLevelSt->aEntityLevel;
-	Entity_Draw(pRenderer, pLevelSt->pPlayer);
+Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
+{
+	Uint32     i = 0;
+	Entity   **aEntity = pLevelSt->aEntityLevel;
+	if (Entity_Draw(pRenderer, pLevelSt->pPlayer) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "The entity PLAYER hasn't been drawn", i);
+		return FALSE;
+	}
 	for (i = 0; i < pLevelSt->iNbEntities; i++)
 	{
-		Entity_Draw(pRenderer, *(aEntity + i));
-		Entity_Log(*(aEntity + i));
+		if (Entity_Draw(pRenderer, *(aEntity + i)) == FALSE)
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "The entity %d hasn't been drawn", i);
+			return FALSE;
+		}
+		//Entity_Log(*(aEntity + i));
 	}
 	return TRUE;
 }
@@ -215,8 +225,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 	}
 	else // Monster
 	{
-		//getVectorToPlayer(pEntity, &movex, &movey);
-		/* Nécessaire que cette fonction connaisse les coordonnées du joueur*/
+		getVectorToPlayer(pEntity, pLevelSt->pPlayer,&movex, &movey);
 	}
 
 
@@ -248,6 +257,17 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		// Collision avec le level
 		iTmp = Kr_Collision(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
 
+		if (!bIsPlayer)
+		{
+			movex = NewVx;
+			movey = NewVy;
+			NewVx = NewVy = 0;
+			iTmp = Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->pPlayer, movex, movey, &NewVx, &NewVy);
+			if (iTmp == 2)
+			{
+				Kr_Log_Print(KR_LOG_WARNING, "Collision !\n");
+			}
+		}
 		// Collision avec les autres entités du level
 		for (i = 0; i < pLevelSt->iNbEntities; i++)
 		{
