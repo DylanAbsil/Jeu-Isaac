@@ -31,7 +31,7 @@
 #include "kr_level.h"
 #include "kr_collision.h"
 
-#define MOVESPEED 15		/*< Movespeed of the player >*/
+#define MOVESPEED 5		/*< Movespeed of the player >*/
 #define MOB_MOVESPEED 3 /*< Basic movespeed of the monstres >*/
 #define RESET_FRAME 10	/*< Number to handle the reset of the frame >*/
 #define MOB_INFIGHTING_DAMAGE 15
