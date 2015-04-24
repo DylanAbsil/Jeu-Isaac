@@ -269,17 +269,18 @@ Boolean updatePlayerVector(Kr_Input myEvent, Level_State *pLevelSt, Entity *pPla
 		iTmp = Kr_Collision(pLevelSt->pLevel, pPlayer->pSprEntity->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
 		Kr_Log_Print(KR_LOG_INFO, "A %d  Souhaité : %d %d   | Réel : %d %d \n",iTmp, movex, movey, NewVx, NewVy);
 		//Kr_Log_Print(KR_LOG_INFO, "Après : %d %d\n", pPlayer->pSprEntity->pRectPosition->x, pPlayer->pSprEntity->pRectPosition->y);
-		/*
+	
 		Entity **aEntity = pLevelSt->aEntityLevel;
 		for (i = 1; i < pLevelSt->iNbEntities + 1; i++)
 		{
 			movex = NewVx;
 			movey = NewVy;
+			NewVx = NewVy = 0;
 			iTmp = Kr_Collision(NULL, pPlayer->pSprEntity->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
 			Kr_Log_Print(KR_LOG_INFO, "B %d  Souhaité : %d %d   | Réel : %d %d \n", iTmp, movex, movey, NewVx, NewVy);
 			//infightingDamage(*(aEntity + i), pPlayer);
 		}
-		*/
+		
 
 		//Deplacement final prévu
 		pPlayer->pSprEntity->pRectPosition->x += NewVx;

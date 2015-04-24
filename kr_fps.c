@@ -97,6 +97,11 @@ void Kr_FPS_Show(Kr_Fps *pFPS)
 	}
 }
 
+
+
+
+
+
 /* Utilisation
 Avant la boucle principale :
 

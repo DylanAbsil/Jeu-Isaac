@@ -21,7 +21,6 @@
 	#include "kr_common.h"
 	#include "kr_log.h"
 	#include "kr_text.h"
-
 /*!
 * \struct Kr_FPS
 * \brief  Structure to handle the FPS.
