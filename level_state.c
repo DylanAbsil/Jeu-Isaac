@@ -103,7 +103,6 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 					Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
 					return FALSE;
 				}
-				Entity_Log(*(aEntity + i));
 			}
 
 		}
@@ -177,8 +176,10 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer){
 	Uint32 i = 0;
 	Entity **aEntity = pLevelSt->aEntityLevel;
 	Entity_Draw(pRenderer, pLevelSt->pPlayer);
-	for (i = 0; i < pLevelSt->iNbEntities; i++){
+	for (i = 0; i < pLevelSt->iNbEntities; i++)
+	{
 		Entity_Draw(pRenderer, *(aEntity + i));
+		Entity_Log(*(aEntity + i));
 	}
 	return TRUE;
 }
@@ -262,8 +263,6 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		// Déplacement de l'entité 
 		pEntity->pSprEntity->pRectPosition->x += NewVx;
 		pEntity->pSprEntity->pRectPosition->y += NewVy;
-		pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->x;
-		pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->y;
 		return TRUE;
 	}
 }

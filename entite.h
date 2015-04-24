@@ -55,8 +55,6 @@ typedef struct {
 	Weapon		*pWeapon;			/*< A pointer to his weapon (can be NULL) >*/
 	Kr_Sprite	*pSprEntity;		/*<	A pointer to his sprite >*/
 	EntityState	state;				/*< State of the entity : normal, invincible, slowed, ...) >*/
-	Sint32		iCoordXEntity;		
-	Sint32		iCoordYEntity;
 	Uint32		iSpeedEntity;		/*< */
 	Direction	direction;			/*< Direction which the entity is facing >*/
 	Boolean		mouvement;			/*< Mouvement : 0 (static) or 1 (in movement) >*/

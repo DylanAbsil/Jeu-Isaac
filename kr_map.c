@@ -187,25 +187,25 @@ Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 		if (pEntity->direction == nord && (y < pLevel->pLevel_Tileset->iTilesHeight) && pLevel->iNumNord != 0)
 		{
 			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h ; // Pour éviter les collisions également
-			pEntity->iCoordYEntity = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h ;
+			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h;
 			return pLevel->iNumNord;
 		}
 		else if (pEntity->direction == sud && (y >(KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight)) && pLevel->iNumSud != 0)
 		{
 			pEntity->pSprEntity->pRectPosition->y = pEntity->pSprEntity->pRectPosition->h; // On le place un peu en avant/arrière pour éviter de refaire les vérifications
-			pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->h;
+			pEntity->pSprEntity->pRectPosition->y = pEntity->pSprEntity->pRectPosition->h;
 			return pLevel->iNumSud;
 		}
 		else if (pEntity->direction == est && (x > (KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth)) && pLevel->iNumEst != 0)
 		{
 			pEntity->pSprEntity->pRectPosition->x = pEntity->pSprEntity->pRectPosition->w;
-			pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->w;
+			pEntity->pSprEntity->pRectPosition->x = pEntity->pSprEntity->pRectPosition->w;
 			return pLevel->iNumEst;
 		}
 		else if (pEntity->direction == ouest && (x < pLevel->pLevel_Tileset->iTilesWidth) && pLevel->iNumOuest != 0)
 		{
 			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w ;
-			pEntity->iCoordXEntity = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w ;
+			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w;
 			return pLevel->iNumOuest;
 		}
 	}

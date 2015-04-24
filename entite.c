@@ -18,6 +18,8 @@
 /*               |            | Le nom du sprite est donnée à Entite_Init    */
 /*               |            |    et non pas à Entite_Load                  */
 /* Herrou        | 05/04/2015 | Ajout du param Entity à foundDirection       */
+/* Herrou        | 24/04/2015 | Suppresion du param iCoordX, on y a accès via*/
+/*               |            |  le rectangle du sprite		                 */
 /* ========================================================================= */
 
 
@@ -68,8 +70,6 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprit
 		return FALSE;
 	}
 	entite->state = normal;
-	entite->iCoordXEntity = sprite->pRectPosition->x;
-	entite->iCoordYEntity = sprite->pRectPosition->y;
 	entite->direction = sud;
 	entite->mouvement = 0;
 	entite->iSpeedEntity = MOB_MOVESPEED;
@@ -104,12 +104,12 @@ void Entity_Free(Entity *entite){
 */
 void  Entity_Log(Entity *pEntity)
 {
-	Kr_Log_Print(KR_LOG_INFO, "Entity loaded : %s!\n", pEntity->strEntityName);
-	Kr_Log_Print(KR_LOG_INFO, "			Life		: %d!\n", pEntity->iEntityLife);
-	Kr_Log_Print(KR_LOG_INFO, "			Armor		: %d!\n", pEntity->iArmor);
-	Kr_Log_Print(KR_LOG_INFO, "			CoordX		: %d!\n", pEntity->iCoordXEntity);
-	Kr_Log_Print(KR_LOG_INFO, "			CoordY		: %d!\n", pEntity->iCoordYEntity);
-	Kr_Log_Print(KR_LOG_INFO, "			iSpeedEntity: %d!\n", pEntity->iSpeedEntity);
+	Kr_Log_Print(KR_LOG_INFO, "Entity loaded : %s\n", pEntity->strEntityName);
+	Kr_Log_Print(KR_LOG_INFO, "			Life		: %d\n", pEntity->iEntityLife);
+	Kr_Log_Print(KR_LOG_INFO, "			Armor		: %d\n", pEntity->iArmor);
+	Kr_Log_Print(KR_LOG_INFO, "			CoordX		: %d\n", pEntity->pSprEntity->pRectPosition->x);
+	Kr_Log_Print(KR_LOG_INFO, "			CoordY		: %d\n", pEntity->pSprEntity->pRectPosition->y);
+	Kr_Log_Print(KR_LOG_INFO, "			iSpeedEntity: %d\n", pEntity->iSpeedEntity);
 }
 
 
@@ -185,8 +185,8 @@ void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy){
 *  \return none
 */
 void getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy){
-	Sint32 movex = pPlayer->iCoordXEntity - pEntity->iCoordXEntity;
-	Sint32 movey = pPlayer->iCoordYEntity - pEntity->iCoordYEntity;
+	Sint32 movex = pPlayer->pSprEntity->pRectPosition->x - pEntity->pSprEntity->pRectPosition->x;
+	Sint32 movey = pPlayer->pSprEntity->pRectPosition->x - pEntity->pSprEntity->pRectPosition->x;
 	double movez = sqrt(movex*movex + movey*movey);
 	double rapport = MOB_MOVESPEED / movez;
 	*vx = rapport * movex;
