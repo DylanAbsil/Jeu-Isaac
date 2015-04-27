@@ -32,7 +32,7 @@ La tile de base sera la tile 162
 
 Remarque : Si un fichier level2.txt existe déjà dans ce cas ce niveau est chargé avec sa propre configuration décrite dans le fichier level2.txt (les paramètres du fichier level_editor ne sont pas appliqué).
            Il reste possible d'effectuer des modifications dans ce level et de le sauvegarder.
-
+	   Par défaut le message du niveau est le nom du niveau, vous pouvez le modifier en éditant le fichier level
 
 B/ Contraintes
 

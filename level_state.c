@@ -268,10 +268,6 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 			movey = NewVy;
 			NewVx = NewVy = 0;
 			iTmp = Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->pPlayer->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
-			if (iTmp == 2)
-			{
-				Kr_Log_Print(KR_LOG_WARNING, "Collision !\n");
-			}
 		}
 		// Collision avec les autres entités du level
 		for (i = 0; i < pLevelSt->iNbEntities; i++)
@@ -397,6 +393,7 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 	{
 		
 		Kr_Log_Print(KR_LOG_INFO, "Lecture d'un panneau ! \n");
+		Kr_Log_Print(KR_LOG_INFO, "%s\n",pLevel->szLevelMessage);
 	}
 	return iTilesID;
 }

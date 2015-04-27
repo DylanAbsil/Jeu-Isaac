@@ -31,6 +31,9 @@
 /*               |            | Kr_Level_Change, prend en paramètre le numéro du level			*/
 /* Herrou        | 20/04/2015 | Transfert des fonctions SaveLayout et WriteLayout dans Kr_Level	*/
 /* Herrou        | 22/04/2015 | Gestion des collisions effectués dans kr_collision				*/
+/* Herrou        | 27/04/2015 | Ajout du paramètre szLevelMessage qui contient le message		*/
+/*               |            |  qui est affiché sur les panneaux, maximum un panneau par level */
+/*               |            | Passage en Level Version 1.3									*/
 /* ============================================================================================ */
 
 #ifndef __KR_LEVEL_H__
@@ -41,7 +44,7 @@
 #include "kr_log.h"
 #include "kr_tileset.h"
 
-#define KR_LEVEL_VERSION "Level Version 1.2"
+#define KR_LEVEL_VERSION "Level Version 1.3"
 /*!
 * \struct Kr_Level
 * \brief  Structure to handle the level.
@@ -50,6 +53,7 @@ typedef struct
 {
 	char           *szLevelFile;		/*!< Name of the file of the level  */
 	char		   *szLevelName;		/*!< Name of the level  */
+	char		   *szLevelMessage;		/*!< Message of the level  */
 	Sint32          iLevelNum;          /*!< Number of the level */
 	Sint32          iLevel_TileWidth;	/*!< Width of the level in Tile number */
 	Sint32          iLevel_TileHeight;  /*!< Height of the level in Tile number */

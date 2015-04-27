@@ -29,6 +29,7 @@
 /*               |            | Kr_Level_Change, prend en paramètre le numéro du level et non pas son nom			*/
 /* Herrou        | 20/04/2015 | Transfert des fonctions SaveLayout et WriteLayout dans Kr_Level						*/
 /* Herrou        | 22/04/2015 | Gestion des collisions effectués dans kr_collision									*/
+/* Herrou        | 27/04/2015 | Mise à jour de l'initialisation de la structure pour szLevelMessage					*/
 /* ===============================================================================================================  */
 
 /*
@@ -56,6 +57,7 @@ Kr_Level *Kr_Level_Init(char *szFileName)
 	pLevel->szLevelFile = UTIL_CopyStr(szFileName, iNameLen);
 
 	pLevel->szLevelName = NULL;	
+	pLevel->szLevelMessage = NULL;
 	pLevel->iLevelNum = -1;       
 	pLevel->iLevel_TileWidth = 0;
 	pLevel->iLevel_TileHeight = 0;
@@ -117,6 +119,11 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 			szBuf2[strcspn(szBuf2, "\n")] = '\0'; //retirer \n
 			iNameLen = strlen(szBuf2) - 1;      // Il faut retirer 1 car il ne faut pas envoyer à UTIL_CopyStr \0
 			pLevel->szLevelName = UTIL_CopyStr(szBuf2, iNameLen);
+
+			fgets(szBuf2, CACHE_SIZE, pFile); // Lecture de la ligne suivante qui indique le message
+			szBuf2[strcspn(szBuf2, "\n")] = '\0'; 
+			iNameLen = strlen(szBuf2) - 1;     
+			pLevel->szLevelMessage = UTIL_CopyStr(szBuf2, iNameLen);
 		}
 		if (strstr(szBuf, "#tileset")) // Identification de la ligne tileset
 		{
