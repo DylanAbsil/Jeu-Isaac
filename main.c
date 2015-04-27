@@ -215,6 +215,8 @@ int Isaac(int *argc, char **argv)
 			return FALSE;
 		}
 
+		/* Mise à jour des projectiles du personnage */
+		updateProjectilesWeapon(pRenderer, pCurrentLevelState, pCurrentLevelState->pPlayer->pWeapon);
 
 		/* Controle du tir du personnage */
 		Shoot(inEvent, pPlayer, pRenderer);
@@ -270,7 +272,7 @@ int Isaac(int *argc, char **argv)
 		SDL_RenderClear(pRenderer); // Dans un premier temps on Clear le renderer
 		Kr_Level_Draw(pRenderer, pCurrentLevel);
 		drawAllEntities(pCurrentLevelState, pRenderer);
-		drawAllProjectiles(pPlayer->pWeapon->plProjectile, pRenderer);
+		drawProjectilesWeapon(pPlayer->pWeapon->plProjectile, pRenderer);
 		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)

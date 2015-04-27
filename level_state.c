@@ -289,15 +289,94 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 }
 
 
+/*!
+*  \fn     Boolean	UpdateAllProjectiles(Weapon *pWeapon, SDL_Renderer *pRenderer)
+*  \brief  Function to update all the position of the projectiles contained in a list in the struct weapon
+*
+*  \param	pRenderer	a pointer to the renderer
+*  \param  pLevelSt		a pointer to the Level_State structure
+*  \param	pWeapon		a pointer to the weapon which you want to draw the projectiles
+*  \return boolean if all the projectiles have been update on the screen or not
+*/
+Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, Weapon *pWeapon){
+	Sint32 movex = 0, movey = 0, NewVx = 0, NewVy = 0;
+	Uint32 i = 0, iTmp = 0;
+	Entity	  **aEntity = pLevelSt->aEntityLevel;
+	Boolean bool = FALSE;
 
+	if (emptyList(pWeapon->plProjectile) == FALSE){
+		setOnFirst(pWeapon->plProjectile);
+		while (pWeapon->plProjectile->current != NULL)
+		{
+			/* Calcul de la nouvelle position */
+			switch (pWeapon->plProjectile->current->p->direction)
+			{
+			case nord:
+				movex = 0;
+				movey -= PROJECTILE_SPEED;
+				if (pWeapon->plProjectile->current->p->iCoordPrj_YCurrent + movey <= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
+					iTmp = 1;
+				break;
+			case est:
+				movex += PROJECTILE_SPEED;
+				movey = 0;
+				if (pWeapon->plProjectile->current->p->iCoordPrj_XCurrent + movey >= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
+					iTmp = 1;
+				break;
+			case sud:
+				movex = 0;
+				movey += PROJECTILE_SPEED;
+				if (pWeapon->plProjectile->current->p->iCoordPrj_YCurrent + movey >= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
+					iTmp = 1;
+				break;
+			case ouest:
+				movex -= PROJECTILE_SPEED;
+				movey = 0;
+				if (pWeapon->plProjectile->current->p->iCoordPrj_XCurrent + movey <= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
+					iTmp = 1;
+				break;
+			}
 
-
-
-
-
-
-
-
+			if (iTmp == 1){	//Fin de course
+				deleteCurrent(pWeapon->plProjectile);
+				Kr_Log_Print(KR_LOG_INFO, "The projectile is out of range\n");
+				bool = FALSE;
+			}
+			else{	
+				iTmp = Kr_Collision(pLevelSt->pLevel, pWeapon->plProjectile->current->p->pSprProjectile, NULL, movex, movey, &NewVx, &NewVy);
+				if (iTmp = 6){	// Collision avec le level
+					Kr_Log_Print(KR_LOG_INFO, "The projectile hit the level\n");
+					deleteCurrent(pLevelSt->pPlayer->pWeapon->plProjectile);
+					bool = FALSE;
+				}
+				else{	// Collision avec les autres entités du level
+					for (i = 0; i < pLevelSt->iNbEntities; i++)
+					{
+						iTmp = Kr_Collision(NULL, pWeapon->plProjectile->current->p->pSprProjectile, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
+						if (iTmp == 2){
+							//doDamage()
+							Kr_Log_Print(KR_LOG_INFO, "The projectile hit an entity in (%d;%d)\n", pWeapon->plProjectile->current->p->iCoordPrj_XCurrent + movex, pWeapon->plProjectile->current->p->iCoordPrj_YCurrent + movey);
+							deleteCurrent(pWeapon->plProjectile);
+							bool = FALSE;
+							break;
+						}
+						else{
+							pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x += NewVx;
+							pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y += NewVy;
+							pWeapon->plProjectile->current->p->iCoordPrj_XCurrent += NewVx;
+							pWeapon->plProjectile->current->p->iCoordPrj_YCurrent += NewVy;
+							Kr_Log_Print(KR_LOG_INFO, "The projectile is currently in (%d;%d)\n", pWeapon->plProjectile->current->p->iCoordPrj_XCurrent, pWeapon->plProjectile->current->p->iCoordPrj_YCurrent);
+							next(pWeapon->plProjectile);
+							bool = TRUE;
+						}
+					}
+				}
+			}
+		}
+		return bool;
+	}
+	else return FALSE;
+}
 
 
 
