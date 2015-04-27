@@ -111,8 +111,6 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 					return FALSE;
 				}
 			}
-			Entity_Log(*(aEntity));
-			Entity_Log(*(aEntity+1));
 		}		
 	} while (strstr(szBuf, "#layout") == NULL); // Identification de la fin des entites
 
@@ -168,7 +166,6 @@ Boolean updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Inp
 			Kr_Log_Print(KR_LOG_ERROR, "The entity %d haven't been updated",i);
 			return FALSE;
 		}
-		Entity_Log(*(aEntity + i));
 	}
 	return TRUE;
 }
