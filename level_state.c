@@ -62,7 +62,6 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 
 	Kr_Sprite *pSprite = NULL;
 	Sint32 iCoordX = 0, iCoordY = 0;
-	SDL_Rect  Rect;
 
 	pLevelSt->pLevel = pLevel;
 
@@ -268,7 +267,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 			movex = NewVx;
 			movey = NewVy;
 			NewVx = NewVy = 0;
-			iTmp = Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->pPlayer, movex, movey, &NewVx, &NewVy);
+			iTmp = Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->pPlayer->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
 			if (iTmp == 2)
 			{
 				Kr_Log_Print(KR_LOG_WARNING, "Collision !\n");
