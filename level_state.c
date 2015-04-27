@@ -391,7 +391,6 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 	// Lecture des panneaux
 	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPanneau == 1)
 	{
-		
 		Kr_Log_Print(KR_LOG_INFO, "Lecture d'un panneau ! \n");
 		Kr_Log_Print(KR_LOG_INFO, "%s\n",pLevel->szLevelMessage);
 	}

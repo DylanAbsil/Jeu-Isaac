@@ -142,10 +142,6 @@ void Kr_CollisionRect_Affine(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint
 *          2 : collision with the rectangle
 *          3 : No collision with the level
 *          6 : collision with the level
-*          4 : No collision with the rectangle & No collision with the level
-*          5 : collision with the rectangle & No collision with the level
-*          7 : No collision with the rectangle & collision with the level
-*          8 : collision with the rectangle & collision with the level
 */
 Uint32 Kr_Collision(Kr_Level *pLevel, SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
 {
