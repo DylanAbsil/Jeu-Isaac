@@ -319,6 +319,9 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 {
 	Sint32 iTilesID = -1;
 	Uint32 x = pPlayer->pSprEntity->pRectPosition->x + pPlayer->pSprEntity->pRectPosition->w / 2, y = pPlayer->pSprEntity->pRectPosition->y + pPlayer->pSprEntity->pRectPosition->h / 2;
+	Sint32 i = 0, j = 0;
+	Uint32 xTiles = 0, yTiles = 0;
+	Boolean bSave = FALSE;
 	// recherche du bloc que l'entité à devant lui
 	if (pPlayer->direction == nord)
 	{
@@ -345,11 +348,54 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iCoffreFerme == 1)
 	{
 		Kr_Log_Print(KR_LOG_INFO, "Ouverture d'un coffre ! \n");
+		//Remplacement de tous les coffres fermé
+		for (j = 0; j < pLevel->iLevel_TileHeight; j++)
+		{
+			for (i = 0; i < pLevel->iLevel_TileWidth; i++)
+			{
+				xTiles = i * pLevel->pLevel_Tileset->iTilesWidth;
+				yTiles = j * pLevel->pLevel_Tileset->iTilesHeight;
+				iTilesID = Kr_Level_GetTile(pLevel, xTiles, yTiles);
+				if (iTilesID == 293)
+				{
+					Kr_Level_WriteLayout(pLevel, 355, xTiles, yTiles); 
+					bSave = TRUE;
+				}
+				if (iTilesID == 294)
+				{
+					Kr_Level_WriteLayout(pLevel, 356, xTiles, yTiles);
+					bSave = TRUE;
+				}
+				if (iTilesID == 324)
+				{
+					Kr_Level_WriteLayout(pLevel, 386, xTiles, yTiles);
+					bSave = TRUE;
+				}
+				if (iTilesID == 325)
+				{
+					Kr_Level_WriteLayout(pLevel, 387, xTiles, yTiles);
+					bSave = TRUE;
+				}
+				if (iTilesID == 417)
+				{
+					Kr_Level_WriteLayout(pLevel, 418, xTiles, yTiles);
+					bSave = TRUE;
+				}
+			}
+		}
+		if (bSave == TRUE) // Sauvegarde du niveau en cas de modification
+		{
+			if (Kr_Level_SaveLayout(pLevel) == FALSE)
+			{
+				Kr_Log_Print(KR_LOG_WARNING, "Can't save the level after interraction ! \n");
+			}
+		}
 	}
 
 	// Lecture des panneaux
 	if (pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPanneau == 1)
 	{
+		
 		Kr_Log_Print(KR_LOG_INFO, "Lecture d'un panneau ! \n");
 	}
 	return iTilesID;

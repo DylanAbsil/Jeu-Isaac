@@ -190,8 +190,8 @@ void getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy)
 	Sint32 movey = pPlayer->pSprEntity->pRectPosition->x - pEntity->pSprEntity->pRectPosition->x;
 	double movez = sqrt(movex*movex + movey*movey);
 	double rapport = MOB_MOVESPEED / movez;
-	*vx = rapport * movex;
-	*vy = rapport * movey;
+	*vx = (Sint32)(rapport * movex);
+	*vy = (Sint32)(rapport * movey);
 	
 }
 
