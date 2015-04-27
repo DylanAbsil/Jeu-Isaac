@@ -80,7 +80,6 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprit
 	return TRUE;
 }
 
-
 /*!
 *  \fn     void Entity_Free(Entity *entite)
 *  \brief  Function to freed an entity
@@ -312,7 +311,6 @@ void meleeDamage(Entity *pGiver, Entity *pReceiver){
 *  \return	TRUE if the entity has fired, FALSE otherwise
 */
 Boolean	Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
-	UpdateAllProjectiles(pEntity->pWeapon, pRenderer);
 	if (myEvent.szKey[SDL_SCANCODE_W]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
 				Projectile * newProj = Projectile_Init(pEntity->pWeapon->strNameProjectile);

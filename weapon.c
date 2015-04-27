@@ -244,7 +244,7 @@ Boolean	insertLast(ListProj *lProj, Projectile *p){
 *  \param	pRenderer	a pointer to the renderer
 *  \return boolean if all the projectiles have been draw on the screen or not
 */
-Boolean drawAllProjectiles(ListProj *lProj, SDL_Renderer *pRenderer){
+Boolean drawProjectilesWeapon(ListProj *lProj, SDL_Renderer *pRenderer){
 	if (emptyList(lProj) == FALSE){
 		setOnFirst(lProj);
 		while (lProj->current != NULL){
@@ -320,59 +320,3 @@ void Weapon_Free(Weapon *pWeapon){
 	UTIL_Free(pWeapon);
 }
 
-/*!
-*  \fn     Boolean	UpdateAllProjectiles(Weapon *pWeapon, SDL_Renderer *pRenderer)
-*  \brief  Function to update all the position of the projectiles contained in a list in the struct weapon
-*
-*  \param	pWeapon		a pointer to the weapon which you want to draw the projectiles
-*  \param	pRenderer	a pointer to the renderer
-*  \return boolean if all the projectiles have been update on the screen or not
-*/
-Boolean	UpdateAllProjectiles(Weapon *pWeapon, SDL_Renderer *pRenderer){
-	if (emptyList(pWeapon->plProjectile) == FALSE){
-		setOnFirst(pWeapon->plProjectile);
-		while (pWeapon->plProjectile->current != NULL)
-		{
-			switch (pWeapon->plProjectile->current->p->direction)
-			{
-			case nord:
-				pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y -= PROJECTILE_SPEED;
-				pWeapon->plProjectile->current->p->iCoordPrj_YCurrent -= PROJECTILE_SPEED;
-				if (pWeapon->plProjectile->current->p->iCoordPrj_YCurrent <= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
-					deleteCurrent(pWeapon->plProjectile);
-				else{
-					next(pWeapon->plProjectile);
-				}
-				break;
-			case est:
-				pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x += PROJECTILE_SPEED;
-				pWeapon->plProjectile->current->p->iCoordPrj_XCurrent += PROJECTILE_SPEED;
-				if (pWeapon->plProjectile->current->p->iCoordPrj_XCurrent >= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
-					deleteCurrent(pWeapon->plProjectile);
-				else{
-					next(pWeapon->plProjectile);
-				}
-				break;
-			case sud:
-				pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y += PROJECTILE_SPEED;
-				pWeapon->plProjectile->current->p->iCoordPrj_YCurrent += PROJECTILE_SPEED;
-				if (pWeapon->plProjectile->current->p->iCoordPrj_YCurrent >= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
-					deleteCurrent(pWeapon->plProjectile);
-				else{
-					next(pWeapon->plProjectile);
-				}
-				break;
-			case ouest:
-				pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x -= PROJECTILE_SPEED;
-				pWeapon->plProjectile->current->p->iCoordPrj_XCurrent -= PROJECTILE_SPEED;
-				if (pWeapon->plProjectile->current->p->iCoordPrj_XCurrent <= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
-					deleteCurrent(pWeapon->plProjectile);
-				else{
-					next(pWeapon->plProjectile);
-				}
-				break;
-			}
-		}
-	}
-	return TRUE;
-}
