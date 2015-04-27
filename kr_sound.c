@@ -241,6 +241,18 @@ void Kr_Sound_FreeMusic(Kr_Music *pMusic)
 	UTIL_Free(pMusic);
 }
 
+void Kr_Sound_AllocInterract(void)
+{
+	Uint32 i = 0;
+	Kr_Sound *aSoundInterraction[10];
+
+	for (i = 0; i < 10; i++)
+	{
+		aSoundInterraction[i] = NULL;
+	}
+	aSoundInterraction[0] = Kr_Sound_Alloc("ouverture_coffre");
+}
+
 
 
 /* Utilisation de cette bibliothèque */
