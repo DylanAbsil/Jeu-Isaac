@@ -56,7 +56,7 @@ typedef struct
 	char           *szLevelFile;		/*!< Name of the file of the level  */
 	char		   *szLevelName;		/*!< Name of the level  */
 	char		   *szLevelMessage;		/*!< Message of the level  */
-	Mix_Music	   *pMusic;				/*!< a pointer to the music of the level*/
+	Kr_Music	   *pMusic;				/*!< a pointer to the music structure of the level*/
 	Sint32          iLevelNum;          /*!< Number of the level */
 	Sint32          iLevel_TileWidth;	/*!< Width of the level in Tile number */
 	Sint32          iLevel_TileHeight;  /*!< Height of the level in Tile number */

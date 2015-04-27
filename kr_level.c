@@ -56,10 +56,10 @@ Kr_Level *Kr_Level_Init(char *szFileName)
 	pLevel = (Kr_Level *)UTIL_Malloc(sizeof(Kr_Level));
 
 	pLevel->szLevelFile = UTIL_CopyStr(szFileName, iNameLen);
-
+	pLevel->pMusic = Kr_Sound_InitMusic();
 	pLevel->szLevelName = NULL;	
 	pLevel->szLevelMessage = NULL;
-	pLevel->pMusic = NULL;
+	
 	pLevel->iLevelNum = -1;       
 	pLevel->iLevel_TileWidth = 0;
 	pLevel->iLevel_TileHeight = 0;
@@ -129,9 +129,12 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 
 			fgets(szBuf2, CACHE_SIZE, pFile); // Lecture de la ligne suivante qui indique la musique du level
 			szBuf2[strcspn(szBuf2, "\n")] = '\0';
+			iNameLen = strlen(szBuf2) - 1;
+			pLevel->pMusic->szMscName = UTIL_CopyStr(szBuf2, iNameLen);
+			pLevel->pMusic->pMsc = NULL;
 			if (strcmp(szBuf2, "none") != 0) 
 			{
-				pLevel->pMusic = Kr_Sound_LoadMusic(szBuf2);				
+				Kr_Sound_LoadMusic(pLevel->pMusic, szBuf2);
 			}
 		}
 		if (strstr(szBuf, "#tileset")) // Identification de la ligne tileset
@@ -178,7 +181,7 @@ void Kr_Level_Free(Kr_Level *pLevel)
 	Kr_Tileset_Free(pLevel->pLevel_Tileset);
 	for (i = 0; i< pLevel->iLevel_TileHeight; i++)
 		free(pLevel->szLayout[i]);
-	Kr_Sound_FreeMusic(&pLevel->pMusic);
+	Kr_Sound_FreeMusic(pLevel->pMusic);
 	UTIL_Free(pLevel->szLayout);
 	UTIL_Free(pLevel->szLevelFile);
 	//UTIL_Free(pLevel->szLevelName);

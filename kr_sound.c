@@ -10,7 +10,8 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 28/03/2015 | Creation.                                    */
-/*               | 31/03/2015 | Fix                                          */
+/* Herrou        | 31/03/2015 | Fix                                          */
+/* Herrou        | 27/04/2015 | Ajout d'une structure Kr_Music				 */
 /*               |            |                                              */
 /* ========================================================================= */
 
@@ -175,48 +176,69 @@ void Kr_Sound_PlayOnce(const char *szSndName, Uint32 iChannel, Uint32 iVolume)
 /* ========================================================================= */
 
 
+
 /*!
-*  \fn     Mix_Music* Kr_Sound_LoadMusic( const char *szMusicName )
-*  \brief  Function to load a music.
-*
-*  \param  szMusicName Name of the music. (Without the extension)
-*  \return A pointer on the loaded music, or NULL if error.
+*  \fn     Kr_Music* Kr_Sound_InitMusic(void);
+*  \brief  Function to initialize a music structure.
+
+*  \return A pointer on the loaded structure, or NULL if error.
 */
-Mix_Music* Kr_Sound_LoadMusic(const char *szMusicName)
+Kr_Music* Kr_Sound_InitMusic(void)
 {
-	Mix_Music *pMusic = NULL;
-	char	   szMusicPath[50];
-	size_t     iPathLen;
-
-	iPathLen = strlen(szMusicName);
-	sprintf(szMusicPath, "sounds\\%s.mp3", szMusicName);
-	if (!szMusicPath)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "The file %s.mp3 is not in the folder \"sounds\"\n", szMusicName);
-		return pMusic;
-	}
-
-	pMusic = Mix_LoadMUS(szMusicPath);
-	if (pMusic == NULL)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't load a music!\n");
-		Kr_Log_Print(KR_LOG_ERROR, ">> Path \"%s\".\n", szMusicPath);
-	}
-
+	Kr_Music *pMusic = NULL;
+	pMusic = (Kr_Music *)UTIL_Malloc(sizeof(Kr_Music));
 	return pMusic;
 }
 
+
 /*!
-*  \fn     void Kr_Sound_FreeMusic( Mix_Music **ppMusic )
+*  \fn     Boolean Kr_Sound_LoadMusic(Kr_Music *pMusic, const char *szMusicName )
+*  \brief  Function to load a music.
+*
+*  \param  szMusicName Name of the music. (Without the extension)
+*  \return True if everything is ok, False otherwise
+*/
+Boolean Kr_Sound_LoadMusic(Kr_Music *pMusic, const char *szMusicName)
+{
+	Mix_Music *pMsc = NULL;
+	char	   szMusicPath[50];
+	size_t     iPathLen;
+	Uint32     iNameLen = 0;
+	iPathLen = strlen(szMusicName);
+	sprintf(szMusicPath, "sounds\\%s.mp3", szMusicName);
+
+	iNameLen = strlen(szMusicName) - 1;
+	pMusic->szMscName = UTIL_CopyStr(szMusicName, iNameLen);
+	pMusic->pMsc = NULL;
+	if (!szMusicPath)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "The file %s.mp3 is not in the folder \"sounds\"\n", szMusicName);
+		return FALSE;
+	}
+
+	pMsc = Mix_LoadMUS(szMusicPath);
+	pMusic->pMsc = pMsc;
+	if (pMsc == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't load a music!\n");
+		Kr_Log_Print(KR_LOG_ERROR, ">> Path \"%s\".\n", szMusicPath);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+/*!
+*  \fn     void Kr_Sound_FreeMusic(Kr_Music *pMusic)
 *  \brief  Function to free a music.
 *
-*  \param  ppMusic Pointer to pointer of the music to free.
+*  \param  pMusic a pointer to the Kr_Music structure to free
 *  \return None.
 */
-void Kr_Sound_FreeMusic(Mix_Music **ppMusic)
+void Kr_Sound_FreeMusic(Kr_Music *pMusic)
 {
-	Mix_FreeMusic(*ppMusic);
-	*ppMusic = NULL;
+	Mix_FreeMusic(pMusic->pMsc);
+	UTIL_Free(pMusic);
 }
 
 

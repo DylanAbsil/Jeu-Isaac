@@ -11,6 +11,7 @@
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 28/03/2015 | Creation.                                    */
 /* Herrou        | 21/04/2015 | Ajout de define pour la gestion des canaux   */
+/* Herrou        | 27/04/2015 | Ajout d'une structure Kr_Music				 */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -33,6 +34,16 @@
         Mix_Chunk *pChunk;    /*!< Pointer on the sound structure. */
     } Kr_Sound;
 
+	/*!
+	* \struct Kr_Music
+	* \brief  Structure to handle the music.
+	*/
+	typedef struct
+	{
+		char      *szMscName; /*!< Name of the music. */
+		Mix_Music *pMsc;    /*!< Pointer on the music structure. */
+	} Kr_Music;
+
     Kr_Sound*  Kr_Sound_Alloc( const char *szSndName );
     void       Kr_Sound_Print( Kr_Sound *pSound );
     void       Kr_Sound_Play( Kr_Sound *pSound, Uint32 iChannel, Uint32 iVolume, Sint32 iLoops );
@@ -41,8 +52,9 @@
 	void       Kr_Sound_FreeChunk(Mix_Chunk **ppChunk);
 	void	   Kr_Sound_PlayOnce(const char *szSndName, Uint32 iChannel, Uint32 iVolume);
 
-	Mix_Music* Kr_Sound_LoadMusic(const char *szPath);
-	void       Kr_Sound_FreeMusic(Mix_Music **ppMusic);
+	Kr_Music* Kr_Sound_InitMusic(void);
+	Boolean   Kr_Sound_LoadMusic(Kr_Music *pMusic, const char *szPath);
+	void       Kr_Sound_FreeMusic(Kr_Music *pMusic);
 
 #endif /* __KR_SOUND_H__ */
 
