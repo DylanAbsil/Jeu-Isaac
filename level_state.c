@@ -80,19 +80,23 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 			fscanf(pFile, "%d\n", &iNbEntities);
 			pLevelSt->iNbEntities = iNbEntities;
 			pLevelSt->aEntityLevel = (Entity **)malloc((iNbEntities + 1)*sizeof(Entity*));
+			SDL_Rect **aRect = (SDL_Rect**)malloc((iNbEntities + 1)*sizeof(SDL_Rect*));
 			Entity    **aEntity = pLevelSt->aEntityLevel;
 
 			for (i = 0; i < iNbEntities; i++)
 			{
+
 				fscanf(pFile, "%s %d %d %d %d %d %d %d \n", szEntityName, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &iCoordX, &iCoordY);
-				Rect.x = iCoordX;
-				Rect.y = iCoordY;
-				Rect.h = iFrameHeight;
-				Rect.w = iFrameWidth / iNbFrames;
+				*(aRect + i) = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+				(*(aRect + i))->x = iCoordX;
+				(*(aRect + i))->y = iCoordY;
+				(*(aRect + i))->h = iFrameHeight;
+				(*(aRect + i))->w = iFrameWidth / iNbFrames;
 
 				/* Chargement des sprites */
+				pSprite = NULL;
 				pSprite = Kr_Sprite_Init(szEntityName);	
-				if (Kr_Sprite_Load(pSprite, unknown, iFrameHeight, iFrameWidth, iNbFrames, &Rect, pRenderer) == FALSE)
+				if (Kr_Sprite_Load(pSprite, unknown, iFrameHeight, iFrameWidth, iNbFrames, (*(aRect + i)), pRenderer) == FALSE)
 				{
 					Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 					return FALSE;
@@ -106,12 +110,13 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 					Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
 					return FALSE;
 				}
-				pSprite = NULL;
 			}
-
-		}
+			Entity_Log(*(aEntity));
+			Entity_Log(*(aEntity+1));
+		}		
 	} while (strstr(szBuf, "#layout") == NULL); // Identification de la fin des entites
 
+	
 	Kr_Log_Print(KR_LOG_INFO, "Level_State : %s has been loaded !\n", pLevelSt->pLevel->szLevelName);
 	UTIL_CloseFile(&pFile);
 	return TRUE;
@@ -229,7 +234,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 	}
 	else // Monster
 	{
-		//getVectorToPlayer(pEntity, pLevelSt->pPlayer,&movex, &movey);
+		getVectorToPlayer(pEntity, pLevelSt->pPlayer,&movex, &movey);
 	}
 
 
