@@ -219,7 +219,7 @@ int Isaac(int *argc, char **argv)
 		updateProjectilesWeapon(pRenderer, pCurrentLevelState, pCurrentLevelState->pPlayer->pWeapon);
 
 		/* Controle du tir du personnage */
-		Shoot(inEvent, pPlayer, pRenderer);
+		shoot(inEvent, pPlayer, pRenderer);
 
 		if (inEvent.szMouseButtons[0])
 		{

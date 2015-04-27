@@ -290,13 +290,13 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 
 
 /*!
-*  \fn     Boolean	UpdateAllProjectiles(Weapon *pWeapon, SDL_Renderer *pRenderer)
-*  \brief  Function to update all the position of the projectiles contained in a list in the struct weapon
+*  \fn		Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, Weapon *pWeapon)
+*  \brief	Function to update all the position of the projectiles contained in a list in the struct weapon
 *
 *  \param	pRenderer	a pointer to the renderer
-*  \param  pLevelSt		a pointer to the Level_State structure
+*  \param	pLevelSt	a pointer to the Level_State structure
 *  \param	pWeapon		a pointer to the weapon which you want to draw the projectiles
-*  \return boolean if all the projectiles have been update on the screen or not
+*  \return	boolean TRUE if all the projectiles have moved on the screen, FALSE otherwise
 */
 Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, Weapon *pWeapon){
 	Sint32 movex = 0, movey = 0, NewVx = 0, NewVy = 0;
@@ -343,8 +343,8 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 				bool = FALSE;
 			}
 			else{	
-				iTmp = Kr_Collision(pLevelSt->pLevel, pWeapon->plProjectile->current->p->pSprProjectile, NULL, movex, movey, &NewVx, &NewVy);
-				if (iTmp = 6){	// Collision avec le level
+				iTmp = Kr_Collision(pLevelSt->pLevel, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
+				if (iTmp == 6){	// Collision avec le level
 					Kr_Log_Print(KR_LOG_INFO, "The projectile hit the level\n");
 					deleteCurrent(pLevelSt->pPlayer->pWeapon->plProjectile);
 					bool = FALSE;
@@ -352,10 +352,10 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 				else{	// Collision avec les autres entités du level
 					for (i = 0; i < pLevelSt->iNbEntities; i++)
 					{
-						iTmp = Kr_Collision(NULL, pWeapon->plProjectile->current->p->pSprProjectile, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
+						iTmp = Kr_Collision(NULL, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
 						if (iTmp == 2){
-							//doDamage()
 							Kr_Log_Print(KR_LOG_INFO, "The projectile hit an entity in (%d;%d)\n", pWeapon->plProjectile->current->p->iCoordPrj_XCurrent + movex, pWeapon->plProjectile->current->p->iCoordPrj_YCurrent + movey);
+							weaponDamage(pWeapon->plProjectile->current->p, *(aEntity + i));
 							deleteCurrent(pWeapon->plProjectile);
 							bool = FALSE;
 							break;

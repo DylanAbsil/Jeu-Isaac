@@ -300,6 +300,17 @@ void meleeDamage(Entity *pGiver, Entity *pReceiver){
 		pReceiver->iEntityLife -= MOB_INFIGHTING_DAMAGE;
 }
 
+void weaponDamage(Projectile *pProj, Entity *pEntity){
+	if (pEntity->iArmor > pProj->iDamagePrj)
+		pEntity->iArmor -= pProj->iDamagePrj;
+	else if (pEntity->iArmor > 0){
+		Uint32 truedamage = pProj->iDamagePrj - pEntity->iArmor;
+		pEntity->iArmor = 0;
+		pEntity->iEntityLife -= truedamage;
+	}
+	else
+		pEntity->iEntityLife -= pProj->iDamagePrj;
+}
 
 /*!
 *  \fn     Boolean	Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer)
@@ -310,7 +321,7 @@ void meleeDamage(Entity *pGiver, Entity *pReceiver){
 *  \param	pRender a pointer to the renderer
 *  \return	TRUE if the entity has fired, FALSE otherwise
 */
-Boolean	Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
+Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 	if (myEvent.szKey[SDL_SCANCODE_W]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
 				Projectile * newProj = Projectile_Init(pEntity->pWeapon->strNameProjectile);

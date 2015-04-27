@@ -75,7 +75,8 @@ void		switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer 
 
 
 void		meleeDamage(Entity *pGiver, Entity *pReceiver);
-Boolean		Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer);
+void		weaponDamage(Projectile *pProj, Entity *pEntity);
+Boolean		shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer);
 Boolean		ChangeWeapon(Entity *pEntity, Weapon *pWeapon);
 
 #endif /* __KR_ENTITE_H__ */
