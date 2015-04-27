@@ -18,6 +18,7 @@
 /* Herrou        | 20/04/2015 | Transfert des fonctions SaveLayout et WriteLayout dans Kr_Level						*/
 /* Herrou        | 22/04/2015 | Renommer le fichier level_editor.txt en editor.txt									*/
 /* Herrou        | 27/04/2015 | Mise à jour pour Level Version 1.3 : Ajout des messages								*/
+/*               |            | Mise à jour pour Level Version 1.4 : Ajout de la musique du niveau					*/
 /*               |            |																						*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -267,6 +268,7 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 	fprintf(pFile, "#property\n");
 	fprintf(pFile, "%s\n", pLevel->szLevelName);
 	fprintf(pFile, "%s\n", pLevel->szLevelName);
+	fprintf(pFile, "none\n");
 	fprintf(pFile, "#tileset\n");
 	fprintf(pFile, "%s\n", pLevel->pLevel_Tileset->szTilesetName);
 	fprintf(pFile, "#entity\n");

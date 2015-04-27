@@ -34,6 +34,7 @@
 /* Herrou        | 27/04/2015 | Ajout du paramètre szLevelMessage qui contient le message		*/
 /*               |            |  qui est affiché sur les panneaux, maximum un panneau par level */
 /*               |            | Passage en Level Version 1.3									*/
+/*               |            | Passage en Level Version 1.4 et ajout de la musique du level	*/
 /* ============================================================================================ */
 
 #ifndef __KR_LEVEL_H__
@@ -43,8 +44,9 @@
 #include "kr_util.h"
 #include "kr_log.h"
 #include "kr_tileset.h"
+#include "kr_sound.h"
 
-#define KR_LEVEL_VERSION "Level Version 1.3"
+#define KR_LEVEL_VERSION "Level Version 1.4"
 /*!
 * \struct Kr_Level
 * \brief  Structure to handle the level.
@@ -54,6 +56,7 @@ typedef struct
 	char           *szLevelFile;		/*!< Name of the file of the level  */
 	char		   *szLevelName;		/*!< Name of the level  */
 	char		   *szLevelMessage;		/*!< Message of the level  */
+	Mix_Music	   *pMusic;				/*!< a pointer to the music of the level*/
 	Sint32          iLevelNum;          /*!< Number of the level */
 	Sint32          iLevel_TileWidth;	/*!< Width of the level in Tile number */
 	Sint32          iLevel_TileHeight;  /*!< Height of the level in Tile number */
