@@ -59,7 +59,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 	char    szBuf[CACHE_SIZE];  // Buffer
 	char    szEntityName[CACHE_SIZE];
 	Uint32  iEntityState = 0;
-	Uint32 i = 0, iSpeed = 0;
+	Uint32 i = 0, iSpeed = 0,iDirection = 0;
 	Boolean bFriendly = TRUE;
 	Kr_Sprite *pSprite = NULL;
 	Sint32 iCoordX = 0, iCoordY = 0;
@@ -86,7 +86,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 			for (i = 0; i < iNbEntities; i++)
 			{
 
-				fscanf(pFile, "%s %d %d %d %d %d %d %d %d %d %d\n", szEntityName, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &iCoordX, &iCoordY, &iSpeed, &iEntityState, &bFriendly);
+				fscanf(pFile, "%s %d %d %d %d %d %d %d %d %d %d %d\n", szEntityName, &iDirection, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &iCoordX, &iCoordY, &iSpeed, &iEntityState, &bFriendly);
 				*(aRect + i) = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 				(*(aRect + i))->x = iCoordX;
 				(*(aRect + i))->y = iCoordY;
@@ -96,7 +96,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 				/* Chargement des sprites */
 				pSprite = NULL;
 				pSprite = Kr_Sprite_Init(szEntityName);	
-				if (Kr_Sprite_Load(pSprite, unknown, iFrameHeight, iFrameWidth, iNbFrames, (*(aRect + i)), pRenderer) == FALSE)
+				if (Kr_Sprite_Load(pSprite, iDirection, iFrameHeight, iFrameWidth, iNbFrames, (*(aRect + i)), pRenderer) == FALSE)
 				{
 					Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 					return FALSE;
@@ -258,7 +258,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		}
 
 		//Gestion de la direction, seulement pour le personnage pour le moment
-		if(bIsPlayer) switchTextureFromDirection(pEntity, newDir, pRenderer); 
+		switchTextureFromDirection(pEntity, newDir, pRenderer); 
 
 		// Collision avec le level
 		if (pEntity->state != noclip)

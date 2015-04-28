@@ -20,6 +20,8 @@
 /* Herrou        | 05/04/2015 | Ajout du param Entity à foundDirection       */
 /* Herrou        | 24/04/2015 | Suppresion du param iCoordX, on y a accès via*/
 /*               |            |  le rectangle du sprite		                 */
+/* Herrou        | 27/04/2015 | switchTextureFromDirection calcul la largueur*/
+/*               |            |  de la frame du sprite toute seule           */
 /* ========================================================================= */
 
 
@@ -236,44 +238,53 @@ Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
 void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *pRenderer){
 	// Nouveau sprite potentiel suivant la direction
 	char newSprFileName[SIZE_MAX_NAME];
+	SDL_Rect rect = { 0, 0, 0, 0 };
 	//	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
 
 	strcpy(newSprFileName, entite->pSprEntity->strSpriteName); //Nécessaire de l'initialiser même si après la direction change
 	switch (newDir){									// Suivant la nouvelle direction :
 	case nord:
-		if (entite->direction != nord){						// if direction différente
-			entite->direction = nord;							//  -> on change
+		if (entite->direction != nord)
+		{
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "nord"); //on va chercher le bon fichier image
+			if (fopen(newSprFileName, "r") == NULL) return; // Vérifie l'existence du fichier
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);							// on libère l'ancienne texture
-			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);	//on load la nouvelle texture asssociéee à la nouvelle direction
-			entite->pSprEntity->iFrameWidth = 144;
+			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, &rect);	//on load la nouvelle texture asssociéee à la nouvelle direction
+			entite->pSprEntity->iFrameWidth = rect.w;
+			entite->direction = nord;
 		}
 		break;
 	case sud:
-		if (entite->direction != sud){
-			entite->direction = sud;
+		if (entite->direction != sud)
+		{
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "sud");
+			if (fopen(newSprFileName, "r") == NULL) return; 
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
-			entite->pSprEntity->iFrameWidth = 136;
+			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, &rect);
+			entite->pSprEntity->iFrameWidth = rect.w;
+			entite->direction = sud;
 		}
 		break;
 	case ouest:
-		if (entite->direction != ouest){
-			entite->direction = ouest;
+		if (entite->direction != ouest)
+		{
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "ouest");
+			if (fopen(newSprFileName, "r") == NULL) return; 
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
-			entite->pSprEntity->iFrameWidth = 160 ;
+			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, &rect);
+			entite->pSprEntity->iFrameWidth = rect.w;
+			entite->direction = ouest;
 		}
 		break;
 	case est:
-		if (entite->direction != est){
-			entite->direction = est;
+		if (entite->direction != est)
+		{
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "est");
+			if (fopen(newSprFileName, "r") == NULL) return; // Vérifie l'existence du fichier
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
-			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
-			entite->pSprEntity->iFrameWidth = 160 ;
+			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, &rect);
+			entite->pSprEntity->iFrameWidth = rect.w;
+			entite->direction = est;
 		}
 		break;
 	default:
