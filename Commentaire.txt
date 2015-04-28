@@ -1,10 +1,12 @@
-Bug connu : Crash lors de la libération de zelda lorsque l'on quitte l'application
+28/04 Modification du Main :
+Remplacer la partie du chargement par celle-ci, nouveaux paramètres pour entity_load
+  	/* Chargement des personnages */
+	pPlayer = Entity_Init("zelda");				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
 
-j'ai déplacer pas mal de fonction pour pouvoir utiliser la collision
+	if (Entity_Load(pPlayer, 100, 50, MOVESPEED ,normal, FALSE, pSpriteZelda) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
 
--> 28/04 : Modification de entite et des levels pour inclures l'état des entités
--> 24/04 Refonte de level_state en cours
--> 24/04 : Ce que l'on pensait être une duplication de la vitesse n'en ai pas, j'ai essayé avec 10FPS et on arrive "parfois" à se déplacer uniquement de une fois la distance. 
-           C'est simplement la détection continue des touches qui est trop rapide, on peut pas simuler nous même une seule impulsion
-
--> Fuite de mémoire lorsque l'on change de niveau et qu'il y a des entités dans les niveaux !
