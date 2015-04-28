@@ -46,11 +46,12 @@ Entity * Entity_Init(char* szFileName){
 	entite->iSpeedEntity = 0;
 	entite->iTempoAnim = 0;
 	entite->iTempoAtk = 0;
+	entite->bFriendly = TRUE;
 	return entite;
 }
 
 /*!
-*  \fn     void Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Kr_Sprite *sprite)
+*  \fn     void Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Uint32 iSpeed, EntityState state, Boolean bFriendly,Kr_Sprite *sprite)
 *  \brief  Function to load the entity
 *
 *  \todo   use this function after the entity had been inited
@@ -59,9 +60,12 @@ Entity * Entity_Init(char* szFileName){
 *  \param life his life with an integer
 *  \param armor his armor with an integer
 *  \param sprite a pointer to the sprite of the entity
+*  \param state his state
+*  \param bFriendly is the entity friendly ?
+*  \param iSpeed the speed of the entity
 *  \return boolean it verify if the load is correct or not
 */
-Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprite){
+Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Uint32 iSpeed, EntityState state, Boolean bFriendly, Kr_Sprite *sprite){
 	entite->iEntityLife = life;
 	entite->iArmor = armor;
 	entite->pSprEntity = sprite;
@@ -69,11 +73,12 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Kr_Sprite *sprit
 //		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s in the entity %s !\n", sprite->strSpriteName, entite->strEntityName);
 		return FALSE;
 	}
-	entite->state = normal;
+	entite->state = state;
 	entite->direction = sud;
 	entite->mouvement = 0;
-	entite->iSpeedEntity = MOB_MOVESPEED;
+	entite->iSpeedEntity = iSpeed;
 	entite->iTempoAtk = ATTACK_SPEED;
+	entite->bFriendly = bFriendly;
 
 	Entity_Log(entite);
 //	Kr_Log_Print(KR_LOG_INFO, "Entity %s with sprite %s has been loaded !\n", entite->strEntityName, entite->pSprEntity->strName);
@@ -110,6 +115,8 @@ void  Entity_Log(Entity *pEntity)
 	Kr_Log_Print(KR_LOG_INFO, "			CoordX		: %d\n", pEntity->pSprEntity->pRectPosition->x);
 	Kr_Log_Print(KR_LOG_INFO, "			CoordY		: %d\n", pEntity->pSprEntity->pRectPosition->y);
 	Kr_Log_Print(KR_LOG_INFO, "			iSpeedEntity: %d\n", pEntity->iSpeedEntity);
+	Kr_Log_Print(KR_LOG_INFO, "			state       : %d\n", pEntity->state);
+	Kr_Log_Print(KR_LOG_INFO, "			bFriendly   : %d\n", pEntity->bFriendly);
 }
 
 
@@ -188,7 +195,7 @@ void getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy)
 	Sint32 movex = pPlayer->pSprEntity->pRectPosition->x - pEntity->pSprEntity->pRectPosition->x;
 	Sint32 movey = pPlayer->pSprEntity->pRectPosition->x - pEntity->pSprEntity->pRectPosition->x;
 	double movez = sqrt(movex*movex + movey*movey);
-	double rapport = MOB_MOVESPEED / movez;
+	double rapport = pEntity->iSpeedEntity / movez;
 	*vx = (Sint32)(rapport * movex);
 	*vy = (Sint32)(rapport * movey);
 	

@@ -58,8 +58,9 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 	FILE   *pFile;
 	char    szBuf[CACHE_SIZE];  // Buffer
 	char    szEntityName[CACHE_SIZE];
-	Uint32 i = 0;
-
+	Uint32  iEntityState = 0;
+	Uint32 i = 0, iSpeed = 0;
+	Boolean bFriendly = TRUE;
 	Kr_Sprite *pSprite = NULL;
 	Sint32 iCoordX = 0, iCoordY = 0;
 
@@ -85,7 +86,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 			for (i = 0; i < iNbEntities; i++)
 			{
 
-				fscanf(pFile, "%s %d %d %d %d %d %d %d \n", szEntityName, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &iCoordX, &iCoordY);
+				fscanf(pFile, "%s %d %d %d %d %d %d %d %d %d %d\n", szEntityName, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &iCoordX, &iCoordY, &iSpeed, &iEntityState, &bFriendly);
 				*(aRect + i) = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 				(*(aRect + i))->x = iCoordX;
 				(*(aRect + i))->y = iCoordY;
@@ -104,7 +105,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 				/* Création de l'entité */
 				*(aEntity + i) = Entity_Init(szEntityName);
 
-				if (Entity_Load(*(aEntity + i), iLife, iArmor, pSprite) == FALSE)
+				if (Entity_Load(*(aEntity + i), iLife, iArmor, iSpeed,iEntityState, bFriendly, pSprite) == FALSE)
 				{
 					Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
 					return FALSE;
@@ -260,9 +261,12 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		if(bIsPlayer) switchTextureFromDirection(pEntity, newDir, pRenderer); 
 
 		// Collision avec le level
-		iTmp = Kr_Collision(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
+		if (pEntity->state != noclip)
+		{
+			iTmp = Kr_Collision(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
+		}
 
-		if (!bIsPlayer)
+		if (!bIsPlayer && pEntity->state != noclip)
 		{
 			movex = NewVx;
 			movey = NewVy;
@@ -272,7 +276,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		// Collision avec les autres entités du level
 		for (i = 0; i < pLevelSt->iNbEntities; i++)
 		{
-			if (pEntity != *(aEntity + i)) // On vérifie que l'on détecte pas une collision avec sois même
+			if (pEntity != *(aEntity + i) && pEntity->state != noclip && (*(aEntity + i))->state != noclip) // On vérifie que l'on détecte pas une collision avec sois même
 			{ 
 				movex = NewVx;
 				movey = NewVy;
@@ -282,6 +286,11 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		}
 		
 		// Déplacement de l'entité 
+		if (pEntity->state == noclip)
+		{
+			NewVx = movex;
+			NewVy = movey;
+		}
 		pEntity->pSprEntity->pRectPosition->x += NewVx;
 		pEntity->pSprEntity->pRectPosition->y += NewVy;
 		return TRUE;

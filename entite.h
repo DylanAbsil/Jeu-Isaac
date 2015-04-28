@@ -45,6 +45,7 @@ typedef enum {
 	slowed,
 	feared,
 	poisoned,
+	noclip,
 }EntityState;
 
 typedef struct {
@@ -59,10 +60,11 @@ typedef struct {
 	Boolean		mouvement;			/*< Mouvement : 0 (static) or 1 (in movement) >*/
 	Uint32		iTempoAnim;			/*< Int for the temporisation of the animation >*/
 	Uint32		iTempoAtk;			/*< Int to handle the attack speed >*/
+	Boolean     bFriendly;			/*< TRUE if the entity is friendly ? Does it deal damage  >*/
 }Entity;
 
 Entity *	Entity_Init(char *szFileName);
-Boolean		Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*< création d'une entite >*/
+Boolean		Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Uint32 iSpeed, EntityState state, Boolean bFriendly, Kr_Sprite *sprite); /*< création d'une entite >*/
 void		Entity_Free(Entity *entite);
 Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
 void        Entity_Log(Entity *pEntity);
