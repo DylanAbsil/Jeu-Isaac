@@ -231,6 +231,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 	}
 	else // Monster
 	{
+		//GenerateRandomVector(&movex, &movey, 1, 2);
 		getVectorToPlayer(pEntity, pLevelSt->pPlayer,&movex, &movey);
 	}
 

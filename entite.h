@@ -74,6 +74,7 @@ void		foundWayToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 movex, Sint32 mo
 void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
 void		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy);
 void		switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer *pRenderer);
+void		GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax);
 
 
 void		meleeDamage(Entity *pGiver, Entity *pReceiver);

@@ -48,6 +48,7 @@ Boolean Kr_Init(void)
 		return FALSE;
 	}
 	Kr_Log_Print(KR_LOG_INFO, "All SDL modules has been loaded !\n");
+	srand(time(NULL));
 	return TRUE;
 }
 
