@@ -172,17 +172,16 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 *  \brief  Function to free a Kr_Level structure
 *
 *  \param  pLevel     a pointer to a the level structure
-*  \param  bFreeMusic must we free the Music
 *  \return none
 */
-void Kr_Level_Free(Kr_Level *pLevel, Boolean bFreeMusic)
+void Kr_Level_Free(Kr_Level *pLevel)
 {
 	Sint32 i;
 	if (pLevel == NULL) return;
 	Kr_Tileset_Free(pLevel->pLevel_Tileset);
 	for (i = 0; i< pLevel->iLevel_TileHeight; i++)
 		free(pLevel->szLayout[i]);
-	if (bFreeMusic) Kr_Sound_FreeMusic(pLevel->pMusic);
+	Kr_Sound_FreeMusic(pLevel->pMusic);
 
 	UTIL_Free(pLevel->szLayout);
 	UTIL_Free(pLevel->szLevelFile);
@@ -305,7 +304,7 @@ Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Uint32 iCurrentLevelNumber, S
 {
 	char szLevelName[20] = "";
     sprintf(szLevelName, "level%d", iCurrentLevelNumber);
-	Kr_Level_Free(pCurrentLevel,FALSE);
+	Kr_Level_Free(pCurrentLevel);
 	Kr_Level *pNewLevel = Kr_Level_Init(szLevelName);
 	if (!Kr_Level_Load(pNewLevel, pRenderer))
 	{
