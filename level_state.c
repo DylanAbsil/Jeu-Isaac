@@ -544,18 +544,35 @@ Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 
 			if (iValue == 0)
 			{
 				*pMovex = (rand() % (iMax - iMin + 1)) + iMin;
-				*pMovey = 0;
 				// Inversion du signe
 				iValue = rand() % 2;
 				if (iValue == 0)	*pMovex = *pMovex * -1;
+
+				iValue = rand() % 5;
+				if (iValue == 4)
+				{
+					*pMovey = (rand() % (iMax - iMin + 1)) + iMin;
+					iValue = rand() % 2;
+					if (iValue == 0)	*pMovey = *pMovey * -1;
+				}
+				else *pMovey = 0;
 			}
 			else
 			{
-				*pMovex = 0;
+
 				*pMovey = (rand() % (iMax - iMin + 1)) + iMin;
 				// Inversion du signe
 				iValue = rand() % 2;
 				if (iValue == 0)	*pMovey = *pMovey * -1;
+
+				iValue = rand() % 5;
+				if (iValue == 4)
+				{
+					*pMovex = (rand() % (iMax - iMin + 1)) + iMin;
+					iValue = rand() % 2;
+					if (iValue == 0)	*pMovex = *pMovex * -1;
+				}
+				else *pMovex = 0;
 			}
 		}
 		else
