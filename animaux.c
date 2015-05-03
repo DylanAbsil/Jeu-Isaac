@@ -470,25 +470,26 @@ Entity *ChargementPigeonVolant(SDL_Renderer *pRenderer)
 
 
 
-Boolean PigeonVol(Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon, Uint32 x, Uint32 y)
+Boolean PigeonVol(Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon, Uint32 xDebut, Uint32 yDebut, Uint32 *xFin, Uint32 *yFin)
 {
 	static Boolean bAnimationEnCours = FALSE; // Permet de savoir si une animation de pigeon dans les airs a lieu
 	static Uint32 iTime = 600; // durée de l'animation (tour de boucle)
 
 	Sint32 movex = 0, movey = 0;
-	Direction newDir = sud;
+	Direction newDir = sud; 
+	
+	if (bActiver && !bAnimationEnCours) Kr_Sound_Play(pSndPigeon, KR_SOUND_ANIMAL_CANAL, 25, 0); // On le joue une seule fois
 	if (bActiver == TRUE)
 	{
 		bAnimationEnCours = TRUE;
-		pPigeonVol->pSprEntity->pRectPosition->x = x;
-		pPigeonVol->pSprEntity->pRectPosition->y = y;
+		pPigeonVol->pSprEntity->pRectPosition->x = xDebut;
+		pPigeonVol->pSprEntity->pRectPosition->y = yDebut;
 	}
-
 	if (bAnimationEnCours == FALSE) return FALSE;
 
 	if (iTime > 0)
 	{
-		GenerateRandomVector(&movex, &movey, 2, 3, pPigeonVol, pLevel, NULL, 25, 50);
+		GenerateRandomVector(&movex, &movey, 2, 3, pPigeonVol, pLevel, NULL, 25, 40);
 		newDir = foundDirection(movex, movey, pPigeonVol);
 		switchTextureFromDirection(pPigeonVol, newDir, pRenderer);
 
@@ -511,7 +512,9 @@ Boolean PigeonVol(Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer,
 	}
 	else
 	{
-		iTime = 100;
+		*xFin = pPigeonVol->pSprEntity->pRectPosition->x;
+		*yFin = pPigeonVol->pSprEntity->pRectPosition->y;
+		iTime = 600;
 		bAnimationEnCours = FALSE;
 		return FALSE;
 	}
