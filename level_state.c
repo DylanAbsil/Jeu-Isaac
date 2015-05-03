@@ -140,17 +140,19 @@ void Level_State_Free(Level_State *pLevelSt,Boolean bFreePlayer)
 }
 
 /*!
-*  \fn     Boolean updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent)
+*  \fn     Uint32 updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent)
 *  \brief  Function to update all the entities of the current level
 *
 *  \param  pLevelSt  a pointer to the Level_State structure
 *  \param  pRenderer a pointer to the renderer
 *  \param  myEvent   the Kr_Input Structure
-*  \return Boolean TRUE if the entities have all been updated, FALSE otherwise
+*  \return  0 : an error occured
+			1 : everything went fine, no events
+			2 : A bird was feared
 */
-Boolean updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent)
+Uint32 updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent)
 {
-	Uint32     i = 0;
+	Uint32     i = 0, iTmp = 0, iRetour = 1;
 	Entity    **aEntity = pLevelSt->aEntityLevel;
 
 	if (updateEntity(pRenderer, pLevelSt, myEvent, pLevelSt->pPlayer, TRUE) == FALSE)
@@ -161,13 +163,18 @@ Boolean updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Inp
 
 	for (i = 0; i < pLevelSt->iNbEntities; i++)
 	{
-		if (updateEntity(pRenderer, pLevelSt, myEvent, *(aEntity + i), FALSE) == FALSE)
+		iTmp = updateEntity(pRenderer, pLevelSt, myEvent, *(aEntity + i), FALSE);
+		if (iTmp == FALSE)
 		{
 			Kr_Log_Print(KR_LOG_ERROR, "The entity %d haven't been updated",i);
 			return FALSE;
 		}
+		else if (iTmp == 2) // Oiseau effrayé
+		{
+			iRetour = 2;
+		}
 	}
-	return TRUE;
+	return iRetour;
 }
 
 
@@ -206,7 +213,7 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
 
 
 /*!
-*  \fn     Boolean  updateEntity(Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
+*  \fn     Uint32  updateEntity(Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
 *  \brief  This function will update the data about the entity
 *
 *  \param  pRenderer	a pointer to the renderer
@@ -215,12 +222,14 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
 *  \param  pEntity		the Entity which must be updated
 *  \param  bIsPlayer	is the entity the player ?
 
-*  \return boolean if data have been upadated
+*  \return  0 : an error occured
+			1 : everything went fine, no events
+			2 : A bird was feared
 */
-Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
+Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
 {
 	Sint32		movex = 0, movey = 0, NewVx = 0, NewVy = 0;
-	Uint32		i = 0, iTmp = 0, iRandomVectorRetour = 0;
+	Uint32		i = 0, iTmp = 0, iRandomVectorRetour = 0, iRetour = 1;
 	Direction	newDir	= sud; //Défaut
 	Entity	  **aEntity = pLevelSt->aEntityLevel;
 
@@ -233,12 +242,12 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 	{
 		if (pEntity->bFriendly == TRUE)
 		{
-			iRandomVectorRetour = GenerateRandomVector(&movex, &movey, 1, 2, pEntity, pLevelSt->pLevel, pLevelSt->pPlayer);
+			iRandomVectorRetour = GenerateRandomVector(&movex, &movey, 1, 2, pEntity, pLevelSt->pLevel, pLevelSt->pPlayer,25);
 			if (iRandomVectorRetour == 2) // On souhaite détecter la collision d'un oiseau avec le joueur
 			{
 				if (strcmp(pEntity->strEntityName, "pigeon1") == 0)
 				{
-
+					iRetour = 2;
 				}
 			}
 		}
@@ -254,7 +263,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		pEntity->iTempoAnim = 0;
 		pEntity->iCurrentMoveX = 0;
 		pEntity->iCurrentMoveY = 0;
-		return TRUE;
+		return iRetour;
 	}
 	else
 	{
@@ -279,7 +288,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 			iTmp = Kr_Collision(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
 		}
 
-		if (!bIsPlayer && pEntity->state != noclip)
+		if (!bIsPlayer && pEntity->state != noclip && pEntity->state != invisible)
 		{
 			movex = NewVx;
 			movey = NewVy;
@@ -289,7 +298,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		// Collision avec les autres entités du level
 		for (i = 0; i < pLevelSt->iNbEntities; i++)
 		{
-			if (pEntity != *(aEntity + i) && pEntity->state != noclip && (*(aEntity + i))->state != noclip) // On vérifie que l'on détecte pas une collision avec sois même
+			if (pEntity != *(aEntity + i) && pEntity->state != noclip && (*(aEntity + i))->state != noclip && (*(aEntity + i))->state != invisible) // On vérifie que l'on détecte pas une collision avec sois même
 			{ 
 				movex = NewVx;
 				movey = NewVy;
@@ -308,7 +317,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		pEntity->pSprEntity->pRectPosition->y += NewVy;
 		pEntity->iCurrentMoveX = NewVx;
 		pEntity->iCurrentMoveY = NewVy;
-		return TRUE;
+		return iRetour;
 	}
 }
 
@@ -503,7 +512,7 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 
 
 /*!
-*  \fn     Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer)
+*  \fn     Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait)
 *  \brief  Function to generate random vector
 *
 *  \param  pMoveX  a pointer to the X vector
@@ -513,13 +522,14 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 *  \param  pEntity a pointer to the entity
 *  \param  pLevel  a pointer to the 
 *  \param  pPlayer a pointer to the player entity
+*  \param  iWait   number of cycle before a new movement is compute
 *  \return  0 : No event
 			1 : The entity collide with the level and not with the player
 			2 : The entity collide with the player (and maybe with the level)
 */
-Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer)
+Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait)
 {
-	Uint32 i = 0, iSgn = 0, iValue = 0, iWait = 25 , iRetour = 0;
+	Uint32 i = 0, iSgn = 0, iValue = 0, iRetour = 0;
 	Sint32 Dummy = 0;
 	Boolean bChange = TRUE;
 
@@ -562,11 +572,14 @@ Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 
 	pEntity->iTempoMovement = pEntity->iTempoMovement - 1;
 
 	// Collision avec le décor
-	if (Kr_Collision(pLevel, pEntity->pSprEntity->pRectPosition, NULL, *pMovex, *pMovey, &Dummy, &Dummy) == 6)
+	if (pLevel)
 	{
-		if (*pMovex != 0) *pMovex = *pMovex * -1; // On rentre dans un mur à cause d'un mouvement sur X donc on l'inverse
-		if (*pMovey != 0) *pMovey = *pMovey * -1;
-		iRetour = 1;
+		if (Kr_Collision(pLevel, pEntity->pSprEntity->pRectPosition, NULL, *pMovex, *pMovey, &Dummy, &Dummy) == 6)
+		{
+			if (*pMovex != 0) *pMovex = *pMovex * -1; // On rentre dans un mur à cause d'un mouvement sur X donc on l'inverse
+			if (*pMovey != 0) *pMovey = *pMovey * -1;
+			iRetour = 1;
+		}
 	}
 	// Collision avec le joueur
 	if (pPlayer && iRetour == 0) // vérifier que la valeur n'est pas déjà été modifié par une collision avec le décor sinon l'entité disparait

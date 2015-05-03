@@ -35,12 +35,12 @@ Boolean			Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer
 void			Level_State_Free(Level_State *pLevelSt, Boolean bFreePlayer);
 
 Boolean			drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer);
-Boolean			updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent);
+Uint32			updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent);
 
-Boolean			updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer);
+Uint32			updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer);
 Boolean			updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, Weapon *pWeapon);
 
 Uint32			Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer);
-Uint32		    GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer);
+Uint32		    GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait);
 
 #endif /* __LEVEL_STATE__ */

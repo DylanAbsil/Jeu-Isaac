@@ -313,9 +313,9 @@ Boolean AnimationBuisson(Entity *pEntity, Boolean bPassage, Uint32 x, Uint32 y, 
 			return bAnimationEnCours = FALSE;
 		}
 		pEntity->iTempoAnim = 0;
-}
+	}
 
-return TRUE;
+	return TRUE;
 }
 
 
@@ -425,4 +425,93 @@ Boolean CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Uint32 *iN
 	}
 
 	return FALSE;
+}
+
+
+
+/*!
+*  \fn     Entity *ChargementPigeonVolant(SDL_Renderer *pRenderer)
+*  \brief  Function to load the flying bird
+
+*  \param pRenderer a pointer to to the renderer
+*  \return the loaded entity
+*/
+
+Entity *ChargementPigeonVolant(SDL_Renderer *pRenderer)
+{
+	Entity *pEntity = NULL;
+	Kr_Sprite *pSprite1 = NULL;
+	SDL_Rect *pRectPigeonVolant = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	pRectPigeonVolant->x = 0;
+	pRectPigeonVolant->y = 0;
+	pRectPigeonVolant->w = 32;
+	pRectPigeonVolant->h = 32;
+
+
+	/* Chargement des sprites */
+	pSprite1 = Kr_Sprite_Init("pigeon2");
+	if (Kr_Sprite_Load(pSprite1, sud, 23, 116, 4, pRectPigeonVolant, pRenderer) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite pigeon2!\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	/* Chargement des personnages */
+	pEntity = Entity_Init("pigeon2");
+	if (Entity_Load(pEntity, 100, 0, MOVESPEED, noclip, TRUE, pSprite1) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	return pEntity;
+}
+
+
+
+
+Boolean PigeonVol(Entity *pPigeonSol, Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon)
+{
+	static Boolean bAnimationEnCours = FALSE; // Permet de savoir si une animation de pigeon dans les airs a lieu
+	static Uint32 iTime = 100; // durée de l'animation (tour de boucle)
+
+	Sint32 movex = 0, movey = 0;
+
+	if (bActiver == TRUE)
+	{
+		// Récupérer les données nécessaires à l'ancien oiseau
+		pPigeonVol->pSprEntity->pRectPosition->x = pPigeonSol->pSprEntity->pRectPosition->x;
+		pPigeonVol->pSprEntity->pRectPosition->y = pPigeonSol->pSprEntity->pRectPosition->y;
+		pPigeonVol->direction = pPigeonSol->direction;
+		bAnimationEnCours = TRUE;
+	}
+
+	if (bAnimationEnCours == FALSE) return FALSE;
+
+	if (iTime > 0)
+	{
+		GenerateRandomVector(&movex, &movey, 1, 6, pPigeonVol, pLevel, NULL, 25);
+		pPigeonVol->mouvement = 1;
+		pPigeonVol->iTempoAnim += 1;
+		if (pPigeonVol->iTempoAnim == 7)	//Si la tempo est arrivée à son terme :
+		{
+			pPigeonVol->pSprEntity->iCurrentFrame += 1; //	- Frame suivante
+			if (pPigeonVol->pSprEntity->iCurrentFrame == pPigeonVol->pSprEntity->iNbFrames) //Si l'animation est arrivée au bout 
+			{
+				pPigeonVol->pSprEntity->iCurrentFrame = 0;
+				pPigeonVol->iTempoAnim = 0;
+			}
+			pPigeonVol->iTempoAnim = 0;
+		}
+		pPigeonVol->iCurrentMoveX = movex;
+		pPigeonVol->iCurrentMoveY = movey;
+	}
+	else
+	{
+		iTime = 100;
+		bAnimationEnCours = FALSE;
+		return FALSE;
+	}
+	iTime--;
+	return TRUE;
 }
