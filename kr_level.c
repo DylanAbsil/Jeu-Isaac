@@ -277,7 +277,7 @@ Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
 {
 	Uint32 iTilesID, iNumTilesX, iNumTilesY;
 	// Obtenir les numéros des tiles
-	if ((x >= (pLevel->iLevel_TileWidth * pLevel->pLevel_Tileset->iTilesWidth)) || (y >= (pLevel->iLevel_TileHeight * pLevel->pLevel_Tileset->iTilesHeight)))
+	if ((x >= (Uint32)(pLevel->iLevel_TileWidth * pLevel->pLevel_Tileset->iTilesWidth)) || (y >= (Uint32)(pLevel->iLevel_TileHeight * pLevel->pLevel_Tileset->iTilesHeight)))
 	{
 		//Kr_Log_Print(KR_LOG_WARNING, "GetTile : Out of level X: %d, Y: %d!!! \n",x,y);
 		return iTilesID = -1;
