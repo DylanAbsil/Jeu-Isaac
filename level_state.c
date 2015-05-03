@@ -242,7 +242,7 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 	{
 		if (pEntity->bFriendly == TRUE)
 		{
-			iRandomVectorRetour = GenerateRandomVector(&movex, &movey, 1, 2, pEntity, pLevelSt->pLevel, pLevelSt->pPlayer,25);
+			iRandomVectorRetour = GenerateRandomVector(&movex, &movey, 1, 2, pEntity, pLevelSt->pLevel, pLevelSt->pPlayer,25,50);
 			if (iRandomVectorRetour == 2) // On souhaite détecter la collision d'un oiseau avec le joueur
 			{
 				if (strcmp(pEntity->strEntityName, "pigeon1") == 0)
@@ -523,11 +523,12 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 *  \param  pLevel  a pointer to the 
 *  \param  pPlayer a pointer to the player entity
 *  \param  iWait   number of cycle before a new movement is compute
+*  \param  iRatio  The rand is between 0 and 100, if the value is above iRatio the entity will move
 *  \return  0 : No event
 			1 : The entity collide with the level and not with the player
 			2 : The entity collide with the player (and maybe with the level)
 */
-Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait)
+Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait, Uint32 iRatio)
 {
 	Uint32 i = 0, iSgn = 0, iValue = 0, iRetour = 0;
 	Sint32 Dummy = 0;
@@ -536,8 +537,8 @@ Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 
 	// Calcul d'un nouveau déplacement aléatoire
 	if (pEntity->iTempoMovement == 0)
 	{
-		iValue = rand() % 50;
-		if (iValue > 40)
+		iValue = rand() % 100;
+		if (iValue > iRatio)
 		{
 			iValue = rand() % 2;
 			if (iValue == 0)

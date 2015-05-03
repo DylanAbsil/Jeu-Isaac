@@ -470,27 +470,28 @@ Entity *ChargementPigeonVolant(SDL_Renderer *pRenderer)
 
 
 
-Boolean PigeonVol(Entity *pPigeonSol, Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon)
+Boolean PigeonVol(Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon, Uint32 x, Uint32 y)
 {
 	static Boolean bAnimationEnCours = FALSE; // Permet de savoir si une animation de pigeon dans les airs a lieu
-	static Uint32 iTime = 100; // durée de l'animation (tour de boucle)
+	static Uint32 iTime = 600; // durée de l'animation (tour de boucle)
 
 	Sint32 movex = 0, movey = 0;
-
+	Direction newDir = sud;
 	if (bActiver == TRUE)
 	{
-		// Récupérer les données nécessaires à l'ancien oiseau
-		pPigeonVol->pSprEntity->pRectPosition->x = pPigeonSol->pSprEntity->pRectPosition->x;
-		pPigeonVol->pSprEntity->pRectPosition->y = pPigeonSol->pSprEntity->pRectPosition->y;
-		pPigeonVol->direction = pPigeonSol->direction;
 		bAnimationEnCours = TRUE;
+		pPigeonVol->pSprEntity->pRectPosition->x = x;
+		pPigeonVol->pSprEntity->pRectPosition->y = y;
 	}
 
 	if (bAnimationEnCours == FALSE) return FALSE;
 
 	if (iTime > 0)
 	{
-		GenerateRandomVector(&movex, &movey, 1, 6, pPigeonVol, pLevel, NULL, 25);
+		GenerateRandomVector(&movex, &movey, 2, 3, pPigeonVol, pLevel, NULL, 25, 50);
+		newDir = foundDirection(movex, movey, pPigeonVol);
+		switchTextureFromDirection(pPigeonVol, newDir, pRenderer);
+
 		pPigeonVol->mouvement = 1;
 		pPigeonVol->iTempoAnim += 1;
 		if (pPigeonVol->iTempoAnim == 7)	//Si la tempo est arrivée à son terme :
@@ -503,6 +504,8 @@ Boolean PigeonVol(Entity *pPigeonSol, Entity *pPigeonVol, Boolean bActiver, SDL_
 			}
 			pPigeonVol->iTempoAnim = 0;
 		}
+		pPigeonVol->pSprEntity->pRectPosition->x += movex;
+		pPigeonVol->pSprEntity->pRectPosition->y += movey;
 		pPigeonVol->iCurrentMoveX = movex;
 		pPigeonVol->iCurrentMoveY = movey;
 	}

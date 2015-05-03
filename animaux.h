@@ -42,7 +42,7 @@ Entity *ChargementPapillon(SDL_Renderer *pRenderer);
 Boolean CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Uint32 *iNumber);
 
 Entity *ChargementPigeonVolant(SDL_Renderer *pRenderer);
-Boolean PigeonVol(Entity *pPigeonSol, Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon);
+Boolean PigeonVol(Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon ,Uint32 x, Uint32 y);
 
 #endif /* __KR_FPS_H__ */
 
