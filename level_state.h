@@ -41,5 +41,6 @@ Boolean			updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input 
 Boolean			updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, Weapon *pWeapon);
 
 Uint32			Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer);
+Uint32		    GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer);
 
 #endif /* __LEVEL_STATE__ */

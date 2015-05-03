@@ -61,6 +61,9 @@ typedef struct {
 	Uint32		iTempoAnim;			/*< Int for the temporisation of the animation >*/
 	Uint32		iTempoAtk;			/*< Int to handle the attack speed >*/
 	Boolean     bFriendly;			/*< TRUE if the entity is friendly ? Does it deal damage  >*/
+	Uint32      iTempoMovement;     /*< Value which can be used to compute a random movement   >*/
+	Sint32      iCurrentMoveX;		/*< Value which can be used to compute a random movement   >*/
+	Sint32      iCurrentMoveY;		/*< Value which can be used to compute a random movement   >*/
 }Entity;
 
 Entity *	Entity_Init(char *szFileName);
@@ -74,7 +77,6 @@ void		foundWayToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 movex, Sint32 mo
 void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
 void		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy);
 void		switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer *pRenderer);
-void		GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax);
 
 
 void		meleeDamage(Entity *pGiver, Entity *pReceiver);

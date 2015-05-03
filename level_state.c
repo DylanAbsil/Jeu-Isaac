@@ -231,8 +231,8 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 	}
 	else // Monster
 	{
-		if(pEntity->bFriendly == TRUE) GenerateRandomVector(&movex, &movey, 1, 2);
-		else getVectorToPlayer(pEntity, pLevelSt->pPlayer,&movex, &movey);
+		if(pEntity->bFriendly == TRUE) GenerateRandomVector(&movex, &movey, 1,2 ,pEntity,pLevelSt->pLevel,pLevelSt->pPlayer);
+		else getVectorToPlayer(pEntity, pLevelSt->pPlayer, &movex, &movey);
 	}
 
 
@@ -242,6 +242,8 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		pEntity->mouvement = 0;	
 		pEntity->pSprEntity->iCurrentFrame = 0;	
 		pEntity->iTempoAnim = 0;
+		pEntity->iCurrentMoveX = 0;
+		pEntity->iCurrentMoveY = 0;
 		return TRUE;
 	}
 	else
@@ -286,7 +288,7 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 			}
 		}
 		
-		// Déplacement de l'entité 
+		// Déplacement de l'entité sans la gestion des collisions
 		if (pEntity->state == noclip)
 		{
 			NewVx = movex;
@@ -294,6 +296,8 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 		}
 		pEntity->pSprEntity->pRectPosition->x += NewVx;
 		pEntity->pSprEntity->pRectPosition->y += NewVy;
+		pEntity->iCurrentMoveX = NewVx;
+		pEntity->iCurrentMoveY = NewVy;
 		return TRUE;
 	}
 }
@@ -488,3 +492,81 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 
 
 
+/*!
+*  \fn     Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer)
+*  \brief  Function to generate random vector
+*
+*  \param  pMoveX  a pointer to the X vector
+*  \param  pMoveY  a pointer to the Y vector
+*  \param  iMax    Max bound
+*  \param  iMin    Min bound
+*  \param  pEntity a pointer to the entity
+*  \param  pLevel  a pointer to the 
+*  \param  pPlayer a pointer to the player entity
+*  \return  0 : No event
+			1 : The entity collide with the level and not with the player
+			2 : The entity collide with the player (and maybe with the level)
+*/
+Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer)
+{
+	Uint32 i = 0, iSgn = 0, iValue = 0, iWait = 25 , iRetour = 0;
+	Sint32 Dummy = 0;
+	Boolean bChange = TRUE;
+
+	// Calcul d'un nouveau déplacement aléatoire
+	if (pEntity->iTempoMovement == 0)
+	{
+		iValue = rand() % 50;
+		if (iValue > 40)
+		{
+			iValue = rand() % 2;
+			if (iValue == 0)
+			{
+				*pMovex = (rand() % (iMax - iMin + 1)) + iMin;
+				*pMovey = 0;
+				// Inversion du signe
+				iValue = rand() % 2;
+				if (iValue == 0)	*pMovex = *pMovex * -1;
+			}
+			else
+			{
+				*pMovex = 0;
+				*pMovey = (rand() % (iMax - iMin + 1)) + iMin;
+				// Inversion du signe
+				iValue = rand() % 2;
+				if (iValue == 0)	*pMovey = *pMovey * -1;
+			}
+		}
+		else
+		{
+			*pMovex = 0;
+			*pMovey = 0;
+		}
+		pEntity->iTempoMovement = iWait;
+		return iRetour;
+	}
+
+	// Màj des données
+	*pMovex = pEntity->iCurrentMoveX;
+	*pMovey = pEntity->iCurrentMoveY;
+	pEntity->iTempoMovement = pEntity->iTempoMovement - 1;
+
+	// Collision avec le décor
+	if (Kr_Collision(pLevel, pEntity->pSprEntity->pRectPosition, NULL, *pMovex, *pMovey, &Dummy, &Dummy) == 6)
+	{
+		if (*pMovex != 0) *pMovex = *pMovex * -1; // On rentre dans un mur à cause d'un mouvement sur X donc on l'inverse
+		if (*pMovey != 0) *pMovey = *pMovey * -1;
+		iRetour = 1;
+	}
+	// Collision avec le joueur
+	if (pPlayer && iRetour == 0) // vérifier que la valeur n'est pas déjà été modifié par une collision avec le décor sinon l'entité disparait
+	{
+		if (Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pPlayer->pSprEntity->pRectPosition, *pMovex, *pMovey, &Dummy, &Dummy) == 2)
+		{
+			if (*pMovex != 0) *pMovex = *pMovex * -1; // On rentre dans un mur à cause d'un mouvement sur X donc on l'inverse
+			if (*pMovey != 0) *pMovey = *pMovey * -1;
+			iRetour = 2;
+		}
+	}
+	return iRetour;
+}

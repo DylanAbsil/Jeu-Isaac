@@ -49,7 +49,10 @@ Entity * Entity_Init(char* szFileName){
 	entite->iSpeedEntity = 0;
 	entite->iTempoAnim = 0;
 	entite->iTempoAtk = 0;
+	entite->iTempoMovement = 15;
 	entite->bFriendly = TRUE;
+	entite->iCurrentMoveX = 0;
+	entite->iCurrentMoveY = 0;
 	return entite;
 }
 
@@ -229,61 +232,6 @@ Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
 
 
 
-/*!
-*  \fn     void GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax)
-*  \brief  Function to generate random vector
-*
-*  \remarks : ( 1 chance sur 5 que le vecteur change de sens sur un axe)
-*             ( 3 chance sur 5 pour conserver un mouvement nul sur un axe)
-*             Mauvais calcul de probabilité je crois
-*  \param  pMoveX  a pointer to the X vector
-*  \param  pMoveY  a pointer to the Y vector
-*  \param  iMax    Max bound
-*  \param  iMin    Min bound
-*  \return none
-*/
-void GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax)
-{
-	Sint32 oldX = 0, oldY = 0;
-	Uint32 i = 0, ratioSgn = 3, ratioValue = 2, iSgn = 0, iValue = 0;
-	Boolean bChange = TRUE;
-	oldX = *pMovex;
-	oldY = *pMovey;
-
-	/* Valeur du déplacement absolu sur X */
-	if (oldX == 0)
-	{
-		iValue = rand() % ratioValue;
-		if (iValue > ratioValue - 1) bChange = FALSE;
-	}
-	if (bChange == TRUE) *pMovex = (rand() % (iMax - iMin + 1)) + iMin;
-
-
-	/* Valeur du déplacement absolu sur X */
-	if (oldY == 0)
-	{
-		iValue = rand() % ratioValue;
-		if (iValue > ratioValue - 1) bChange = FALSE;
-	}
-	if (bChange == TRUE) *pMovey = (rand() % (iMax - iMin + 1)) + iMin;
-
-
-	/* Sens du déplacement sur X */
-	iSgn = rand() % ratioSgn;
-	//Kr_Log_Print(KR_LOG_INFO, "iSgn = %d\n",iSgn);
-	if (iSgn > ratioSgn - 1) bChange = FALSE;
-	if (bChange == TRUE)
-	{
-		*pMovex = iValue * -1;
-		//Kr_Log_Print(KR_LOG_INFO, "Changement X\n");
-	}
-
-	/* Sens du déplacement sur Y */
-	iSgn = rand() % ratioSgn;
-	if (iSgn > ratioSgn - 1) bChange = FALSE;
-	if (bChange == TRUE) *pMovey = iValue * -1;
-
-}
 
 
 
