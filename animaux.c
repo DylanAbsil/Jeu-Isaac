@@ -277,7 +277,7 @@ Entity *ChargementBuisson(SDL_Renderer *pRenderer, Uint32 iBuisson)
 
 
 /*!
-*  \fn     Boolean AnimationBuisson(Entity *pEntity, Boolean bPassage, Uint32 x, Uint32 y, SDL_Renderer *pRenderer)
+*  \fn     Boolean AnimationBuisson(Entity *pEntity, Boolean bPassage, Uint32 x, Uint32 y, SDL_Renderer *pRenderer, Kr_Sound *pSndBuisson)
 *  \brief  Function to start the animation sequence of the bush
 *
 *  \param  pEntity   a pointer to the entity
@@ -285,31 +285,34 @@ Entity *ChargementBuisson(SDL_Renderer *pRenderer, Uint32 iBuisson)
 *  \param  x		 X coordinate of the bush
 *  \param  y		 Y coordinate of the bush
 *  \param  pRenderer a pointer to the renderer
+*  \param  pSndBuisson a pointer to the  allocated sound
 *  \return TRUE if the sequence is not finished, FALSE otherwise
 */
-Boolean AnimationBuisson(Entity *pEntity, Boolean bPassage, Uint32 x, Uint32 y, SDL_Renderer *pRenderer)
+Boolean AnimationBuisson(Entity *pEntity, Boolean bPassage, Uint32 x, Uint32 y, SDL_Renderer *pRenderer, Kr_Sound *pSndBuisson)
 {
 	
 	static Boolean bAnimationEnCours = FALSE;
+	if (bPassage && !bAnimationEnCours) Kr_Sound_Play(pSndBuisson, KR_SOUND_NATURE_CANAL, 25, 0); // On le joue une seule fois
 	Direction newDir = sud;
 	if (bPassage || bAnimationEnCours) bAnimationEnCours = TRUE;
 	else return FALSE;
-	
-pEntity->pSprEntity->pRectPosition->x = x;
-pEntity->pSprEntity->pRectPosition->y = y;
 
-pEntity->mouvement = 1;
-pEntity->iTempoAnim += 1;
-if (pEntity->iTempoAnim == 10)	//Si la tempo est arrivée à son terme :
-{
-	pEntity->pSprEntity->iCurrentFrame += 1; //	- Frame suivante
-	if (pEntity->pSprEntity->iCurrentFrame == pEntity->pSprEntity->iNbFrames) //Si l'animation est arrivée au bout 
+
+	pEntity->pSprEntity->pRectPosition->x = x;
+	pEntity->pSprEntity->pRectPosition->y = y;
+
+	pEntity->mouvement = 1;
+	pEntity->iTempoAnim += 1;
+	if (pEntity->iTempoAnim == 7)	//Si la tempo est arrivée à son terme :
 	{
-		pEntity->pSprEntity->iCurrentFrame = 0;
+		pEntity->pSprEntity->iCurrentFrame += 1; //	- Frame suivante
+		if (pEntity->pSprEntity->iCurrentFrame == pEntity->pSprEntity->iNbFrames) //Si l'animation est arrivée au bout 
+		{
+			pEntity->pSprEntity->iCurrentFrame = 0;
+			pEntity->iTempoAnim = 0;
+			return bAnimationEnCours = FALSE;
+		}
 		pEntity->iTempoAnim = 0;
-		return bAnimationEnCours = FALSE;
-	}
-	pEntity->iTempoAnim = 0;
 }
 
 return TRUE;
