@@ -109,7 +109,7 @@ Uint32 PeriodicEvent()
 {
 	static Uint32 iRepeat = 0; // On compte le nombre de fois que cette fonction est appelée
 	Uint32 iRetour = 0;
-	Uint32 iTimeOiseau = 300;
+	Uint32 iTimeOiseau = 3000;
 
 	iRepeat++;
 	if ((iRepeat % iTimeOiseau) == 0)
