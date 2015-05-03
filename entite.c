@@ -144,7 +144,7 @@ Boolean Entity_Draw(SDL_Renderer * pRenderer, Entity *entite){
 
 	//Création d'un int permettant de sélectionner la bonne frame
 	Uint32 largeur = entite->pSprEntity->iFrameWidth / entite->pSprEntity->iNbFrames;
-
+	if (entite->state == invisible) return TRUE;
 	if ((largeur < 0) || (entite == NULL)){
 		Kr_Log_Print(KR_LOG_ERROR, "Impossible to access to the entity\n");
 		return FALSE;

@@ -43,7 +43,7 @@ typedef enum {
 	normal,
 	invincible,
 	slowed,
-	feared,
+	invisible,
 	poisoned,
 	noclip,
 }EntityState;

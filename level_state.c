@@ -190,12 +190,12 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
 	}
 	for (i = 0; i < pLevelSt->iNbEntities; i++)
 	{
+
 		if (Entity_Draw(pRenderer, *(aEntity + i)) == FALSE)
 		{
 			Kr_Log_Print(KR_LOG_ERROR, "The entity %d hasn't been drawn", i);
 			return FALSE;
 		}
-		//Entity_Log(*(aEntity + i));
 	}
 	return TRUE;
 }
@@ -220,7 +220,7 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
 Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
 {
 	Sint32		movex = 0, movey = 0, NewVx = 0, NewVy = 0;
-	Uint32		i = 0, iTmp = 0;
+	Uint32		i = 0, iTmp = 0, iRandomVectorRetour = 0;
 	Direction	newDir	= sud; //Défaut
 	Entity	  **aEntity = pLevelSt->aEntityLevel;
 
@@ -231,7 +231,17 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 	}
 	else // Monster
 	{
-		if(pEntity->bFriendly == TRUE) GenerateRandomVector(&movex, &movey, 1,2 ,pEntity,pLevelSt->pLevel,pLevelSt->pPlayer);
+		if (pEntity->bFriendly == TRUE)
+		{
+			iRandomVectorRetour = GenerateRandomVector(&movex, &movey, 1, 2, pEntity, pLevelSt->pLevel, pLevelSt->pPlayer);
+			if (iRandomVectorRetour == 2) // On souhaite détecter la collision d'un oiseau avec le joueur
+			{
+				if (strcmp(pEntity->strEntityName, "pigeon1") == 0)
+				{
+
+				}
+			}
+		}
 		else getVectorToPlayer(pEntity, pLevelSt->pPlayer, &movex, &movey);
 	}
 
