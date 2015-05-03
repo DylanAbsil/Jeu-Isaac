@@ -114,7 +114,7 @@ Uint32 PeriodicEvent()
 	iRepeat++;
 	if ((iRepeat % iTimeOiseau) == 0)
 	{
-		Kr_Log_Print(KR_LOG_INFO, "Repeat %d\n", iRepeat);
+		//Kr_Log_Print(KR_LOG_INFO, "Repeat %d\n", iRepeat);
 		return iRetour = 1;
 	}
 	return iRetour;

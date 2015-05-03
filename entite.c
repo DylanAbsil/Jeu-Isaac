@@ -22,6 +22,7 @@
 /*               |            |  le rectangle du sprite		                 */
 /* Herrou        | 27/04/2015 | switchTextureFromDirection calcul la largueur*/
 /*               |            |  de la frame du sprite toute seule           */
+/* Herrou        | 01/05/2015 | Fix fans switchTextureFromDirection, fclose  */
 /* ========================================================================= */
 
 
@@ -82,7 +83,7 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Uint32 iSpeed, E
 	entite->iTempoAtk = ATTACK_SPEED;
 	entite->bFriendly = bFriendly;
 
-	Entity_Log(entite);
+	//Entity_Log(entite);
 //	Kr_Log_Print(KR_LOG_INFO, "Entity %s with sprite %s has been loaded !\n", entite->strEntityName, entite->pSprEntity->strName);
 	return TRUE;
 }
@@ -269,12 +270,12 @@ void GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iM
 
 	/* Sens du déplacement sur X */
 	iSgn = rand() % ratioSgn;
-	Kr_Log_Print(KR_LOG_INFO, "iSgn = %d\n",iSgn);
+	//Kr_Log_Print(KR_LOG_INFO, "iSgn = %d\n",iSgn);
 	if (iSgn > ratioSgn - 1) bChange = FALSE;
 	if (bChange == TRUE)
 	{
 		*pMovex = iValue * -1;
-		Kr_Log_Print(KR_LOG_INFO, "Changement X\n");
+		//Kr_Log_Print(KR_LOG_INFO, "Changement X\n");
 	}
 
 	/* Sens du déplacement sur Y */
@@ -300,6 +301,7 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 	// Nouveau sprite potentiel suivant la direction
 	char newSprFileName[SIZE_MAX_NAME];
 	SDL_Rect rect = { 0, 0, 0, 0 };
+	FILE *fp = NULL;
 	//	Kr_Log_Print(KR_LOG_INFO, "Previous direction : %d\n", entite->direction);
 
 	strcpy(newSprFileName, entite->pSprEntity->strSpriteName); //Nécessaire de l'initialiser même si après la direction change
@@ -308,7 +310,9 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 		if (entite->direction != nord)
 		{
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "nord"); //on va chercher le bon fichier image
-			if (fopen(newSprFileName, "r") == NULL) return; // Vérifie l'existence du fichier
+			fp = fopen(newSprFileName, "r");
+			if (!fp) return; // Vérifie l'existence du fichier
+			fclose(fp);
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);							// on libère l'ancienne texture
 			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, &rect);	//on load la nouvelle texture asssociéee à la nouvelle direction
 			entite->pSprEntity->iFrameWidth = rect.w;
@@ -319,7 +323,9 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 		if (entite->direction != sud)
 		{
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "sud");
-			if (fopen(newSprFileName, "r") == NULL) return; 
+			fp = fopen(newSprFileName, "r");
+			if (!fp) return; // Vérifie l'existence du fichier
+			fclose(fp);
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
 			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, &rect);
 			entite->pSprEntity->iFrameWidth = rect.w;
@@ -330,7 +336,9 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 		if (entite->direction != ouest)
 		{
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "ouest");
-			if (fopen(newSprFileName, "r") == NULL) return; 
+			fp = fopen(newSprFileName, "r");
+			if (!fp) return; // Vérifie l'existence du fichier
+			fclose(fp);
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
 			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, &rect);
 			entite->pSprEntity->iFrameWidth = rect.w;
@@ -341,7 +349,9 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 		if (entite->direction != est)
 		{
 			sprintf(newSprFileName, "sprites/%s_%s.png", entite->strEntityName, "est");
-			if (fopen(newSprFileName, "r") == NULL) return; // Vérifie l'existence du fichier
+			fp = fopen(newSprFileName, "r");
+			if (!fp) return; // Vérifie l'existence du fichier
+			fclose(fp);
 			UTIL_FreeTexture(&entite->pSprEntity->pTextureSprite);
 			entite->pSprEntity->pTextureSprite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, &rect);
 			entite->pSprEntity->iFrameWidth = rect.w;

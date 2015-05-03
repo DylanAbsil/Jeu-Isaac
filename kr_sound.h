@@ -23,6 +23,7 @@
     #include "kr_common.h"
 	
 #define KR_SOUND_MAP_EVENT_CANAL 0
+#define KR_SOUND_ANIMAL_CANAL 1
 
     /*! 
      * \struct Kr_Sound

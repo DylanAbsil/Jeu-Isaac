@@ -231,8 +231,8 @@ Boolean  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input m
 	}
 	else // Monster
 	{
-		//GenerateRandomVector(&movex, &movey, 1, 2);
-		getVectorToPlayer(pEntity, pLevelSt->pPlayer,&movex, &movey);
+		if(pEntity->bFriendly == TRUE) GenerateRandomVector(&movex, &movey, 1, 2);
+		else getVectorToPlayer(pEntity, pLevelSt->pPlayer,&movex, &movey);
 	}
 
 
@@ -485,3 +485,6 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 	}
 	return iTilesID;
 }
+
+
+
