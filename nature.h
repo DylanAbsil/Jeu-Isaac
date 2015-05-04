@@ -1,7 +1,7 @@
 /* ========================================================================= */
 /*!
-* \file    animaux.h
-* \brief   Contains the structure to handle the animal IA
+* \file    nature.h
+* \brief   Contains the structure to handle the nature
 * \author  Olivier Herrou
 * \version 1.0
 * \date    29 Avril 2015
@@ -10,9 +10,9 @@
 /* Developers    | Date       | Comments                                     */
 /* --------------+------------+--------------------------------------------- */
 /* Herrou        | 29/04/2015 | Creation, gestion des oiseaux                */
-/*               | 01/05/2015 | Animation des buissons                       */
-/*               | 02/05/2015 | Calcul du nombre de papillon                 */
-/*               |            |                                              */
+/* Herrou        | 01/05/2015 | Animation des buissons                       */
+/* Herrou        | 02/05/2015 | Calcul du nombre de papillon                 */
+/* Herrou        | 04/05/2015 | Renommer fichier en nature.h .c              */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */

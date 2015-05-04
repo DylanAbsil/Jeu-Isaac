@@ -29,7 +29,7 @@
 #include "level_editor.h"
 #include "level_state.h"
 #include "weapon.h"
-#include "animaux.h"
+#include "nature.h"
 //http://noproblo.dayjo.org/ZeldaSounds/
  
 

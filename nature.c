@@ -1,7 +1,7 @@
 /* ========================================================================= */
 /*!
-* \file    animaux.c
-* \brief   Contains the function to handle the animal IA
+* \file    nature.c
+* \brief   Contains the function to handle the nature
 * \author  Olivier Herrou
 * \version 1.0
 * \date    29 Avril 2015
@@ -12,11 +12,11 @@
 /* Herrou        | 29/04/2015 | Creation, gestion des oiseaux                */
 /*               | 01/05/2015 | Animation des buissons                       */
 /*               | 02/05/2015 | Calcul du nombre de papillon                 */
-/*               |            |                                              */
+/* Herrou        | 04/05/2015 | Renommer fichier en nature.h .c              */
 /*               |            |                                              */
 /* ========================================================================= */
 
-#include "animaux.h"
+#include "nature.h"
 
 /*
 Remarque : Le déplacement de l'oiseau n'est pas interrompu même lors d'un changement de niveau (pas prioritaire pour corriger)
