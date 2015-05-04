@@ -18,8 +18,8 @@
 /* ========================================================================= */
 
 
-#ifndef __KR_ANIMAUX_H__
-#define __KR_ANIMAUX_H__
+#ifndef __KR_NATURE_H__
+#define __KR_NATURE_H__
 
 	#include "kr_common.h"
 	#include "kr_log.h"
@@ -39,12 +39,14 @@ Boolean AnimationBuisson(Entity *pEntity, Boolean bPassage, Uint32 x, Uint32 y, 
 Uint32	DetectPassageBuisson(Kr_Level *pLevel, Entity *pPlayer, Uint32 *px, Uint32 *py);
 
 Entity *ChargementPapillon(SDL_Renderer *pRenderer);
-Boolean CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Uint32 *iNumber);
+void CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Entity *pEntity, Uint32 *iNumber);
+Boolean UpdateButterfly(Entity *pButterfly, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndButterfly);
+Boolean ButterflyCollision(Kr_Level *pLevel, SDL_Rect *pRect, Uint32 vx, Uint32 vy);
 
 Entity *ChargementPigeonVolant(SDL_Renderer *pRenderer);
 Boolean PigeonVol(Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon ,Uint32 xDebut, Uint32 yDebut,Uint32 *xFin, Uint32 *yFin);
 
-#endif /* __KR_FPS_H__ */
+#endif /* _NATURE_H__ */
 
 /* ========================================================================= */
 

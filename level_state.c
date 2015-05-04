@@ -520,7 +520,7 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 *  \param  iMax    Max bound
 *  \param  iMin    Min bound
 *  \param  pEntity a pointer to the entity
-*  \param  pLevel  a pointer to the 
+*  \param  pLevel  a pointer to the level
 *  \param  pPlayer a pointer to the player entity
 *  \param  iWait   number of cycle before a new movement is compute
 *  \param  iRatio  The rand is between 0 and 100, if the value is above iRatio the entity will move

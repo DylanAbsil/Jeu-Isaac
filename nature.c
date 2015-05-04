@@ -325,8 +325,8 @@ Boolean AnimationBuisson(Entity *pEntity, Boolean bPassage, Uint32 x, Uint32 y, 
 *
 *  \param  pLevel   a pointer to the level
 *  \param  pPlayer  a pointer to the entity
-*  \param  px		a pointer to the level
-*  \param  py		a pointer to the entity
+*  \param  px		coordinate of the bush
+*  \param  py		coordinate of the bush
 *  \return	0 : Nothing
 			1 : Bush n°1
 			2 : Bush n°2
@@ -361,12 +361,12 @@ Entity *ChargementPapillon(SDL_Renderer *pRenderer)
 	SDL_Rect  *pPapillon = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
 	pPapillon->x = 0;
 	pPapillon->y = 0;
-	pPapillon->w = 32;
-	pPapillon->h = 32;
+	pPapillon->w = 13;
+	pPapillon->h = 13;
 
 	/* Chargement des sprites */
 	pSprite1 = Kr_Sprite_Init("papillon");
-	if (Kr_Sprite_Load(pSprite1, nord, 32, 128, 4, pPapillon, pRenderer) == FALSE)
+	if (Kr_Sprite_Load(pSprite1, nord, 13, 52, 4, pPapillon, pRenderer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite papillon!\n");
 		SDL_Quit();
@@ -385,18 +385,19 @@ Entity *ChargementPapillon(SDL_Renderer *pRenderer)
 
 
 /*!
-*  \fn     Boolean CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel,Uint32 *iNumber);
+*  \fn     Boolean CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Entity *pEntity, Uint32 *iNumber);
 *  \brief  Function to check if the level can spawn Papillon on the map
 
 *  \param  bCalculer When this value is set to TRUE, the function will check the level
 *  \param  pLevel    a pointer to the level
+*  \param  pEntity   a pointer to the entity
 *  \param  iNumber	 this value will return the number of entity that the level should spawn
 
-*  \return TRUE if the level should spawn the entity, FALSE otherwise
+*  \return none
 */
-Boolean CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Uint32 *iNumber)
+void CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Entity *pEntity, Uint32 *iNumber)
 {
-	Sint32 i = 0, j = 0, iValue = 0, iNumTile = 0;
+	Sint32 i = 0, j = 0, iValue = 0, iNumTile = 0, iTmp = 0;
 
 	for (i = 0; i < pLevel->iLevel_TileWidth; i++)
 	{
@@ -424,8 +425,124 @@ Boolean CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Uint32 *iN
 		*iNumber = 1;
 	}
 
+	if (*iNumber > 0)
+	{
+		iTmp = rand() % iValue;
+		iValue = 0;
+		for (i = 0; i < pLevel->iLevel_TileWidth; i++)
+		{
+			for (j = 0; j < pLevel->iLevel_TileHeight; j++)
+			{
+				iNumTile = pLevel->szLayout[i][j];
+				if (pLevel->pLevel_Tileset->pTilesProp[iNumTile].iArbre)
+				{
+					iValue++;
+				}
+				if (iTmp == iValue)
+				{
+					pEntity->pSprEntity->pRectPosition->x = i * pLevel->pLevel_Tileset->iTilesWidth;
+					pEntity->pSprEntity->pRectPosition->y = j * pLevel->pLevel_Tileset->iTilesWidth;
+					iTmp--;// On bloque ainsi tout retour dans cette boucle
+				}
+			}
+		}
+	}
+}
+
+
+
+/*!
+*  \fn     Boolean UpdateButterfly(Entity *pButterfly, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndButterfly)
+*  \brief  Function to update the behaviour of a butterfly
+
+*  \param  pButterfly a pointer to the entity
+*  \param  bActiver   TRUE if we must start a sequence of flying bird
+*  \param  pRenderer  a pointer to the renderer
+*  \param  pLevel	  a pointer to the level
+*  \param  pButterfly a pointer to the sound
+*  \return ?????????????
+*/
+Boolean UpdateButterfly(Entity *pButterfly, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndButterfly)
+{
+	static Boolean bAnimationEnCours = FALSE; // Permet de savoir si une animation de pigeon dans les airs a lieu
+	static Uint32 iTime = 1545; // durée de l'animation (tour de boucle)
+
+	Sint32 movex = 0, movey = 0;
+	Direction newDir = sud;
+	if (!bActiver) return FALSE;
+	if (bActiver && iTime == 0) Kr_Sound_Play(pSndButterfly, KR_SOUND_NATURE_CANAL, 25, 0); // On le joue une seule fois
+		GenerateRandomVector(&movex, &movey, 1, 2, pButterfly, NULL, NULL, 25, 60);
+		newDir = foundDirection(movex, movey, pButterfly);
+		switchTextureFromDirection(pButterfly, newDir, pRenderer);
+		if (ButterflyCollision(pLevel, pButterfly->pSprEntity->pRectPosition, movex, movey) == FALSE)
+		{
+			pButterfly->mouvement = 1;
+			pButterfly->iTempoAnim += 1;
+			if (pButterfly->iTempoAnim == 7)	//Si la tempo est arrivée à son terme :
+			{
+				pButterfly->pSprEntity->iCurrentFrame += 1; //	- Frame suivante
+				if (pButterfly->pSprEntity->iCurrentFrame == pButterfly->pSprEntity->iNbFrames) //Si l'animation est arrivée au bout 
+				{
+					pButterfly->pSprEntity->iCurrentFrame = 0;
+					pButterfly->iTempoAnim = 0;
+				}
+				pButterfly->iTempoAnim = 0;
+			}
+			pButterfly->pSprEntity->pRectPosition->x += movex;
+			pButterfly->pSprEntity->pRectPosition->y += movey;
+			pButterfly->iCurrentMoveX = movex;
+			pButterfly->iCurrentMoveY = movey;
+		}
+		else
+		{
+			pButterfly->mouvement = 0;
+			pButterfly->iTempoAnim = 0;
+			pButterfly->iCurrentMoveX = 0;
+			pButterfly->iCurrentMoveY = 0;
+		}
+	if (iTime == 0)
+	{
+		iTime = 1545;
+	}
+	iTime--;
+	return TRUE;
+}
+
+Boolean ButterflyCollision(Kr_Level *pLevel, SDL_Rect *pRect, Uint32 vx, Uint32 vy)
+{
+	Uint32 iMinX, iMinY, iMaxX, iMaxY, i, j, iNumTile;
+	SDL_Rect pRect1;
+	pRect1 = *pRect;
+	pRect1.x += vx;
+	pRect1.y += vy;
+	// Verifie si on est pas déjà hors map
+	if (pRect1.x < 0 || ((pRect1.x + pRect1.w - 1) >= pLevel->iLevel_TileWidth  * pLevel->pLevel_Tileset->iTilesWidth) ||
+		pRect1.y < 0 || ((pRect1.y + pRect1.h - 1) >= pLevel->iLevel_TileHeight * pLevel->pLevel_Tileset->iTilesHeight))
+	{
+		return TRUE;
+	}
+
+	// Détermine les tiles à controler
+	iMinX = pRect1.x / pLevel->pLevel_Tileset->iTilesWidth;
+	iMinY = pRect1.y / pLevel->pLevel_Tileset->iTilesHeight;
+	iMaxX = (pRect1.x + pRect1.w - 1) / pLevel->pLevel_Tileset->iTilesWidth;
+	iMaxY = (pRect1.y + pRect1.h - 1) / pLevel->pLevel_Tileset->iTilesHeight;
+
+	for (i = iMinX; i <= iMaxX; i++)
+	{
+		for (j = iMinY; j <= iMaxY; j++)
+		{
+			iNumTile = pLevel->szLayout[i][j];
+			if (pLevel->pLevel_Tileset->pTilesProp[iNumTile].iArbre == 0)
+			{
+				return TRUE;
+			}
+		}
+	}
 	return FALSE;
 }
+
+
 
 
 
@@ -470,6 +587,21 @@ Entity *ChargementPigeonVolant(SDL_Renderer *pRenderer)
 
 
 
+/*!
+*  \fn     Boolean PigeonVol(Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon, Uint32 xDebut, Uint32 yDebut, Uint32 *xFin, Uint32 *yFin)
+*  \brief  Function to update the behaviour of the flying bird
+
+*  \param  pPigeonVol When this value is set to TRUE, the function will check the level
+*  \param  bActiver   TRUE if we must start a sequence of flying bird
+*  \param  pRenderer  a pointer to the renderer
+*  \param  pLevel	  a pointer to the level
+*  \param  pSndPigeon a pointer to the sound
+*  \param  xDebut	  coordinate of the bird when it was on the ground
+*  \param  yDebut	  coordinate of the bird when it was on the ground
+*  \param  xFin		  coordinate of the bird when it land on the ground
+*  \param  yFin		  coordinate of the bird when it land on the ground
+*  \return TRUE if a bird is still flying, FALSE otherwise
+*/
 Boolean PigeonVol(Entity *pPigeonVol, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndPigeon, Uint32 xDebut, Uint32 yDebut, Uint32 *xFin, Uint32 *yFin)
 {
 	static Boolean bAnimationEnCours = FALSE; // Permet de savoir si une animation de pigeon dans les airs a lieu

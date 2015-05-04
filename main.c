@@ -234,11 +234,12 @@ int Isaac(int *argc, char **argv)
 	pBuisson2 = ChargementBuisson(pRenderer, 2);
 	
 	/* Papillon */
-	Boolean bCheckPapillon = FALSE;
+	Boolean bCheckPapillon = FALSE, bDrawPapillon = FALSE;
 	Uint32 iNumberPapillon = 0;
 	Entity *pPapillon = NULL;
+	Kr_Sound *pSndPapillon = NULL;
 	pPapillon = ChargementPapillon(pRenderer);
-
+	pSndPapillon = Kr_Sound_Alloc("butterfly");
 	/* Pigeon effrayé */
 	Entity *pPigeonVol = NULL;
 	Boolean bFearedPigeon = FALSE, bDrawPigeonVol = FALSE, bOldPigeon = FALSE;
@@ -264,9 +265,10 @@ int Isaac(int *argc, char **argv)
 			pCurrentLevelState = Level_State_Init(pPlayer);
 			Level_State_Load(pCurrentLevelState, pCurrentLevel, pRenderer);
 			Mix_PlayMusic(pCurrentLevel->pMusic->pMsc, -1);
-			bCheckPapillon = TRUE;
 			bCheckTypeOiseau = TRUE;
 			bFearedPigeon = FALSE;
+			bCheckPapillon = TRUE;
+			bDrawPapillon = FALSE;
 		}
 
 		UpdateEvents(&inEvent);
@@ -315,7 +317,6 @@ int Isaac(int *argc, char **argv)
 		{
 			bChangeLevel = TRUE;
 		}
-
 		/* ========================================================================= */
 		/*                              FPS & EVENEMENT                              */
 		/* ========================================================================= */
@@ -360,10 +361,11 @@ int Isaac(int *argc, char **argv)
 		 // NON DEVELOPPE
 		if (bCheckPapillon == TRUE)
 		{
-			CalculApparitionPapillon(bCheckPapillon, pCurrentLevel, &iNumberPapillon);
+			CalculApparitionPapillon(bCheckPapillon, pCurrentLevel, pPapillon, &iNumberPapillon);
+			if (iNumberPapillon > 0) bDrawPapillon = TRUE;
 			bCheckPapillon = FALSE;
 		}
-
+		UpdateButterfly(pPapillon, bDrawPapillon, pRenderer, pCurrentLevel, pSndPapillon);
 		/* Gestion des pigeons */
 		if (iCodeUpdateEntity == 2) // Oiseau effrayé
 		{
@@ -414,6 +416,7 @@ int Isaac(int *argc, char **argv)
 		if ((bDrawBuisson == TRUE) && (iValeurBuisson == 2)) Entity_Draw(pRenderer, pBuisson2);
 		drawAllEntities(pCurrentLevelState, pRenderer);
 		drawProjectilesWeapon(pPlayer->pWeapon->plProjectile, pRenderer);
+		if (bDrawPapillon == TRUE) Entity_Draw(pRenderer, pPapillon);
 		if ((bDrawPigeonVol == TRUE)) Entity_Draw(pRenderer, pPigeonVol);
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 1)) Entity_Draw(pRenderer, pOiseau1);
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 2)) Entity_Draw(pRenderer, pOiseau2);
@@ -444,6 +447,7 @@ int Isaac(int *argc, char **argv)
 	Kr_Sound_Free(&pSndOiseau2);
 	Kr_Sound_Free(&pSndBuisson);
 	Kr_Sound_Free(&pSndPigeon);
+	Kr_Sound_Free(&pSndPapillon);
 	//Entity_Free(pZelda);				// Libération mémoire du zelda est déjà fait si On le précise dans Level_State
 	Level_State_Free(pCurrentLevelState, TRUE); // Libération mémoire des données du niveau
 	Kr_Map_Free(pMap);

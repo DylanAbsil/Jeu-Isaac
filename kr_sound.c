@@ -125,6 +125,7 @@ void Kr_Sound_Print( Kr_Sound *pSound )
  */
 void Kr_Sound_Play( Kr_Sound *pSound, Uint32 iChannel, Uint32 iVolume, Sint32 iLoops )
 {
+	if (!pSound) return;
     Mix_VolumeChunk( pSound->pChunk, iVolume );
     Mix_PlayChannel( iChannel, pSound->pChunk, iLoops );
 }
