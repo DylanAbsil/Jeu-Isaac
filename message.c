@@ -60,7 +60,7 @@ Message *Message_Init(char *szMessageName, SDL_Renderer *pRenderer)
 
 
 /*!
-*  \fn   Boolean  Message_Load(Message *pMessage, char *szNameBackground, Uint32 iStayTime, SDL_Color color, TTF_Font *pFont, SDL_Rect rTextPosition)
+*  \fn   Boolean  Message_Load(Message *pMessage, char *szNameBackground, Uint32 iStayTime, SDL_Color color, TTF_Font *pFont)
 *  \brief  Function to free a Message structure
 *
 *  \param  pMessage				a pointer to the structure to free
@@ -68,15 +68,13 @@ Message *Message_Init(char *szMessageName, SDL_Renderer *pRenderer)
 *  \param  iStayTime			Number of seconds during which the message will be shown
 *  \param  color				The color of the text of the message
 *  \param  pFont				The Font of the text of the message
-*  \param  rTextPosition		The position of the text of the message
 *  \return TRUE if everything is ok, FALSE otherwise
 */
-Boolean  Message_Load(Message *pMessage, char *szNameBackground, Uint32 iStayTime, SDL_Color color, TTF_Font *pFont, SDL_Rect rTextPosition)
+Boolean  Message_Load(Message *pMessage, char *szNameBackground, Uint32 iStayTime, SDL_Color color, TTF_Font *pFont)
 {
 	char szPath[60] = "";
 
 	pMessage->pBackgroundTexture = NULL;
-	pMessage->rTextPosition = rTextPosition;
 	pMessage->color = color;
 	pMessage->pFont = pFont;
 	pMessage->iStayTime = iStayTime;

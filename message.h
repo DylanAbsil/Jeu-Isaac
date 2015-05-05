@@ -48,7 +48,7 @@ typedef struct
 } Message;
 
 Message *Message_Init(char *szMessageName, SDL_Renderer *pRenderer);
-Boolean  Message_Load(Message *pMessage, char *szNameBackground, Uint32 iStayTime, SDL_Color color, TTF_Font *pFont, SDL_Rect rTextPosition);
+Boolean  Message_Load(Message *pMessage, char *szNameBackground, Uint32 iStayTime, SDL_Color color, TTF_Font *pFont);
 Boolean  Message_Update(Message *pMessage, Boolean bMustShow, char *szMessageText); 
 void	 Message_Draw(Message *pMessage);
 void	 Message_Free(Message *pMessage);
