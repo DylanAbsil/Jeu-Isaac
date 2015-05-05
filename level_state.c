@@ -422,6 +422,8 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 *  \param  pLevel   a pointer to the level
 *  \param  pPlayer  a pointer to the entity
 *  \return the value of the "interraction" cf code
+			0 : Rien
+			2 : Lecture d'un panneau
 */
 Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 {
@@ -505,8 +507,9 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 	{
 		Kr_Log_Print(KR_LOG_INFO, "Lecture d'un panneau ! \n");
 		Kr_Log_Print(KR_LOG_INFO, "%s\n",pLevel->szLevelMessage);
+		return 2;
 	}
-	return iTilesID;
+	return 0;
 }
 
 
