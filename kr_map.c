@@ -18,9 +18,11 @@
 /*               |            | Gestion du changement de Map ok	             */
 /* Herrou        | 08/04/2015 | Le changement de niveau se détecte sur 		 */
 /*               |            | les bords, quelque soit la tile		         */
-/* Herrou        | 15/08/2015 | Lors d'un changement de level, le personnage */
+/* Herrou        | 15/04/2015 | Lors d'un changement de level, le personnage */
 /*               |            |  est légèrement en avant de sa zone d'arrivé */
 /*               |            |  afin d'éviter des calculs inutiles	         */
+/* Herrou        | 05/05/2015 |Remplacer les UTIL_Open par des fopen pour éviter */
+/*               |            |le spam dans la console        */
 /* ========================================================================= */
 
 #include "kr_map.h"
@@ -231,7 +233,7 @@ Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
 	{
 		// Ce level existe-t-il dans /maps ?
 		sprintf(szBuf, "maps\\level%d.txt",i);	
-		pFile = UTIL_OpenFile(szBuf, "r"); // Ouverture en read
+		pFile = fopen(szBuf, "r"); // Ouverture en read
 		if (pFile)
 		{	
 			// Suppression depuis /maps
@@ -244,11 +246,11 @@ Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
 
 		// Ce level existe-il dans /maps/backup ?
 		sprintf(szBuf, "maps\\backup\\level%d.txt", i);
-		pFile = UTIL_OpenFile(szBuf, "r"); // Ouverture en write de la copie
+		pFile = fopen(szBuf, "r"); // Ouverture en write de la copie
 		if (pFile)
 		{
 			sprintf(szBuf, "maps\\level%d.txt", i); 
-			pFileDst = UTIL_OpenFile(szBuf, "w"); // Ouverture en write d'un nouveau fichier
+			pFileDst = fopen(szBuf, "w"); // Ouverture en write d'un nouveau fichier
 			if(!pFileDst)
 			{
 				UTIL_CloseFile(&pFile);

@@ -423,6 +423,7 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 *  \param  pPlayer  a pointer to the entity
 *  \return the value of the "interraction" cf code
 			0 : Rien
+			1 : Ouverture d'un coffre
 			2 : Lecture d'un panneau
 */
 Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
@@ -499,6 +500,7 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 			{
 				Kr_Log_Print(KR_LOG_WARNING, "Can't save the level after interraction ! \n");
 			}
+			return 1;
 		}
 	}
 
