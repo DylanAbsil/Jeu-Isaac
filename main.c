@@ -30,13 +30,12 @@
 #include "level_state.h"
 #include "weapon.h"
 #include "nature.h"
-//http://noproblo.dayjo.org/ZeldaSounds/
+#include "message.h"
  
 
 int Isaac(int*argc, char**argv);
 int Editor(void);
 
-Uint32 PeriodicEvent(void);
 int main(int argc, char** argv)
 {
 
@@ -139,9 +138,9 @@ int Isaac(int *argc, char **argv)
 	}
 
 	/*Chargement de l'arme */
-	Weapon *pistoletLumière = Weapon_Init("pistolet lumière");
-	Weapon_Load(pistoletLumière, "bullet", 100, 50, 500);
-	ChangeWeapon(pPlayer, pistoletLumière);
+	Weapon *pistoletLumiere = Weapon_Init("pistolet lumiere");
+	Weapon_Load(pistoletLumiere, "bullet", 100, 50, 500);
+	ChangeWeapon(pPlayer, pistoletLumiere);
 
 	/* Préparation d'une Texture contenant un message via util.c*/
 	SDL_Rect     textPosition;
@@ -199,6 +198,7 @@ int Isaac(int *argc, char **argv)
 	Kr_Music *pMusicCurrent = NULL;
 	Kr_Music *pMusicOld = NULL;
 	Uint32	  iMusicLen = 0;
+	Boolean bMscPaused = FALSE;
 	pMusicCurrent = Kr_Sound_InitMusic();
 	pMusicOld = Kr_Sound_InitMusic();
 	Mix_VolumeMusic(5);		// Réglage du volume de la musique (0 à 128) innefficace ?
@@ -250,7 +250,35 @@ int Isaac(int *argc, char **argv)
 
 	/* Evenement périodique */
 	Uint32 iPeriodicEvent = 0;
+	Uint32 iInterractionLevel = 0;
 
+
+	/* Message */
+	Message   *pMessageLevel = NULL;
+	SDL_Color  colorMessageLevel = { 50, 10, 130 };
+	TTF_Font *pFontMessageLevel = NULL;
+	pFontMessageLevel = Kr_Text_OpenFont("cour", 25);
+	TTF_SetFontStyle(pFontMessageLevel, TTF_STYLE_ITALIC);
+	pMessageLevel = Message_Init("message_level", pRenderer);
+	if (!Message_Load(pMessageLevel, "bandeau_message", 5, colorMessageLevel, pFontMessageLevel))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load pMessageLevel!\n");
+	}
+	Message_Update(pMessageLevel, FALSE, "Initialisation pMessageLevel");
+
+
+	Message   *pMessageInfo = NULL;
+	char szMessageInfo[250] = " ";
+	SDL_Color  colorMessageInfo = { 30, 22, 250 };
+	TTF_Font *pFontMessageInfo = NULL;
+	pFontMessageInfo = Kr_Text_OpenFont("cour", 18);
+	TTF_SetFontStyle(pFontMessageInfo, TTF_STYLE_BOLD);
+	pMessageInfo = Message_Init("message_info", pRenderer);
+	if (!Message_Load(pMessageInfo, "bandeau_info", 1, colorMessageInfo, pFontMessageInfo))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load pMessageInfo!\n");
+	}
+	Message_Update(pMessageInfo, FALSE, "Initialisation pMessageInfo");
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
 	/* ========================================================================= */
@@ -293,7 +321,7 @@ int Isaac(int *argc, char **argv)
 			pPlayer->pSprEntity->pRectPosition->x = inEvent.iMouseX;
 			pPlayer->pSprEntity->pRectPosition->y = inEvent.iMouseY;
 			Kr_Log_Print(KR_LOG_INFO, "CLIQUE GAUCHE : %d %d \n", inEvent.iMouseX, inEvent.iMouseY);
-			inEvent.szMouseButtons[0] = 0; // Un seul clique, si je ne met pas ça, le son sera joué en boucle. La l'utilisateur va devoir relever son doigt
+			inEvent.szMouseButtons[0] = 0;
 		}
 		if (inEvent.szMouseButtons[2])
 		{
@@ -306,17 +334,42 @@ int Isaac(int *argc, char **argv)
 			else pFPS->bMustShow = TRUE;
 			inEvent.szKey[SDL_SCANCODE_F] = 0;
 		}
+		if (inEvent.szKey[SDL_SCANCODE_P])
+		{
+			if (bMscPaused) bMscPaused = FALSE;
+			else bMscPaused = TRUE;
+			inEvent.szKey[SDL_SCANCODE_P] = 0;
+		}
 		if (inEvent.szKey[SDL_SCANCODE_E])
 		{
-			Kr_Level_Interraction(pCurrentLevel, pPlayer);
+			iInterractionLevel = Kr_Level_Interraction(pCurrentLevel, pPlayer);
+			if (iInterractionLevel == 2) // Lecture d'un panneau
+			{
+				Message_Update(pMessageLevel, TRUE, pCurrentLevel->szLevelMessage);
+			}
+			if (iInterractionLevel == 1) // Ouverture d'un coffre
+			{
+				Message_Update(pMessageLevel, TRUE, "Vous avez ouvert un coffre !");
+			}
 			inEvent.szKey[SDL_SCANCODE_E] = 0;
 		}
+		if (inEvent.szKey[SDL_SCANCODE_TAB])
+		{
+			sprintf(szMessageInfo, "Level %d : %s",pCurrentLevel->iLevelNum, pCurrentLevel->szLevelName);
+			Message_Update(pMessageInfo, TRUE, szMessageInfo);
+			//inEvent.szKey[SDL_SCANCODE_TAB] = 0;
+		}
+
 
 		iCurrentLevelNumber = Kr_Map_ShouldChangeLevel(pMap, pCurrentLevel, pPlayer);
 		if (iCurrentLevelNumber)
 		{
 			bChangeLevel = TRUE;
 		}
+		/* Gestion de la musique des niveaux*/
+		if (bMscPaused)	Mix_PauseMusic();
+		else Mix_ResumeMusic();
+
 		/* ========================================================================= */
 		/*                              FPS & EVENEMENT                              */
 		/* ========================================================================= */
@@ -366,6 +419,7 @@ int Isaac(int *argc, char **argv)
 			bCheckPapillon = FALSE;
 		}
 		UpdateButterfly(pPapillon, bDrawPapillon, pRenderer, pCurrentLevel, pSndPapillon);
+
 		/* Gestion des pigeons */
 		if (iCodeUpdateEntity == 2) // Oiseau effrayé
 		{
@@ -420,6 +474,8 @@ int Isaac(int *argc, char **argv)
 		if ((bDrawPigeonVol == TRUE)) Entity_Draw(pRenderer, pPigeonVol);
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 1)) Entity_Draw(pRenderer, pOiseau1);
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 2)) Entity_Draw(pRenderer, pOiseau2);
+		Message_Draw(pMessageLevel);
+		Message_Draw(pMessageInfo);
 		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
@@ -437,6 +493,8 @@ int Isaac(int *argc, char **argv)
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
 	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
 	Kr_Level_Free(pCurrentLevel);
+	Message_Free(pMessageLevel);
+	Message_Free(pMessageInfo);
 	Entity_Free(pOiseau1);
 	Entity_Free(pOiseau2);
 	Entity_Free(pBuisson1);

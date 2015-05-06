@@ -30,8 +30,8 @@
 
 
 Entity *ChargementOiseau(SDL_Renderer *pRenderer, Uint32 iOiseau);
-void CalculPassageOiseau(Entity *pEntity, Boolean bLaunch, Sint32 *movex, Sint32 *movey);
-Uint32 CalculTypeOiseau(Boolean bCalculer, Kr_Level *pLevel);
+void	CalculPassageOiseau(Entity *pEntity, Boolean bLaunch, Sint32 *movex, Sint32 *movey);
+Uint32  CalculTypeOiseau(Boolean bCalculer, Kr_Level *pLevel);
 Boolean PassageOiseau(Entity *pEntity, Boolean bPassage, Sint32 movex, Sint32 movey, SDL_Renderer *pRenderer, Kr_Sound *pSndOiseau);
 
 Entity *ChargementBuisson(SDL_Renderer *pRenderer,Uint32 iBuisson);
@@ -39,7 +39,7 @@ Boolean AnimationBuisson(Entity *pEntity, Boolean bPassage, Uint32 x, Uint32 y, 
 Uint32	DetectPassageBuisson(Kr_Level *pLevel, Entity *pPlayer, Uint32 *px, Uint32 *py);
 
 Entity *ChargementPapillon(SDL_Renderer *pRenderer);
-void CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Entity *pEntity, Uint32 *iNumber);
+void	CalculApparitionPapillon(Boolean bCalculer, Kr_Level *pLevel, Entity *pEntity, Uint32 *iNumber);
 Boolean UpdateButterfly(Entity *pButterfly, Boolean bActiver, SDL_Renderer *pRenderer, Kr_Level *pLevel, Kr_Sound *pSndButterfly);
 Boolean ButterflyCollision(Kr_Level *pLevel, SDL_Rect *pRect, Uint32 vx, Uint32 vy);
 
