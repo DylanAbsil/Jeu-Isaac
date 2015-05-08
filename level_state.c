@@ -338,6 +338,7 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 	Boolean bool = FALSE;
 
 	if (emptyList(pWeapon->plProjectile) == FALSE){
+		Kr_Log_Print(KR_LOG_INFO, "Un projectile va ertre load\n");
 		setOnFirst(pWeapon->plProjectile);
 		while (pWeapon->plProjectile->current != NULL)
 		{
@@ -347,25 +348,25 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 			case nord:
 				movex = 0;
 				movey -= PROJECTILE_SPEED;
-				if (pWeapon->plProjectile->current->p->iCoordPrj_YCurrent + movey <= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
+				if (pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey <= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
 					iTmp = 1;
 				break;
 			case est:
 				movex += PROJECTILE_SPEED;
 				movey = 0;
-				if (pWeapon->plProjectile->current->p->iCoordPrj_XCurrent + movey >= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
+				if (pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movey >= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
 					iTmp = 1;
 				break;
 			case sud:
 				movex = 0;
 				movey += PROJECTILE_SPEED;
-				if (pWeapon->plProjectile->current->p->iCoordPrj_YCurrent + movey >= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
+				if (pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey >= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
 					iTmp = 1;
 				break;
 			case ouest:
 				movex -= PROJECTILE_SPEED;
 				movey = 0;
-				if (pWeapon->plProjectile->current->p->iCoordPrj_XCurrent + movey <= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
+				if (pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movey <= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
 					iTmp = 1;
 				break;
 			}
@@ -387,27 +388,26 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 					{
 						iTmp = Kr_Collision(NULL, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition, (*(aEntity + i))->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
 						if (iTmp == 2){
-							Kr_Log_Print(KR_LOG_INFO, "The projectile hit an entity in (%d;%d)\n", pWeapon->plProjectile->current->p->iCoordPrj_XCurrent + movex, pWeapon->plProjectile->current->p->iCoordPrj_YCurrent + movey);
+							Kr_Log_Print(KR_LOG_INFO, "The projectile hit an entity in (%d;%d)\n", pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movex, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey);
 							weaponDamage(pWeapon->plProjectile->current->p, *(aEntity + i));
 							deleteCurrent(pWeapon->plProjectile);
 							bool = FALSE;
 							break;
 						}
-						else{
-							pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x += NewVx;
-							pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y += NewVy;
-							pWeapon->plProjectile->current->p->iCoordPrj_XCurrent += NewVx;
-							pWeapon->plProjectile->current->p->iCoordPrj_YCurrent += NewVy;
-							Kr_Log_Print(KR_LOG_INFO, "The projectile is currently in (%d;%d)\n", pWeapon->plProjectile->current->p->iCoordPrj_XCurrent, pWeapon->plProjectile->current->p->iCoordPrj_YCurrent);
-							next(pWeapon->plProjectile);
+						else
 							bool = TRUE;
-						}
+					}
+					if (bool == TRUE){
+						pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x += NewVx;
+						pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y += NewVy;
+						Kr_Log_Print(KR_LOG_INFO, "The projectile has moved in (%d;%d)\n", pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y);
+						next(pWeapon->plProjectile);
 					}
 				}
-			}
-		}
+			}											//else
+		}											//while
 		return bool;
-	}
+	}											//if					
 	else return FALSE;
 }
 

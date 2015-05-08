@@ -27,10 +27,6 @@ typedef struct {
 	Uint32	    iSpeedPrj;				/*< Speed of the projectile >*/
 	Direction	direction;				/*< Direction of the projectile's movement >*/
 	Kr_Sprite	*pSprProjectile;		/*< A pointer to the sprite of the projectile >*/
-	Sint32		iCoordPrj_XStart;		/**/
-	Sint32		iCoordPrj_YStart;		/**/
-	Sint32		iCoordPrj_XCurrent;		/*< Current position of the projectile in x>*/
-	Sint32		iCoordPrj_YCurrent;		/*< Current position of the projectile in y>*/
 	Sint32		iCoordPrj_XEnd;			/*< Limit position of the projectile in x>*/
 	Sint32		iCoordPrj_YEnd;			/*< Limit position of the projectile in y*/
 }Projectile;

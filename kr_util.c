@@ -52,6 +52,17 @@ Uint32 UTIL_Sqrt32( Uint32 iValue )
     return iValue;
 }
 
+/*!
+*  \fn     Sint32 UTIL_FindMiddle(Sint32 coord1, Sint32 coord2)
+*  \brief  Function to compute the middle of two values with coord2 > coord1
+*
+*  \param  corrd1 first coordonate
+*  \param  coord2 secund coordonate
+*  \return The middle of the two values.
+*/
+Sint32 UTIL_FindMiddle(Sint32 coord1, Sint32 coord2){
+	return (coord2 + coord1) / 2;
+}
 /* ========================================================================= */
 
 /*!
