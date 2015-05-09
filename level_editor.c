@@ -17,7 +17,9 @@
 /* Herrou        | 20/04/2015 | MAJ fonction pour prendre en paramètre le level plutot que le Level_Editor dans certain cas*/
 /* Herrou        | 20/04/2015 | Transfert des fonctions SaveLayout et WriteLayout dans Kr_Level						*/
 /* Herrou        | 22/04/2015 | Renommer le fichier level_editor.txt en editor.txt									*/
-/*               |            |         																			*/
+/* Herrou        | 27/04/2015 | Mise à jour pour Level Version 1.3 : Ajout des messages								*/
+/*               |            | Mise à jour pour Level Version 1.4 : Ajout de la musique du niveau					*/
+/*               |            |																						*/
 /*               |            |         																			*/
 /*               |            |         																			*/
 /*               |            |         																			*/
@@ -265,6 +267,8 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 	fprintf(pFile, "%s\n", KR_LEVEL_VERSION);
 	fprintf(pFile, "#property\n");
 	fprintf(pFile, "%s\n", pLevel->szLevelName);
+	fprintf(pFile, "%s\n", pLevel->szLevelName);
+	fprintf(pFile, "none\n");
 	fprintf(pFile, "#tileset\n");
 	fprintf(pFile, "%s\n", pLevel->pLevel_Tileset->szTilesetName);
 	fprintf(pFile, "#entity\n");
@@ -612,39 +616,14 @@ void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 *
 *  \return EXIT_SUCCESS if everything is ok, EXIT_FAILURE otherwise
 */
-int Editor(void)
+Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 {
-	SDL_Window *pWindow = NULL;
-	if (!Kr_Init())
-	{
-		exit(EXIT_FAILURE);
-	}
 	/* ========================================================================= */
 	/*                           CONFIGURATION GENERALE                          */
 	/* ========================================================================= */
 
 	Kr_Input inEvent; // Structure pour la gestion des événements
 
-	/* Création de la fenêtre */
-	pWindow = SDL_CreateWindow("LEVEL EDITOR", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW, SDL_WINDOW_SHOWN); // SDL_WINDOW_FULLSCREEN
-	if (pWindow == NULL)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Window : %s\n", SDL_GetError());
-		SDL_Quit();
-	}
-	SDL_Surface *pscreenSurface = SDL_GetWindowSurface(pWindow);
-	if (pscreenSurface == NULL)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Surface Window : %s\n", SDL_GetError());
-		SDL_Quit();
-	}
-	/* Création du renderer */
-	SDL_Renderer *pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
-	if (pRenderer == NULL)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Renderer", SDL_GetError());
-		SDL_Quit();
-	}
 	/* Initialisation de la structure pour gérer les événements*/
 	InitEvents(&inEvent);
 

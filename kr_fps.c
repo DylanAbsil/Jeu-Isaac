@@ -97,6 +97,41 @@ void Kr_FPS_Show(Kr_Fps *pFPS)
 	}
 }
 
+
+/*!
+*  \fn     Uint32 PeriodicEvent()
+*  \brief  Function to handle all the periodic events of the game
+*
+*  \return  0 : Aucun évenement
+			1 : Passage d'oiseau
+*/
+Uint32 PeriodicEvent()
+{
+	static Uint32 iRepeat = 0; // On compte le nombre de fois que cette fonction est appelée
+	Uint32 iRetour = 0;
+	Uint32 iTimeOiseau = 3000;
+
+	iRepeat++;
+	if ((iRepeat % iTimeOiseau) == 0)
+	{
+		//Kr_Log_Print(KR_LOG_INFO, "Repeat %d\n", iRepeat);
+		return iRetour = 1;
+	}
+	return iRetour;
+}
+
+
+/*!
+*  \fn     void Kr_Fps_Free(Kr_Fps *pFPS);
+*  \brief  Function to free the structure
+*
+*  \return  none
+*/
+void    Kr_Fps_Free(Kr_Fps *pFPS)
+{
+	free(pFPS);
+}
+
 /* Utilisation
 Avant la boucle principale :
 

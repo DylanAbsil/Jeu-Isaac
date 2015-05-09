@@ -18,9 +18,11 @@
 /*               |            | Gestion du changement de Map ok	             */
 /* Herrou        | 08/04/2015 | Le changement de niveau se détecte sur 		 */
 /*               |            | les bords, quelque soit la tile		         */
-/* Herrou        | 15/08/2015 | Lors d'un changement de level, le personnage */
+/* Herrou        | 15/04/2015 | Lors d'un changement de level, le personnage */
 /*               |            |  est légèrement en avant de sa zone d'arrivé */
 /*               |            |  afin d'éviter des calculs inutiles	         */
+/* Herrou        | 05/05/2015 |Remplacer les UTIL_Open par des fopen pour éviter */
+/*               |            |le spam dans la console        */
 /* ========================================================================= */
 
 #include "kr_map.h"
@@ -187,25 +189,25 @@ Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 		if (pEntity->direction == nord && (y < pLevel->pLevel_Tileset->iTilesHeight) && pLevel->iNumNord != 0)
 		{
 			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h ; // Pour éviter les collisions également
-			pEntity->iCoordYEntity = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h ;
+			pEntity->pSprEntity->pRectPosition->y = KR_HEIGHT_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->h;
 			return pLevel->iNumNord;
 		}
 		else if (pEntity->direction == sud && (y >(KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight)) && pLevel->iNumSud != 0)
 		{
 			pEntity->pSprEntity->pRectPosition->y = pEntity->pSprEntity->pRectPosition->h; // On le place un peu en avant/arrière pour éviter de refaire les vérifications
-			pEntity->iCoordYEntity = pEntity->pSprEntity->pRectPosition->h;
+			pEntity->pSprEntity->pRectPosition->y = pEntity->pSprEntity->pRectPosition->h;
 			return pLevel->iNumSud;
 		}
 		else if (pEntity->direction == est && (x > (KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth)) && pLevel->iNumEst != 0)
 		{
 			pEntity->pSprEntity->pRectPosition->x = pEntity->pSprEntity->pRectPosition->w;
-			pEntity->iCoordXEntity = pEntity->pSprEntity->pRectPosition->w;
+			pEntity->pSprEntity->pRectPosition->x = pEntity->pSprEntity->pRectPosition->w;
 			return pLevel->iNumEst;
 		}
 		else if (pEntity->direction == ouest && (x < pLevel->pLevel_Tileset->iTilesWidth) && pLevel->iNumOuest != 0)
 		{
 			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w ;
-			pEntity->iCoordXEntity = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w ;
+			pEntity->pSprEntity->pRectPosition->x = KR_WIDTH_WINDOW - 2 * pEntity->pSprEntity->pRectPosition->w;
 			return pLevel->iNumOuest;
 		}
 	}
@@ -229,10 +231,9 @@ Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
 
 	for (i = 1; i <= 999; i++) // On considère qu'il y a au maximum 999 levels
 	{
-		Kr_Log_Print(KR_LOG_INFO, "level%d\n", i);
 		// Ce level existe-t-il dans /maps ?
 		sprintf(szBuf, "maps\\level%d.txt",i);	
-		pFile = UTIL_OpenFile(szBuf, "r"); // Ouverture en read
+		pFile = fopen(szBuf, "r"); // Ouverture en read
 		if (pFile)
 		{	
 			// Suppression depuis /maps
@@ -245,11 +246,11 @@ Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
 
 		// Ce level existe-il dans /maps/backup ?
 		sprintf(szBuf, "maps\\backup\\level%d.txt", i);
-		pFile = UTIL_OpenFile(szBuf, "w"); // Ouverture en write de la copie
+		pFile = fopen(szBuf, "r"); // Ouverture en write de la copie
 		if (pFile)
 		{
 			sprintf(szBuf, "maps\\level%d.txt", i); 
-			pFileDst = UTIL_OpenFile(szBuf, "w"); // Ouverture en write d'un nouveau fichier
+			pFileDst = fopen(szBuf, "w"); // Ouverture en write d'un nouveau fichier
 			if(!pFileDst)
 			{
 				UTIL_CloseFile(&pFile);
@@ -257,7 +258,7 @@ Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
 				return FALSE;
 			}
 			// Copie de l'original vers /maps
-			UTIL_FileCopy(pFile, pFileDst, NULL);
+			UTIL_FileCopy(pFile, pFileDst, "#end");
 			UTIL_CloseFile(&pFile);
 			UTIL_CloseFile(&pFileDst);			
 		}		

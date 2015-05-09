@@ -16,8 +16,9 @@
 
 #include "kr_common.h"
 #include "kr_sprite.h"
+#include "kr_collision.h"
 
-#define PROJECTILE_SPEED 10		/*< Number to handle the projectile movement*/
+#define PROJECTILE_SPEED 5		/*< Number to handle the projectile movement*/
 #define ATTACK_SPEED 20			/*< Number to handle how many projectile do you fire at the same time >*/
 
 typedef struct {
@@ -26,10 +27,6 @@ typedef struct {
 	Uint32	    iSpeedPrj;				/*< Speed of the projectile >*/
 	Direction	direction;				/*< Direction of the projectile's movement >*/
 	Kr_Sprite	*pSprProjectile;		/*< A pointer to the sprite of the projectile >*/
-	Sint32		iCoordPrj_XStart;		/**/
-	Sint32		iCoordPrj_YStart;		/**/
-	Sint32		iCoordPrj_XCurrent;		/*< Current position of the projectile in x>*/
-	Sint32		iCoordPrj_YCurrent;		/*< Current position of the projectile in y>*/
 	Sint32		iCoordPrj_XEnd;			/*< Limit position of the projectile in x>*/
 	Sint32		iCoordPrj_YEnd;			/*< Limit position of the projectile in y*/
 }Projectile;
@@ -71,7 +68,6 @@ Boolean		Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint
 void		Projectile_Free(Projectile *pProj);
 Boolean		Projectile_Draw(SDL_Renderer *pRenderer, Projectile *pProj);
 
-Boolean		UpdateProjectile(Projectile *pProj);
 
 
 /* ======================================== */
@@ -98,7 +94,7 @@ void			deleteCurrent(ListProj *lProj);
 
 Boolean			insertLast(ListProj *lProj, Projectile *p);
 
-Boolean			drawAllProjectiles(ListProj *lProj, SDL_Renderer *pRenderer);
+Boolean			drawProjectilesWeapon(ListProj *lProj, SDL_Renderer *pRenderer);
 
 /* ======================================== */
 /*				  WEAPONS				    */
@@ -108,8 +104,6 @@ Boolean			drawAllProjectiles(ListProj *lProj, SDL_Renderer *pRenderer);
 Weapon *		Weapon_Init(char *strWeaponName);
 Boolean			Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 munition, Uint32 damage);
 void			Weapon_Free(Weapon *pWeapon);
-
-Boolean			UpdateAllProjectiles(Weapon *pWeapon, SDL_Renderer *pRenderer);
 
 
 #endif

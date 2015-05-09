@@ -1,1 +1,12 @@
-Bug connu : Crash lors de la libération des entitées, lors d'un changement entre deux niveaux, lorsque l'on quitte l'application
+28/04 Modification du Main :
+Remplacer la partie du chargement par celle-ci, nouveaux paramètres pour entity_load
+  	/* Chargement des personnages */
+	pPlayer = Entity_Init("zelda");				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
+
+	if (Entity_Load(pPlayer, 100, 50, MOVESPEED ,normal, FALSE, pSpriteZelda) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+

@@ -16,6 +16,7 @@
 /*               |            | Tiles Properties : Add    iPorteMaison       */
 /* Herrou        | 21/04/2015 | Tiles Properties : Add iCoffreFerme          */
 /*               |            | Tiles Properties : Add iPanneau			     */
+/* Herrou        | 01/05/2015 | Tiles Properties : Add iArbre		         */
 /*               |            |                                              */
 /* ========================================================================= */
 
@@ -39,6 +40,7 @@ typedef struct
 	Uint32 iPorteMaison;
 	Uint32 iCoffreFerme;
 	Uint32 iPanneau;
+	Uint32 iArbre;
 	// tout ce que vous voulez...
 } Kr_TileProp;
 

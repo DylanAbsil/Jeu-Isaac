@@ -28,14 +28,15 @@
 *
 *  \param   HUDName    the HUD structure
 *  \param   estTexte   a boolean to say if the HUD is composed of texte
+*  \param   pRenderer  a pointer to the renderer
 *  \return  the initialized structure
 */
-/*
-HUD * HUD_Init(char *HUDName, Boolean estTexte)
+HUD * HUD_Init(char *HUDName, Boolean estTexte, SDL_Renderer *pRenderer)
 {
 	HUD * pHUD = NULL;
 	pHUD = (HUD *)UTIL_Malloc(sizeof(HUD));
 
+	pHUD->pRenderer = pRenderer;
 	pHUD->HUDName = HUDName;
 	
 	pHUD->pTexture = NULL;
@@ -48,7 +49,7 @@ HUD * HUD_Init(char *HUDName, Boolean estTexte)
 	pHUD->estAffiche = TRUE;
 	pHUD->estTexte = estTexte;
 	return pHUD;
-}*/
+}
 
 
 
@@ -61,7 +62,6 @@ HUD * HUD_Init(char *HUDName, Boolean estTexte)
 *
 *  \return  void
 */
-/*
 void HUD_Load(HUD *pHUD, SDL_Rect rRect)
 {
 	pHUD->RectDest.x = rRect.x;
@@ -73,13 +73,13 @@ void HUD_Load(HUD *pHUD, SDL_Rect rRect)
 	if (pHUD->estTexte == FALSE)
 	{
 		sprintf(HUDPath, "hud\\%s.png", pHUD->HUDName);
-		pHUD->pTexture = UTIL_LoadTexture(HUDPath, NULL, NULL);
+		pHUD->pTexture = UTIL_LoadTexture(pHUD->pRenderer,HUDPath, NULL, NULL);
 		if (pHUD->pTexture == NULL)
 		{
 			Kr_Log_Print(KR_LOG_ERROR, "Impossible to load the sprite :%s\n", HUDPath);
 		}
 	}
-}*/
+}
 
 
 
@@ -95,7 +95,6 @@ void HUD_Load(HUD *pHUD, SDL_Rect rRect)
 *
 *  \return  void
 */
-/*
 void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, Uint32 NbRepet)
 {
 	// test si on doit afficher
@@ -115,8 +114,7 @@ void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, Uint32 NbRepet)
 	}
 	// on n'affiche rien
 	else return;
-}*/
-
+}
 
 
 
@@ -129,13 +127,12 @@ void HUD_Draw(SDL_Renderer * renderer, HUD *pHUD, Uint32 NbRepet)
 *
 *  \return  void
 */
-/*
 void HUD_free(HUD *pHUD)
 {
 	UTIL_FreeTexture(&(pHUD->pTexture));
 	UTIL_Free(pHUD);
 }
- */
+ 
 
 
 
@@ -149,8 +146,7 @@ void HUD_free(HUD *pHUD)
 *
 *  \return  void
 */
-/*
 void HUD_Update(HUD *pHUD, SDL_Texture *pTexture)
 {
 	pHUD->pTexture = pTexture;
-}*/
+}

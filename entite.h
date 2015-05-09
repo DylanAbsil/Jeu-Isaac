@@ -18,6 +18,7 @@
 /*               |            | Le nom du sprite est donnée à Sprite_Init    */
 /*               |            |    et non pas à Entity_Load                  */
 /* Herrou        | 05/04/2015 | Ajout du param Entity à foundDirection       */
+/* Herrou        | 22/04/2015 | Ajout de l'include kr_collision			     */
 /* ========================================================================= */
 
 #ifndef __ENTITE_H__
@@ -29,10 +30,10 @@
 #include "kr_input.h"
 #include "kr_level.h"
 
-
-#define MOVESPEED 5		/*< Movespeed of the player >*/
+#define MOVESPEED 5	/*< Movespeed of the player >*/
 #define MOB_MOVESPEED 3 /*< Basic movespeed of the monstres >*/
 #define RESET_FRAME 10	/*< Number to handle the reset of the frame >*/
+#define MOB_INFIGHTING_DAMAGE 15
 
 /*!
 * \enum EntityState
@@ -42,8 +43,9 @@ typedef enum {
 	normal,
 	invincible,
 	slowed,
-	feared,
+	invisible,
 	poisoned,
+	noclip,
 }EntityState;
 
 typedef struct {
@@ -53,30 +55,33 @@ typedef struct {
 	Weapon		*pWeapon;			/*< A pointer to his weapon (can be NULL) >*/
 	Kr_Sprite	*pSprEntity;		/*<	A pointer to his sprite >*/
 	EntityState	state;				/*< State of the entity : normal, invincible, slowed, ...) >*/
-	Sint32		iCoordXEntity;		
-	Sint32		iCoordYEntity;
 	Uint32		iSpeedEntity;		/*< */
 	Direction	direction;			/*< Direction which the entity is facing >*/
 	Boolean		mouvement;			/*< Mouvement : 0 (static) or 1 (in movement) >*/
 	Uint32		iTempoAnim;			/*< Int for the temporisation of the animation >*/
 	Uint32		iTempoAtk;			/*< Int to handle the attack speed >*/
+	Boolean     bFriendly;			/*< TRUE if the entity is friendly ? Does it deal damage  >*/
+	Uint32      iTempoMovement;     /*< Value which can be used to compute a random movement   >*/
+	Sint32      iCurrentMoveX;		/*< Value which can be used to compute a random movement   >*/
+	Sint32      iCurrentMoveY;		/*< Value which can be used to compute a random movement   >*/
 }Entity;
 
 Entity *	Entity_Init(char *szFileName);
-Boolean		Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Kr_Sprite *sprite); /*< création d'une entite >*/
+Boolean		Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Uint32 iSpeed, EntityState state, Boolean bFriendly, Kr_Sprite *sprite); /*< création d'une entite >*/
 void		Entity_Free(Entity *entite);
 Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
-
+void        Entity_Log(Entity *pEntity);
 
 Direction	foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity);
+void		foundWayToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 movex, Sint32 movey);
 void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
 void		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy);
 void		switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer *pRenderer);
 
-Boolean		updatePlayerVector(Kr_Input myEvent, Kr_Level *pMyLevel, Entity *pPlayer, SDL_Renderer *pRenderer);
-Boolean		updateEntityVector(Kr_Level *pLevel, Entity *pEntity, Entity *pPlayer, SDL_Renderer *pRenderer);
 
-Boolean		Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer);
+void		meleeDamage(Entity *pGiver, Entity *pReceiver);
+void		weaponDamage(Projectile *pProj, Entity *pEntity);
+Boolean		shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer);
 Boolean		ChangeWeapon(Entity *pEntity, Weapon *pWeapon);
 
 #endif /* __KR_ENTITE_H__ */

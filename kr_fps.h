@@ -21,7 +21,6 @@
 	#include "kr_common.h"
 	#include "kr_log.h"
 	#include "kr_text.h"
-
 /*!
 * \struct Kr_FPS
 * \brief  Structure to handle the FPS.
@@ -39,7 +38,10 @@ typedef struct
 
 Kr_Fps *Kr_Fps_Init(SDL_Renderer *pRenderer, TTF_Font *pFont, SDL_Rect *pRectPosition, SDL_Color color, Boolean bMustShow);
 void    Kr_Fps_Wait(Kr_Fps *pFPS, Uint32 *iCurrentTime, Uint32 *iPreviousTime, Uint32 iFPS);
+void    Kr_Fps_Free(Kr_Fps *pFPS);
 void    Kr_FPS_Show(Kr_Fps *pFPS);
+
+Uint32  PeriodicEvent(void);
 #endif /* __KR_FPS_H__ */
 
 /* ========================================================================= */

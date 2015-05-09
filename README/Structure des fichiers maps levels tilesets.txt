@@ -25,10 +25,11 @@ C'est à l'utilisateur de définir les caractèristiques qu'il souhaite donner à ch
 II/ Description des niveaux (levels)
 
 Les fichiers levelX.txt situé dans le répertoire /maps permettent de caractériser les niveaux de par leurs aspects mais égalements leurs contenues (objet "interactif", monstres...)
-La structure d'un fichier de niveau est la suivante (VERSION 1.2):
+La structure d'un fichier de niveau est la suivante (VERSION 1.3):
  Version du fichier level
  #property (balise)
  Nom du niveau
+ Message du niveau
  #tileset ( balise)
  Fichier tilesets utilisé par le niveau (avec l'extension .tls)
  #entity (balise)
@@ -38,9 +39,10 @@ La structure d'un fichier de niveau est la suivante (VERSION 1.2):
  #end (balise)
 
 Voici un exemple : 
-Level Version 1.2
+Level Version 1.3
 #property
 Un nouveau départ
+Bienvenue dans ce nouveau monde !
 #tileset
 tileset_zelda32.tls
 #entity
