@@ -54,7 +54,9 @@ typedef struct
 	SDL_Rect     Rect;				/*!< The rectangle*/
 }Grid;
 
-int Editor(void);
+Uint32		  Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow);
+
+
 Level_Editor *Level_Editor_Init(char *szEditorFile);
 Boolean		  Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer);
 void		  Level_Editor_Log(Level_Editor *pEditor);

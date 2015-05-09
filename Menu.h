@@ -23,6 +23,8 @@
 #include "kr_log.h"
 #include "kr_text.h"
 #include "kr_input.h"
+#include "kr_fps.h"
+#include "kr_sound.h"
 
 
 #ifndef MENU_H
@@ -64,6 +66,8 @@ void	Bouton_Draw(Bouton *pBouton);
 void	Bouton_Free(Bouton *pBouton);
 Boolean Bouton_estSurvole(Bouton *pBouton, Kr_Input myEvent);
 
+Uint32  Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow);
+void Menu_Pause(SDL_Renderer *pRenderer);
 
 
 #endif

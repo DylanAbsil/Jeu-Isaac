@@ -121,7 +121,16 @@ Uint32 PeriodicEvent()
 }
 
 
-
+/*!
+*  \fn     void Kr_Fps_Free(Kr_Fps *pFPS);
+*  \brief  Function to free the structure
+*
+*  \return  none
+*/
+void    Kr_Fps_Free(Kr_Fps *pFPS)
+{
+	free(pFPS);
+}
 
 /* Utilisation
 Avant la boucle principale :

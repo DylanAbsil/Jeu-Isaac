@@ -33,45 +33,19 @@
 #include "message.h"
  
 
-int Isaac(int*argc, char**argv);
-int Editor(void);
-
+Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow);
 int main(int argc, char** argv)
 {
+	Uint32 iRetourMP = 0;
+	SDL_Window *pWindow = NULL;
 
 	Kr_Log_Init(KR_LOG_INFO); // Mise en place d'un fichier de log
 
-	if (GAME) Isaac(&argc, argv);
-	else Editor();
 
-	Mix_CloseAudio();	// On quitte SDL_MIXER
-	TTF_Quit();			// On quitte SDL_TTF
-	SDL_Quit();			// On quitte SDL
-	Kr_Log_Quit();		// On ferme les logs
-
-	return EXIT_SUCCESS;
-}
-
-
-/*!
-*  \fn     int Isaac(int *argc, char **argv)
-*  \brief  Function to launch the game
-*
-*  \return EXIT_SUCCESS if everything is ok, EXIT_FAILURE otherwise
-*/
-int Isaac(int *argc, char **argv)
-{
-	SDL_Window *pWindow = NULL;
 	if (!Kr_Init())
 	{
 		exit(EXIT_FAILURE);
 	}
-	/* ========================================================================= */
-	/*                           CONFIGURATION GENERALE                          */
-	/* ========================================================================= */
-
-	Kr_Input inEvent; // Structure pour la gestion des événements
-	
 	/* Création de la fenêtre */
 	pWindow = SDL_CreateWindow("Jeu 2D - Isaac", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW, SDL_WINDOW_SHOWN); // SDL_WINDOW_FULLSCREEN
 	if (pWindow == NULL)
@@ -92,7 +66,40 @@ int Isaac(int *argc, char **argv)
 		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Renderer", SDL_GetError());
 		SDL_Quit();
 	}
-	/* Initialisation de la structure pour gérer les événements*/
+
+
+	iRetourMP = Menu_Principal(pRenderer,pWindow);
+	if (iRetourMP == 1) Isaac(pRenderer,pWindow);
+	if (iRetourMP == 2) Editor(pRenderer, pWindow);
+
+	Mix_CloseAudio();	// On quitte SDL_MIXER
+	TTF_Quit();			// On quitte SDL_TTF
+	SDL_Quit();			// On quitte SDL
+	Kr_Log_Quit();		// On ferme les logs
+
+	return EXIT_SUCCESS;
+}
+
+
+
+
+
+
+/*!
+*  \fn     int Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
+*  \brief  Function to start the game
+*
+*  \param   pRenderer	a pointer to the renderer
+*  \param   pWindow		a pointer to the window
+*  \return EXIT_SUCCESS if everything is ok, EXIT_FAILURE otherwise
+*/
+Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
+{
+	/* ========================================================================= */
+	/*                           CONFIGURATION GENERALE                          */
+	/* ========================================================================= */
+
+	Kr_Input inEvent; // Structure pour la gestion des événements
 	InitEvents(&inEvent);
 
 	/* Copie des fichiers maps au besoin */
@@ -104,6 +111,7 @@ int Isaac(int *argc, char **argv)
 	/* ========================================================================= */
 	/*                                  PRECACHE                                 */
 	/* ========================================================================= */
+	
 	/* Variable de boucle (uniquement) */
 	Uint32 i = 0, j = 0;
 	/* Préparation d'images que l'on souhaitera afficher */
@@ -322,6 +330,7 @@ int Isaac(int *argc, char **argv)
 			pPlayer->pSprEntity->pRectPosition->y = inEvent.iMouseY;
 			Kr_Log_Print(KR_LOG_INFO, "CLIQUE GAUCHE : %d %d \n", inEvent.iMouseX, inEvent.iMouseY);
 			inEvent.szMouseButtons[0] = 0;
+			
 		}
 		if (inEvent.szMouseButtons[2])
 		{
@@ -334,10 +343,15 @@ int Isaac(int *argc, char **argv)
 			else pFPS->bMustShow = TRUE;
 			inEvent.szKey[SDL_SCANCODE_F] = 0;
 		}
-		if (inEvent.szKey[SDL_SCANCODE_P])
+		if (inEvent.szKey[SDL_SCANCODE_O])
 		{
 			if (bMscPaused) bMscPaused = FALSE;
 			else bMscPaused = TRUE;
+			inEvent.szKey[SDL_SCANCODE_O] = 0;
+		}
+		if (inEvent.szKey[SDL_SCANCODE_P])
+		{
+			Menu_Pause(pRenderer);
 			inEvent.szKey[SDL_SCANCODE_P] = 0;
 		}
 		if (inEvent.szKey[SDL_SCANCODE_E])
@@ -411,7 +425,6 @@ int Isaac(int *argc, char **argv)
 		if (iValeurBuisson == 2) bDrawBuisson = AnimationBuisson(pBuisson2, TRUE, iPositionBuissonX, iPositionBuissonY, pRenderer,pSndBuisson);
 
 		/* Gestion des papillons*/
-		 // NON DEVELOPPE
 		if (bCheckPapillon == TRUE)
 		{
 			CalculApparitionPapillon(bCheckPapillon, pCurrentLevel, pPapillon, &iNumberPapillon);
@@ -452,6 +465,10 @@ int Isaac(int *argc, char **argv)
 				}
 			}
 		}
+		
+		/* Menu Principale */
+
+	
 
 		/* ========================================================================= */
 		/*                                  DIVERS                                   */
@@ -476,6 +493,7 @@ int Isaac(int *argc, char **argv)
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 2)) Entity_Draw(pRenderer, pOiseau2);
 		Message_Draw(pMessageLevel);
 		Message_Draw(pMessageInfo);
+	
 		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
@@ -506,6 +524,7 @@ int Isaac(int *argc, char **argv)
 	Kr_Sound_Free(&pSndBuisson);
 	Kr_Sound_Free(&pSndPigeon);
 	Kr_Sound_Free(&pSndPapillon);
+	Kr_Fps_Free(pFPS);
 	//Entity_Free(pZelda);				// Libération mémoire du zelda est déjà fait si On le précise dans Level_State
 	Level_State_Free(pCurrentLevelState, TRUE); // Libération mémoire des données du niveau
 	Kr_Map_Free(pMap);

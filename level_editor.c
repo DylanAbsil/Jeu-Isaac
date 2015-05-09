@@ -616,39 +616,14 @@ void Level_Editor_WriteLayoutSelection(Level_Editor *pEditor, Sint32 *iTabTile, 
 *
 *  \return EXIT_SUCCESS if everything is ok, EXIT_FAILURE otherwise
 */
-int Editor(void)
+Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 {
-	SDL_Window *pWindow = NULL;
-	if (!Kr_Init())
-	{
-		exit(EXIT_FAILURE);
-	}
 	/* ========================================================================= */
 	/*                           CONFIGURATION GENERALE                          */
 	/* ========================================================================= */
 
 	Kr_Input inEvent; // Structure pour la gestion des événements
 
-	/* Création de la fenêtre */
-	pWindow = SDL_CreateWindow("LEVEL EDITOR", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW, SDL_WINDOW_SHOWN); // SDL_WINDOW_FULLSCREEN
-	if (pWindow == NULL)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Window : %s\n", SDL_GetError());
-		SDL_Quit();
-	}
-	SDL_Surface *pscreenSurface = SDL_GetWindowSurface(pWindow);
-	if (pscreenSurface == NULL)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Surface Window : %s\n", SDL_GetError());
-		SDL_Quit();
-	}
-	/* Création du renderer */
-	SDL_Renderer *pRenderer = SDL_CreateRenderer(pWindow, -1, SDL_RENDERER_ACCELERATED);
-	if (pRenderer == NULL)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Renderer", SDL_GetError());
-		SDL_Quit();
-	}
 	/* Initialisation de la structure pour gérer les événements*/
 	InitEvents(&inEvent);
 

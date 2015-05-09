@@ -192,3 +192,243 @@ Boolean Bouton_estSurvole(Bouton *pBouton, Kr_Input myEvent)
 		return FALSE;
 	}
 }
+
+
+
+/*!
+*  \fn     Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
+*  \brief  Function to handle the main menu
+*
+*  \param   pRenderer	a pointer to the renderer
+*  \param   pWindow		a pointer to the window
+*  \return  the index of the button selected
+			1 : The game
+			2 : The level editor
+			3 : The credit
+*/
+Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
+{
+
+	Kr_Input inEvent; // Structure pour la gestion des événements
+	InitEvents(&inEvent);
+
+	/* Menu principal */
+	Uint32 iRetour = 0;
+	// Image de fond
+	SDL_Texture *pBackgroundMP = NULL;
+	SDL_Rect	 rectMP = { 0, 0, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW };
+	pBackgroundMP = UTIL_LoadTexture(pRenderer, "menu/Fond_Menu.png", NULL, NULL);
+
+	//Bouton Jouer
+	Bouton    *pBoutonJouer = NULL;
+	TTF_Font  *pFontBoutonJouer = NULL;
+	SDL_Color  couleurBoutonJouer = { 0, 0, 0 };
+	SDL_Rect   rPositionBoutonJouer = { 65, 550, 300, 120 };
+	pFontBoutonJouer = Kr_Text_OpenFont("cour", 25);
+	TTF_SetFontStyle(pFontBoutonJouer, TTF_STYLE_BOLD);
+	pBoutonJouer = Bouton_Init("Bouton_Jouer", pRenderer, "Bouton1_Active", "Bouton1_Desactive", "Bouton1_Selection");
+	if (!pBoutonJouer)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant initialize pBoutonJouer!\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	Bouton_Load(pBoutonJouer, TRUE, pFontBoutonJouer, couleurBoutonJouer, rPositionBoutonJouer, "Chargement", "Jouer");
+
+	//Bouton Editeur
+	Bouton    *pBoutonEditeur = NULL;
+	TTF_Font  *pFontBoutonEditeur = NULL;
+	SDL_Color  couleurBoutonEditeur = { 0, 0, 0 };
+	SDL_Rect   rPositionBoutonEditeur = { 490, 550, 300, 120 };
+	pFontBoutonEditeur = Kr_Text_OpenFont("cour", 25);
+	TTF_SetFontStyle(pFontBoutonEditeur, TTF_STYLE_BOLD);
+	pBoutonEditeur = Bouton_Init("Bouton_Editeur", pRenderer, "Bouton1_Active", "Bouton1_Desactive", "Bouton1_Selection");
+	if (!pBoutonEditeur)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant initialize pBoutonEditeur!\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	Bouton_Load(pBoutonEditeur, TRUE, pFontBoutonEditeur, couleurBoutonEditeur, rPositionBoutonEditeur, "Chargement", "Level Editor");
+
+	//Bouton Crédit
+	Bouton    *pBoutonCredit = NULL;
+	TTF_Font  *pFontBoutonCredit = NULL;
+	SDL_Color  couleurBoutonCredit = { 0, 0, 0 };
+	SDL_Rect   rPositionBoutonCredit = { 915, 550, 300, 120 };
+	pFontBoutonCredit = Kr_Text_OpenFont("cour", 25);
+	TTF_SetFontStyle(pFontBoutonCredit, TTF_STYLE_BOLD);
+	pBoutonCredit = Bouton_Init("Bouton_Credit", pRenderer, "Bouton1_Active", "Bouton1_Desactive", "Bouton1_Selection");
+	if (!pBoutonCredit)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant initialize pBoutonCredit!\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	Bouton_Load(pBoutonCredit, TRUE, pFontBoutonCredit, couleurBoutonCredit, rPositionBoutonCredit, "Chargement", "Crédit");
+
+	//Music menu principal
+	Kr_Music *pMusicMP = NULL;
+	Boolean bMscPaused = FALSE;
+	pMusicMP = Kr_Sound_InitMusic();
+	if (!Kr_Sound_LoadMusic(pMusicMP, "title"))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't load the mucis pMusicMP");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	Mix_VolumeMusic(25);
+
+	//FPS
+	/* Préparation de la gestion des FPS */
+	SDL_Texture *pTextureFPS = NULL;
+	TTF_Font	*pFontFPS = NULL;
+	Kr_Fps		*pFPS = NULL;
+	SDL_Color    colorFPS = { 0, 10, 220 };
+	SDL_Rect	 rectPositionFPS;
+	Uint32       iPreviousTime = 0, iCurrentTime = 0;
+
+	rectPositionFPS.x = 1150;
+	rectPositionFPS.y = 685;
+	pFontFPS = Kr_Text_OpenFont("cour", 18);
+	TTF_SetFontStyle(pFontFPS, TTF_STYLE_ITALIC);
+
+	pFPS = Kr_Fps_Init(pRenderer, pFontFPS, &rectPositionFPS, colorFPS, TRUE);
+	if (pFPS == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the FPS structure\n");
+		exit(EXIT_FAILURE);
+	}
+
+
+	Mix_PlayMusic(pMusicMP->pMsc, -1);
+	while (!inEvent.szKey[SDL_SCANCODE_ESCAPE] && !inEvent.bQuit && iRetour == 0)
+	{
+		/* Faire au début sinon crash*/
+		UpdateEvents(&inEvent);
+
+		/* Clique-Gauche */
+		if (inEvent.szMouseButtons[0])
+		{
+			if (pBoutonJouer->bSurvole)
+			{
+				if (pBoutonJouer->bActive == TRUE) pBoutonJouer->bActive = FALSE;
+				else
+				{
+					pBoutonJouer->bActive = TRUE;
+					iRetour = 1;
+				}
+			}
+			else if (pBoutonEditeur->bSurvole)
+			{
+				if (pBoutonEditeur->bActive == TRUE) pBoutonEditeur->bActive = FALSE;
+				else
+				{
+					pBoutonEditeur->bActive = TRUE;
+					iRetour = 2;
+				}
+			}
+			else if (pBoutonCredit->bSurvole)
+			{
+				if (pBoutonCredit->bActive == TRUE) pBoutonCredit->bActive = FALSE;
+				else
+				{
+					pBoutonCredit->bActive = TRUE;
+					iRetour = 3;
+				}
+			}
+			inEvent.szMouseButtons[0] = 0;
+		}
+
+		/* Pause la musique*/
+		if (inEvent.szKey[SDL_SCANCODE_P])
+		{
+			if (bMscPaused) bMscPaused = FALSE;
+			else bMscPaused = TRUE;
+			inEvent.szKey[SDL_SCANCODE_P] = 0;
+		}
+
+		/* Menu et Interface */
+		SDL_RenderClear(pRenderer);
+		SDL_RenderCopy(pRenderer, pBackgroundMP, NULL, &rectMP);
+		if (pBoutonJouer->bMustShow) Bouton_Draw(pBoutonJouer);
+		if (pBoutonEditeur->bMustShow) Bouton_Draw(pBoutonEditeur);
+		if (pBoutonCredit->bMustShow) Bouton_Draw(pBoutonCredit);
+		Bouton_estSurvole(pBoutonJouer, inEvent);
+		Bouton_estSurvole(pBoutonEditeur, inEvent);
+		Bouton_estSurvole(pBoutonCredit, inEvent);
+		Kr_FPS_Show(pFPS);
+		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
+
+		Kr_Fps_Wait(pFPS, &iCurrentTime, &iPreviousTime, KR_FPS);
+	}
+
+	Bouton_Free(pBoutonJouer);
+	Bouton_Free(pBoutonEditeur);
+	Bouton_Free(pBoutonCredit);
+	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
+	Kr_Sound_FreeMusic(pMusicMP);
+	Kr_Fps_Free(pFPS);
+	return iRetour;
+}
+
+/*!
+*  \fn     void Menu_Pause(SDL_Renderer *pRenderer);
+*  \brief  Function to handle the main menu
+*
+*  \param   pRenderer	a pointer to the renderer
+*  \param   pWindow		a pointer to the window
+*  \return  none
+*/
+void Menu_Pause(SDL_Renderer *pRenderer)
+{
+	Kr_Input inEvent; // Structure pour la gestion des événements
+	InitEvents(&inEvent);
+
+	//FPS
+	/* Préparation de la gestion des FPS */
+	SDL_Texture *pTextureFPS = NULL;
+	TTF_Font	*pFontFPS = NULL;
+	Kr_Fps		*pFPS = NULL;
+	SDL_Color    colorFPS = { 0, 10, 220 };
+	SDL_Rect	 rectPositionFPS;
+	Uint32       iPreviousTime = 0, iCurrentTime = 0;
+
+	rectPositionFPS.x = 1150;
+	rectPositionFPS.y = 685;
+	pFontFPS = Kr_Text_OpenFont("cour", 18);
+	TTF_SetFontStyle(pFontFPS, TTF_STYLE_ITALIC);
+
+	pFPS = Kr_Fps_Init(pRenderer, pFontFPS, &rectPositionFPS, colorFPS, TRUE);
+	if (pFPS == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the FPS structure\n");
+		exit(EXIT_FAILURE);
+	}
+
+	//Bouton Editeur
+	Bouton    *pBoutonPause = NULL;
+	TTF_Font  *pFontBoutonPause = NULL;
+	SDL_Color  couleurBoutonPause = { 0, 0, 0 };
+	SDL_Rect   rPositionBoutonPause = { 490, 550, 300, 120 };
+	pFontBoutonPause = Kr_Text_OpenFont("cour", 19);
+	TTF_SetFontStyle(pFontBoutonPause, TTF_STYLE_BOLD);
+	pBoutonPause = Bouton_Init("Bouton_Pause", pRenderer, "Bouton1_Active", "Bouton1_Desactive", "Bouton1_Selection");
+	if (!pBoutonPause)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant initialize pBoutonEditeur!\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	Bouton_Load(pBoutonPause, TRUE, pFontBoutonPause, couleurBoutonPause, rPositionBoutonPause, "Chargement", "P pour reprendre");
+	Bouton_Draw(pBoutonPause);
+	SDL_RenderPresent(pRenderer);
+	while (!inEvent.szKey[SDL_SCANCODE_P])
+	{
+		UpdateEvents(&inEvent);
+		Kr_Fps_Wait(pFPS, &iCurrentTime, &iPreviousTime, KR_FPS);
+	}
+	Bouton_Free(pBoutonPause);
+	Kr_Text_CloseFont(&pFontFPS);
+	Kr_Fps_Free(pFPS);
+}
