@@ -109,11 +109,13 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		SDL_Quit();
 	}
 	/* ========================================================================= */
-	/*                                  PRECACHE                                 */
+	/*                                  CHARGEMENT                               */
 	/* ========================================================================= */
-	
-	/* Variable de boucle (uniquement) */
-	Uint32 i = 0, j = 0;
+
+	/* ========================================================================= */
+	/*                                  PLAYER                                   */
+	/* ========================================================================= */
+
 	/* Préparation d'images que l'on souhaitera afficher */
 	Kr_Sprite	 *pSpritePlayer = NULL;
 	Entity		 *pPlayer = NULL;
@@ -124,7 +126,6 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	pRectPositionPlayer->w = 32; //Il est nécessaire de fournir la taille de l'image avec .w et .h sinon rien n'apparaitra
 	pRectPositionPlayer->h = 32;
 
-
 	/* Chargement des sprites */
 	pSpritePlayer = Kr_Sprite_Init("zelda");			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
 	if (Kr_Sprite_Load(pSpritePlayer, sud, 26, 136, 8, pRectPositionPlayer, pRenderer) == FALSE)
@@ -134,10 +135,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		exit(EXIT_FAILURE);
 	}
 
-
-	/* Chargement des personnages */
+	/* Chargement du personnage principale */
 	pPlayer = Entity_Init("zelda");				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
-
 	if (Entity_Load(pPlayer, 100, 50, MOVESPEED, normal, FALSE, pSpritePlayer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
@@ -147,24 +146,18 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 
 	/*Chargement de l'arme */
 	Weapon *pistoletLumiere = Weapon_Init("pistolet lumiere");
+
 	Weapon_Load(pistoletLumiere, "bullet", 100, 50, 500);
 	ChangeWeapon(pPlayer, pistoletLumiere);
 
-	/* Préparation d'une Texture contenant un message via util.c*/
-	SDL_Rect     textPosition;
-	SDL_Color    couleur = { 123, 255, 0 };
-	SDL_Texture *pTextureText = NULL;
-	TTF_Font    *pFont = NULL;
-	char         szCompteur[100] = " ";
-	textPosition.x = 0;
-	textPosition.y = 0;
-	pFont = Kr_Text_OpenFont("cour", 25);
-	TTF_SetFontStyle(pFont, TTF_STYLE_BOLD);
 
-
+	/* ========================================================================= */
+	/*                                 MAP/LEVEL                                 */
+	/* ========================================================================= */
 
 	/* Chargement de la map */
 	Kr_Map *pMap = NULL;
+
 	pMap = Kr_Map_Init("world");
 	if (!pMap)
 	{
@@ -176,31 +169,9 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	Boolean   bChangeLevel = TRUE;
 	Kr_Level *pCurrentLevel = NULL;
 	Uint32    iCurrentLevelNumber = 1;
-	Level_State *pCurrentLevelState;
-
+	Level_State *pCurrentLevelState = NULL;
 	pCurrentLevelState = Level_State_Init(pPlayer);
-
-
-	/* Préparation de la gestion des FPS */
-	SDL_Texture *pTextureFPS = NULL;
-	TTF_Font	*pFontFPS = NULL;
-	Kr_Fps		*pFPS = NULL;
-	SDL_Color    colorFPS = { 0, 10, 220 };
-	SDL_Rect	 rectPositionFPS;
-	Uint32       iPreviousTime = 0, iCurrentTime = 0;
-
-	rectPositionFPS.x = 1150;
-	rectPositionFPS.y = 685;
-	pFontFPS = Kr_Text_OpenFont("cour", 18);
-	TTF_SetFontStyle(pFontFPS, TTF_STYLE_ITALIC);
-
-	pFPS = Kr_Fps_Init(pRenderer, pFontFPS, &rectPositionFPS, colorFPS, TRUE);
-	if (pFPS == NULL)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the FPS structure\n");
-		exit(EXIT_FAILURE);
-	}
-
+	
 	/* Musique */
 	 // Pas encore géré la continuité de la musique
 	Kr_Music *pMusicCurrent = NULL;
@@ -211,11 +182,11 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	pMusicOld = Kr_Sound_InitMusic();
 	Mix_VolumeMusic(5);		// Réglage du volume de la musique (0 à 128) innefficace ?
 
-	/* Sound */
-	Mix_AllocateChannels(10);
-	
-	/* Gestion des entitées */
-	Uint32 iCodeUpdateEntity = 1;
+
+
+	/* ========================================================================= */
+	/*                                   NATURE                                  */
+	/* ========================================================================= */
 
 	/* Oiseau */
 	Sint32 movex = 0, movey = 0;
@@ -229,7 +200,6 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	pOiseau2 = ChargementOiseau(pRenderer, 2);
 	pSndOiseau1 = Kr_Sound_Alloc("seagull");
 	pSndOiseau2 = Kr_Sound_Alloc("eagle");
-
 
 	/* Buisson */
 	Boolean bDrawBuisson = FALSE;
@@ -248,6 +218,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	Kr_Sound *pSndPapillon = NULL;
 	pPapillon = ChargementPapillon(pRenderer);
 	pSndPapillon = Kr_Sound_Alloc("butterfly");
+
 	/* Pigeon effrayé */
 	Entity *pPigeonVol = NULL;
 	Boolean bFearedPigeon = FALSE, bDrawPigeonVol = FALSE, bOldPigeon = FALSE;
@@ -260,11 +231,13 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	Uint32 iPeriodicEvent = 0;
 	Uint32 iInterractionLevel = 0;
 
-
-	/* Message */
+	/* ========================================================================= */
+	/*                                  MESSAGE                                  */
+	/* ========================================================================= */
 	Message   *pMessageLevel = NULL;
 	SDL_Color  colorMessageLevel = { 50, 10, 130 };
 	TTF_Font *pFontMessageLevel = NULL;
+
 	pFontMessageLevel = Kr_Text_OpenFont("cour", 25);
 	TTF_SetFontStyle(pFontMessageLevel, TTF_STYLE_ITALIC);
 	pMessageLevel = Message_Init("message_level", pRenderer);
@@ -279,6 +252,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	char szMessageInfo[250] = " ";
 	SDL_Color  colorMessageInfo = { 30, 22, 250 };
 	TTF_Font *pFontMessageInfo = NULL;
+
 	pFontMessageInfo = Kr_Text_OpenFont("cour", 18);
 	TTF_SetFontStyle(pFontMessageInfo, TTF_STYLE_BOLD);
 	pMessageInfo = Message_Init("message_info", pRenderer);
@@ -287,12 +261,105 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load pMessageInfo!\n");
 	}
 	Message_Update(pMessageInfo, FALSE, "Initialisation pMessageInfo");
+
 	/* ========================================================================= */
-	/*                                 EVENEMENT                                 */
+	/*                                  HUD                                      */
+	/* ========================================================================= */
+	TTF_Font *policeHUD = NULL;
+	SDL_Color CouleurHUD = { 255, 255, 255 }; 
+
+	/* Ouverture de la police */
+	policeHUD = Kr_Text_OpenFont("upheavtt", 26);
+	TTF_SetFontStyle(policeHUD, TTF_STYLE_BOLD);
+
+	/* Initialisation des structures HUD */
+	HUD *hVie = NULL; //HUD vie
+	HUD *hBombeImage = NULL; //HUD Munitions (l'image seulement)
+	HUD *hBombeTexte = NULL; //HUD Munitions (le nombre de munition)
+	HUD *hCleImage = NULL; //HUD Bombe (l'image seulement)
+	HUD *hCleTexte = NULL; //HUD Bombe (le nombre de bombes)
+
+	/* Initialisation des positions des HUD */
+	// Pour mettre texte et images à la même hauteru (pour les HUD Bombe et Cle) :
+	// écart en x : les parties textes doivent être décalées de la largeur de l'image + l'espacement HUD_ESPACEMENT
+	// écart en y : normalement 0 mais comme la police est plus grande -> décaler pour avoir le texte 5 pixels plus haut
+	SDL_Rect RectVie = { 1050, 22, 16, 16 };
+	SDL_Rect RectBombeImage = { 50, 35, 18, 18 };
+	SDL_Rect RectBombeTexte = { 70, 30, 16, 16 };
+	SDL_Rect RectCleImage = { 50, 12, 18, 18 };
+	SDL_Rect RectCleTexte = { 70, 7, 16, 16 };
+
+	/* Initialisation des textures pour les HUD "texte" */
+	SDL_Texture *CleTexteTexture = NULL; //Texture pour le texte
+	SDL_Texture *BombeTexteTexture = NULL; //Texture pour le texte
+
+	/* Initialisation des différents HUD */
+	/* Initialisation HUD Vie */
+	hVie = HUD_Init("SDL_heat", FALSE, pRenderer);
+	HUD_Load(hVie, RectVie);
+	/* InitialisationHUD BombeImage */
+	hBombeImage = HUD_Init("SDL_Bomb", FALSE, pRenderer);
+	HUD_Load(hBombeImage, RectBombeImage);
+	/* InitialisationHUD CleImage */
+	hCleImage = HUD_Init("SDL_Key", FALSE, pRenderer);
+	HUD_Load(hCleImage, RectCleImage);
+	/* InitialisationHUD BombeTexte */
+	hBombeTexte = HUD_Init("BombeImage", TRUE, pRenderer);
+	HUD_Load(hBombeTexte, RectBombeTexte);
+	/* InitialisationHUD CleTexte */
+	hCleTexte = HUD_Init("CleImage", TRUE, pRenderer);
+	HUD_Load(hCleTexte, RectCleTexte);
+
+	/* ========================================================================= */
+	/*                                    FPS                                    */
+	/* ========================================================================= */
+	SDL_Texture *pTextureFPS = NULL;
+	TTF_Font	*pFontFPS = NULL;
+	Kr_Fps		*pFPS = NULL;
+	SDL_Color    colorFPS = { 0, 10, 220 };
+	SDL_Rect	 rectPositionFPS;
+	Uint32       iPreviousTime = 0, iCurrentTime = 0;
+
+	rectPositionFPS.x = 1150;
+	rectPositionFPS.y = 685;
+	pFontFPS = Kr_Text_OpenFont("cour", 18);
+	TTF_SetFontStyle(pFontFPS, TTF_STYLE_ITALIC);
+	pFPS = Kr_Fps_Init(pRenderer, pFontFPS, &rectPositionFPS, colorFPS, TRUE);
+	if (pFPS == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the FPS structure\n");
+		exit(EXIT_FAILURE);
+	}
+
+	/* ========================================================================= */
+	/*                                  DIVERS                                   */
+	/* ========================================================================= */
+
+	/* Sound */
+	Mix_AllocateChannels(10);
+
+	/* Gestion des entitées */
+	Uint32 iCodeUpdateEntity = 1;
+
+	/* Préparation d'une Texture contenant un message via util.c*/
+	SDL_Rect     textPosition;
+	SDL_Color    couleur = { 123, 255, 0 };
+	SDL_Texture *pTextureText = NULL;
+	TTF_Font    *pFont = NULL;
+	char         szDebug[100] = " ";
+
+	textPosition.x = 0;
+	textPosition.y = 0;
+	pFont = Kr_Text_OpenFont("cour", 25);
+	TTF_SetFontStyle(pFont, TTF_STYLE_BOLD);
+
+
+	/* ========================================================================= */
+	/*                            BOUCLE PRINCIPALE                              */
 	/* ========================================================================= */
 	while (!inEvent.szKey[SDL_SCANCODE_ESCAPE] && !inEvent.bQuit)
 	{
-		/* Faire au début sinon crash*/
+		/* Faire au début */
 		if (bChangeLevel == TRUE)
 		{
 			bChangeLevel = FALSE;
@@ -466,7 +533,14 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 			}
 		}
 		
-		/* Menu Principale */
+		/* Création des textures à partir du texte pour le nombre de munition ou de clés*/
+		CleTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "4", CouleurHUD, TRUE, &(hCleTexte->RectDest));
+		BombeTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "5", CouleurHUD, TRUE, &(hBombeTexte->RectDest));
+
+		/* Mise à jour des HUD "texte" avec la nouvelle texture générée */
+		HUD_Update(hCleTexte, CleTexteTexture);
+		HUD_Update(hBombeTexte, BombeTexteTexture);
+
 
 	
 
@@ -474,9 +548,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		/*                                  DIVERS                                   */
 		/* ========================================================================= */
 
-		pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szCompteur, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
-		sprintf(szCompteur, "Cursor : X : %d Y : %d   %s %d | Tile %d %d", pPlayer->pSprEntity->pRectPosition->x, pPlayer->pSprEntity->pRectPosition->y, pCurrentLevel->szLevelName, pCurrentLevel->iLevelNum, Kr_Level_GetTile(pCurrentLevel, inEvent.iMouseX, inEvent.iMouseY),iNumberPapillon);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
-		// inEvent.iMouseX, inEvent.iMouseY
+		pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szDebug, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
+		sprintf(szDebug, "Cursor : X : %d Y : %d   %s %d | Tile %d %d", pPlayer->pSprEntity->pRectPosition->x, pPlayer->pSprEntity->pRectPosition->y, pCurrentLevel->szLevelName, pCurrentLevel->iLevelNum, Kr_Level_GetTile(pCurrentLevel, inEvent.iMouseX, inEvent.iMouseY),iNumberPapillon);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
 		/* ========================================================================= */
 		/*                                  RENDER                                   */
 		/* ========================================================================= */
@@ -493,11 +566,17 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 2)) Entity_Draw(pRenderer, pOiseau2);
 		Message_Draw(pMessageLevel);
 		Message_Draw(pMessageInfo);
-	
-		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
+		HUD_Draw(pRenderer, hVie, 9); 
+		HUD_Draw(pRenderer, hBombeImage, 0);
+		HUD_Draw(pRenderer, hBombeTexte, 0);
+		HUD_Draw(pRenderer, hCleImage, 0);
+		HUD_Draw(pRenderer, hCleTexte, 0);
+		if (pMessageInfo->bMustShow == TRUE)  SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
+		UTIL_FreeTexture(&CleTexteTexture); 
+		UTIL_FreeTexture(&BombeTexteTexture);
 	}
 
 
@@ -525,7 +604,11 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	Kr_Sound_Free(&pSndPigeon);
 	Kr_Sound_Free(&pSndPapillon);
 	Kr_Fps_Free(pFPS);
-	//Entity_Free(pZelda);				// Libération mémoire du zelda est déjà fait si On le précise dans Level_State
+	HUD_free(hVie);
+	HUD_free(hCleImage);
+	HUD_free(hBombeImage);
+	HUD_free(hBombeTexte);
+	HUD_free(hCleTexte);
 	Level_State_Free(pCurrentLevelState, TRUE); // Libération mémoire des données du niveau
 	Kr_Map_Free(pMap);
 
