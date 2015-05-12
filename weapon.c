@@ -90,7 +90,7 @@ Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint3
 		pRectProj->h = 40;
 		pRectProj->w = 10;
 		pRectProj->x = entityMiddleX - pRectProj->w / 2;
-		pRectProj->y = pRect->y;
+		pRectProj->y = pRect->y + pRect->h;
 		pProj->iCoordPrj_XEnd = pRectProj->x;
 		pProj->iCoordPrj_YEnd = pRectProj->y + pWeapon->iRangeWeapon;
 		Kr_Sprite_Load(pSprProj, dir, 138, 35, 1, pRectProj, pRenderer);
@@ -209,7 +209,7 @@ Projectile * getCurrentProj(ListProj *lProj){
 
 void deleteCurrent(ListProj *lProj){
 	NodeListProj *nodeTmp = lProj->current;
-	if (lProj->current == lProj->first == lProj->last){
+	if (lProj->first == lProj->last){
 		lProj->current = lProj->first = lProj->last = NULL;
 	}
 	else if (first(lProj) == TRUE){
@@ -315,10 +315,11 @@ Boolean Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 mun
 *  \return none
 */
 void Weapon_Free(Weapon *pWeapon){
-	UTIL_Free(pWeapon->strNameWeapon);
-	UTIL_Free(pWeapon->strNameProjectile);
-
-	UTIL_Free(pWeapon);
+	if (pWeapon != NULL){
+		UTIL_Free(pWeapon->strNameWeapon);
+		UTIL_Free(pWeapon->strNameProjectile);
+		UTIL_Free(pWeapon);
+	}
 }
 
 

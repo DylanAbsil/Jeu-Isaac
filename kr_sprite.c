@@ -117,6 +117,6 @@ void Kr_Sprite_Free(Kr_Sprite *pSprite){
 	if (pSprite != NULL){
 		UTIL_FreeTexture(&pSprite->pTextureSprite);
 		//UTIL_Free(pSprite->pRectPosition);
-		UTIL_Free(pSprite);
+		free(pSprite);
 	}
 }

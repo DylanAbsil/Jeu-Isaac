@@ -148,7 +148,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	Weapon *pistoletLumiere = Weapon_Init("pistolet lumiere");
 
 	Weapon_Load(pistoletLumiere, "bullet", 100, 50, 500);
-	ChangeWeapon(pPlayer, pistoletLumiere);
+	changeWeapon(pPlayer, pistoletLumiere);
 
 
 	/* ========================================================================= */
@@ -501,7 +501,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		UpdateButterfly(pPapillon, bDrawPapillon, pRenderer, pCurrentLevel, pSndPapillon);
 
 		/* Gestion des pigeons */
-		if (iCodeUpdateEntity == 2) // Oiseau effrayé
+		/*if (iCodeUpdateEntity == 2) // Oiseau effrayé
 		{
 			Entity	  **aEntity = pCurrentLevelState->aEntityLevel;
 			for (iIndexEntity = 0; iIndexEntity < pCurrentLevelState->iNbEntities; iIndexEntity++)
@@ -532,7 +532,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 				}
 			}
 		}
-		
+		*/
+
 		/* Création des textures à partir du texte pour le nombre de munition ou de clés*/
 		CleTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "4", CouleurHUD, TRUE, &(hCleTexte->RectDest));
 		BombeTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "5", CouleurHUD, TRUE, &(hBombeTexte->RectDest));

@@ -23,11 +23,10 @@
 
 
 typedef struct {
-	Kr_Level	   *pLevel;				/* Pointer to the level associated */
-	Entity		   *pPlayer;			/* Pointer to the player */
-	Entity		  **aEntityLevel;		/* Array containing pointers on all entities currently in the level*/
-	Uint32			iNbEntities;		/* Number of entities currently in the map (the player not include) */
-
+	Kr_Level		*pLevel;			/* Pointer to the level associated */
+	Entity			*pPlayer;			/* Pointer to the player */
+	ListEnt			*plEnt;				/* List containing pointers on all entities currently in the level*/
+	Uint32			iNbEntities;			/* Int containing the number of entites currently in the level */
 }Level_State;
 
 Level_State *   Level_State_Init(Entity *pPlayer);
