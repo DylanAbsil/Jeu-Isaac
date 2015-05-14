@@ -91,7 +91,7 @@ void			setOnLast(ListProj *lProj);
 void			next(ListProj *lProj);
 Projectile *	getCurrentProj(ListProj *lProj);
 
-void			deleteCurrent(ListProj *lProj);
+void			deleteCurrent(ListProj *lProj, Boolean *nextL);
 
 Boolean			insertLast(ListProj *lProj, Projectile *p);
 

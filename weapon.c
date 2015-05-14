@@ -200,27 +200,40 @@ void setOnLast(ListProj *lProj){
 }
 
 void next(ListProj *lProj){
-	lProj->current = lProj->current->next;
+	if (emptyList(lProj) == FALSE)
+		lProj->current = lProj->current->next;
 }
 
 Projectile * getCurrentProj(ListProj *lProj){
 	return lProj->current->p;
 }
 
-void deleteCurrent(ListProj *lProj){
+void deleteCurrent(ListProj *lProj, Boolean *nextL){
 	NodeListProj *nodeTmp = lProj->current;
+
 	if (lProj->first == lProj->last){
 		lProj->current = lProj->first = lProj->last = NULL;
+		*nextL = TRUE;
 	}
 	else if (first(lProj) == TRUE){
 		next(lProj);
-		lProj->first = lProj->first->next;
+		lProj->first = lProj->current;
+		*nextL = TRUE;
+	}
+	else if (last(lProj) == TRUE){
+		setOnFirst(lProj);
+		while (lProj->current->next != nodeTmp)
+			next(lProj);
+		lProj->current->next = nodeTmp->next;
+		lProj->last = lProj->current;
+		*nextL = FALSE;
 	}
 	else{
 		setOnFirst(lProj);
 		while (lProj->current->next != nodeTmp)
 			next(lProj);
 		lProj->current->next = nodeTmp->next;
+		*nextL = FALSE;
 	}
 	deleteNodeListProj(nodeTmp);
 }

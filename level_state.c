@@ -153,6 +153,7 @@ void Level_State_Free(Level_State *pLevelSt,Boolean bFreePlayer)
 Uint32 updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent)
 {
 	Uint32     i = 0, iTmp = 0, iRetour = 1;
+	Boolean		next = FALSE;
 
 	if (updateEntity(pRenderer, pLevelSt, myEvent, pLevelSt->pPlayer, TRUE) == FALSE)
 	{
@@ -175,10 +176,14 @@ Uint32 updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Inpu
 		}
 		else if (iTmp == 3) // Entity dead
 		{
-			deleteCurrentEnt(pLevelSt->plEnt);
+			deleteCurrentEnt(pLevelSt->plEnt, &next);
 			pLevelSt->iNbEntities -= 1;
 		}
-		nextEnt(pLevelSt->plEnt);
+		
+		if (next == FALSE)
+			nextEnt(pLevelSt->plEnt);
+		else
+			next = FALSE;
 	}
 	return iRetour;
 }
@@ -347,7 +352,7 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, Weapon *pWeapon){
 	Sint32 movex = 0, movey = 0, NewVx = 0, NewVy = 0;
 	Uint32 iTmp = 0;
-	Boolean bool = FALSE;
+	Boolean res = TRUE, nextL = FALSE;
 
 	if (emptyList(pWeapon->plProjectile) == FALSE){
 		Kr_Log_Print(KR_LOG_INFO, "A projectile to be load\n");
@@ -383,46 +388,60 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 				break;
 			}
 
-			if (iTmp == 1){	//Fin de course
-				deleteCurrent(pWeapon->plProjectile);
+			if (iTmp == 1)
+			{	//Fin de course
+				deleteCurrent(pWeapon->plProjectile, &nextL);
 				Kr_Log_Print(KR_LOG_INFO, "The projectile is out of range\n");
-				bool = FALSE;
+				res = FALSE;
 			}
-			else{	
+			else
+			{
 				iTmp = Kr_Collision(pLevelSt->pLevel, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
 				if (iTmp == 6){	// Collision avec le level
 					Kr_Log_Print(KR_LOG_INFO, "The projectile hit the level\n");
-					deleteCurrent(pLevelSt->pPlayer->pWeapon->plProjectile);
-					bool = FALSE;
+					deleteCurrent(pLevelSt->pPlayer->pWeapon->plProjectile, &nextL);
+					res = FALSE;
 				}
 				else{	// Collision avec les autres entités du level
 					setOnFirstEnt(pLevelSt->plEnt);
 					while (pLevelSt->plEnt->current != NULL)
 					{
 						iTmp = Kr_Collision(NULL, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition, pLevelSt->plEnt->current->e->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
-						if (iTmp == 2){
+						if (iTmp == 2)
+						{
 							Kr_Log_Print(KR_LOG_INFO, "The projectile hit an entity in (%d;%d)\n", pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movex, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey);
 							weaponDamage(pWeapon->plProjectile->current->p, pLevelSt->plEnt->current->e);
-							deleteCurrent(pWeapon->plProjectile);
-							bool = FALSE;
+							deleteCurrent(pWeapon->plProjectile, &nextL);
+							res = FALSE;
 							break;
 						}
-						else
-							bool = TRUE;
 						nextEnt(pLevelSt->plEnt);
 					}
-					if (bool == TRUE){
+
+					if (res == TRUE)
+					{
 						pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x += NewVx;
 						pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y += NewVy;
 						Kr_Log_Print(KR_LOG_INFO, "The projectile has moved in (%d;%d)\n", pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y);
-						next(pWeapon->plProjectile);
 					}
+
 				}
-			}											//else
-		}											//while
-		return bool;
-	}											//if					
+
+			}
+			
+			if (nextL == FALSE)
+				next(pWeapon->plProjectile);
+			else
+				nextL = FALSE;
+
+		}
+
+		return res;
+
+	}	
+
 	else return FALSE;
+
 }
 
 

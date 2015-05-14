@@ -225,7 +225,8 @@ void setOnLastEnt(ListEnt *lEnt){
 }
 
 void nextEnt(ListEnt *lEnt){
-	lEnt->current = lEnt->current->next;
+	if (emptyListEnt(lEnt) == FALSE)
+		lEnt->current = lEnt->current->next;
 }
 
 
@@ -233,20 +234,32 @@ Entity * getCurrentEnt(ListEnt *lEnt){
 	return lEnt->current->e;
 }
 
-void deleteCurrentEnt(ListEnt *lEnt){
+void deleteCurrentEnt(ListEnt *lEnt, Boolean *nextL){
 	NodeListEnt *nodeTmp = lEnt->current;
+
 	if (lEnt->first == lEnt->last){
 		lEnt->current = lEnt->first = lEnt->last = NULL;
+		*nextL = TRUE;
 	}
 	else if (firstEnt(lEnt) == TRUE){
 		nextEnt(lEnt);
-		lEnt->first = lEnt->first->next;
+		lEnt->first = lEnt->current;
+		*nextL = TRUE;
+	}
+	else if (lastEnt(lEnt) == TRUE){
+		setOnFirstEnt(lEnt);
+		while (lEnt->current->next != nodeTmp)
+			nextEnt(lEnt);
+		lEnt->current->next = nodeTmp->next;
+		lEnt->last = lEnt->current;
+		*nextL = FALSE;
 	}
 	else{
 		setOnFirstEnt(lEnt);
 		while (lEnt->current->next != nodeTmp)
 			nextEnt(lEnt);
 		lEnt->current->next = nodeTmp->next;
+		*nextL = FALSE;
 	}
 	deleteNodeListEnt(nodeTmp);
 }

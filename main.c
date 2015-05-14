@@ -385,11 +385,11 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 			return FALSE;
 		}
 
-		/* Mise à jour des projectiles du personnage */
-		updateProjectilesWeapon(pRenderer, pCurrentLevelState, pCurrentLevelState->pPlayer->pWeapon);
-
 		/* Controle du tir du personnage */
 		shoot(inEvent, pPlayer, pRenderer);
+
+		/* Mise à jour des projectiles du personnage */
+		updateProjectilesWeapon(pRenderer, pCurrentLevelState, pCurrentLevelState->pPlayer->pWeapon);
 
 		if (inEvent.szMouseButtons[0])
 		{

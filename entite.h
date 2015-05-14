@@ -116,7 +116,7 @@ void			setOnLastEnt(ListEnt *lEnt);
 void			nextEnt(ListEnt *lEnt);
 Entity *		getCurrentEnt(ListEnt *lEnt);
 
-void			deleteCurrentEnt(ListEnt *lEnt);
+void			deleteCurrentEnt(ListEnt *lEnt, Boolean *nextL);
 
 Boolean			insertLastEnt(ListEnt *lEnt, Entity *e);
 
