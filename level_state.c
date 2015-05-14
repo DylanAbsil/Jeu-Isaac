@@ -267,8 +267,8 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 			else getVectorToPlayer(pEntity, pLevelSt->pPlayer, &movex, &movey);
 		}
 
-
 		newDir = foundDirection(movex, movey, pEntity);
+		
 		if ((movex == 0) && (movey == 0)) // Aucun déplacement
 		{
 			pEntity->mouvement = 0;

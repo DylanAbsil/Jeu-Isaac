@@ -313,12 +313,11 @@ void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy){
 */
 void getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy){
 	Sint32 movex = pPlayer->pSprEntity->pRectPosition->x - pEntity->pSprEntity->pRectPosition->x;
-	Sint32 movey = pPlayer->pSprEntity->pRectPosition->x - pEntity->pSprEntity->pRectPosition->x;
+	Sint32 movey = pPlayer->pSprEntity->pRectPosition->y - pEntity->pSprEntity->pRectPosition->y;
 	double movez = sqrt(movex*movex + movey*movey);
 	double rapport = pEntity->iSpeedEntity / movez;
 	*vx = (Sint32)(rapport * movex);
 	*vy = (Sint32)(rapport * movey);
-	
 }
 
 
@@ -469,6 +468,9 @@ void weaponDamage(Projectile *pProj, Entity *pEntity){
 *  \return	TRUE if the entity has fired, FALSE otherwise
 */
 Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
+	Direction newDir;
+	Boolean res = FALSE;
+
 	if (myEvent.szKey[SDL_SCANCODE_W]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
 				Projectile * newProj = Projectile_Init(pEntity->pWeapon->strNameProjectile);
@@ -478,13 +480,14 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 				pEntity->iTempoAtk = 0;
 
 				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a ete tire en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
-				return TRUE;
+				res = TRUE;
 			}
 			else{
 				if (pEntity->iTempoAtk < ATTACK_SPEED)
 					pEntity->iTempoAtk += 1;
-				return FALSE;
 			}
+
+			newDir = nord;
 	}
 	else if (myEvent.szKey[SDL_SCANCODE_A]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
@@ -495,13 +498,14 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 				pEntity->iTempoAtk = 0;
 
 				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a ete tire en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
-				return TRUE;
+				res = TRUE;
 			}
 			else{
 				if (pEntity->iTempoAtk < ATTACK_SPEED)
 					pEntity->iTempoAtk += 1;
-				return FALSE;
 			}
+
+			newDir = ouest;
 	}
 	else if (myEvent.szKey[SDL_SCANCODE_S]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
@@ -512,13 +516,14 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 				pEntity->iTempoAtk = 0;
 
 				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a ete tire en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
-				return TRUE;
+				res = TRUE;
 			}
 			else{
 				if (pEntity->iTempoAtk < ATTACK_SPEED)
 					pEntity->iTempoAtk += 1;
-				return FALSE;
 			}
+
+			newDir = sud;
 	}
 	else if (myEvent.szKey[SDL_SCANCODE_D]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
@@ -529,19 +534,22 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 				pEntity->iTempoAtk = 0;
 
 				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a ete tire en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
-				return TRUE;
+				res = TRUE;
 			}
 			else{
 				if (pEntity->iTempoAtk < ATTACK_SPEED)
 					pEntity->iTempoAtk += 1;
-				return FALSE;
 			}
+
+			newDir = est;
 	}
 	else{
 		if (pEntity->iTempoAtk < ATTACK_SPEED)
 			pEntity->iTempoAtk += 1;
-		return FALSE;
 	}
+
+	switchTextureFromDirection(pEntity, newDir, pRenderer);
+	return res;
 }
 
 /*  \fn Boolean	ChangeWeapon(Entity *pEntity, Weapon *pWeapon)
