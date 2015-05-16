@@ -468,7 +468,7 @@ void weaponDamage(Projectile *pProj, Entity *pEntity){
 *  \return	TRUE if the entity has fired, FALSE otherwise
 */
 Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
-	Direction newDir;
+	Direction newDir = unknown; //Défaut
 	Boolean res = FALSE;
 
 	if (myEvent.szKey[SDL_SCANCODE_W]){

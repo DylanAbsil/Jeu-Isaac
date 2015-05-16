@@ -251,21 +251,21 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	}
 	Bouton_Load(pBoutonEditeur, TRUE, pFontBoutonEditeur, couleurBoutonEditeur, rPositionBoutonEditeur, "Chargement", "Level Editor");
 
-	//Bouton Crédit
-	Bouton    *pBoutonCredit = NULL;
-	TTF_Font  *pFontBoutonCredit = NULL;
-	SDL_Color  couleurBoutonCredit = { 0, 0, 0 };
-	SDL_Rect   rPositionBoutonCredit = { 915, 550, 300, 120 };
-	pFontBoutonCredit = Kr_Text_OpenFont("cour", 25);
-	TTF_SetFontStyle(pFontBoutonCredit, TTF_STYLE_BOLD);
-	pBoutonCredit = Bouton_Init("Bouton_Credit", pRenderer, "Bouton1_Active", "Bouton1_Desactive", "Bouton1_Selection");
-	if (!pBoutonCredit)
+	//Bouton Rejouer
+	Bouton    *pBoutonRejouer = NULL;
+	TTF_Font  *pFontBoutonRejouer = NULL;
+	SDL_Color  couleurBoutonRejouer = { 0, 0, 0 };
+	SDL_Rect   rPositionBoutonRejouer = { 915, 550, 300, 120 };
+	pFontBoutonRejouer = Kr_Text_OpenFont("cour", 25);
+	TTF_SetFontStyle(pFontBoutonRejouer, TTF_STYLE_BOLD);
+	pBoutonRejouer = Bouton_Init("Bouton_Rejouer", pRenderer, "Bouton1_Active", "Bouton1_Desactive", "Bouton1_Selection");
+	if (!pBoutonRejouer)
 	{
-		Kr_Log_Print(KR_LOG_ERROR, "Cant initialize pBoutonCredit!\n");
+		Kr_Log_Print(KR_LOG_ERROR, "Cant initialize pBoutonRejouer!\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
-	Bouton_Load(pBoutonCredit, TRUE, pFontBoutonCredit, couleurBoutonCredit, rPositionBoutonCredit, "Chargement", "Crédit");
+	Bouton_Load(pBoutonRejouer, TRUE, pFontBoutonRejouer, couleurBoutonRejouer, rPositionBoutonRejouer, "Chargement", "Rejouer");
 
 	//Music menu principal
 	Kr_Music *pMusicMP = NULL;
@@ -328,12 +328,12 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 					iRetour = 2;
 				}
 			}
-			else if (pBoutonCredit->bSurvole)
+			else if (pBoutonRejouer->bSurvole)
 			{
-				if (pBoutonCredit->bActive == TRUE) pBoutonCredit->bActive = FALSE;
+				if (pBoutonRejouer->bActive == TRUE) pBoutonRejouer->bActive = FALSE;
 				else
 				{
-					pBoutonCredit->bActive = TRUE;
+					pBoutonRejouer->bActive = TRUE;
 					iRetour = 3;
 				}
 			}
@@ -353,10 +353,10 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		SDL_RenderCopy(pRenderer, pBackgroundMP, NULL, &rectMP);
 		if (pBoutonJouer->bMustShow) Bouton_Draw(pBoutonJouer);
 		if (pBoutonEditeur->bMustShow) Bouton_Draw(pBoutonEditeur);
-		if (pBoutonCredit->bMustShow) Bouton_Draw(pBoutonCredit);
+		if (pBoutonRejouer->bMustShow) Bouton_Draw(pBoutonRejouer);
 		Bouton_estSurvole(pBoutonJouer, inEvent);
 		Bouton_estSurvole(pBoutonEditeur, inEvent);
-		Bouton_estSurvole(pBoutonCredit, inEvent);
+		Bouton_estSurvole(pBoutonRejouer, inEvent);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 
@@ -365,7 +365,7 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 
 	Bouton_Free(pBoutonJouer);
 	Bouton_Free(pBoutonEditeur);
-	Bouton_Free(pBoutonCredit);
+	Bouton_Free(pBoutonRejouer);
 	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
 	Kr_Sound_FreeMusic(pMusicMP);
 	Kr_Fps_Free(pFPS);

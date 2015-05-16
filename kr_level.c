@@ -86,8 +86,8 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 {
 	char   szBuf[CACHE_SIZE];  // Buffer
 	char   szBuf2[CACHE_SIZE]; // Buffer2
-	char   szLevelPath[50];
-	FILE  *pFile;
+	char   szLevelPath[50] = "";
+	FILE  *pFile = NULL;
 	Uint32 iNameLen = 0;
 
 	/* Ouverture du fichier level */

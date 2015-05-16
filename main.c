@@ -33,7 +33,7 @@
 #include "message.h"
  
 
-Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow);
+Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup);
 int main(int argc, char** argv)
 {
 	Uint32 iRetourMP = 0;
@@ -67,11 +67,16 @@ int main(int argc, char** argv)
 		SDL_Quit();
 	}
 
+	do
+	{
+		iRetourMP = Menu_Principal(pRenderer,pWindow);
+		if (iRetourMP == 1) Isaac(pRenderer,pWindow,FALSE);
+		if (iRetourMP == 2) Editor(pRenderer, pWindow);
+		if (iRetourMP == 3) Isaac(pRenderer, pWindow, TRUE);
+	} while (iRetourMP != 0);
 
-	iRetourMP = Menu_Principal(pRenderer,pWindow);
-	if (iRetourMP == 1) Isaac(pRenderer,pWindow);
-	if (iRetourMP == 2) Editor(pRenderer, pWindow);
-
+	SDL_DestroyRenderer(pRenderer);	    // Libération mémoire du renderer
+	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
 	Mix_CloseAudio();	// On quitte SDL_MIXER
 	TTF_Quit();			// On quitte SDL_TTF
 	SDL_Quit();			// On quitte SDL
@@ -86,14 +91,15 @@ int main(int argc, char** argv)
 
 
 /*!
-*  \fn     int Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
+*  \fn     int Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 *  \brief  Function to start the game
 *
 *  \param   pRenderer	a pointer to the renderer
 *  \param   pWindow		a pointer to the window
+*  \param   bLoadBackup TRUE to replay and load the backup
 *  \return EXIT_SUCCESS if everything is ok, EXIT_FAILURE otherwise
 */
-Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
+Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 {
 	/* ========================================================================= */
 	/*                           CONFIGURATION GENERALE                          */
@@ -103,7 +109,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	InitEvents(&inEvent);
 
 	/* Copie des fichiers maps au besoin */
-	if (Kr_Map_CopyLevelFiles(LOAD_BACKUP_LEVEL) == FALSE)
+	if (Kr_Map_CopyLevelFiles(bLoadBackup) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't copy all the levels from /maps/backup");
 		SDL_Quit();
@@ -501,18 +507,19 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		UpdateButterfly(pPapillon, bDrawPapillon, pRenderer, pCurrentLevel, pSndPapillon);
 
 		/* Gestion des pigeons */
-		/*if (iCodeUpdateEntity == 2) // Oiseau effrayé
+		if (iCodeUpdateEntity == 2) // Oiseau effrayé
 		{
-			Entity	  **aEntity = pCurrentLevelState->aEntityLevel;
-			for (iIndexEntity = 0; iIndexEntity < pCurrentLevelState->iNbEntities; iIndexEntity++)
+			setOnFirstEnt(pCurrentLevelState->plEnt);
+			while (pCurrentLevelState->plEnt->current != NULL)
 			{
-				if ((bDrawPigeonVol == FALSE) && (strcmp((*(aEntity + iIndexEntity))->strEntityName, "pigeon1") == 0))
+				if ((bDrawPigeonVol == FALSE) && (strcmp(pCurrentLevelState->plEnt->current->e->strEntityName, "pigeon1") == 0))
 				{
-					(*(aEntity + iIndexEntity))->state = invisible;
+					pCurrentLevelState->plEnt->current->e->state = invisible;
 					bFearedPigeon = TRUE;
-					iCoordXDebut = (*(aEntity + iIndexEntity))->pSprEntity->pRectPosition->x;
-					iCoordYDebut = (*(aEntity + iIndexEntity))->pSprEntity->pRectPosition->y;
+					iCoordXDebut = pCurrentLevelState->plEnt->current->e->pSprEntity->pRectPosition->x;
+					iCoordYDebut = pCurrentLevelState->plEnt->current->e->pSprEntity->pRectPosition->y;
 				}
+				nextEnt(pCurrentLevelState->plEnt);
 			}				
 		}
 		else bFearedPigeon = FALSE;
@@ -520,19 +527,19 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		bDrawPigeonVol = PigeonVol(pPigeonVol, bFearedPigeon, pRenderer, pCurrentLevel, pSndPigeon, iCoordXDebut, iCoordYDebut, &iCoordXFin, &iCoordYFin);
 		if ((bDrawPigeonVol == FALSE) && (bOldPigeon == TRUE)) // Atterissage de l'oiseau
 		{
-			Entity	  **aEntity = pCurrentLevelState->aEntityLevel;
-			for (iIndexEntity = 0; iIndexEntity < pCurrentLevelState->iNbEntities; iIndexEntity++)
+			setOnFirstEnt(pCurrentLevelState->plEnt);
+			while (pCurrentLevelState->plEnt->current != NULL)
 			{
-				if ((strcmp((*(aEntity + iIndexEntity))->strEntityName, "pigeon1") == 0))
+				if (strcmp(pCurrentLevelState->plEnt->current->e->strEntityName, "pigeon1") == 0)
 				{
-					(*(aEntity + iIndexEntity))->state = normal;
+					pCurrentLevelState->plEnt->current->e->state = normal;
 					bFearedPigeon = TRUE;
-					(*(aEntity + iIndexEntity))->pSprEntity->pRectPosition->x = iCoordXFin;
-					(*(aEntity + iIndexEntity))->pSprEntity->pRectPosition->y = iCoordYFin;
+					pCurrentLevelState->plEnt->current->e->pSprEntity->pRectPosition->x = iCoordXFin;
+					pCurrentLevelState->plEnt->current->e->pSprEntity->pRectPosition->y = iCoordYFin;
 				}
+				nextEnt(pCurrentLevelState->plEnt);
 			}
 		}
-		*/
 
 		/* Création des textures à partir du texte pour le nombre de munition ou de clés*/
 		CleTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "4", CouleurHUD, TRUE, &(hCleTexte->RectDest));
@@ -586,8 +593,6 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	/* ========================================================================= */
 
 	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
-	SDL_DestroyRenderer(pRenderer);	    // Libération mémoire du renderer
-	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
 	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
 	Kr_Level_Free(pCurrentLevel);
@@ -612,7 +617,6 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	HUD_free(hCleTexte);
 	Level_State_Free(pCurrentLevelState, TRUE); // Libération mémoire des données du niveau
 	Kr_Map_Free(pMap);
-
 
 	return EXIT_SUCCESS;
 }

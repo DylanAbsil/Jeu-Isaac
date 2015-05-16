@@ -906,8 +906,6 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	}
 	UTIL_FreeTexture(&pTextureSelected);
 	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
-	SDL_DestroyRenderer(pRenderer);		// Libération mémoire du renderer
-	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
 	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
 	Level_Editor_Free(pEditor);

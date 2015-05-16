@@ -60,13 +60,13 @@ Kr_Tileset *Kr_Tileset_Init(const char *szFileName)
 */
 Boolean Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer)
 {
-	Uint32 iNumTile;
-	Sint32 i, j;
+	Uint32 iNumTile = 0;
+	Sint32 i = 0, j = 0;
 	char         szBuf[CACHE_SIZE];  // Buffer
 	char         szBuf2[CACHE_SIZE]; // Buffer2
 	SDL_Surface *pSurfTileset = NULL;
-	char         szTilePath[50];
-	FILE        *pFile;
+	char         szTilePath[50] = "";
+	FILE        *pFile = NULL;
 
 	/* Ouverture du fichier tileset */
 	sprintf(szTilePath, "tilesets\\%s", pTileset->szTilesetName);
