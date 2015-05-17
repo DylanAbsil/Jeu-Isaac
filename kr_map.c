@@ -102,7 +102,7 @@ void Kr_Map_Free(Kr_Map *pMap)
 
 
 /*!
-*  \fn     void Kr_Map_Log(Kr_Map *pMap);
+*  \fn     void Kr_Map_Log(Kr_Map *pMap)
 *  \brief  Function to log a Kr_Map structure
 *
 *  \param  pMap a pointer to the map structure
@@ -169,7 +169,7 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 *  \brief  Function to check if the level should be changed
 *
 *  \param  pLevel  a pointer to a the level structure
-*  \param  pEntity a pointer to the entity
+*  \param  pEntity a pointer to the player entity
 *  \return the number of the level if we must change, 0 otherwise
 */
 Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
@@ -216,7 +216,7 @@ Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 
 /*!
 *  \fn     Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
-*  \brief  This function remove the current maps file and copy the backup ones in maps/save
+*  \brief  This function remove the current maps file and copy the backup ones in maps/bakcup
 *
 *  \param  bMustLoad  a boolean to tell if we must load the backup file or continue with the current one
 *  \return TRUE if everything is ok, FALSE otherwise

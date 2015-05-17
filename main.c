@@ -180,12 +180,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	
 	/* Musique */
 	 // Pas encore géré la continuité de la musique
-	Kr_Music *pMusicCurrent = NULL;
-	Kr_Music *pMusicOld = NULL;
-	Uint32	  iMusicLen = 0;
 	Boolean bMscPaused = FALSE;
-	pMusicCurrent = Kr_Sound_InitMusic();
-	pMusicOld = Kr_Sound_InitMusic();
 	Mix_VolumeMusic(5);		// Réglage du volume de la musique (0 à 128) innefficace ?
 
 
@@ -343,6 +338,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 
 	/* Sound */
 	Mix_AllocateChannels(10);
+	Kr_Sound *pSndCoffre = Kr_Sound_Alloc("ouverture_coffre");
+
 
 	/* Gestion des entitées */
 	Uint32 iCodeUpdateEntity = 1;
@@ -369,6 +366,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		if (bChangeLevel == TRUE)
 		{
 			bChangeLevel = FALSE;
+			if (!Level_State_SaveLevel(pCurrentLevelState)) Kr_Log_Print(KR_LOG_WARNING, "Can't save the current data of the current level\n");
 			pCurrentLevel = Kr_Level_Change(pCurrentLevel, iCurrentLevelNumber, pRenderer);
 			Level_State_Free(pCurrentLevelState,FALSE);
 			pCurrentLevelState = Level_State_Init(pPlayer);
@@ -378,6 +376,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			bFearedPigeon = FALSE;
 			bCheckPapillon = TRUE;
 			bDrawPapillon = FALSE;
+			PassageOiseau(pOiseau1, bActiverCalculOiseau, movex, movey, pRenderer, pSndOiseau1, TRUE); // On relance un passage pour indiquer qu'on veut stopper le passage
+			PigeonVol(pPigeonVol, bFearedPigeon, pRenderer, pCurrentLevel, pSndPigeon, iCoordXDebut, iCoordYDebut, &iCoordXFin, &iCoordYFin);
 		}
 
 		UpdateEvents(&inEvent);
@@ -437,6 +437,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			if (iInterractionLevel == 1) // Ouverture d'un coffre
 			{
 				Message_Update(pMessageLevel, TRUE, "Vous avez ouvert un coffre !");
+				Kr_Sound_Play(pSndCoffre, 0, 100, 0);
 			}
 			inEvent.szKey[SDL_SCANCODE_E] = 0;
 		}
@@ -484,12 +485,12 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		if (iTypeOiseau == 1)// && bDrawOiseau == FALSE)
 		{
 			CalculPassageOiseau(pOiseau1, bActiverCalculOiseau, &movex, &movey);
-			bDrawOiseau = PassageOiseau(pOiseau1, bActiverCalculOiseau, movex, movey, pRenderer, pSndOiseau1);
+			bDrawOiseau = PassageOiseau(pOiseau1, bActiverCalculOiseau, movex, movey, pRenderer, pSndOiseau1, FALSE);
 		}
 		if (iTypeOiseau == 2)// && bDrawOiseau == FALSE)
 		{
 			CalculPassageOiseau(pOiseau2, bActiverCalculOiseau, &movex, &movey);
-			bDrawOiseau = PassageOiseau(pOiseau2, bActiverCalculOiseau, movex, movey, pRenderer, pSndOiseau2);
+			bDrawOiseau = PassageOiseau(pOiseau2, bActiverCalculOiseau, movex, movey, pRenderer, pSndOiseau2, FALSE);
 		}
 
 		/* Gestion des buissons*/
@@ -593,8 +594,9 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	/* ========================================================================= */
 
 	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
+	UTIL_FreeTexture(&CleTexteTexture);
+	UTIL_FreeTexture(&BombeTexteTexture);
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
-	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
 	Kr_Level_Free(pCurrentLevel);
 	Message_Free(pMessageLevel);
 	Message_Free(pMessageInfo);
@@ -609,6 +611,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	Kr_Sound_Free(&pSndBuisson);
 	Kr_Sound_Free(&pSndPigeon);
 	Kr_Sound_Free(&pSndPapillon);
+	Kr_Sound_Free(&pSndCoffre);
 	Kr_Fps_Free(pFPS);
 	HUD_free(hVie);
 	HUD_free(hCleImage);

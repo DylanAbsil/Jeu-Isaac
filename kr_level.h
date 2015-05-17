@@ -60,7 +60,7 @@ typedef struct
 	Sint32          iLevelNum;          /*!< Number of the level */
 	Sint32          iLevel_TileWidth;	/*!< Width of the level in Tile number */
 	Sint32          iLevel_TileHeight;  /*!< Height of the level in Tile number */
-	Uint32        **szLayout;			/*!< 2D array of the level (sizeof(Uint32) tiles possible */
+	Uint32        **szLayout;			/*!< 2D array of the level (sizeof(Uint32)) tiles possible */
 	Kr_Tileset     *pLevel_Tileset;		/*!< pointer to the tileset of this level */
 	Uint32          iNumNord;		    /*!< The numero of the level with which is connected to the north */
 	Uint32          iNumSud;		    /*!< The numero of the level with which is connected to the south */
@@ -81,10 +81,10 @@ void	  Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel);
 Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Uint32 iCurrentLevelNumber, SDL_Renderer *pRenderer);
 
 /* Sauvegarde */
-void    Kr_Level_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y);
-Boolean Kr_Level_SaveLayout(Kr_Level *pLevel);
+void      Kr_Level_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y);
+Boolean   Kr_Level_SaveLayout(Kr_Level *pLevel, Boolean bBackup);
 
 /* Détection d'évenement sur la carte */
-Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y);
+Sint32   Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y);
 
 #endif /* __KR_LEVEL_H__ */

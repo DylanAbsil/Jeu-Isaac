@@ -35,13 +35,12 @@
 typedef struct
 {
 	SDL_Rect rTile;
-	Uint32 iPlein;
-	Uint32 iWater;
-	Uint32 iPorteMaison;
-	Uint32 iCoffreFerme;
-	Uint32 iPanneau;
-	Uint32 iArbre;
-	// tout ce que vous voulez...
+	Uint32  iPlein;
+	Uint32  iWater;
+	Uint32  iPorteMaison;
+	Uint32  iCoffreFerme;
+	Uint32  iPanneau;
+	Uint32  iArbre;
 } Kr_TileProp;
 
 

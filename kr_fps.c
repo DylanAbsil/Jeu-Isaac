@@ -129,6 +129,8 @@ Uint32 PeriodicEvent()
 */
 void    Kr_Fps_Free(Kr_Fps *pFPS)
 {
+	UTIL_FreeTexture(&pFPS->pTexture);
+	Kr_Text_CloseFont(&pFPS->pFont);
 	free(pFPS);
 }
 

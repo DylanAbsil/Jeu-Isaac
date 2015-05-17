@@ -87,11 +87,11 @@ Bouton *Bouton_Init(char *BoutonName, SDL_Renderer *pRenderer, char* szImageActi
 */
 void Bouton_Free(Bouton *pBouton)
 {
+	UTIL_FreeTexture(&pBouton->pTextureActive);
+	UTIL_FreeTexture(&pBouton->pTextureDesactive);
 	UTIL_FreeTexture(&pBouton->pTextureImageActive);
 	UTIL_FreeTexture(&pBouton->pTextureImageDesactive);
 	UTIL_FreeTexture(&pBouton->pTextureSelection);
-	UTIL_FreeTexture(&pBouton->pTextureActive);
-	UTIL_FreeTexture(&pBouton->pTextureDesactive);
 	UTIL_Free(pBouton);
 }
 
@@ -281,7 +281,6 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 
 	//FPS
 	/* Préparation de la gestion des FPS */
-	SDL_Texture *pTextureFPS = NULL;
 	TTF_Font	*pFontFPS = NULL;
 	Kr_Fps		*pFPS = NULL;
 	SDL_Color    colorFPS = { 0, 10, 220 };
@@ -362,11 +361,13 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 
 		Kr_Fps_Wait(pFPS, &iCurrentTime, &iPreviousTime, KR_FPS);
 	}
-
+	UTIL_FreeTexture(&pBackgroundMP);
 	Bouton_Free(pBoutonJouer);
 	Bouton_Free(pBoutonEditeur);
 	Bouton_Free(pBoutonRejouer);
-	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
+	Kr_Text_CloseFont(&pFontBoutonJouer);
+	Kr_Text_CloseFont(&pFontBoutonEditeur);
+	Kr_Text_CloseFont(&pFontBoutonRejouer);
 	Kr_Sound_FreeMusic(pMusicMP);
 	Kr_Fps_Free(pFPS);
 	return iRetour;
@@ -387,7 +388,6 @@ void Menu_Pause(SDL_Renderer *pRenderer)
 
 	//FPS
 	/* Préparation de la gestion des FPS */
-	SDL_Texture *pTextureFPS = NULL;
 	TTF_Font	*pFontFPS = NULL;
 	Kr_Fps		*pFPS = NULL;
 	SDL_Color    colorFPS = { 0, 10, 220 };
@@ -429,6 +429,6 @@ void Menu_Pause(SDL_Renderer *pRenderer)
 		Kr_Fps_Wait(pFPS, &iCurrentTime, &iPreviousTime, KR_FPS);
 	}
 	Bouton_Free(pBoutonPause);
-	Kr_Text_CloseFont(&pFontFPS);
+	Kr_Text_CloseFont(&pFontBoutonPause);
 	Kr_Fps_Free(pFPS);
 }

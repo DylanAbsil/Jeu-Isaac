@@ -33,11 +33,6 @@
 /* Herrou        | 27/04/2015 | Passage en Level Version 1.4 et ajout de la musique du level						*/
 /* ===============================================================================================================  */
 
-/*
-Commentaire :
-
-
-*/
 #include "kr_level.h"
 
 #define CACHE_SIZE 15000
@@ -82,7 +77,7 @@ Kr_Level *Kr_Level_Init(char *szFileName)
 *  \param  pRenderer a pointer to the renderer
 *  \return TRUE if everything is ok, NULL otherwise
 */
-Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
+Boolean Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 {
 	char   szBuf[CACHE_SIZE];  // Buffer
 	char   szBuf2[CACHE_SIZE]; // Buffer2
@@ -110,7 +105,6 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 	iNameLen = strlen(szBuf2);
 	UTIL_SousChaine(szBuf2, 5, iNameLen, szBuf2); // 5 correspond à "level", on veut extraire le numéro qui est après
 	pLevel->iLevelNum = UTIL_StrToUint32(szBuf2);
-
 
 	do // Lecture ligne par ligne du fichier
 	{
@@ -145,6 +139,7 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 			if (!Kr_Tileset_Load(pLevel->pLevel_Tileset, pRenderer))
 			{
 				Kr_Log_Print(KR_LOG_ERROR, "Can't load \"%s\" in the level, must quit !\n", szBuf2);
+				UTIL_CloseFile(&pFile);
 				return FALSE;
 			}
 		}
@@ -153,6 +148,7 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 			if (!Kr_Level_Layout(pLevel, pFile))
 			{
 				Kr_Log_Print(KR_LOG_ERROR, "Can't load the layout, must quit !\n");
+				UTIL_CloseFile(&pFile);
 				return FALSE;
 			}
 
@@ -160,7 +156,6 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 	} while (strstr(szBuf, "#end") == NULL); // Identification de la fin du fichier level
 
 	UTIL_CloseFile(&pFile);
-	//Kr_Map_GetNeighbor(pMap, pLevel, &pLevel->iNumNord, &pLevel->iNumSud, &pLevel->iNumEst, &pLevel->iNumOuest);
 	Kr_Log_Print(KR_LOG_INFO, "tiles %d %d !\n", pLevel->iLevel_TileHeight, pLevel->pLevel_Tileset->iTilesHeight);
 	Kr_Log_Print(KR_LOG_INFO, "Level : %s has been loaded !\n", pLevel->szLevelFile);
 	return TRUE;
@@ -171,7 +166,7 @@ Boolean   Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 *  \fn     void Kr_Level_Free(Kr_Level *pLevel)
 *  \brief  Function to free a Kr_Level structure
 *
-*  \param  pLevel     a pointer to a the level structure
+*  \param  pLevel  a pointer to a the level structure
 *  \return none
 */
 void Kr_Level_Free(Kr_Level *pLevel)
@@ -185,7 +180,6 @@ void Kr_Level_Free(Kr_Level *pLevel)
 
 	UTIL_Free(pLevel->szLayout);
 	UTIL_Free(pLevel->szLevelFile);
-	//UTIL_Free(pLevel->szLevelName);
 	UTIL_Free(pLevel);
 }
 
@@ -279,22 +273,19 @@ Sint32 Kr_Level_GetTile(Kr_Level *pLevel, Uint32 x, Uint32 y)
 	// Obtenir les numéros des tiles
 	if ((x >= (Uint32)(pLevel->iLevel_TileWidth * pLevel->pLevel_Tileset->iTilesWidth)) || (y >= (Uint32)(pLevel->iLevel_TileHeight * pLevel->pLevel_Tileset->iTilesHeight)))
 	{
-		//Kr_Log_Print(KR_LOG_WARNING, "GetTile : Out of level X: %d, Y: %d!!! \n",x,y);
 		return iTilesID = -1;
 	}
 	iNumTilesX = x / pLevel->pLevel_Tileset->iTilesWidth;
 	iNumTilesY = y / pLevel->pLevel_Tileset->iTilesHeight;
 	iTilesID = pLevel->szLayout[iNumTilesX][iNumTilesY];
-	//Kr_Log_Print(KR_LOG_INFO, "Tiles %d   |  X: %d   Y: %d  |   PorteLEvel : %d \n", iTilesID,x,y, pLevel->pLevel_Tileset->pTilesProp[iTilesID].iPorteLevel);
 	return iTilesID;
 }
 
 
 /*!
-*  \fn     Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Kr_Map *pMap, char* szLevelName, SDL_Renderer *pRenderer)
+*  \fn     Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, char* szLevelName, SDL_Renderer *pRenderer)
 *  \brief  Function to change the level
 *
-*  \param  pMap           a pointer to the map
 *  \param  pCurrentLevel  a pointer to the current Level which must be freed
 *  \param  szLevelName    the name of the new Level to load
 *  \param  pRenderer      a pointer to the Renderer
@@ -340,29 +331,35 @@ void Kr_Level_WriteLayout(Kr_Level *pLevel, Uint32 iNumTile, Uint32 x, Uint32 y)
 
 
 /*!
-*  \fn     Boolean Kr_Level_SaveLayout(Kr_Level *pLevel)
+*  \fn     Boolean Kr_Level_SaveLayout(Kr_Level *pLevel, Boolean bBackup)
 *  \brief  Function to save the layout of the level
 *
 *  \param  pLevel    a pointer to the level
+*  \param  bBackup   TRUE to save in the backup folder
 *  \return TRUE if everything is ok, FALSE otherwise
 */
-Boolean Kr_Level_SaveLayout(Kr_Level *pLevel)
+Boolean Kr_Level_SaveLayout(Kr_Level *pLevel, Boolean bBackup)
 {
 	char   szPath1[50];
 	char   szPath2[50];
-	FILE  *pFileSrc;
-	FILE  *pFileDst;
+	char   szFolder[50];
+	FILE  *pFileSrc = NULL;
+	FILE  *pFileDst= NULL;
 	Sint32 i, j;
+
+
+	if (bBackup) sprintf(szFolder, "maps\\backup\\");
+	else sprintf(szFolder, "maps\\");
 
 	Kr_Log_Print(KR_LOG_INFO, "Saving the Layout !\n");
 	/* Ouverture du fichier temporaire*/
-	sprintf(szPath1, "maps\\level%d.tmp", pLevel->iLevelNum);
+	sprintf(szPath1, "%slevel%d.tmp", szFolder, pLevel->iLevelNum);
 	pFileDst = UTIL_OpenFile(szPath1, "w"); //écriture
 	if (!pFileDst) return FALSE;
 
 
 	/* Ouverture du fichier level */
-	sprintf(szPath2, "maps\\level%d.txt", pLevel->iLevelNum);
+	sprintf(szPath2, "%slevel%d.txt",szFolder, pLevel->iLevelNum);
 	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szPath2);
 	pFileSrc = UTIL_OpenFile(szPath2, "r"); //Lecture 
 	if (!pFileDst)
@@ -379,7 +376,7 @@ Boolean Kr_Level_SaveLayout(Kr_Level *pLevel)
 
 
 	/* Ouverture du fichier temporaire*/
-	sprintf(szPath1, "maps\\level%d.txt", pLevel->iLevelNum);
+	sprintf(szPath1, "%slevel%d.txt", szFolder, pLevel->iLevelNum);
 	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szPath2);
 	pFileSrc = UTIL_OpenFile(szPath1, "r+");
 	if (!pFileSrc) return FALSE;

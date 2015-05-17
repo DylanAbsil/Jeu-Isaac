@@ -29,6 +29,7 @@
 #include "kr_input.h"
 #include "kr_fps.h"
 #include "kr_config.h"
+#include "message.h"
 
 /*!< The max number of tile in a group selection */
 #define LEVEL_EDITOR_MAX_SELECTION 100

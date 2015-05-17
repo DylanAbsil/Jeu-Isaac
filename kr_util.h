@@ -28,7 +28,7 @@
     #include "kr_common.h"
 
     Uint32       UTIL_Sqrt32( Uint32 iValue );
-	Sint32			UTIL_FindMiddle(Sint32 coord1, Sint32 coord2);
+	Sint32		 UTIL_FindMiddle(Sint32 coord1, Sint32 coord2);
     FILE*        UTIL_OpenFile( const char *szPath, const char *szMode );
     void         UTIL_CloseFile( FILE **ppFile );
     SDL_Texture* UTIL_LoadTexture(SDL_Renderer *pRenderer, const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize ); 

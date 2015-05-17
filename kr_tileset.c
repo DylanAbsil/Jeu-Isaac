@@ -54,14 +54,14 @@ Kr_Tileset *Kr_Tileset_Init(const char *szFileName)
 *  \fn     void Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer);
 *  \brief  Function to load a tileset 
 *
-*  \param  pTileset a pointer to a the tileset structure
-*  \param  pRenderer  a pointer to the renderer
+*  \param  pTileset  a pointer to a the tileset structure
+*  \param  pRenderer a pointer to the renderer
 *  \return TRUE if everything is ok, NULL otherwise
 */
 Boolean Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer)
 {
-	Uint32 iNumTile = 0;
-	Sint32 i = 0, j = 0;
+	Uint32		 iNumTile = 0;
+	Sint32		 i = 0, j = 0;
 	char         szBuf[CACHE_SIZE];  // Buffer
 	char         szBuf2[CACHE_SIZE]; // Buffer2
 	SDL_Surface *pSurfTileset = NULL;
@@ -152,7 +152,6 @@ Boolean Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer)
 		}
 	}
 	UTIL_CloseFile(&pFile);
-	//Kr_Tileset_Log(pTileset);
 	Kr_Log_Print(KR_LOG_INFO, "Kr_Tileset_Init : Done\n");
 
 	return TRUE;

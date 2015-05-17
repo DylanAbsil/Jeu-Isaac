@@ -709,6 +709,25 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		Kr_Log_Print(KR_LOG_INFO, "Can't load the SelectionEditor32.png texture !\n");
 		SDL_Quit();
 	}
+
+	/*========================================================================= */
+	/*                                  MESSAGE                                  */
+	/* ========================================================================= */
+
+	Message   *pMessageInfo = NULL;
+	char szMessageInfo[250] = " ";
+	SDL_Color  colorMessageInfo = { 30, 22, 250 };
+	TTF_Font *pFontMessageInfo = NULL;
+
+	pFontMessageInfo = Kr_Text_OpenFont("cour", 18);
+	TTF_SetFontStyle(pFontMessageInfo, TTF_STYLE_BOLD);
+	pMessageInfo = Message_Init("message_info", pRenderer);
+	if (!Message_Load(pMessageInfo, "bandeau_info", 3, colorMessageInfo, pFontMessageInfo))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load pMessageInfo!\n");
+	}
+	Message_Update(pMessageInfo, FALSE, "Initialisation pMessageInfo");
+
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
 	/* ========================================================================= */
@@ -871,8 +890,9 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		//Sauvegarder la map
 		if (inEvent.szKey[SDL_SCANCODE_S])
 		{
-			Kr_Level_SaveLayout(pEditor->pLevel);
+			Kr_Level_SaveLayout(pEditor->pLevel, TRUE);
 			inEvent.szKey[SDL_SCANCODE_S] = 0;
+			Message_Update(pMessageInfo, TRUE, "Sauvegarde");
 		}
 
 		/* ========================================================================= */
@@ -900,14 +920,16 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		Level_Editor_PrintTiles(pEditor->pLevel->pLevel_Tileset, bTilesShow, pRenderer);
 		Grid_Draw(pGrid, pEditor->pLevel, bGridShow, pRenderer);
 		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
+		Message_Draw(pMessageInfo);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer);
 		UTIL_FreeTexture(&pTextureText);
 	}
 	UTIL_FreeTexture(&pTextureSelected);
 	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
+	Message_Free(pMessageInfo);
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
-	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
+	//Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
 	Level_Editor_Free(pEditor);
 	Grid_Free(pGrid);
 

@@ -100,6 +100,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 				if (Kr_Sprite_Load(pSprite, iDirection, iFrameHeight, iFrameWidth, iNbFrames, (*(aRect + i)), pRenderer) == FALSE)
 				{
 					Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
+					UTIL_CloseFile(&pFile);
 					return FALSE;
 				}
 
@@ -108,6 +109,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 				if (Entity_Load(new, iLife, iArmor, iSpeed, iEntityState, bFriendly, pSprite) == FALSE)
 				{
 					Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
+					UTIL_CloseFile(&pFile);
 					return FALSE;
 				}
 				insertLastEnt(pLevelSt->plEnt, new);
@@ -527,7 +529,7 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 		}
 		if (bSave == TRUE) // Sauvegarde du niveau en cas de modification
 		{
-			if (Kr_Level_SaveLayout(pLevel) == FALSE)
+			if (Kr_Level_SaveLayout(pLevel, FALSE) == FALSE)
 			{
 				Kr_Log_Print(KR_LOG_WARNING, "Can't save the level after interraction ! \n");
 			}
@@ -646,4 +648,92 @@ Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 
 		}
 	}
 	return iRetour;
+}
+
+
+/*!
+*  \fn     Boolean Level_State_SaveLevel(Level_State *pCurrentLevelState)
+*  \brief  Function to save the data of the level
+*
+*  \param  pCurrentLevelState  a pointer to the current Level_state
+*  \return TRUE if everything is OK, FALSE otherwose
+*/
+Boolean Level_State_SaveLevel(Level_State *pCurrentLevelState)
+{
+	char   szPath1[50] = "";
+	char   szPath2[50] = "";
+	FILE  *pFileSrc = NULL;
+	FILE  *pFileDst = NULL;
+	Sint32 i = 0, j = 0;
+	Uint32 state = 0;
+
+	if (pCurrentLevelState->pLevel == NULL) return FALSE;
+	Kr_Log_Print(KR_LOG_INFO, "Saving data of the level %d !\n",pCurrentLevelState->pLevel->iLevelNum);
+	/* Ouverture du fichier temporaire*/
+	sprintf(szPath1, "maps\\level%d.tmp", pCurrentLevelState->pLevel->iLevelNum);
+	pFileDst = UTIL_OpenFile(szPath1, "w"); //écriture
+	if (!pFileDst) return FALSE;
+
+
+	/* Ouverture du fichier level */
+	sprintf(szPath2, "maps\\level%d.txt", pCurrentLevelState->pLevel->iLevelNum);
+	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szPath2);
+	pFileSrc = UTIL_OpenFile(szPath2, "r"); //Lecture 
+	if (!pFileDst)
+	{
+		UTIL_CloseFile(&pFileSrc);
+		return FALSE;
+	}
+
+	if (!UTIL_FileCopy(pFileSrc, pFileDst, "#entity")) return FALSE; // copie de la partie précédent les informations sur les entités
+	UTIL_CloseFile(&pFileSrc);
+	UTIL_CloseFile(&pFileDst);
+	if (remove(szPath2)) Kr_Log_Print(KR_LOG_ERROR, "Failed to delete %s !\n", szPath1);
+	if (rename(szPath1, szPath2)) Kr_Log_Print(KR_LOG_ERROR, "Failed to rename %s to %s !\n", szPath1, szPath2);
+
+
+
+	/* Ouverture du fichier temporaire*/
+	sprintf(szPath1, "maps\\level%d.txt", pCurrentLevelState->pLevel->iLevelNum);
+	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szPath2);
+	pFileSrc = UTIL_OpenFile(szPath1, "r+");
+	if (!pFileSrc) return FALSE;
+	fseek(pFileSrc, 0, SEEK_END);
+
+	fprintf(pFileSrc, "%d\n", pCurrentLevelState->iNbEntities);
+
+	setOnFirstEnt(pCurrentLevelState->plEnt);
+	while (pCurrentLevelState->plEnt->current != NULL)
+	{
+		state = pCurrentLevelState->plEnt->current->e->state;
+		if (strcmp(pCurrentLevelState->plEnt->current->e->strEntityName, "pigeon1") == 0) state = 0; // On force l'état du pigeon à 0 dans le cas où celui-ci était en phase de vol
+		fprintf(pFileSrc, "%s %d %d %d %d %d %d %d %d %d %d %d\n",
+			pCurrentLevelState->plEnt->current->e->strEntityName,
+			pCurrentLevelState->plEnt->current->e->direction,
+			pCurrentLevelState->plEnt->current->e->pSprEntity->iFrameWidth,
+			pCurrentLevelState->plEnt->current->e->pSprEntity->iFrameHeight,
+			pCurrentLevelState->plEnt->current->e->pSprEntity->iNbFrames,
+			pCurrentLevelState->plEnt->current->e->iEntityLife,
+			pCurrentLevelState->plEnt->current->e->iArmor,
+			pCurrentLevelState->plEnt->current->e->pSprEntity->pRectPosition->x,
+			pCurrentLevelState->plEnt->current->e->pSprEntity->pRectPosition->y,
+			pCurrentLevelState->plEnt->current->e->iSpeedEntity,
+			state,
+			pCurrentLevelState->plEnt->current->e->bFriendly);
+		nextEnt(pCurrentLevelState->plEnt);
+	}
+	fprintf(pFileSrc, "#layout\n");
+	fprintf(pFileSrc, "%d %d\n", pCurrentLevelState->pLevel->iLevel_TileWidth, pCurrentLevelState->pLevel->iLevel_TileHeight);
+	// Remplissage du nouveau Layout
+	for (j = 0; j< pCurrentLevelState->pLevel->iLevel_TileHeight; j++)
+	{
+		for (i = 0; i< pCurrentLevelState->pLevel->iLevel_TileWidth; i++)
+		{
+			fprintf(pFileSrc, "%d ", pCurrentLevelState->pLevel->szLayout[i][j]);
+		}
+		fprintf(pFileSrc, "\n");
+	}
+	fprintf(pFileSrc, "#end");
+	UTIL_CloseFile(&pFileSrc);
+	return FALSE;
 }

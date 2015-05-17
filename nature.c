@@ -188,12 +188,18 @@ Uint32 CalculTypeOiseau(Boolean bCalculer, Kr_Level *pLevel)
 *  \param  movey      movement vector on X
 *  \param  pRenderer  a pointer to the renderer
 *  \param  pSndOiseau a pointer to the sound
+*  \param  bStop      TRUE to stop
 *  \return TRUE if the entity is still on the screen, FALSE otherwise
 */
-Boolean PassageOiseau(Entity *pEntity, Boolean bPassage, Sint32 movex, Sint32 movey, SDL_Renderer *pRenderer, Kr_Sound *pSndOiseau)
+Boolean PassageOiseau(Entity *pEntity, Boolean bPassage, Sint32 movex, Sint32 movey, SDL_Renderer *pRenderer, Kr_Sound *pSndOiseau, Boolean bStop)
 {
 	static Boolean bPassageEnCours = FALSE;
 	Direction newDir = sud;
+	if (bStop)
+	{
+		bPassageEnCours = FALSE;
+		return FALSE;
+	}
 	if (bPassage || bPassageEnCours) bPassageEnCours = TRUE;
 	else return FALSE;
 	if (bPassage) Kr_Sound_Play(pSndOiseau, KR_SOUND_ANIMAL_CANAL, 100, 0); // On le joue une seule fois

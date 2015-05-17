@@ -447,7 +447,7 @@ void meleeDamage(Entity *pGiver, Entity *pReceiver){
 }
 
 void weaponDamage(Projectile *pProj, Entity *pEntity){
-	if (pEntity->iArmor > pProj->iDamagePrj)
+	if (pEntity->iArmor > (Uint32)pProj->iDamagePrj)
 		pEntity->iArmor -= pProj->iDamagePrj;
 	else if (pEntity->iArmor > 0){
 		Uint32 truedamage = pProj->iDamagePrj - pEntity->iArmor;

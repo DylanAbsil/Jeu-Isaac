@@ -88,7 +88,14 @@ Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Direction dir, Uint32 frameHeight, Uin
 	pSpriteEntite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
 	if (pSpriteEntite == NULL){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the texture of the sprite : %s!\n", newSprFileName);
-		return FALSE;
+		sprintf(newSprFileName, "sprites/%s.png", sprite->strSpriteName);
+		Kr_Log_Print(KR_LOG_ERROR, "=> Trying to load the texture of the sprite : %s!\n", newSprFileName);
+		pSpriteEntite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
+		if (pSpriteEntite == NULL)
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "Cant load the texture of the sprite : %s!\n", newSprFileName);
+			return FALSE;
+		}
 	}
 
 	// Integration dans la structure

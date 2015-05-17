@@ -51,14 +51,11 @@
     void       Kr_Sound_Free( Kr_Sound **ppSound );
 	Mix_Chunk* Kr_Sound_LoadChunk(const char *szPath);
 	void       Kr_Sound_FreeChunk(Mix_Chunk **ppChunk);
-	void	   Kr_Sound_PlayOnce(const char *szSndName, Uint32 iChannel, Uint32 iVolume);
 
 	Kr_Music* Kr_Sound_InitMusic(void);
 	Boolean   Kr_Sound_LoadMusic(Kr_Music *pMusic, const char *szPath);
 	void      Kr_Sound_FreeMusic(Kr_Music *pMusic);
 
-	void Kr_Sound_AllocInterract(void);
-	void Kr_Sound_FreeInterract(Kr_Sound **aSoundInterract);
 
 #endif /* __KR_SOUND_H__ */
 
