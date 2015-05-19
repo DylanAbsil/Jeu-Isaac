@@ -17,35 +17,80 @@
 
 
 /*!
-*  \fn     Bombe *Bombe_Init(Uint32 iNumber, Uint32 iCooldown, Uint32 iDelaySet, Uint32 iDelayAnimation, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode)
+*  \fn     Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode)
 *  \brief  Function to initialize a Bombe structure
 *
+*  \param  pRenderer		a pointer to the renderer
 *  \param  iNumber			the number of bomb the player has
 *  \param  iCooldown		the Cooldown of the bomb
-*  \param  iDelaySet		the delay before the bomb start to explode
-*  \param  iDelayAnimation	the delay before the explosion of the bomb stop
 *  \param  szSprExplosion	the path to the sprite of the explosion of the bomb
 *  \param  szSprBomb		the path to the sprite of the bomb
 *  \param  szSndSet			the path to the sound of the bomb when it's set
 *  \param  szSndExplode		the path to the sound of the bomb when it's exploding
 *  \return the initialize structure
 */
-Bombe *Bombe_Init(Uint32 iNumber, Uint32 iCooldown, Uint32 iDelaySet, Uint32 iDelayAnimation, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode)
+Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode)
 {
-	Uint32 iNameLen = 0;
-	Bombe *pBombe = NULL;
+	Uint32	   iNameLen = 0;
+	Bombe	  *pBombe = NULL;
 	Kr_Sprite *pSprite = NULL;
-
 	pBombe = (Bombe *)UTIL_Malloc(sizeof(Bombe));
+	if (!pBombe) return NULL;
+
+	SDL_Rect *pRectBomb = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	pRectBomb->x = 0;
+	pRectBomb->y = 0;
+	pRectBomb->w = 20;
+	pRectBomb->h = 28;
+
+
+	/* Sprite */
+	pSprite = Kr_Sprite_Init(szSprBomb);
+	if (Kr_Sprite_Load(pSprite, unknown, 32, 128, 4, pRectBomb, pRenderer) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite SprBomb\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	/* Entité */
+	pBombe->pEntBomb = Entity_Init("Bomb");
+	if (Entity_Load(pBombe->pEntBomb, 100, 0, 0, noclip, TRUE, pSprite) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity Bomb!\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	pSprite = NULL;
+
+	/* Sprite */
+	pSprite = Kr_Sprite_Init(szSprExplosion);
+	if (Kr_Sprite_Load(pSprite, unknown, 32, 128, 4, pRectBomb, pRenderer) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite SprExplosion\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
+	/* Entité */
+	pBombe->pEntExplosion = Entity_Init("Bomb Explosion");
+	if (Entity_Load(pBombe->pEntExplosion, 100, 0, 0, noclip, TRUE, pSprite) == FALSE)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity Bomb Explosion!\n");
+		SDL_Quit();
+		exit(EXIT_FAILURE);
+	}
 
 	pBombe->pSndBombSet = Kr_Sound_Alloc(szSndSet);
-	pBombe->pSndBombSet = Kr_Sound_Alloc(szSndExplode);
-
-
+	if (!pBombe->pSndBombSet)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't load the sound %s", szSndSet);
+	}
+	pBombe->pSndBombExplosion = Kr_Sound_Alloc(szSndExplode);
+	if (!pBombe->pSndBombExplosion)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't load the sound %s", szSndExplode);
+	}
 	pBombe->iNumber = iNumber;
 	pBombe->iCooldown = iCooldown;
-	pBombe->iDelayAnimation = iDelayAnimation;
-	pBombe->iDelaySet = iDelaySet;
 
 	return pBombe;
 }
@@ -61,8 +106,8 @@ void Bombe_Free(Bombe *pBombe)
 {
 	Kr_Sound_Free(&pBombe->pSndBombSet);
 	Kr_Sound_Free(&pBombe->pSndBombExplosion);
-	Kr_Sprite_Free(pBombe->pSprBomb);
-	Kr_Sprite_Free(pBombe->pSprExplosion);
+	Entity_Free(pBombe->pEntBomb);
+	Entity_Free(pBombe->pEntExplosion);
 	UTIL_Free(pBombe);
 }
 
@@ -77,4 +122,32 @@ void Bombe_Free(Bombe *pBombe)
 void Bombe_Update(Bombe *pBombe, Uint32 iNumber)
 {
 	pBombe->iNumber = iNumber;
+}
+
+
+/*!
+*  \fn     Boolean  Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y)
+*  \brief  Function to set a bomb
+*
+*  \param  pBombe   the Bombe 
+*  \param  bStart   TRUE to start
+*  \param  x		Coord X
+*  \param  y		Coord Y
+*  \return none
+*/
+Boolean Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y)
+{
+	static Uint32 iDelay = 0;
+	if (bStart && iDelay == 0)
+	{
+		//Play Sound set
+	}
+
+	iDelay++;
+
+	
+
+
+
+	return TRUE;
 }

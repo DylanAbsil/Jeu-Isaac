@@ -18,8 +18,9 @@
 #include "kr_common.h"
 #include "kr_util.h"
 #include "kr_log.h"
-#include "kr_sprite.h"
+#include "entite.h"
 #include "kr_sound.h"
+#include "kr_fps.h"
 
 /*!
 * \struct Bombe
@@ -29,18 +30,16 @@ typedef struct
 {
 	Uint32		 iNumber;			/*!< The number of bomb the player has */
 	Uint32		 iCooldown;			/*!< The cooldown between 2 bombs */
-	Uint32		 iDelaySet;			/*!< The delay between the time the bomb was set and the explosion*/
-	Uint32		 iDelayAnimation;	/*!< The number of seconds during which the animation of the explosion is shown*/
-	Kr_Sprite	*pSprExplosion;		/*!< The sprite of the explosion*/
-	Kr_Sprite	*pSprBomb;			/*!< The sprite of the bomb*/
+	Entity		*pEntExplosion;		/*!< The Entity to handle the animation of the explosion*/
+	Entity		*pEntBomb;			/*!< The Entity to handle the animation of the bomb*/
 	Kr_Sound    *pSndBombSet;		/*!< The sound of the bomb when it's set*/
 	Kr_Sound	*pSndBombExplosion; /*!< The sound of the bomb when it's exploding*/
 }Bombe;
 
-Bombe	*Bombe_Init(Uint32 iNumber, Uint32 iCooldown, Uint32 iDelaySet, Uint32 iDelayAnimation, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode);
+Bombe	*Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode);
 void	 Bombe_Free(Bombe *pBombe);
 void	 Bombe_Update(Bombe *pBombe, Uint32 iNumber);
-Boolean  Bombe_Set();
+Boolean  Bombe_Set(Bombe *pBombe, Uint32 x, Uint32 y);
 Boolean  Bombe_Explosion();
 
 

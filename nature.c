@@ -259,7 +259,7 @@ Entity *ChargementBuisson(SDL_Renderer *pRenderer, Uint32 iBuisson)
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
-	/* Chargement des sprites */
+	/* Sprites */
 	pSprite1 = Kr_Sprite_Init(szName);
 	if (Kr_Sprite_Load(pSprite1, unknown, 32, 128, 4, pRectBuisson1, pRenderer) == FALSE)
 	{
@@ -267,7 +267,7 @@ Entity *ChargementBuisson(SDL_Renderer *pRenderer, Uint32 iBuisson)
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
-	/* Chargement des personnages */
+	/* Entité */
 	pEntity = Entity_Init(szName);
 	if (Entity_Load(pEntity, 100, 0, MOVESPEED, noclip, TRUE, pSprite1) == FALSE)
 	{

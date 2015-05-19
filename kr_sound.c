@@ -65,7 +65,7 @@ void Kr_Sound_FreeChunk(Mix_Chunk **ppChunk)
  */
 Kr_Sound* Kr_Sound_Alloc( const char *szSndName )
 {
-    Kr_Sound *pSound;
+    Kr_Sound *pSound = NULL;
 	char      pSoundPath[50];
 	size_t    iSoundLen;
     
