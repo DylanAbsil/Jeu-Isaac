@@ -41,7 +41,7 @@
 Entity * Entity_Init(char* szFileName){
 	Uint32 iNameLen = strlen(szFileName);
 	Entity * entite = (Entity *)malloc(sizeof(Entity));
-	
+	if (!entite) return NULL;
 	entite->strEntityName = UTIL_CopyStr(szFileName, iNameLen);
 	entite->pSprEntity = NULL;
 	entite->state = normal;
@@ -77,7 +77,8 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Uint32 iSpeed, E
 	entite->iArmor = armor;
 	entite->pSprEntity = sprite;
 	if (entite->pSprEntity == NULL){
-		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s in the entity %s !\n", sprite->strSpriteName, entite->strEntityName);
+		if (sprite) Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s of the entity %s !\n", sprite->strSpriteName, entite->strEntityName);
+		else Kr_Log_Print(KR_LOG_ERROR, "Can't load an entity and a sprite, both NULL\n");
 		return FALSE;
 	}
 	entite->state = state;
@@ -586,6 +587,5 @@ Uint32 Entity_NumberHP(Entity *pEntity)
 		iHearth = pEntity->iEntityLife / 10;
 	}
 	if (iHearth > 20) iHearth = 20;
-	Kr_Log_Print(KR_LOG_INFO, "Life : %d  Hearth : %d\n", pEntity->iEntityLife, iHearth);
 	return iHearth;
 }

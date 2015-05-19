@@ -143,7 +143,7 @@ Boolean Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer)
 
 			if ((strcmp(szBuf2, "sol") == 0) || (strcmp(szBuf2, "echelle") == 0) ||
 				(strcmp(szBuf2, "fleur") == 0) || (strcmp(szBuf2, "NONE") == 0)  ||
-				(strcmp(szBuf2, "porteMaison") == 0 || (strcmp(szBuf2, "flaque") == 0))) pTileset->pTilesProp[iNumTile].iPlein = 0;
+				(strcmp(szBuf2, "porteMaison") == 0) || (strcmp(szBuf2, "flaque") == 0)) pTileset->pTilesProp[iNumTile].iPlein = 0;
 			if ((strcmp(szBuf2, "eau") == 0)) pTileset->pTilesProp[iNumTile].iWater = 1;
 			if ((strcmp(szBuf2, "porteMaison") == 0)) pTileset->pTilesProp[iNumTile].iPorteMaison= 1;
 			if ((strcmp(szBuf2, "coffreFerme") == 0)) pTileset->pTilesProp[iNumTile].iCoffreFerme = 1;

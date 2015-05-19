@@ -225,9 +225,20 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 
 	/* Allocation du tableau 2D szLayout */
 	pEditor->pLevel->szLayout = malloc(pEditor->pLevel->iLevel_TileWidth*sizeof(Uint32*));
-	for (i = 0; i<pEditor->pLevel->iLevel_TileWidth; i++)
+	if (pEditor->pLevel->szLayout == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't allocate the layout of the level in the editor\n");
+		return FALSE;
+	}
+	for (i = 0; i < pEditor->pLevel->iLevel_TileWidth; i++)
+	{
 		pEditor->pLevel->szLayout[i] = malloc(pEditor->pLevel->iLevel_TileHeight*sizeof(Uint32));
-
+		if (pEditor->pLevel->szLayout[i] == NULL)
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "Can't allocate the layout[i] of the level in the editor\n");
+			return FALSE;
+		}
+	}
 
 	/*Affectation des données level au schema */
 	for (j = 0; j<pEditor->pLevel->iLevel_TileHeight; j++)

@@ -14,7 +14,7 @@
 
 #include "level_state.h"
 
-#define CACHE_SIZE 15000
+#define CACHE_SIZE 1000
 
 /*!
 * \fn	  Level_State * Level_State_Init(Entity *pPlayer)

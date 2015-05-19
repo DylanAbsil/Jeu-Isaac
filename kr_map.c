@@ -38,8 +38,8 @@
 */
 Kr_Map *Kr_Map_Init(char *szMapFile)
 {
-	char     szMapPath[50];
-	char     szBuffer[50];
+	char     szMapPath[200];
+	char     szBuffer[200];
 	Kr_Map  *pMap = NULL;
 	FILE    *pFile;
 	Uint32   i, iNameLen;

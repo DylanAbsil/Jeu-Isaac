@@ -35,7 +35,7 @@
 
 #include "kr_level.h"
 
-#define CACHE_SIZE 15000
+#define CACHE_SIZE 1000
 
 /*!
 *  \fn     Kr_Tileset *Kr_Level_Init(char *szFileName)
@@ -200,9 +200,20 @@ Boolean Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile)
 
 	/* Allocation du tableau 2D szLayout */
 	pLevel->szLayout = malloc(pLevel->iLevel_TileWidth*sizeof(Uint32*));
-	for (i = 0; i<pLevel->iLevel_TileWidth; i++)
+	if (pLevel->szLayout == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't allocate the layout of the level \n");
+		return FALSE;
+	}
+	for (i = 0; i < pLevel->iLevel_TileWidth; i++)
+	{
 		pLevel->szLayout[i] = malloc(pLevel->iLevel_TileHeight*sizeof(Uint32));
-
+		if (pLevel->szLayout[i] == NULL)
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "Can't allocate the layout[i] of the level \n");
+			return FALSE;
+		}
+	}
 	/* Affectation des données level au schema */
 	for (j = 0; j<pLevel->iLevel_TileHeight; j++)
 	{
