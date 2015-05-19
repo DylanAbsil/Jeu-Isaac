@@ -67,7 +67,7 @@ void	Bouton_Free(Bouton *pBouton);
 Boolean Bouton_estSurvole(Bouton *pBouton, Kr_Input myEvent);
 
 Uint32  Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow);
-void Menu_Pause(SDL_Renderer *pRenderer);
+void Menu_Pause(SDL_Renderer *pRenderer, char *szMessage);
 
 
 #endif

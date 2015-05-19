@@ -374,14 +374,14 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 }
 
 /*!
-*  \fn     void Menu_Pause(SDL_Renderer *pRenderer);
+*  \fn     void Menu_Pause(SDL_Renderer *pRenderer, char *szMessage)
 *  \brief  Function to handle the main menu
 *
 *  \param   pRenderer	a pointer to the renderer
-*  \param   pWindow		a pointer to the window
+*  \param   szMessage	the message to print
 *  \return  none
 */
-void Menu_Pause(SDL_Renderer *pRenderer)
+void Menu_Pause(SDL_Renderer *pRenderer, char *szMessage)
 {
 	Kr_Input inEvent; // Structure pour la gestion des événements
 	InitEvents(&inEvent);
@@ -420,7 +420,7 @@ void Menu_Pause(SDL_Renderer *pRenderer)
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
-	Bouton_Load(pBoutonPause, TRUE, pFontBoutonPause, couleurBoutonPause, rPositionBoutonPause, "Chargement", "P pour reprendre");
+	Bouton_Load(pBoutonPause, TRUE, pFontBoutonPause, couleurBoutonPause, rPositionBoutonPause, "Chargement", szMessage);
 	Bouton_Draw(pBoutonPause);
 	SDL_RenderPresent(pRenderer);
 	while (!inEvent.szKey[SDL_SCANCODE_P])

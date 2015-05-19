@@ -356,11 +356,12 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	pFont = Kr_Text_OpenFont("cour", 25);
 	TTF_SetFontStyle(pFont, TTF_STYLE_BOLD);
 
-
+	/* Mort du player */
+	Boolean bPlayerDead = FALSE;
 	/* ========================================================================= */
 	/*                            BOUCLE PRINCIPALE                              */
 	/* ========================================================================= */
-	while (!inEvent.szKey[SDL_SCANCODE_ESCAPE] && !inEvent.bQuit)
+	while (!inEvent.szKey[SDL_SCANCODE_ESCAPE] && !inEvent.bQuit && !bPlayerDead)
 	{
 		/* Faire au début */
 		if (bChangeLevel == TRUE)
@@ -424,7 +425,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		}
 		if (inEvent.szKey[SDL_SCANCODE_P])
 		{
-			Menu_Pause(pRenderer);
+			Menu_Pause(pRenderer, "Appuyer sur P pour reprendre");
 			inEvent.szKey[SDL_SCANCODE_P] = 0;
 		}
 		if (inEvent.szKey[SDL_SCANCODE_E])
@@ -447,7 +448,11 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			Message_Update(pMessageInfo, TRUE, szMessageInfo);
 			//inEvent.szKey[SDL_SCANCODE_TAB] = 0;
 		}
-
+		if (inEvent.szKey[SDL_SCANCODE_B])
+		{
+			pPlayer->iEntityLife -= 9;
+			inEvent.szKey[SDL_SCANCODE_B] = 0;
+		}
 
 		iCurrentLevelNumber = Kr_Map_ShouldChangeLevel(pMap, pCurrentLevel, pPlayer);
 		if (iCurrentLevelNumber)
@@ -550,8 +555,12 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		HUD_Update(hCleTexte, CleTexteTexture);
 		HUD_Update(hBombeTexte, BombeTexteTexture);
 
-
-	
+		/* Mort du player*/
+		if (pPlayer->iEntityLife <= 0)
+		{
+			bPlayerDead = TRUE;
+			Message_Update(pMessageInfo, TRUE, "Vous êtes mort, la partie s'achève !");
+		}
 
 		/* ========================================================================= */
 		/*                                  DIVERS                                   */
@@ -562,7 +571,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		/* ========================================================================= */
 		/*                                  RENDER                                   */
 		/* ========================================================================= */
-
+		
 		SDL_RenderClear(pRenderer); // Dans un premier temps on Clear le renderer
 		Kr_Level_Draw(pRenderer, pCurrentLevel);
 		if ((bDrawBuisson == TRUE) && (iValeurBuisson == 1)) Entity_Draw(pRenderer, pBuisson1);
@@ -575,7 +584,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 2)) Entity_Draw(pRenderer, pOiseau2);
 		Message_Draw(pMessageLevel);
 		Message_Draw(pMessageInfo);
-		HUD_Draw(pRenderer, hVie, 9); 
+		HUD_Draw(pRenderer, hVie, Entity_NumberHP(pPlayer)); 
 		HUD_Draw(pRenderer, hBombeImage, 0);
 		HUD_Draw(pRenderer, hBombeTexte, 0);
 		HUD_Draw(pRenderer, hCleImage, 0);
@@ -586,8 +595,12 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
 		UTIL_FreeTexture(&CleTexteTexture); 
 		UTIL_FreeTexture(&BombeTexteTexture);
-	}
+		if (bPlayerDead)
+		{
+			SDL_Delay(5000);
+		}
 
+	}
 
 	/* ========================================================================= */
 	/*                            LIBERATION MEMOIRE                             */

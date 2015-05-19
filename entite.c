@@ -565,3 +565,27 @@ Boolean	changeWeapon(Entity *pEntity, Weapon *pWeapon){
 	return TRUE;
 }
 
+
+/*  \fn  Uint32 Entity_NumberHP(Entity *pEntity)
+*  \brief function to return the number of hearth the entity has (1 hearth = 10hp)
+*
+*  \remarks : Max 20 hearth
+*
+*  \param	pEntity	a pointer the entity
+*  \return	The number of hearth ( 1 hearth = 10 hp)
+*/
+Uint32 Entity_NumberHP(Entity *pEntity)
+{
+	Uint32 iHearth = 0;
+    if (pEntity->iEntityLife % 10 == 0) // Dans le cas des multiples de 10
+	{
+		iHearth = pEntity->iEntityLife / 10 - 1;
+	}
+	else // Cas général
+	{
+		iHearth = pEntity->iEntityLife / 10;
+	}
+	if (iHearth > 20) iHearth = 20;
+	Kr_Log_Print(KR_LOG_INFO, "Life : %d  Hearth : %d\n", pEntity->iEntityLife, iHearth);
+	return iHearth;
+}

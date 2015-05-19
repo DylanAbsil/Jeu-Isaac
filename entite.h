@@ -50,7 +50,7 @@ typedef enum {
 
 typedef struct {
 	char		*strEntityName;		/*< Name of the entity >*/
-	Uint32		iEntityLife;		/*< Life of the entity >*/
+	Sint32		iEntityLife;		/*< Life of the entity >*/
 	Uint32		iArmor;				/*< Armor of the entity >*/
 	Weapon		*pWeapon;			/*< A pointer to his weapon (can be NULL) >*/
 	Kr_Sprite	*pSprEntity;		/*<	A pointer to his sprite >*/
@@ -94,7 +94,7 @@ Boolean		Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Uint32 iSpeed, E
 void		Entity_Free(Entity *entite);
 Boolean		Entity_Draw(SDL_Renderer *pRenderer, Entity *entite);
 void        Entity_Log(Entity *pEntity);
-
+Uint32      Entity_NumberHP(Entity *pEntity);
 
 /* ======================================== */
 /*			LIST OF ENTITIES				*/
