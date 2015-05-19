@@ -309,7 +309,7 @@ Sint32 UTIL_StrToUint32(char *szString)
 Boolean UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd)
 {
 	char szBuf[1000];
-
+	if (pFileSrc == NULL || pFileDst == NULL) return FALSE;
 	do
 	{
 		if (feof(pFileSrc))//détecte la fin du fichier

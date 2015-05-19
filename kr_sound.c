@@ -209,6 +209,7 @@ Boolean Kr_Sound_LoadMusic(Kr_Music *pMusic, const char *szMusicName)
 */
 void Kr_Sound_FreeMusic(Kr_Music *pMusic)
 {
+	if (!pMusic) return;
 	Mix_FreeMusic(pMusic->pMsc);
 	UTIL_Free(pMusic);
 }
