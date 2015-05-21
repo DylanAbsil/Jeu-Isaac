@@ -159,9 +159,10 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 
 	/* Bombe */
 	Bombe *pBombe = NULL;
-	Boolean bBombSet = FALSE;
-	Boolean bBombDraw = FALSE;
-	Boolean bStartExplosion = FALSE;
+	Boolean bBombSet = FALSE; // Vrai quand la bombe est posée
+	Boolean bBombDraw = FALSE; // Vrai quand il faut afficher la bombe au sol en train de se consumer
+	Boolean bStartExplosion = FALSE; // Vrai quand la bombe est dans sa phase d'explosion
+	Boolean bCheckBomb = FALSE; // Vrai lorsque la bombe a fini d'explosé et qu'il faut aller vérifier si une entité était dans l'explosion
 	char szNbBomb[10] = "0";
 	pBombe = Bombe_Init(pRenderer, 2, 20, "Bombe_sol_explosion", "Bombe_sol", "bomb_set", "bomb_explosion");
 	if (!pBombe)
@@ -413,6 +414,11 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			return FALSE;
 		}
 
+		if (bCheckBomb == TRUE) // Lorsqu'une bombe a explosé 
+		{
+			bCheckBomb = FALSE; 
+			Level_State_Bomb_Detect(pCurrentLevelState, pBombe);
+		}
 		/* Controle du tir du personnage */
 		shoot(inEvent, pPlayer, pRenderer);
 
@@ -585,7 +591,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		}
 
 		/* Gestion des bombes */
-		bBombDraw = Bombe_Set(pBombe, bBombSet, pPlayer->pSprEntity->pRectPosition->x, pPlayer->pSprEntity->pRectPosition->y);
+		bBombDraw = Bombe_Set(pBombe, bBombSet, pPlayer->pSprEntity->pRectPosition->x, pPlayer->pSprEntity->pRectPosition->y, &bCheckBomb);
 		if (bBombDraw == FALSE && bBombSet == TRUE) bStartExplosion = TRUE; // Cas d'une explosion
 		else bStartExplosion = FALSE;
 		bBombSet = bBombDraw;

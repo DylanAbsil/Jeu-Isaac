@@ -120,16 +120,17 @@ void Bombe_Free(Bombe *pBombe)
 }
 
 /*!
-*  \fn     Boolean  Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y)
+*  \fn     Boolean  Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y, Boolean *bCheck)
 *  \brief  Function to set a bomb
 *
 *  \param  pBombe   the Bombe 
 *  \param  bStart   TRUE to start
 *  \param  x		Coord X
 *  \param  y		Coord Y
+*  \param  bCheck   a pointer, TRUE when the bomb is exploding and we need to check the entity
 *  \return TRUE if the bomb is set, FALSE when the bomb is not set (or animation ended)
 */
-Boolean Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y)
+Boolean Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y, Boolean *bCheck)
 {
 	if (!bStart) return FALSE;
 	if (pBombe->iNumber <= 0) return FALSE;
@@ -154,6 +155,7 @@ Boolean Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y)
 			pBombe->pEntBomb->pSprEntity->iCurrentFrame = 0;
 			pBombe->pEntBomb->iTempoAnim = 0;
 			pBombe->bBombSet = FALSE;
+			*bCheck = TRUE;
 			return FALSE;
 		}
 		pBombe->pEntBomb->iTempoAnim = 0;
@@ -173,7 +175,8 @@ Boolean Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y)
 */
 Boolean Bombe_Explosion(Bombe *pBombe, Boolean bStart, SDL_Renderer *pRenderer)
 {
-	Uint32 i = 0, j = 0;
+	Sint32 i = 0, j = 0;
+	Uint32 iContact = 0, x = 0, y = 0;
 	if (!bStart) return FALSE;
 	if (pBombe->iNumber <= 0) return FALSE;
 	if (bStart && pBombe->bBombExplosion == FALSE)
@@ -200,6 +203,16 @@ Boolean Bombe_Explosion(Bombe *pBombe, Boolean bStart, SDL_Renderer *pRenderer)
 	}
 
 	/* Màj des coordonées de l'explosion */
+	for (i = -1; i <= 1; i++)
+	{
+		for (j = -1; j <= 1; j++)
+		{
+			pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y + i * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
+			pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x + j * pBombe->pEntExplosion->pSprEntity->pRectPosition->w;
+			Entity_Draw(pRenderer, pBombe->pEntExplosion);
+		}
+	}
+	/*
 	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y;
 	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x - 2 * pBombe->pEntExplosion->pSprEntity->pRectPosition->w ;
 	Entity_Draw(pRenderer, pBombe->pEntExplosion);
@@ -236,6 +249,6 @@ Boolean Bombe_Explosion(Bombe *pBombe, Boolean bStart, SDL_Renderer *pRenderer)
 
 	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y + 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
 	Entity_Draw(pRenderer, pBombe->pEntExplosion);
-
+	*/
 	return TRUE;
 }

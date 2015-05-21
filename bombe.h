@@ -42,7 +42,7 @@ typedef struct
 
 Bombe	*Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode);
 void	 Bombe_Free(Bombe *pBombe);
-Boolean  Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y);
+Boolean  Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y, Boolean *bCheck);
 Boolean  Bombe_Explosion(Bombe *pBombe, Boolean bStart, SDL_Renderer *pRenderer);
 
 

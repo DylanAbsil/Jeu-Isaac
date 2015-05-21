@@ -739,3 +739,45 @@ Boolean Level_State_SaveLevel(Level_State *pCurrentLevelState)
 	UTIL_CloseFile(&pFileSrc);
 	return FALSE;
 }
+
+
+
+
+/*!
+*  \fn     void Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
+*  \brief  Check if the entity of the level are near an exploding bomb
+*
+*  \param  pLevelSt  a pointer to the current Level_state
+*  \param  pBombe    a pointer to the bomb
+*  \return none
+*/
+void Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
+{
+	Sint32 i = 0, j = 0, x = 0, y = 0;
+	Uint32  iContact = 0;
+	setOnFirstEnt(pLevelSt->plEnt);
+	while (pLevelSt->plEnt->current != NULL)
+	{
+		iContact = 0;
+		for (i = -1; i <= 1; i++)
+		{
+			for (j = -1; j <= 1; j++)
+			{
+				y = pBombe->y + i * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
+				x = pBombe->x + j * pBombe->pEntExplosion->pSprEntity->pRectPosition->w;
+				if (pLevelSt->plEnt->current->e->pSprEntity->pRectPosition->x > x && pLevelSt->plEnt->current->e->pSprEntity->pRectPosition->x < x + pBombe->pEntExplosion->pSprEntity->pRectPosition->w &&
+					pLevelSt->plEnt->current->e->pSprEntity->pRectPosition->y > y && pLevelSt->plEnt->current->e->pSprEntity->pRectPosition->y < y + pBombe->pEntExplosion->pSprEntity->pRectPosition->h)
+				{
+					iContact = 1;
+					break;
+				}
+			}
+				
+		}
+		if (iContact)
+		{
+			Kr_Log_Print(KR_LOG_INFO, "The entity %s was damaged by the bomb \n", pLevelSt->plEnt->current->e->strEntityName);
+		}
+		nextEnt(pLevelSt->plEnt);
+	}
+}

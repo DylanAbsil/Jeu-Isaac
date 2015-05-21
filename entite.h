@@ -28,7 +28,6 @@
 
 #include "weapon.h"
 #include "kr_input.h"
-#include "kr_level.h"
 
 #define MOVESPEED 5	/*< Movespeed of the player >*/
 #define MOB_MOVESPEED 3 /*< Basic movespeed of the monstres >*/
