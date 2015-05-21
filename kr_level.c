@@ -176,7 +176,7 @@ void Kr_Level_Free(Kr_Level *pLevel)
 	Kr_Tileset_Free(pLevel->pLevel_Tileset);
 	for (i = 0; i< pLevel->iLevel_TileHeight; i++)
 		free(pLevel->szLayout[i]);
-	Kr_Sound_FreeMusic(pLevel->pMusic);
+	if(pLevel->pMusic) Kr_Sound_FreeMusic(pLevel->pMusic);
 
 	UTIL_Free(pLevel->szLayout);
 	UTIL_Free(pLevel->szLevelFile);

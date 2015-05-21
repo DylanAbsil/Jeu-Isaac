@@ -257,7 +257,7 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 		{
 			if (pEntity->bFriendly == TRUE)
 			{
-				iRandomVectorRetour = GenerateRandomVector(&movex, &movey, 1, 2, pEntity, pLevelSt->pLevel, pLevelSt->pPlayer, 25, 50);
+				iRandomVectorRetour = GenerateRandomVector(&movex, &movey, 0, pEntity->iSpeedEntity, pEntity, pLevelSt->pLevel, pLevelSt->pPlayer, 25, 50);
 				if (iRandomVectorRetour == 2) // On souhaite détecter la collision d'un oiseau avec le joueur
 				{
 					if (strcmp(pEntity->strEntityName, "pigeon1") == 0)
@@ -408,6 +408,8 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 					setOnFirstEnt(pLevelSt->plEnt);
 					while (pLevelSt->plEnt->current != NULL)
 					{
+
+						NewVx = NewVy = 0;
 						iTmp = Kr_Collision(NULL, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition, pLevelSt->plEnt->current->e->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
 						if (iTmp == 2)
 						{
