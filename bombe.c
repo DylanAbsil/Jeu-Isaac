@@ -46,7 +46,7 @@ Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, cha
 
 	/* Sprite */
 	pSprite = Kr_Sprite_Init(szSprBomb);
-	if (Kr_Sprite_Load(pSprite, unknown, 32, 128, 4, pRectBomb, pRenderer) == FALSE)
+	if (Kr_Sprite_Load(pSprite, unknown, 28, 120, 6, pRectBomb, pRenderer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite SprBomb\n");
 		SDL_Quit();
@@ -60,11 +60,16 @@ Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, cha
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
-	pSprite = NULL;
 
+	pSprite = NULL;
+	SDL_Rect *pRectExplosion = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	pRectExplosion->x = 0;
+	pRectExplosion->y = 0;
+	pRectExplosion->w = 32;
+	pRectExplosion->h = 32;
 	/* Sprite */
 	pSprite = Kr_Sprite_Init(szSprExplosion);
-	if (Kr_Sprite_Load(pSprite, unknown, 32, 128, 4, pRectBomb, pRenderer) == FALSE)
+	if (Kr_Sprite_Load(pSprite, unknown, 32, 288, 9, pRectExplosion, pRenderer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite SprExplosion\n");
 		SDL_Quit();
@@ -91,7 +96,10 @@ Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, cha
 	}
 	pBombe->iNumber = iNumber;
 	pBombe->iCooldown = iCooldown;
-
+	pBombe->bBombSet = FALSE;
+	pBombe->bBombExplosion = FALSE;
+	pBombe->x = 0;
+	pBombe->y = 0;
 	return pBombe;
 }
 
@@ -112,20 +120,6 @@ void Bombe_Free(Bombe *pBombe)
 }
 
 /*!
-*  \fn     void Bombe_Update(Bombe *pBombe, Uint32 iNumber)
-*  \brief  Function to update the number of bomb
-*
-*  \param  pBombe  the Bombe structure
-*  \param  iNumber the number of bomb
-*  \return none
-*/
-void Bombe_Update(Bombe *pBombe, Uint32 iNumber)
-{
-	pBombe->iNumber = iNumber;
-}
-
-
-/*!
 *  \fn     Boolean  Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y)
 *  \brief  Function to set a bomb
 *
@@ -133,21 +127,115 @@ void Bombe_Update(Bombe *pBombe, Uint32 iNumber)
 *  \param  bStart   TRUE to start
 *  \param  x		Coord X
 *  \param  y		Coord Y
-*  \return none
+*  \return TRUE if the bomb is set, FALSE when the bomb is not set (or animation ended)
 */
 Boolean Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y)
 {
-	static Uint32 iDelay = 0;
-	if (bStart && iDelay == 0)
+	if (!bStart) return FALSE;
+	if (pBombe->iNumber <= 0) return FALSE;
+	if (bStart && pBombe->bBombSet == FALSE)
 	{
-		//Play Sound set
+		pBombe->pEntBomb->pSprEntity->iCurrentFrame = 0;
+		pBombe->pEntBomb->pSprEntity->pRectPosition->x = x;
+		pBombe->pEntBomb->pSprEntity->pRectPosition->y = y;
+		pBombe->x = x;
+		pBombe->y = y;
+		pBombe->bBombSet = TRUE;
+		Kr_Sound_Play(pBombe->pSndBombSet, KR_SOUND_WEAPON1_CANAL, 100, 5);
+	}
+	
+	pBombe->pEntBomb->mouvement = 1;
+	pBombe->pEntBomb->iTempoAnim += 1;
+	if (pBombe->pEntBomb->iTempoAnim == pBombe->iCooldown)
+	{
+		pBombe->pEntBomb->pSprEntity->iCurrentFrame += 1; //	- Frame suivante
+		if (pBombe->pEntBomb->pSprEntity->iCurrentFrame == pBombe->pEntBomb->pSprEntity->iNbFrames) //Si l'animation est arrivée au bout 
+		{
+			pBombe->pEntBomb->pSprEntity->iCurrentFrame = 0;
+			pBombe->pEntBomb->iTempoAnim = 0;
+			pBombe->bBombSet = FALSE;
+			return FALSE;
+		}
+		pBombe->pEntBomb->iTempoAnim = 0;
+	}
+	return TRUE;
+}
+
+
+/*!
+*  \fn     Boolean Bombe_Explosion(Bombe *pBombe, Boolean bStart)
+*  \brief  Function to start the explosion
+*
+*  \param  pBombe    the Bombe
+*  \param  bStart    TRUE to start
+*  \param  pRenderer a pointer to the renderer
+*  \return TRUE if the explosion is still in progress, FALSE otherwise
+*/
+Boolean Bombe_Explosion(Bombe *pBombe, Boolean bStart, SDL_Renderer *pRenderer)
+{
+	Uint32 i = 0, j = 0;
+	if (!bStart) return FALSE;
+	if (pBombe->iNumber <= 0) return FALSE;
+	if (bStart && pBombe->bBombExplosion == FALSE)
+	{
+		pBombe->pEntExplosion->pSprEntity->iCurrentFrame = 0;
+		pBombe->bBombExplosion = TRUE;
+		Kr_Sound_Play(pBombe->pSndBombExplosion, KR_SOUND_WEAPON1_CANAL, 100, 0);
 	}
 
-	iDelay++;
+	pBombe->pEntExplosion->mouvement = 1;
+	pBombe->pEntExplosion->iTempoAnim += 1;
+	if (pBombe->pEntExplosion->iTempoAnim == 7)
+	{
+		pBombe->pEntExplosion->pSprEntity->iCurrentFrame += 1; //	- Frame suivante
+		if (pBombe->pEntExplosion->pSprEntity->iCurrentFrame == pBombe->pEntExplosion->pSprEntity->iNbFrames) //Si l'animation est arrivée au bout 
+		{
+			pBombe->pEntExplosion->pSprEntity->iCurrentFrame = 0;
+			pBombe->pEntExplosion->iTempoAnim = 0;
+			pBombe->bBombExplosion = FALSE;
+			pBombe->iNumber -= 1;
+			return FALSE;
+		}
+		pBombe->pEntExplosion->iTempoAnim = 0;
+	}
 
-	
+	/* Màj des coordonées de l'explosion */
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y;
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x - 2 * pBombe->pEntExplosion->pSprEntity->pRectPosition->w ;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x - 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->w;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x + 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->w;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x + 2 * pBombe->pEntExplosion->pSprEntity->pRectPosition->w;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
 
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x;
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y - 2 * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y - 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y + 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y + 2 * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
 
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x + 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->w;;
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y + 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y - 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x - 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->w;;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
+
+	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y + 1 * pBombe->pEntExplosion->pSprEntity->pRectPosition->h;
+	Entity_Draw(pRenderer, pBombe->pEntExplosion);
 
 	return TRUE;
 }

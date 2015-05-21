@@ -31,6 +31,7 @@
 #include "weapon.h"
 #include "nature.h"
 #include "message.h"
+#include "bombe.h"
  
 
 Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup);
@@ -155,6 +156,19 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 
 	Weapon_Load(pistoletLumiere, "bullet", 100, 50, 500);
 	changeWeapon(pPlayer, pistoletLumiere);
+
+	/* Bombe */
+	Bombe *pBombe = NULL;
+	Boolean bBombSet = FALSE;
+	Boolean bBombDraw = FALSE;
+	Boolean bStartExplosion = FALSE;
+	char szNbBomb[10] = "0";
+	pBombe = Bombe_Init(pRenderer, 2, 20, "Bombe_sol_explosion", "Bombe_sol", "bomb_set", "bomb_explosion");
+	if (!pBombe)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the Bomb structure \n");
+	}
+
 
 
 	/* ========================================================================= */
@@ -358,6 +372,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 
 	/* Mort du player */
 	Boolean bPlayerDead = FALSE;
+
+
 	/* ========================================================================= */
 	/*                            BOUCLE PRINCIPALE                              */
 	/* ========================================================================= */
@@ -379,6 +395,11 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			bDrawPapillon = FALSE;
 			PassageOiseau(pOiseau1, bActiverCalculOiseau, movex, movey, pRenderer, pSndOiseau1, TRUE); // On relance un passage pour indiquer qu'on veut stopper le passage
 			PigeonVol(pPigeonVol, bFearedPigeon, pRenderer, pCurrentLevel, pSndPigeon, iCoordXDebut, iCoordYDebut, &iCoordXFin, &iCoordYFin);
+			pBombe->bBombExplosion = FALSE;
+			pBombe->bBombSet = FALSE;
+			bBombDraw = FALSE;
+			bBombSet = FALSE;
+			bStartExplosion = FALSE;
 		}
 
 		UpdateEvents(&inEvent);
@@ -450,7 +471,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		}
 		if (inEvent.szKey[SDL_SCANCODE_B])
 		{
-			pPlayer->iEntityLife -= 9;
+			if (bStartExplosion == FALSE) bBombSet = TRUE; // On ne peut poser de bombe que si l'explosion précédente a eu lieu
 			inEvent.szKey[SDL_SCANCODE_B] = 0;
 		}
 
@@ -548,8 +569,9 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		}
 
 		/* Création des textures à partir du texte pour le nombre de munition ou de clés*/
+		sprintf(szNbBomb, "%d", pBombe->iNumber);
 		CleTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "4", CouleurHUD, TRUE, &(hCleTexte->RectDest));
-		BombeTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "5", CouleurHUD, TRUE, &(hBombeTexte->RectDest));
+		BombeTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, szNbBomb, CouleurHUD, TRUE, &(hBombeTexte->RectDest));
 
 		/* Mise à jour des HUD "texte" avec la nouvelle texture générée */
 		HUD_Update(hCleTexte, CleTexteTexture);
@@ -561,6 +583,12 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			bPlayerDead = TRUE;
 			Message_Update(pMessageInfo, TRUE, "Vous êtes mort, la partie s'achève !");
 		}
+
+		/* Gestion des bombes */
+		bBombDraw = Bombe_Set(pBombe, bBombSet, pPlayer->pSprEntity->pRectPosition->x, pPlayer->pSprEntity->pRectPosition->y);
+		if (bBombDraw == FALSE && bBombSet == TRUE) bStartExplosion = TRUE; // Cas d'une explosion
+		else bStartExplosion = FALSE;
+		bBombSet = bBombDraw;
 
 		/* ========================================================================= */
 		/*                                  DIVERS                                   */
@@ -576,6 +604,11 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		Kr_Level_Draw(pRenderer, pCurrentLevel);
 		if ((bDrawBuisson == TRUE) && (iValeurBuisson == 1)) Entity_Draw(pRenderer, pBuisson1);
 		if ((bDrawBuisson == TRUE) && (iValeurBuisson == 2)) Entity_Draw(pRenderer, pBuisson2);
+		if (bBombDraw) Entity_Draw(pRenderer, pBombe->pEntBomb);
+		if (bStartExplosion || pBombe->bBombExplosion)
+		{
+			bStartExplosion = Bombe_Explosion(pBombe, TRUE, pRenderer);
+		}
 		drawAllEntities(pCurrentLevelState, pRenderer);
 		drawProjectilesWeapon(pPlayer->pWeapon->plProjectile, pRenderer);
 		if (bDrawPapillon == TRUE) Entity_Draw(pRenderer, pPapillon);
@@ -631,6 +664,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	HUD_free(hBombeImage);
 	HUD_free(hBombeTexte);
 	HUD_free(hCleTexte);
+	Bombe_Free(pBombe);
 	Level_State_Free(pCurrentLevelState, TRUE); // Libération mémoire des données du niveau
 	Kr_Map_Free(pMap);
 

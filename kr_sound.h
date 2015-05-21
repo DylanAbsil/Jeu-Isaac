@@ -25,6 +25,7 @@
 #define KR_SOUND_MAP_EVENT_CANAL 0
 #define KR_SOUND_ANIMAL_CANAL 1
 #define KR_SOUND_NATURE_CANAL 2
+#define KR_SOUND_WEAPON1_CANAL 3
     /*! 
      * \struct Kr_Sound
      * \brief  Structure to handle the sound.
