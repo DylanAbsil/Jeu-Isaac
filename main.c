@@ -374,6 +374,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	/* Mort du player */
 	Boolean bPlayerDead = FALSE;
 
+	/* Nombre de buisson détruit par la dernière bombe */
+	Uint32 iNumberBushDestroy = 0;
 
 	/* ========================================================================= */
 	/*                            BOUCLE PRINCIPALE                              */
@@ -417,7 +419,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		if (bCheckBomb == TRUE) // Lorsqu'une bombe a explosé 
 		{
 			bCheckBomb = FALSE; 
-			Level_State_Bomb_Detect(pCurrentLevelState, pBombe);
+			iNumberBushDestroy = Level_State_Bomb_Detect(pCurrentLevelState, pBombe);
 		}
 		/* Controle du tir du personnage */
 		shoot(inEvent, pPlayer, pRenderer);

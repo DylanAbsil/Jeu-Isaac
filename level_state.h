@@ -44,5 +44,6 @@ Boolean			updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt
 Uint32			Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer);
 Uint32		    GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait, Uint32 iRatio);
 Boolean			Level_State_SaveLevel(Level_State *pCurrentLevelState);
-void			Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe);
+Uint32			Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe);
+void			Level_State_Recompense(Level_State *pLevelSt, Boolean bRand, Uint32 iRand);
 #endif /* __LEVEL_STATE__ */

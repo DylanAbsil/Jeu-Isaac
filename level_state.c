@@ -744,17 +744,18 @@ Boolean Level_State_SaveLevel(Level_State *pCurrentLevelState)
 
 
 /*!
-*  \fn     void Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
-*  \brief  Check if the entity of the level are near an exploding bomb
+*  \fn     Uint32 Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
+*  \brief  Check if the entity of the level are near an exploding bomb, and destroy the bush near by
 *
 *  \param  pLevelSt  a pointer to the current Level_state
 *  \param  pBombe    a pointer to the bomb
-*  \return none
+*  \return the number of yellow bush destroyed (id 40)
 */
-void Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
+Uint32 Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
 {
 	Sint32 i = 0, j = 0, x = 0, y = 0;
-	Uint32  iContact = 0;
+	Uint32  iContact = 0, xTiles = 0, yTiles = 0, iTilesID = 0, iNumberBushDestroy = 0;
+	Boolean bSave = FALSE;
 	setOnFirstEnt(pLevelSt->plEnt);
 	while (pLevelSt->plEnt->current != NULL)
 	{
@@ -771,13 +772,44 @@ void Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
 					iContact = 1;
 					break;
 				}
-			}
-				
+			}				
 		}
 		if (iContact)
 		{
+			//Appliquer les à l'entité current ici
 			Kr_Log_Print(KR_LOG_INFO, "The entity %s was damaged by the bomb \n", pLevelSt->plEnt->current->e->strEntityName);
 		}
 		nextEnt(pLevelSt->plEnt);
 	}
+	/* Destruction de certain bloc*/
+	for (i = -1; i <= 1; i++)
+	{
+		for (j = -1; j <= 1; j++)
+		{
+			yTiles = (pBombe->y + i * pBombe->pEntExplosion->pSprEntity->pRectPosition->h);// / pLevelSt->pLevel->pLevel_Tileset->iTilesHeight;
+			xTiles = (pBombe->x + j * pBombe->pEntExplosion->pSprEntity->pRectPosition->w);// / pLevelSt->pLevel->iLevel_TileWidth;
+			iTilesID = Kr_Level_GetTile(pLevelSt->pLevel, xTiles, yTiles);
+			if (iTilesID == 9 || iTilesID == 40)//buisson vert ou jaune
+			{
+				Kr_Level_WriteLayout(pLevelSt->pLevel, 162, xTiles, yTiles);
+				if(iTilesID == 40) iNumberBushDestroy++; // Buisson jaune
+				bSave = TRUE;
+			}
+		}
+	}
+	if (bSave)
+	{
+		if (Kr_Level_SaveLayout(pLevelSt->pLevel, FALSE) == FALSE)
+		{
+			Kr_Log_Print(KR_LOG_WARNING, "Can't save the level after the explosion of a bomb ! \n");
+		}
+	}
+	return iNumberBushDestroy;
+}
+
+
+
+void Level_State_Recompense(Level_State *pLevelSt, Boolean bRand, Uint32 iRand)
+{
+
 }
