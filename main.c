@@ -375,7 +375,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	Boolean bPlayerDead = FALSE;
 
 	/* Nombre de buisson détruit par la dernière bombe */
-	Uint32 iNumberBushDestroy = 0;
+	Uint32 iNumberBushDestroy = 0, iRecompense = 0;
+	Boolean bRandRecompense = FALSE;
 
 	/* ========================================================================= */
 	/*                            BOUCLE PRINCIPALE                              */
@@ -420,44 +421,48 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		{
 			bCheckBomb = FALSE; 
 			iNumberBushDestroy = Level_State_Bomb_Detect(pCurrentLevelState, pBombe);
+			if (iNumberBushDestroy > 0)	bRandRecompense = TRUE;
+
 		}
 		/* Controle du tir du personnage */
 		shoot(inEvent, pPlayer, pRenderer);
 
 		/* Mise à jour des projectiles du personnage */
 		updateProjectilesWeapon(pRenderer, pCurrentLevelState, pCurrentLevelState->pPlayer->pWeapon);
+		
+		/* ========================================================================= */
+		/*                           GESTIONS DES TOUCHES                            */
+		/* ========================================================================= */
 
-		if (inEvent.szMouseButtons[0])
+		if (inEvent.szMouseButtons[0]) // Clique Gauche
 		{
 			pPlayer->pSprEntity->pRectPosition->x = inEvent.iMouseX;
 			pPlayer->pSprEntity->pRectPosition->y = inEvent.iMouseY;
-			Kr_Log_Print(KR_LOG_INFO, "CLIQUE GAUCHE : %d %d \n", inEvent.iMouseX, inEvent.iMouseY);
 			inEvent.szMouseButtons[0] = 0;
 			
 		}
-		if (inEvent.szMouseButtons[2])
+		if (inEvent.szMouseButtons[2]) // Clique droit
 		{
-			//Kr_Log_Print(KR_LOG_INFO, "CLIQUE DROIT\n");
 			inEvent.szMouseButtons[2] = 0; // Un seul clique
 		}
-		if (inEvent.szKey[SDL_SCANCODE_F]) // Gestion de l'affichage des FPS
+		if (inEvent.szKey[SDL_SCANCODE_F]) // Afficher les FPS
 		{
 			if (pFPS->bMustShow) pFPS->bMustShow = FALSE;
 			else pFPS->bMustShow = TRUE;
 			inEvent.szKey[SDL_SCANCODE_F] = 0;
 		}
-		if (inEvent.szKey[SDL_SCANCODE_O])
+		if (inEvent.szKey[SDL_SCANCODE_O]) // Mettre en pause la music
 		{
 			if (bMscPaused) bMscPaused = FALSE;
 			else bMscPaused = TRUE;
 			inEvent.szKey[SDL_SCANCODE_O] = 0;
 		}
-		if (inEvent.szKey[SDL_SCANCODE_P])
+		if (inEvent.szKey[SDL_SCANCODE_P]) // Mettre en pause le jeu
 		{
 			Menu_Pause(pRenderer, "Appuyer sur P pour reprendre");
 			inEvent.szKey[SDL_SCANCODE_P] = 0;
 		}
-		if (inEvent.szKey[SDL_SCANCODE_E])
+		if (inEvent.szKey[SDL_SCANCODE_E]) // Interragir avec le niveau (panneau, coffre)
 		{
 			iInterractionLevel = Kr_Level_Interraction(pCurrentLevel, pPlayer);
 			if (iInterractionLevel == 2) // Lecture d'un panneau
@@ -466,35 +471,35 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			}
 			if (iInterractionLevel == 1) // Ouverture d'un coffre
 			{
-				Message_Update(pMessageLevel, TRUE, "Vous avez ouvert un coffre !");
-				Kr_Sound_Play(pSndCoffre, 0, 100, 0);
+				iRecompense = Level_State_Recompense(pCurrentLevelState, TRUE, FALSE, 0);
+				Kr_Sound_Play(pSndCoffre, 0, 100, 0);				
 			}
 			inEvent.szKey[SDL_SCANCODE_E] = 0;
 		}
-		if (inEvent.szKey[SDL_SCANCODE_TAB])
+		if (inEvent.szKey[SDL_SCANCODE_TAB]) // Affichage des informations sur le niveau
 		{
 			sprintf(szMessageInfo, "Level %d : %s",pCurrentLevel->iLevelNum, pCurrentLevel->szLevelName);
 			Message_Update(pMessageInfo, TRUE, szMessageInfo);
-			//inEvent.szKey[SDL_SCANCODE_TAB] = 0;
 		}
-		if (inEvent.szKey[SDL_SCANCODE_B])
+		if (inEvent.szKey[SDL_SCANCODE_B]) // Poser une bombe
 		{
 			if (bStartExplosion == FALSE) bBombSet = TRUE; // On ne peut poser de bombe que si l'explosion précédente a eu lieu
 			inEvent.szKey[SDL_SCANCODE_B] = 0;
 		}
+
+		/* ========================================================================= */
+		/*                              FPS & EVENEMENT                              */
+		/* ========================================================================= */
 
 		iCurrentLevelNumber = Kr_Map_ShouldChangeLevel(pMap, pCurrentLevel, pPlayer);
 		if (iCurrentLevelNumber)
 		{
 			bChangeLevel = TRUE;
 		}
+
 		/* Gestion de la musique des niveaux*/
 		if (bMscPaused)	Mix_PauseMusic();
 		else Mix_ResumeMusic();
-
-		/* ========================================================================= */
-		/*                              FPS & EVENEMENT                              */
-		/* ========================================================================= */
 
 		Kr_Fps_Wait(pFPS, &iCurrentTime, &iPreviousTime, KR_FPS);
 		iPeriodicEvent = PeriodicEvent();
@@ -510,18 +515,23 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 				bActiverCalculOiseau = FALSE;
 				break;
 		}
+
+		/* ========================================================================= */
+		/*                                   NATURE                                  */
+		/* ========================================================================= */
+
 		/* Gestion des oiseaux*/
 		if (bCheckTypeOiseau == TRUE)
 		{
 			iTypeOiseau = CalculTypeOiseau(bCheckTypeOiseau, pCurrentLevel);
 			bCheckTypeOiseau = FALSE;
 		}		
-		if (iTypeOiseau == 1)// && bDrawOiseau == FALSE)
+		if (iTypeOiseau == 1)
 		{
 			CalculPassageOiseau(pOiseau1, bActiverCalculOiseau, &movex, &movey);
 			bDrawOiseau = PassageOiseau(pOiseau1, bActiverCalculOiseau, movex, movey, pRenderer, pSndOiseau1, FALSE);
 		}
-		if (iTypeOiseau == 2)// && bDrawOiseau == FALSE)
+		if (iTypeOiseau == 2)
 		{
 			CalculPassageOiseau(pOiseau2, bActiverCalculOiseau, &movex, &movey);
 			bDrawOiseau = PassageOiseau(pOiseau2, bActiverCalculOiseau, movex, movey, pRenderer, pSndOiseau2, FALSE);
@@ -558,6 +568,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			}				
 		}
 		else bFearedPigeon = FALSE;
+
 		bOldPigeon = bDrawPigeonVol;
 		bDrawPigeonVol = PigeonVol(pPigeonVol, bFearedPigeon, pRenderer, pCurrentLevel, pSndPigeon, iCoordXDebut, iCoordYDebut, &iCoordXFin, &iCoordYFin);
 		if ((bDrawPigeonVol == FALSE) && (bOldPigeon == TRUE)) // Atterissage de l'oiseau
@@ -576,6 +587,51 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			}
 		}
 
+		/* ========================================================================= */
+		/*                                RECOMPENSE                                 */
+		/* ========================================================================= */
+
+		/* Gestion des récompenses*/
+		if (bRandRecompense) // Récompense pour la destruction d'un buisson coloré, on vérifie qu'un coffre n'a pas été ouvert auparavant
+		{
+			iRecompense = Level_State_Recompense(pCurrentLevelState, bRandRecompense, TRUE, iNumberBushDestroy);
+			bRandRecompense = FALSE;
+		}
+		if (iRecompense != 0) // Attribution des récompenses
+		{
+			if (iRecompense == 1)
+			{
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 5 bombes et 50hp !");
+				pBombe->iNumber += 5;
+				pPlayer->iEntityLife += 50;
+				iRecompense = 0;
+			}
+			else if (iRecompense == 2)
+			{
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 50hp et 50ap !");
+				pPlayer->iArmor += 50;
+				pPlayer->iEntityLife += 50;
+				iRecompense = 0;
+			}
+			else if (iRecompense == 3)
+			{
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes et 20hp !");
+				pBombe->iNumber += 2;
+				pPlayer->iEntityLife += 20;
+				iRecompense = 0;
+			}
+			else if (iRecompense == 4)
+			{
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes !");
+				pBombe->iNumber += 2;
+				iRecompense = 0;
+			}
+		}
+
+
+		/* ========================================================================= */
+		/*                                  DIVERS                                   */
+		/* ========================================================================= */
 		/* Création des textures à partir du texte pour le nombre de munition ou de clés*/
 		sprintf(szNbBomb, "%d", pBombe->iNumber);
 		CleTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "4", CouleurHUD, TRUE, &(hCleTexte->RectDest));
@@ -585,6 +641,12 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		HUD_Update(hCleTexte, CleTexteTexture);
 		HUD_Update(hBombeTexte, BombeTexteTexture);
 
+		/* Gestion des bombes */
+		bBombDraw = Bombe_Set(pBombe, bBombSet, pPlayer->pSprEntity->pRectPosition->x, pPlayer->pSprEntity->pRectPosition->y, &bCheckBomb);
+		if (bBombDraw == FALSE && bBombSet == TRUE) bStartExplosion = TRUE; // Cas d'une explosion
+		else bStartExplosion = FALSE;
+		bBombSet = bBombDraw;
+
 		/* Mort du player*/
 		if (pPlayer->iEntityLife <= 0)
 		{
@@ -592,32 +654,26 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			Message_Update(pMessageInfo, TRUE, "Vous êtes mort, la partie s'achève !");
 		}
 
-		/* Gestion des bombes */
-		bBombDraw = Bombe_Set(pBombe, bBombSet, pPlayer->pSprEntity->pRectPosition->x, pPlayer->pSprEntity->pRectPosition->y, &bCheckBomb);
-		if (bBombDraw == FALSE && bBombSet == TRUE) bStartExplosion = TRUE; // Cas d'une explosion
-		else bStartExplosion = FALSE;
-		bBombSet = bBombDraw;
-
-		/* ========================================================================= */
-		/*                                  DIVERS                                   */
-		/* ========================================================================= */
-
+		/* Texte pour le debug */
 		pTextureText = Kr_Text_FontCreateTexture(pRenderer, pFont, szDebug, couleur, TRUE, &textPosition); // Création d'une texture contenant le texte d'une certaine couleur avec le mode Blended  
 		sprintf(szDebug, "Cursor : X : %d Y : %d   %s %d | Tile %d %d", pPlayer->pSprEntity->pRectPosition->x, pPlayer->pSprEntity->pRectPosition->y, pCurrentLevel->szLevelName, pCurrentLevel->iLevelNum, Kr_Level_GetTile(pCurrentLevel, inEvent.iMouseX, inEvent.iMouseY),iNumberPapillon);//)pMonLevel->rScrollWindow->x, pMonLevel->rScrollWindow->y // Affichage coordonnée de la map
+
 		/* ========================================================================= */
-		/*                                  RENDER                                   */
+		/*                                AFFICHAGE                                  */
 		/* ========================================================================= */
 		
-		SDL_RenderClear(pRenderer); // Dans un premier temps on Clear le renderer
-		Kr_Level_Draw(pRenderer, pCurrentLevel);
-		if ((bDrawBuisson == TRUE) && (iValeurBuisson == 1)) Entity_Draw(pRenderer, pBuisson1);
-		if ((bDrawBuisson == TRUE) && (iValeurBuisson == 2)) Entity_Draw(pRenderer, pBuisson2);
-		if (bBombDraw) Entity_Draw(pRenderer, pBombe->pEntBomb);
+		SDL_RenderClear(pRenderer); // Dans un premier temps on clear le renderer
+
+		Kr_Level_Draw(pRenderer, pCurrentLevel); //Affichage du niveau
+		if ((bDrawBuisson == TRUE) && (iValeurBuisson == 1)) Entity_Draw(pRenderer, pBuisson1); // Affichage de l'animation des buissons
+		if ((bDrawBuisson == TRUE) && (iValeurBuisson == 2)) Entity_Draw(pRenderer, pBuisson2);// Affichage de l'animation des buissons
+		if (bBombDraw) Entity_Draw(pRenderer, pBombe->pEntBomb);// Affichage de la bombe au sol
 		if (bStartExplosion || pBombe->bBombExplosion)
 		{
-			bStartExplosion = Bombe_Explosion(pBombe, TRUE, pRenderer);
+			bStartExplosion = Bombe_Explosion(pBombe, TRUE, pRenderer); // Affichage de l'explosion de la bombe
 		}
-		drawAllEntities(pCurrentLevelState, pRenderer);
+
+		drawAllEntities(pCurrentLevelState, pRenderer); 
 		drawProjectilesWeapon(pPlayer->pWeapon->plProjectile, pRenderer);
 		if (bDrawPapillon == TRUE) Entity_Draw(pRenderer, pPapillon);
 		if ((bDrawPigeonVol == TRUE)) Entity_Draw(pRenderer, pPigeonVol);
@@ -625,32 +681,39 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 2)) Entity_Draw(pRenderer, pOiseau2);
 		Message_Draw(pMessageLevel);
 		Message_Draw(pMessageInfo);
+
+		// HUD
 		HUD_Draw(pRenderer, hVie, Entity_NumberHP(pPlayer)); 
 		HUD_Draw(pRenderer, hBombeImage, 0);
 		HUD_Draw(pRenderer, hBombeTexte, 0);
 		HUD_Draw(pRenderer, hCleImage, 0);
 		HUD_Draw(pRenderer, hCleTexte, 0);
+
+		// Divers
 		if (pMessageInfo->bMustShow == TRUE)  SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
+
+		// Libération des texture
 		UTIL_FreeTexture(&pTextureText); // Comme on recréé la texture en permanence dans la boucle il faut la free également dans la boucle
 		UTIL_FreeTexture(&CleTexteTexture); 
 		UTIL_FreeTexture(&BombeTexteTexture);
+		
+		//Gestion de la mort du player
 		if (bPlayerDead)
 		{
 			SDL_Delay(5000);
 		}
-
 	}
 
 	/* ========================================================================= */
 	/*                            LIBERATION MEMOIRE                             */
 	/* ========================================================================= */
 
-	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
+	UTIL_FreeTexture(&pTextureText);
 	UTIL_FreeTexture(&CleTexteTexture);
 	UTIL_FreeTexture(&BombeTexteTexture);
-	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
+	Kr_Text_CloseFont(&pFont);
 	Kr_Level_Free(pCurrentLevel);
 	Message_Free(pMessageLevel);
 	Message_Free(pMessageInfo);
@@ -673,7 +736,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	HUD_free(hBombeTexte);
 	HUD_free(hCleTexte);
 	Bombe_Free(pBombe);
-	Level_State_Free(pCurrentLevelState, TRUE); // Libération mémoire des données du niveau
+	Level_State_Free(pCurrentLevelState, TRUE);
 	Kr_Map_Free(pMap);
 
 	return EXIT_SUCCESS;

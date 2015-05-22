@@ -212,7 +212,7 @@ Boolean Bombe_Explosion(Bombe *pBombe, Boolean bStart, SDL_Renderer *pRenderer)
 			Entity_Draw(pRenderer, pBombe->pEntExplosion);
 		}
 	}
-	/*
+	/* // Affichage de l'explosion en étoile
 	pBombe->pEntExplosion->pSprEntity->pRectPosition->y = pBombe->y;
 	pBombe->pEntExplosion->pSprEntity->pRectPosition->x = pBombe->x - 2 * pBombe->pEntExplosion->pSprEntity->pRectPosition->w ;
 	Entity_Draw(pRenderer, pBombe->pEntExplosion);

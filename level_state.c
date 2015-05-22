@@ -808,8 +808,51 @@ Uint32 Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
 }
 
 
-
-void Level_State_Recompense(Level_State *pLevelSt, Boolean bRand, Uint32 iRand)
+/*!
+*  \fn     Uint32 Level_State_Recompense(Level_State *pLevelSt, Boolean bRand, Boolean bRandRecompense, Uint32 iRatioRecompense)
+*  \brief  Function to rand the reward for opening a chest or destroy a colored bush
+*
+*  \param  pLevelSt			 a pointer to the current Level_state
+*  \param  bRand			 TRUE to rand a reward
+*  \param  bRandRecompense	 TRUE to rand if the player deserve a reward
+*  \param  iRatioRecompense  value to compute if the player deserve a reward
+*  \return  0 : No reward
+			1 : big reward
+			2 : medium reward
+			3 : small reward
+			4 : low reward
+*/
+Uint32 Level_State_Recompense(Level_State *pLevelSt, Boolean bRand, Boolean bRandRecompense, Uint32 iRatioRecompense)
 {
+	Uint32 iValue = 0 ,iRetour = 0;
 
+	if (!bRand) return iRetour;
+
+	// Tirage au sort pour déterminer si le joueur obtient une récompense
+	if (bRandRecompense)
+	{
+		iValue = rand() % 6; 		
+		if (iValue > iRatioRecompense) return iRetour;
+	}
+
+
+	// Tirage au sort pour déterminer la récompense du joueur
+	iValue = rand() % 100;
+	if (iValue < 5) // 5%
+	{
+		iRetour = 1;
+	}
+	else if (iValue < 20) // 15%
+	{
+		iRetour = 2;
+	}
+	else if (iValue < 50) // 30%
+	{
+		iRetour = 3;
+	}
+	else // 50%
+	{
+		iRetour = 4;
+	}
+	return iRetour;
 }
