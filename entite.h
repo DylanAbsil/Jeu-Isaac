@@ -47,6 +47,10 @@ typedef enum {
 	noclip,
 }EntityState;
 
+/*!
+* \struct Entity
+* \brief  Structure to handle the entity.
+*/
 typedef struct {
 	char		*strEntityName;		/*< Name of the entity >*/
 	Sint32		iEntityLife;		/*< Life of the entity >*/
@@ -66,7 +70,8 @@ typedef struct {
 }Entity;
 
 
-/*! \struct nodeListeEntity
+/*! 
+* \struct nodeListeEntity
 * \brief Data element of a list, containing an entity
 */
 typedef struct{
@@ -74,7 +79,8 @@ typedef struct{
 	struct NodeListEnt * next;	/*!< A pointer to the next entity in the list*/
 }NodeListEnt;
 
-/*! \struct list
+/*! 
+* \struct list
 * \brief list of entity nodes
 */
 typedef struct{

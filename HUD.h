@@ -29,6 +29,11 @@
 /*	  				       STRUCTURE DES HUD  								 */
 /*===========================================================================*/
 
+
+/*!
+* \struct HUD
+* \brief  Structure to handle the HUD.
+*/
 typedef struct {
 	SDL_Renderer *pRenderer;		/*!< A pointer to the renderer */
 	char*		  HUDName;			/*!< Name of the HUD */
@@ -52,12 +57,3 @@ void HUD_Update(HUD *pHUD, SDL_Texture *pTexture);
 
 #endif
 
-
-/*
-Pour menu : 
-	-> 2 fichiers différents
-	-> Faire structure bouton (Nom, Rect)
-	-> Faire structure Menu : Tableau de boutton
-	-> Fonctions init, load, draw, free
-
-*/

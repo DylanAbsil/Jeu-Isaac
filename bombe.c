@@ -27,7 +27,7 @@
 *  \param  szSprBomb		the path to the sprite of the bomb
 *  \param  szSndSet			the path to the sound of the bomb when it's set
 *  \param  szSndExplode		the path to the sound of the bomb when it's exploding
-*  \return the initialize structure
+*  \return the initialized structure
 */
 Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode)
 {
