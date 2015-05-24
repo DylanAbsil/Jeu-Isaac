@@ -42,7 +42,7 @@ Level_Editor *Level_Editor_Init(char *szEditorFile)
 	Level_Editor *pEditor= NULL;
 
 	Uint32 iNameLen = strlen(szEditorFile);
-	pEditor = (Level_Editor *)UTIL_Malloc(sizeof(Level_Editor));
+	pEditor = (Level_Editor *)malloc(sizeof(Level_Editor));
 	if (pEditor == NULL) return NULL;
 	pEditor->szEditorFile	= UTIL_CopyStr(szEditorFile, iNameLen);
 	pEditor->iStandardTile	= 0;
@@ -317,7 +317,7 @@ Grid *Grid_Init(char *szFileName, Kr_Level *pLevel, SDL_Renderer *pRenderer)
 	char szPath[50];
 	sprintf(szPath, "sprites\\%s", szFileName);
 
-	pGrid = (Grid *)UTIL_Malloc(sizeof(Grid));
+	pGrid = (Grid *)malloc(sizeof(Grid));
 	if (pGrid == NULL) return NULL;
 	pGrid->Rect.x = 0;
 	pGrid->Rect.y = 0;

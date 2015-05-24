@@ -44,7 +44,7 @@ Bouton *Bouton_Init(char *BoutonName, SDL_Renderer *pRenderer, char* szImageActi
 	Uint32     iNameLen = strlen(BoutonName);
 	char szPath[60] = "";
 
-	pBouton = (Bouton *)UTIL_Malloc(sizeof(Bouton));	
+	pBouton = (Bouton *)malloc(sizeof(Bouton));	
 
 	pBouton->szBoutonName = UTIL_CopyStr(BoutonName, iNameLen);
 

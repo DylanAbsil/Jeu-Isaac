@@ -108,7 +108,7 @@ Entity *ChargementOiseau(SDL_Renderer *pRenderer, Uint32 iOiseau)
 	char szName[40] = "";
 	Kr_Sprite *pSprite = NULL;
 	SDL_Rect *pRectMouette = NULL;
-	pRectMouette = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	pRectMouette = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 	pRectMouette->x = 0;
 	pRectMouette->y = 0;
 	pRectMouette->w = 32;
@@ -246,7 +246,7 @@ Entity *ChargementBuisson(SDL_Renderer *pRenderer, Uint32 iBuisson)
 	char szName[40] = "";
 	Entity *pEntity = NULL;
 	Kr_Sprite *pSprite1 = NULL;
-	SDL_Rect *pRectBuisson1 = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	SDL_Rect *pRectBuisson1 = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 	pRectBuisson1->x = 0;
 	pRectBuisson1->y = 0;
 	pRectBuisson1->w = 32;
@@ -364,7 +364,7 @@ Entity *ChargementPapillon(SDL_Renderer *pRenderer)
 {
 	Entity *pEntity = NULL;
 	Kr_Sprite *pSprite1 = NULL;
-	SDL_Rect  *pPapillon = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	SDL_Rect  *pPapillon = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 	pPapillon->x = 0;
 	pPapillon->y = 0;
 	pPapillon->w = 13;
@@ -564,7 +564,7 @@ Entity *ChargementPigeonVolant(SDL_Renderer *pRenderer)
 {
 	Entity *pEntity = NULL;
 	Kr_Sprite *pSprite1 = NULL;
-	SDL_Rect *pRectPigeonVolant = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	SDL_Rect *pRectPigeonVolant = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 	pRectPigeonVolant->x = 0;
 	pRectPigeonVolant->y = 0;
 	pRectPigeonVolant->w = 32;

@@ -34,10 +34,10 @@ Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, cha
 	Uint32	   iNameLen = 0;
 	Bombe	  *pBombe = NULL;
 	Kr_Sprite *pSprite = NULL;
-	pBombe = (Bombe *)UTIL_Malloc(sizeof(Bombe));
+	pBombe = (Bombe *)malloc(sizeof(Bombe));
 	if (!pBombe) return NULL;
 
-	SDL_Rect *pRectBomb = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	SDL_Rect *pRectBomb = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 	pRectBomb->x = 0;
 	pRectBomb->y = 0;
 	pRectBomb->w = 20;
@@ -62,7 +62,7 @@ Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, cha
 	}
 
 	pSprite = NULL;
-	SDL_Rect *pRectExplosion = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	SDL_Rect *pRectExplosion = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 	pRectExplosion->x = 0;
 	pRectExplosion->y = 0;
 	pRectExplosion->w = 32;

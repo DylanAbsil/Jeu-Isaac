@@ -174,25 +174,6 @@ void UTIL_FreeTexture( SDL_Texture **ppTexture )
 
 
 /*!
- *  \fn     void* UTIL_Malloc( size_t iSize )
- *  \brief  Function to allocate memory block.
- *
- *  \param  iSize Size to allocate in bytes.
- *  \return A pointer on the allocated memory, or NULL if error.
- */
-void* UTIL_Malloc( size_t iSize )
-{
-    void *pData = malloc( iSize );
-    
-    if( pData == NULL )
-    {
-        Kr_Log_Print( KR_LOG_ERROR, "Insufficient memory ( Size : %u ) !\n", iSize );
-    }
-
-    return pData;
-}
-
-/*!
  *  \fn     void* UTIL_Realloc( void *pData, size_t iSize )
  *  \brief  Function to reallocate memory block.
  *
@@ -224,7 +205,7 @@ void* UTIL_Realloc( void *pData, size_t iSize )
  */
 char* UTIL_CopyStr( const char *szSrc, size_t iSrcLen )
 {
-    char *pDest = ( char * ) UTIL_Malloc( iSrcLen + 1 ); // + '\0'
+    char *pDest = ( char * ) malloc( iSrcLen + 1 ); // + '\0'
     
     if( pDest )
     {

@@ -48,7 +48,7 @@ Kr_Level *Kr_Level_Init(char *szFileName)
 {
 	Kr_Level *pLevel = NULL;
 	Uint32 iNameLen = strlen(szFileName);
-	pLevel = (Kr_Level *)UTIL_Malloc(sizeof(Kr_Level));
+	pLevel = (Kr_Level *)malloc(sizeof(Kr_Level));
 
 	pLevel->szLevelFile = UTIL_CopyStr(szFileName, iNameLen);
 	pLevel->pMusic = Kr_Sound_InitMusic();

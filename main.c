@@ -126,7 +126,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	/* Préparation d'images que l'on souhaitera afficher */
 	Kr_Sprite	 *pSpritePlayer = NULL;
 	Entity		 *pPlayer = NULL;
-	SDL_Rect     *pRectPositionPlayer = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	SDL_Rect     *pRectPositionPlayer = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 
 	pRectPositionPlayer->x = 250;
 	pRectPositionPlayer->y = 250;

@@ -32,7 +32,7 @@
 Kr_Fps *Kr_Fps_Init(SDL_Renderer *pRenderer, TTF_Font *pFont, SDL_Rect *pRectPosition, SDL_Color color, Boolean bMustShow)
 {
 	Kr_Fps *pFPS = NULL;
-	pFPS = (Kr_Fps *)UTIL_Malloc(sizeof(Kr_Fps));
+	pFPS = (Kr_Fps *)malloc(sizeof(Kr_Fps));
 	if (pFPS == NULL) return NULL;
 
 	pFPS->color		= color;

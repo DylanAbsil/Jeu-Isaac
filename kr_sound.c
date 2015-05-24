@@ -75,7 +75,7 @@ Kr_Sound* Kr_Sound_Alloc( const char *szSndName )
     
 	if (pSoundPath)
     {
-        pSound = ( Kr_Sound * ) UTIL_Malloc( sizeof( Kr_Sound ));
+        pSound = ( Kr_Sound * ) malloc( sizeof( Kr_Sound ));
 
         if( pSound )
         {
@@ -158,7 +158,7 @@ void Kr_Sound_Free( Kr_Sound **ppSound )
 Kr_Music* Kr_Sound_InitMusic(void)
 {
 	Kr_Music *pMusic = NULL;
-	pMusic = (Kr_Music *)UTIL_Malloc(sizeof(Kr_Music));
+	pMusic = (Kr_Music *)malloc(sizeof(Kr_Music));
 	return pMusic;
 }
 

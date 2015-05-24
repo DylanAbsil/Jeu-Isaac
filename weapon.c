@@ -30,7 +30,7 @@
 */
 Projectile* Projectile_Init(char *strProjName){
 	Uint32 iNameLen = strlen(strProjName);
-	Projectile * newProj = (Projectile *)UTIL_Malloc(sizeof(Projectile));
+	Projectile * newProj = (Projectile *)malloc(sizeof(Projectile));
 
 	newProj->strNamePrj = UTIL_CopyStr(strProjName, iNameLen);
 	newProj->iDamagePrj = 0;
@@ -57,7 +57,7 @@ Projectile* Projectile_Init(char *strProjName){
 */
 Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint32 speed, SDL_Rect *pRect, SDL_Renderer *pRenderer){
 	Kr_Sprite	*pSprProj = Kr_Sprite_Init(pProj->strNamePrj);
-	SDL_Rect	*pRectProj = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	SDL_Rect	*pRectProj = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 	Sint32		entityMiddleX = UTIL_FindMiddle(pRect->x, pRect->x + pRect->w);
 	Sint32		entityMiddleY = UTIL_FindMiddle(pRect->y, pRect->y + pRect->h);
 
@@ -147,7 +147,7 @@ Boolean	Projectile_Draw(SDL_Renderer *pRenderer, Projectile *pProj){
 /* Pour la documentation et/ou la compréhension de cette partie revoyer votre cours */
 
 NodeListProj *	newNodeListProj(Projectile *p, NodeListProj *n){
-	NodeListProj * new = (NodeListProj *)UTIL_Malloc(sizeof(NodeListProj));
+	NodeListProj * new = (NodeListProj *)malloc(sizeof(NodeListProj));
 	new->p = p;
 	new->next = n;
 	return new;
@@ -284,7 +284,7 @@ Boolean drawProjectilesWeapon(ListProj *lProj, SDL_Renderer *pRenderer){
 */
 Weapon *  Weapon_Init(char *strWeaponName){
 	Uint32 iNameLen = strlen(strWeaponName);
-	Weapon * newWeap = (Weapon *)UTIL_Malloc(sizeof(Weapon));
+	Weapon * newWeap = (Weapon *)malloc(sizeof(Weapon));
 	static ListProj lProj;
 	initList(&lProj);
 

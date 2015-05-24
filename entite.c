@@ -170,7 +170,7 @@ void  Entity_Log(Entity *pEntity)
 /* ========================================================================= */
 
 NodeListEnt	* newNodeListEnt(Entity *e, NodeListEnt *n){
-	NodeListEnt * new = (NodeListEnt *)UTIL_Malloc(sizeof(NodeListEnt));
+	NodeListEnt * new = (NodeListEnt *)malloc(sizeof(NodeListEnt));
 	new->e = e;
 	new->next = n;
 	return new;

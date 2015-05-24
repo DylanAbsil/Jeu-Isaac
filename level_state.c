@@ -25,8 +25,8 @@
 */
 Level_State * Level_State_Init(Entity *pPlayer)
 {
-	Level_State		*pLevelSt = (Level_State *)UTIL_Malloc(sizeof(Level_State));
-	ListEnt			*plEnt = (ListEnt *)UTIL_Malloc(sizeof(ListEnt));
+	Level_State		*pLevelSt = (Level_State *)malloc(sizeof(Level_State));
+	ListEnt			*plEnt = (ListEnt *)malloc(sizeof(ListEnt));
 
 	pLevelSt->pPlayer = pPlayer;
 	pLevelSt->pLevel = NULL;

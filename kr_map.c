@@ -46,7 +46,7 @@ Kr_Map *Kr_Map_Init(char *szMapFile)
 
 	iNameLen = strlen(szMapFile);
 
-	pMap = (Kr_Map *)UTIL_Malloc(sizeof(Kr_Map));
+	pMap = (Kr_Map *)malloc(sizeof(Kr_Map));
 	pMap->szMapFile = UTIL_CopyStr(szMapFile, iNameLen);
 
 	/* Ouverture du fichier map */
@@ -60,8 +60,8 @@ Kr_Map *Kr_Map_Init(char *szMapFile)
 	Kr_Log_Print(KR_LOG_INFO, "Maps : %d Levels\n", pMap->iNbLevel);
 
 	//Tableau 2D
-	pMap->szMapLayout = UTIL_Malloc(pMap->iNbLevel*sizeof(*pMap->szMapLayout));
-	for (i = 0; i < pMap->iNbLevel; i++) pMap->szMapLayout[i] = UTIL_Malloc(50 * sizeof(**pMap->szMapLayout));
+	pMap->szMapLayout = malloc(pMap->iNbLevel*sizeof(*pMap->szMapLayout));
+	for (i = 0; i < pMap->iNbLevel; i++) pMap->szMapLayout[i] = malloc(50 * sizeof(**pMap->szMapLayout));
 
 	do // Lecture ligne par ligne du fichier
 	{
