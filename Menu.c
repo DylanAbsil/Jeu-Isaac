@@ -216,8 +216,11 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	Uint32 iRetour = 0;
 	// Image de fond
 	SDL_Texture *pBackgroundMP = NULL;
+	SDL_Texture *pTitreMP = NULL;
 	SDL_Rect	 rectMP = { 0, 0, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW };
+	SDL_Rect	 rectTitre = { 475,75, 350, 370 };
 	pBackgroundMP = UTIL_LoadTexture(pRenderer, "menu/Fond_Menu.png", NULL, NULL);
+	pTitreMP = UTIL_LoadTexture(pRenderer, "menu/titre.png", NULL, NULL);
 
 	//Bouton Jouer
 	Bouton    *pBoutonJouer = NULL;
@@ -350,6 +353,7 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		/* Menu et Interface */
 		SDL_RenderClear(pRenderer);
 		SDL_RenderCopy(pRenderer, pBackgroundMP, NULL, &rectMP);
+		SDL_RenderCopy(pRenderer, pTitreMP, NULL, &rectTitre);
 		if (pBoutonJouer->bMustShow) Bouton_Draw(pBoutonJouer);
 		if (pBoutonEditeur->bMustShow) Bouton_Draw(pBoutonEditeur);
 		if (pBoutonRejouer->bMustShow) Bouton_Draw(pBoutonRejouer);

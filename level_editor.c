@@ -95,6 +95,8 @@ Boolean	Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer)
 	{
 		Kr_Log_Print(KR_LOG_INFO, "The level already exist, loading %s for modification !\n", szPath);
 		UTIL_CloseFile(&pFile);
+		// Faire une copie de la backup vers le normal sinon ca ouvrira pas ?
+		//sprintf(szLevelFile, "backup\\level%d",iTmp)
 		pEditor->pLevel = Kr_Level_Init(szLevelFile);
 		if (pEditor->pLevel == NULL)
 		{
@@ -173,7 +175,6 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 	Kr_Log_Print(KR_LOG_INFO, "Opening level editor file %s\n", szPath);
 	pFile = UTIL_OpenFile(szPath, "r"); 
 	if (!pFile) return FALSE;
-	//rewind(pFile); // remise du curseur au top
 
 	// Initialisation du level
 	pEditor->pLevel = Kr_Level_Init(szLevelFile);
@@ -271,7 +272,7 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 	char szPath[50];
 	Sint32 i = 0, j = 0;
 
-	sprintf(szPath, "maps\\%s.txt", pLevel->szLevelFile);
+	sprintf(szPath, "maps\\backup\\%s.txt", pLevel->szLevelFile);
 	pFile = UTIL_OpenFile(szPath, "w"); // Ouverture en écriture 
 	if (!pFile) return FALSE;
 
@@ -295,8 +296,8 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 		fprintf(pFile,"\n");
 	}
 	fprintf(pFile, "#end\n");
-
 	UTIL_CloseFile(&pFile);
+	pLevel->pMusic = NULL;
 	Kr_Log_Print(KR_LOG_INFO, "File %s has been created \n",szPath);
 	return TRUE;
 }
@@ -930,7 +931,7 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		if (bSelection) Level_Editor_PreDrawTileSelection(pEditor, iTabTile, inEvent.iMouseX, inEvent.iMouseY, TRUE, pRenderer, iTabCursor, pTextureSelected);
 		Level_Editor_PrintTiles(pEditor->pLevel->pLevel_Tileset, bTilesShow, pRenderer);
 		Grid_Draw(pGrid, pEditor->pLevel, bGridShow, pRenderer);
-		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
+		//SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Message_Draw(pMessageInfo);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer);
