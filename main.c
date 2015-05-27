@@ -67,6 +67,13 @@ int main(int argc, char** argv)
 		Kr_Log_Print(KR_LOG_ERROR, "Can't create the Renderer", SDL_GetError());
 		SDL_Quit();
 	}
+	SDL_Surface *pSurfaceCursor = IMG_Load("menu/cursor.png");
+	SDL_Cursor  *pCursor = NULL;
+	if (pSurfaceCursor)
+	{
+		pCursor = SDL_CreateColorCursor(pSurfaceCursor, 0, 0);
+		SDL_SetCursor(pCursor);
+	}
 
 	do
 	{
@@ -75,6 +82,9 @@ int main(int argc, char** argv)
 		if (iRetourMP == 2) Editor(pRenderer, pWindow);
 		if (iRetourMP == 3) Isaac(pRenderer, pWindow, TRUE);
 	} while (iRetourMP != 0);
+
+	if(pSurfaceCursor) UTIL_FreeTexture(pSurfaceCursor);
+	if(pCursor) SDL_FreeCursor(pCursor);
 
 	SDL_DestroyRenderer(pRenderer);	    // Libération mémoire du renderer
 	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
