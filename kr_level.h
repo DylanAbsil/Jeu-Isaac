@@ -73,7 +73,7 @@ typedef struct
 
 
 Kr_Level *Kr_Level_Init(char *szFileName);
-Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer);
+Boolean   Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer, Boolean bBackup);
 void	  Kr_Level_Free(Kr_Level *pLevel);
 Boolean	  Kr_Level_Layout(Kr_Level *pLevel, FILE *pFile);
 void	  Kr_Level_Draw(SDL_Renderer *pRenderer, Kr_Level *pLevel);

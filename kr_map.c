@@ -182,8 +182,8 @@ Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 	y = pEntity->pSprEntity->pRectPosition->y + pEntity->pSprEntity->pRectPosition->h / 2;
 
 	// On vérifie que le joueur est sur une extrémité de la map
-	if ((x < pLevel->pLevel_Tileset->iTilesWidth) || (y < pLevel->pLevel_Tileset->iTilesHeight) ||
-		(x > KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth) || (y > KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight))
+	if ((x <= pLevel->pLevel_Tileset->iTilesWidth) || (y <= pLevel->pLevel_Tileset->iTilesHeight) ||
+		(x >= KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth) || (y >= KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight))
 	{
 		Kr_Map_GetNeighborOfLevel(pMap, pLevel, &pLevel->iNumNord, &pLevel->iNumSud, &pLevel->iNumEst, &pLevel->iNumOuest);
 		if (pEntity->direction == nord && (y < pLevel->pLevel_Tileset->iTilesHeight) && pLevel->iNumNord != 0)

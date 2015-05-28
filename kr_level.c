@@ -69,15 +69,15 @@ Kr_Level *Kr_Level_Init(char *szFileName)
 
 
 /*!
-*  \fn     Boolean Kr_Level_Load(Kr_Level *pLevel, Kr_Map *pMap, SDL_Renderer *pRenderer)
+*  \fn     Boolean Kr_Level_Load(Kr_Level *pLevel, SDL_Renderer *pRenderer, Boolean bBackup)
 *  \brief  Function to load a Kr_Level structure via a level file
 *
-*  \param  pMap      a pointer to the map
 *  \param  pLevel    a pointer to a the level structure
 *  \param  pRenderer a pointer to the renderer
+*  \param  bBackup   TRUE if we must load the backup file
 *  \return TRUE if everything is ok, NULL otherwise
 */
-Boolean Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
+Boolean Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer, Boolean bBackup)
 {
 	char   szBuf[CACHE_SIZE];  // Buffer
 	char   szBuf2[CACHE_SIZE]; // Buffer2
@@ -86,7 +86,8 @@ Boolean Kr_Level_Load(Kr_Level *pLevel,  SDL_Renderer *pRenderer)
 	Uint32 iNameLen = 0;
 
 	/* Ouverture du fichier level */
-	sprintf(szLevelPath, "maps\\%s.txt", pLevel->szLevelFile);
+	if (bBackup) sprintf(szLevelPath, "maps\\backup\\%s.txt", pLevel->szLevelFile);
+	else sprintf(szLevelPath, "maps\\%s.txt", pLevel->szLevelFile);
 	Kr_Log_Print(KR_LOG_INFO, "Opening level file %s\n", szLevelPath);
 	pFile = UTIL_OpenFile(szLevelPath, "r"); // Ouverture du level en read
 	if (!pFile) return FALSE;
@@ -308,7 +309,7 @@ Kr_Level *Kr_Level_Change(Kr_Level *pCurrentLevel, Uint32 iCurrentLevelNumber, S
     sprintf(szLevelName, "level%d", iCurrentLevelNumber);
 	Kr_Level_Free(pCurrentLevel);
 	Kr_Level *pNewLevel = Kr_Level_Init(szLevelName);
-	if (!Kr_Level_Load(pNewLevel, pRenderer))
+	if (!Kr_Level_Load(pNewLevel, pRenderer, FALSE))
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Can't Load a level\n");
 		return NULL;

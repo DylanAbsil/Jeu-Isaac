@@ -65,8 +65,8 @@ Level_Editor *Level_Editor_Init(char *szEditorFile)
 Boolean	Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer)
 {
 	Uint32 iNameLen = 0;
-	char   szPath[50];
-	char   szLevelFile[50];
+	char   szPath[75];
+	char   szLevelFile[75];
 	FILE  *pFile;
 	Uint32 iTmp = 0;
 
@@ -103,7 +103,7 @@ Boolean	Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer)
 			Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the level\n", szLevelFile);
 			return FALSE;
 		}
-		if (!Kr_Level_Load(pEditor->pLevel, pRenderer))
+		if (!Kr_Level_Load(pEditor->pLevel, pRenderer, TRUE))
 		{
 			Kr_Log_Print(KR_LOG_ERROR, "Can't load the level\n", szLevelFile);
 			return FALSE;
@@ -905,6 +905,7 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 			Kr_Level_SaveLayout(pEditor->pLevel, TRUE);
 			inEvent.szKey[SDL_SCANCODE_S] = 0;
 			Message_Update(pMessageInfo, TRUE, "Sauvegarde");
+
 		}
 
 		/* ========================================================================= */
