@@ -38,7 +38,7 @@ Kr_Tileset *Kr_Tileset_Init(const char *szFileName)
 	Kr_Tileset  *pTileset = NULL;
 	Uint32 iNameLen = strlen(szFileName);
 	pTileset = (Kr_Tileset *)malloc(sizeof(Kr_Tileset));
-
+	if (!pTileset) return NULL;
 	pTileset->szTilesetName   = UTIL_CopyStr(szFileName, iNameLen);
 	pTileset->iNbTilesX		  = 0;
 	pTileset->iNbTilesY		  = 0;

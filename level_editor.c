@@ -284,6 +284,7 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 	fprintf(pFile, "#tileset\n");
 	fprintf(pFile, "%s\n", pLevel->pLevel_Tileset->szTilesetName);
 	fprintf(pFile, "#entity\n");
+	fprintf(pFile, "0\n");
 	fprintf(pFile, "#layout\n");
 	fprintf(pFile, "%d %d\n", pLevel->iLevel_TileWidth, pLevel->iLevel_TileHeight);
 	
@@ -652,11 +653,13 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	{
 		Kr_Log_Print(KR_LOG_INFO, "Can't initialize a Level_Editor structure \n\n");
 		SDL_Quit();
+		exit(EXIT_FAILURE);
 	}
 	if (!Level_Editor_Load(pEditor, pRenderer))
 	{
 		Kr_Log_Print(KR_LOG_INFO, "Can't Load a Level_Editor structure \n\n");
 		SDL_Quit();
+		exit(EXIT_FAILURE);
 	}
 
 	/* Préparation d'une Texture contenant un message via util.c*/

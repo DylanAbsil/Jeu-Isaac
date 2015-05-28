@@ -44,10 +44,10 @@ Bouton *Bouton_Init(char *BoutonName, SDL_Renderer *pRenderer, char* szImageActi
 	Uint32     iNameLen = strlen(BoutonName);
 	char szPath[60] = "";
 
-	pBouton = (Bouton *)malloc(sizeof(Bouton));	
+	pBouton = (Bouton *)malloc(sizeof(Bouton));
+	if (!pBouton) return NULL;
 
 	pBouton->szBoutonName = UTIL_CopyStr(BoutonName, iNameLen);
-
 	sprintf(szPath, "menu/%s.png", szImageActive);
 	pBouton->pTextureImageActive = UTIL_LoadTexture(pRenderer, szPath, NULL, &(pBouton->RectImage));
 	if (pBouton->pTextureImageActive == NULL) return pBouton = NULL;

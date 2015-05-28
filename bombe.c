@@ -38,6 +38,7 @@ Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, cha
 	if (!pBombe) return NULL;
 
 	SDL_Rect *pRectBomb = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+	if (!pRectBomb) return pBombe = NULL;
 	pRectBomb->x = 0;
 	pRectBomb->y = 0;
 	pRectBomb->w = 20;
@@ -63,6 +64,7 @@ Bombe *Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, cha
 
 	pSprite = NULL;
 	SDL_Rect *pRectExplosion = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+	if (!pRectExplosion) return NULL;
 	pRectExplosion->x = 0;
 	pRectExplosion->y = 0;
 	pRectExplosion->w = 32;

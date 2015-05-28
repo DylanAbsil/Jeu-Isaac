@@ -171,6 +171,7 @@ void  Entity_Log(Entity *pEntity)
 
 NodeListEnt	* newNodeListEnt(Entity *e, NodeListEnt *n){
 	NodeListEnt * new = (NodeListEnt *)malloc(sizeof(NodeListEnt));
+	if (!new) return new = NULL;
 	new->e = e;
 	new->next = n;
 	return new;

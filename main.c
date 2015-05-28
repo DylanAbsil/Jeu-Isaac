@@ -83,7 +83,7 @@ int main(int argc, char** argv)
 		if (iRetourMP == 3) Isaac(pRenderer, pWindow, TRUE);
 	} while (iRetourMP != 0);
 
-	if(pSurfaceCursor) UTIL_FreeTexture(pSurfaceCursor);
+	if(pSurfaceCursor) SDL_FreeSurface(pSurfaceCursor);
 	if(pCursor) SDL_FreeCursor(pCursor);
 
 	SDL_DestroyRenderer(pRenderer);	    // Libération mémoire du renderer

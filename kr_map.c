@@ -47,6 +47,7 @@ Kr_Map *Kr_Map_Init(char *szMapFile)
 	iNameLen = strlen(szMapFile);
 
 	pMap = (Kr_Map *)malloc(sizeof(Kr_Map));
+	if (!pMap) return NULL;
 	pMap->szMapFile = UTIL_CopyStr(szMapFile, iNameLen);
 
 	/* Ouverture du fichier map */

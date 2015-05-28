@@ -31,7 +31,7 @@
 Projectile* Projectile_Init(char *strProjName){
 	Uint32 iNameLen = strlen(strProjName);
 	Projectile * newProj = (Projectile *)malloc(sizeof(Projectile));
-
+	if (!newProj) return newProj = NULL;
 	newProj->strNamePrj = UTIL_CopyStr(strProjName, iNameLen);
 	newProj->iDamagePrj = 0;
 	newProj->iSpeedPrj = 0;
@@ -58,6 +58,7 @@ Projectile* Projectile_Init(char *strProjName){
 Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint32 speed, SDL_Rect *pRect, SDL_Renderer *pRenderer){
 	Kr_Sprite	*pSprProj = Kr_Sprite_Init(pProj->strNamePrj);
 	SDL_Rect	*pRectProj = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+	if (!pSprProj || !pRectProj) return FALSE;
 	Sint32		entityMiddleX = UTIL_FindMiddle(pRect->x, pRect->x + pRect->w);
 	Sint32		entityMiddleY = UTIL_FindMiddle(pRect->y, pRect->y + pRect->h);
 
@@ -148,6 +149,7 @@ Boolean	Projectile_Draw(SDL_Renderer *pRenderer, Projectile *pProj){
 
 NodeListProj *	newNodeListProj(Projectile *p, NodeListProj *n){
 	NodeListProj * new = (NodeListProj *)malloc(sizeof(NodeListProj));
+	if (!new) return new = NULL;
 	new->p = p;
 	new->next = n;
 	return new;
@@ -285,6 +287,7 @@ Boolean drawProjectilesWeapon(ListProj *lProj, SDL_Renderer *pRenderer){
 Weapon *  Weapon_Init(char *strWeaponName){
 	Uint32 iNameLen = strlen(strWeaponName);
 	Weapon * newWeap = (Weapon *)malloc(sizeof(Weapon));
+	if (!newWeap) return newWeap;
 	static ListProj lProj;
 	initList(&lProj);
 

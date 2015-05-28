@@ -35,7 +35,7 @@ Kr_Sprite * Kr_Sprite_Init(char *szFileName)
 {
 	Uint32 iNameLen = strlen(szFileName);
 	Kr_Sprite * pSprite = malloc(sizeof(Kr_Sprite));		//allocation mémoire
-
+	if (!pSprite) return pSprite = NULL;
 	pSprite->strSpriteName = UTIL_CopyStr(szFileName, iNameLen);
 	pSprite->pTextureSprite = NULL;
 	pSprite->iFrameHeight = 0;
