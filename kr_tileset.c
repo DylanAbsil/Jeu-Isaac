@@ -37,8 +37,8 @@ Kr_Tileset *Kr_Tileset_Init(const char *szFileName)
 {
 	Kr_Tileset  *pTileset = NULL;
 	Uint32 iNameLen = strlen(szFileName);
-	pTileset = (Kr_Tileset *)UTIL_Malloc(sizeof(Kr_Tileset));
-
+	pTileset = (Kr_Tileset *)malloc(sizeof(Kr_Tileset));
+	if (!pTileset) return NULL;
 	pTileset->szTilesetName   = UTIL_CopyStr(szFileName, iNameLen);
 	pTileset->iNbTilesX		  = 0;
 	pTileset->iNbTilesY		  = 0;
@@ -54,19 +54,19 @@ Kr_Tileset *Kr_Tileset_Init(const char *szFileName)
 *  \fn     void Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer);
 *  \brief  Function to load a tileset 
 *
-*  \param  pTileset a pointer to a the tileset structure
-*  \param  pRenderer  a pointer to the renderer
+*  \param  pTileset  a pointer to a the tileset structure
+*  \param  pRenderer a pointer to the renderer
 *  \return TRUE if everything is ok, NULL otherwise
 */
 Boolean Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer)
 {
-	Uint32 iNumTile;
-	Sint32 i, j;
+	Uint32		 iNumTile = 0;
+	Sint32		 i = 0, j = 0;
 	char         szBuf[CACHE_SIZE];  // Buffer
 	char         szBuf2[CACHE_SIZE]; // Buffer2
 	SDL_Surface *pSurfTileset = NULL;
-	char         szTilePath[50];
-	FILE        *pFile;
+	char         szTilePath[50] = "";
+	FILE        *pFile = NULL;
 
 	/* Ouverture du fichier tileset */
 	sprintf(szTilePath, "tilesets\\%s", pTileset->szTilesetName);
@@ -143,7 +143,7 @@ Boolean Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer)
 
 			if ((strcmp(szBuf2, "sol") == 0) || (strcmp(szBuf2, "echelle") == 0) ||
 				(strcmp(szBuf2, "fleur") == 0) || (strcmp(szBuf2, "NONE") == 0)  ||
-				(strcmp(szBuf2, "porteMaison") == 0 || (strcmp(szBuf2, "flaque") == 0))) pTileset->pTilesProp[iNumTile].iPlein = 0;
+				(strcmp(szBuf2, "porteMaison") == 0) || (strcmp(szBuf2, "flaque") == 0)) pTileset->pTilesProp[iNumTile].iPlein = 0;
 			if ((strcmp(szBuf2, "eau") == 0)) pTileset->pTilesProp[iNumTile].iWater = 1;
 			if ((strcmp(szBuf2, "porteMaison") == 0)) pTileset->pTilesProp[iNumTile].iPorteMaison= 1;
 			if ((strcmp(szBuf2, "coffreFerme") == 0)) pTileset->pTilesProp[iNumTile].iCoffreFerme = 1;
@@ -152,7 +152,6 @@ Boolean Kr_Tileset_Load(Kr_Tileset *pTileset, SDL_Renderer *pRenderer)
 		}
 	}
 	UTIL_CloseFile(&pFile);
-	//Kr_Tileset_Log(pTileset);
 	Kr_Log_Print(KR_LOG_INFO, "Kr_Tileset_Init : Done\n");
 
 	return TRUE;

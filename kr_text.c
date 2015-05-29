@@ -21,7 +21,7 @@
 /* ========================================================================= */
 
 /*!
-*  \fn     TTF_Font* Kr_Text_OpenFont(const char szFile, Uint32 iSize);
+*  \fn     TTF_Font* Kr_Text_OpenFont(const char szFile, Uint32 iSize)
 *  \brief  Function to open a font.
 *
 *  \param  iSize  Integer for the size of the font.
@@ -51,7 +51,7 @@ TTF_Font* Kr_Text_OpenFont(const char *szFile, Uint32 iSize)
 }
 
 /*!
-*  \fn     SDL_Texture* Kr_Text_FontCreateTexture(SDL_Renderer *pRenderer, TTF_Font *pFont, const char szText, SDL_Color Color, Boolean bBlended, SDL_Rect *pTextureSize);
+*  \fn     SDL_Texture* Kr_Text_FontCreateTexture(SDL_Renderer *pRenderer, TTF_Font *pFont, const char szText, SDL_Color Color, Boolean bBlended, SDL_Rect *pTextureSize)
 *  \brief  Function to create a texture from a message
 *
 *  \param  pRenderer    Pointer to the renderer
@@ -67,7 +67,6 @@ SDL_Texture* Kr_Text_FontCreateTexture(SDL_Renderer *pRenderer, TTF_Font *pFont,
 	SDL_Surface *pSurface = NULL;
 	SDL_Texture *pTexture = NULL;
 
-
 	if (bBlended)
 	{
 		pSurface = TTF_RenderText_Blended(pFont, szText, Color);
@@ -76,7 +75,6 @@ SDL_Texture* Kr_Text_FontCreateTexture(SDL_Renderer *pRenderer, TTF_Font *pFont,
 	{
 		pSurface = TTF_RenderText_Solid(pFont, szText, Color);
 	}
-
 
 	if (pSurface == NULL)
 	{
@@ -104,7 +102,7 @@ SDL_Texture* Kr_Text_FontCreateTexture(SDL_Renderer *pRenderer, TTF_Font *pFont,
 
 
 /*!
-*  \fn     void Kr_Text_CloseFont( TTF_Font **ppFont );
+*  \fn     void Kr_Text_CloseFont( TTF_Font **ppFont )
 *  \brief  Function to free a font.
 *
 *  \param  ppFont Pointer to pointer of the font to free.
@@ -116,6 +114,7 @@ void Kr_Text_CloseFont(TTF_Font **ppFont)
 	TTF_CloseFont(*ppFont);
 	*ppFont = NULL;
 }
+
 /* Utilisation de cette bibliothèque */
 /* Remarque, ne pas compiler ce code, il faut l'adapter pour effectuer un code exploitable/analysable */
 /*

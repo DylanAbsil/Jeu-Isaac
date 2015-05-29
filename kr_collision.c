@@ -88,7 +88,7 @@ Uint32 Kr_Collision(Kr_Level *pLevel, SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32
 *  \fn     Boolean Kr_Collision_LevelDetect(Kr_Level *pLevel, SDL_Rect *pRect1)
 *  \brief  Function to detect if a rectangle is colliding with the level background
 *
-*  \param  pLevel a pointer to a the level structure
+*  \param  pLevel  a pointer to a the level structure
 *  \param  pRect1  a pointer to the rectangle you want to test
 *  \return TRUE if the two rectangle are colliding, FALSE otherwise
 */
@@ -204,7 +204,7 @@ Boolean Kr_Collision_RectDetect(SDL_Rect *pRect2, SDL_Rect *pRect1)
 
 /*!
 *  \fn     Boolean Kr_Collision_RectTry(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
-*  \brief  Function to try to move a rectangle with a certain vector speed and check if it's colliding with the level tiles
+*  \brief  Function to try to move a rectangle with a certain vector speed and check if it's colliding with the other rectangle
 *
 *  \param  pRect1  a pointer to the rectangle which is moving
 *  \param  pRect2  a pointer to the rectangle which is not moving
@@ -231,7 +231,7 @@ Boolean Kr_Collision_RectTry(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint
 
 /*!
 *  \fn     void Kr_Collision_RectAffine(SDL_Rect *pRect1, SDL_Rect *pRect2, Sint32 vx, Sint32 vy, Sint32 *NewVx, Sint32 *NewVy)
-*  \brief  Function to reduce the vector speed to check if there is a collision between the rectangle and the level background
+*  \brief  Function to reduce the vector speed to check if there is a collision between the rectangle and the other rectangle
 *
 *  \param  pRect1  a pointer to the rectangle which is moving
 *  \param  pRect2  a pointer to the rectangle which is not moving

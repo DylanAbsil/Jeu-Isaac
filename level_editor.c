@@ -42,7 +42,7 @@ Level_Editor *Level_Editor_Init(char *szEditorFile)
 	Level_Editor *pEditor= NULL;
 
 	Uint32 iNameLen = strlen(szEditorFile);
-	pEditor = (Level_Editor *)UTIL_Malloc(sizeof(Level_Editor));
+	pEditor = (Level_Editor *)malloc(sizeof(Level_Editor));
 	if (pEditor == NULL) return NULL;
 	pEditor->szEditorFile	= UTIL_CopyStr(szEditorFile, iNameLen);
 	pEditor->iStandardTile	= 0;
@@ -65,8 +65,8 @@ Level_Editor *Level_Editor_Init(char *szEditorFile)
 Boolean	Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer)
 {
 	Uint32 iNameLen = 0;
-	char   szPath[50];
-	char   szLevelFile[50];
+	char   szPath[75];
+	char   szLevelFile[75];
 	FILE  *pFile;
 	Uint32 iTmp = 0;
 
@@ -95,13 +95,15 @@ Boolean	Level_Editor_Load(Level_Editor *pEditor, SDL_Renderer *pRenderer)
 	{
 		Kr_Log_Print(KR_LOG_INFO, "The level already exist, loading %s for modification !\n", szPath);
 		UTIL_CloseFile(&pFile);
+		// Faire une copie de la backup vers le normal sinon ca ouvrira pas ?
+		//sprintf(szLevelFile, "backup\\level%d",iTmp)
 		pEditor->pLevel = Kr_Level_Init(szLevelFile);
 		if (pEditor->pLevel == NULL)
 		{
 			Kr_Log_Print(KR_LOG_ERROR, "Can't initialize the level\n", szLevelFile);
 			return FALSE;
 		}
-		if (!Kr_Level_Load(pEditor->pLevel, pRenderer))
+		if (!Kr_Level_Load(pEditor->pLevel, pRenderer, TRUE))
 		{
 			Kr_Log_Print(KR_LOG_ERROR, "Can't load the level\n", szLevelFile);
 			return FALSE;
@@ -173,7 +175,6 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 	Kr_Log_Print(KR_LOG_INFO, "Opening level editor file %s\n", szPath);
 	pFile = UTIL_OpenFile(szPath, "r"); 
 	if (!pFile) return FALSE;
-	//rewind(pFile); // remise du curseur au top
 
 	// Initialisation du level
 	pEditor->pLevel = Kr_Level_Init(szLevelFile);
@@ -225,9 +226,20 @@ Boolean	Level_Editor_LoadLevel(Level_Editor *pEditor, char *szLevelFile, SDL_Ren
 
 	/* Allocation du tableau 2D szLayout */
 	pEditor->pLevel->szLayout = malloc(pEditor->pLevel->iLevel_TileWidth*sizeof(Uint32*));
-	for (i = 0; i<pEditor->pLevel->iLevel_TileWidth; i++)
+	if (pEditor->pLevel->szLayout == NULL)
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't allocate the layout of the level in the editor\n");
+		return FALSE;
+	}
+	for (i = 0; i < pEditor->pLevel->iLevel_TileWidth; i++)
+	{
 		pEditor->pLevel->szLayout[i] = malloc(pEditor->pLevel->iLevel_TileHeight*sizeof(Uint32));
-
+		if (pEditor->pLevel->szLayout[i] == NULL)
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "Can't allocate the layout[i] of the level in the editor\n");
+			return FALSE;
+		}
+	}
 
 	/*Affectation des données level au schema */
 	for (j = 0; j<pEditor->pLevel->iLevel_TileHeight; j++)
@@ -260,7 +272,7 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 	char szPath[50];
 	Sint32 i = 0, j = 0;
 
-	sprintf(szPath, "maps\\%s.txt", pLevel->szLevelFile);
+	sprintf(szPath, "maps\\backup\\%s.txt", pLevel->szLevelFile);
 	pFile = UTIL_OpenFile(szPath, "w"); // Ouverture en écriture 
 	if (!pFile) return FALSE;
 
@@ -272,6 +284,7 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 	fprintf(pFile, "#tileset\n");
 	fprintf(pFile, "%s\n", pLevel->pLevel_Tileset->szTilesetName);
 	fprintf(pFile, "#entity\n");
+	fprintf(pFile, "0\n");
 	fprintf(pFile, "#layout\n");
 	fprintf(pFile, "%d %d\n", pLevel->iLevel_TileWidth, pLevel->iLevel_TileHeight);
 	
@@ -284,8 +297,8 @@ Boolean	Level_Editor_CreateLevelFile(Kr_Level *pLevel)
 		fprintf(pFile,"\n");
 	}
 	fprintf(pFile, "#end\n");
-
 	UTIL_CloseFile(&pFile);
+	pLevel->pMusic = NULL;
 	Kr_Log_Print(KR_LOG_INFO, "File %s has been created \n",szPath);
 	return TRUE;
 }
@@ -306,7 +319,7 @@ Grid *Grid_Init(char *szFileName, Kr_Level *pLevel, SDL_Renderer *pRenderer)
 	char szPath[50];
 	sprintf(szPath, "sprites\\%s", szFileName);
 
-	pGrid = (Grid *)UTIL_Malloc(sizeof(Grid));
+	pGrid = (Grid *)malloc(sizeof(Grid));
 	if (pGrid == NULL) return NULL;
 	pGrid->Rect.x = 0;
 	pGrid->Rect.y = 0;
@@ -640,11 +653,13 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	{
 		Kr_Log_Print(KR_LOG_INFO, "Can't initialize a Level_Editor structure \n\n");
 		SDL_Quit();
+		exit(EXIT_FAILURE);
 	}
 	if (!Level_Editor_Load(pEditor, pRenderer))
 	{
 		Kr_Log_Print(KR_LOG_INFO, "Can't Load a Level_Editor structure \n\n");
 		SDL_Quit();
+		exit(EXIT_FAILURE);
 	}
 
 	/* Préparation d'une Texture contenant un message via util.c*/
@@ -709,6 +724,25 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		Kr_Log_Print(KR_LOG_INFO, "Can't load the SelectionEditor32.png texture !\n");
 		SDL_Quit();
 	}
+
+	/*========================================================================= */
+	/*                                  MESSAGE                                  */
+	/* ========================================================================= */
+
+	Message   *pMessageInfo = NULL;
+	char szMessageInfo[250] = " ";
+	SDL_Color  colorMessageInfo = { 30, 22, 250 };
+	TTF_Font *pFontMessageInfo = NULL;
+
+	pFontMessageInfo = Kr_Text_OpenFont("cour", 18);
+	TTF_SetFontStyle(pFontMessageInfo, TTF_STYLE_BOLD);
+	pMessageInfo = Message_Init("message_info", pRenderer);
+	if (!Message_Load(pMessageInfo, "bandeau_info", 3, colorMessageInfo, pFontMessageInfo))
+	{
+		Kr_Log_Print(KR_LOG_ERROR, "Can't Load pMessageInfo!\n");
+	}
+	Message_Update(pMessageInfo, FALSE, "Initialisation pMessageInfo");
+
 	/* ========================================================================= */
 	/*                                 EVENEMENT                                 */
 	/* ========================================================================= */
@@ -871,8 +905,10 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		//Sauvegarder la map
 		if (inEvent.szKey[SDL_SCANCODE_S])
 		{
-			Kr_Level_SaveLayout(pEditor->pLevel);
+			Kr_Level_SaveLayout(pEditor->pLevel, TRUE);
 			inEvent.szKey[SDL_SCANCODE_S] = 0;
+			Message_Update(pMessageInfo, TRUE, "Sauvegarde");
+
 		}
 
 		/* ========================================================================= */
@@ -899,17 +935,17 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		if (bSelection) Level_Editor_PreDrawTileSelection(pEditor, iTabTile, inEvent.iMouseX, inEvent.iMouseY, TRUE, pRenderer, iTabCursor, pTextureSelected);
 		Level_Editor_PrintTiles(pEditor->pLevel->pLevel_Tileset, bTilesShow, pRenderer);
 		Grid_Draw(pGrid, pEditor->pLevel, bGridShow, pRenderer);
-		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
+		//SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
+		Message_Draw(pMessageInfo);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer);
 		UTIL_FreeTexture(&pTextureText);
 	}
 	UTIL_FreeTexture(&pTextureSelected);
 	UTIL_FreeTexture(&pTextureText);	// Libération mémoire de la texture du Texte ttf
-	SDL_DestroyRenderer(pRenderer);		// Libération mémoire du renderer
-	SDL_DestroyWindow(pWindow);			// Libération mémoire de la fenetre
+	Message_Free(pMessageInfo);
 	Kr_Text_CloseFont(&pFont);			// Libération mémoire de la police
-	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
+	//Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
 	Level_Editor_Free(pEditor);
 	Grid_Free(pGrid);
 

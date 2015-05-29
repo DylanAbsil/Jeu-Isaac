@@ -30,8 +30,8 @@
 */
 Projectile* Projectile_Init(char *strProjName){
 	Uint32 iNameLen = strlen(strProjName);
-	Projectile * newProj = (Projectile *)UTIL_Malloc(sizeof(Projectile));
-
+	Projectile * newProj = (Projectile *)malloc(sizeof(Projectile));
+	if (!newProj) return newProj = NULL;
 	newProj->strNamePrj = UTIL_CopyStr(strProjName, iNameLen);
 	newProj->iDamagePrj = 0;
 	newProj->iSpeedPrj = 0;
@@ -57,7 +57,8 @@ Projectile* Projectile_Init(char *strProjName){
 */
 Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint32 speed, SDL_Rect *pRect, SDL_Renderer *pRenderer){
 	Kr_Sprite	*pSprProj = Kr_Sprite_Init(pProj->strNamePrj);
-	SDL_Rect	*pRectProj = (SDL_Rect*)UTIL_Malloc(sizeof(SDL_Rect));
+	SDL_Rect	*pRectProj = (SDL_Rect*)malloc(sizeof(SDL_Rect));
+	if (!pSprProj || !pRectProj) return FALSE;
 	Sint32		entityMiddleX = UTIL_FindMiddle(pRect->x, pRect->x + pRect->w);
 	Sint32		entityMiddleY = UTIL_FindMiddle(pRect->y, pRect->y + pRect->h);
 
@@ -90,7 +91,7 @@ Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint3
 		pRectProj->h = 40;
 		pRectProj->w = 10;
 		pRectProj->x = entityMiddleX - pRectProj->w / 2;
-		pRectProj->y = pRect->y;
+		pRectProj->y = pRect->y + pRect->h;
 		pProj->iCoordPrj_XEnd = pRectProj->x;
 		pProj->iCoordPrj_YEnd = pRectProj->y + pWeapon->iRangeWeapon;
 		Kr_Sprite_Load(pSprProj, dir, 138, 35, 1, pRectProj, pRenderer);
@@ -147,7 +148,8 @@ Boolean	Projectile_Draw(SDL_Renderer *pRenderer, Projectile *pProj){
 /* Pour la documentation et/ou la compréhension de cette partie revoyer votre cours */
 
 NodeListProj *	newNodeListProj(Projectile *p, NodeListProj *n){
-	NodeListProj * new = (NodeListProj *)UTIL_Malloc(sizeof(NodeListProj));
+	NodeListProj * new = (NodeListProj *)malloc(sizeof(NodeListProj));
+	if (!new) return new = NULL;
 	new->p = p;
 	new->next = n;
 	return new;
@@ -200,27 +202,40 @@ void setOnLast(ListProj *lProj){
 }
 
 void next(ListProj *lProj){
-	lProj->current = lProj->current->next;
+	if (emptyList(lProj) == FALSE)
+		lProj->current = lProj->current->next;
 }
 
 Projectile * getCurrentProj(ListProj *lProj){
 	return lProj->current->p;
 }
 
-void deleteCurrent(ListProj *lProj){
+void deleteCurrent(ListProj *lProj, Boolean *nextL){
 	NodeListProj *nodeTmp = lProj->current;
-	if (lProj->current == lProj->first == lProj->last){
+
+	if (lProj->first == lProj->last){
 		lProj->current = lProj->first = lProj->last = NULL;
+		*nextL = TRUE;
 	}
 	else if (first(lProj) == TRUE){
 		next(lProj);
-		lProj->first = lProj->first->next;
+		lProj->first = lProj->current;
+		*nextL = TRUE;
+	}
+	else if (last(lProj) == TRUE){
+		setOnFirst(lProj);
+		while (lProj->current->next != nodeTmp)
+			next(lProj);
+		lProj->current->next = nodeTmp->next;
+		lProj->last = lProj->current;
+		*nextL = FALSE;
 	}
 	else{
 		setOnFirst(lProj);
 		while (lProj->current->next != nodeTmp)
 			next(lProj);
 		lProj->current->next = nodeTmp->next;
+		*nextL = FALSE;
 	}
 	deleteNodeListProj(nodeTmp);
 }
@@ -271,7 +286,8 @@ Boolean drawProjectilesWeapon(ListProj *lProj, SDL_Renderer *pRenderer){
 */
 Weapon *  Weapon_Init(char *strWeaponName){
 	Uint32 iNameLen = strlen(strWeaponName);
-	Weapon * newWeap = (Weapon *)UTIL_Malloc(sizeof(Weapon));
+	Weapon * newWeap = (Weapon *)malloc(sizeof(Weapon));
+	if (!newWeap) return newWeap;
 	static ListProj lProj;
 	initList(&lProj);
 
@@ -315,10 +331,11 @@ Boolean Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 mun
 *  \return none
 */
 void Weapon_Free(Weapon *pWeapon){
-	UTIL_Free(pWeapon->strNameWeapon);
-	UTIL_Free(pWeapon->strNameProjectile);
-
-	UTIL_Free(pWeapon);
+	if (pWeapon != NULL){
+		UTIL_Free(pWeapon->strNameWeapon);
+		UTIL_Free(pWeapon->strNameProjectile);
+		UTIL_Free(pWeapon);
+	}
 }
 
 

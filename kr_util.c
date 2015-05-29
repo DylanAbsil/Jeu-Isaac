@@ -99,10 +99,15 @@ void UTIL_CloseFile( FILE **ppFile )
     *ppFile = NULL;
 }
 
+
+/* ========================================================================= */
+
+
 /*!
- *  \fn     SDL_Texture* UTIL_LoadTexture( const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize )
+ *  \fn     SDL_Texture* UTIL_LoadTexture(SDL_Renderer *pRenderer, const char *szPath, SDL_Color *pTransColor, SDL_Rect *pTextureSize )
  *  \brief  Function to load a texture.
  *
+ *  \param  pRenderer    a pointer to the renderer
  *  \param  szPath       Path of the texture to open.
  *  \param  pTransColor  Pointer to set the transparency of the texture (Can be NULL).
  *  \param  pTextureSize Pointer to get the size of the texture loaded (Can be NULL).
@@ -165,25 +170,8 @@ void UTIL_FreeTexture( SDL_Texture **ppTexture )
 }
 
 
+/* ========================================================================= */
 
-/*!
- *  \fn     void* UTIL_Malloc( size_t iSize )
- *  \brief  Function to allocate memory block.
- *
- *  \param  iSize Size to allocate in bytes.
- *  \return A pointer on the allocated memory, or NULL if error.
- */
-void* UTIL_Malloc( size_t iSize )
-{
-    void *pData = malloc( iSize );
-    
-    if( pData == NULL )
-    {
-        Kr_Log_Print( KR_LOG_ERROR, "Insufficient memory ( Size : %u ) !\n", iSize );
-    }
-
-    return pData;
-}
 
 /*!
  *  \fn     void* UTIL_Realloc( void *pData, size_t iSize )
@@ -217,7 +205,7 @@ void* UTIL_Realloc( void *pData, size_t iSize )
  */
 char* UTIL_CopyStr( const char *szSrc, size_t iSrcLen )
 {
-    char *pDest = ( char * ) UTIL_Malloc( iSrcLen + 1 ); // + '\0'
+    char *pDest = ( char * ) malloc( iSrcLen + 1 ); // + '\0'
     
     if( pDest )
     {
@@ -228,9 +216,10 @@ char* UTIL_CopyStr( const char *szSrc, size_t iSrcLen )
 }
 
 
-/** \fn   void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, char *p_szExtrait)
+/*! \fn   void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, char *p_szExtrait)
 * \brief  Cette fonction permet d'extraire dans une chaine la sous-chaine comprise entre deux positions
-* \param  szChaine1   Const chaine de caractere que l'on souhaite traiter, supprimer tout caractère particulier !!!! \0 et \n par exemple
+
+* \param  szChaine1   Const chaine de caractere que l'on souhaite traiter, supprimer tout caractère particulier \0 et \n par exemple
 * \param  iPosDebut   Entier indiquant le début de la sous-chaine, La premiere valeur de la chaine correspond à 0 et non 1!
 * \param  iPosFin     Entier indiquant la fin de la sous-chaine
 * \param  p_szExtrait Pointeur sur la sous-chaine qui a ete extraite
@@ -239,13 +228,7 @@ char* UTIL_CopyStr( const char *szSrc, size_t iSrcLen )
 void UTIL_SousChaine(const char *szChaine1, Uint32 iPosDebut, Uint32 iPosFin, char *p_szExtrait)
 {
 	Uint32 iLengthChaine = 0, i = 0, j = 0;
-	//"Vide" la chaine p_szExtrait
-	/*iLengthChaine = strlen(p_szExtrait);
-	for (i = 0; i < iLengthChaine; i++)
-	{
-		*(p_szExtrait + j)
-	}*/
-	
+		
 	iLengthChaine = strlen(szChaine1);
 
 	if (iPosDebut<0 || iPosFin> iLengthChaine  || iPosFin<iPosDebut) // Gestion des valeurs des positions
@@ -291,8 +274,7 @@ Sint32 UTIL_StrToUint32(char *szString)
 	return iValue;
 }
 
-
-
+/* ========================================================================= */
 
 /*!
 *  \fn     Boolean UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd)
@@ -308,7 +290,7 @@ Sint32 UTIL_StrToUint32(char *szString)
 Boolean UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd)
 {
 	char szBuf[1000];
-
+	if (pFileSrc == NULL || pFileDst == NULL) return FALSE;
 	do
 	{
 		if (feof(pFileSrc))//détecte la fin du fichier
@@ -320,7 +302,4 @@ Boolean UTIL_FileCopy(FILE *pFileSrc, FILE *pFileDst, char *szEnd)
 	}while (strstr(szBuf, szEnd) == NULL);
 	return TRUE;
 }
-
-/* ========================================================================= */
-
 /* ========================================================================= */

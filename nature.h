@@ -13,6 +13,7 @@
 /* Herrou        | 01/05/2015 | Animation des buissons                       */
 /* Herrou        | 02/05/2015 | Calcul du nombre de papillon                 */
 /* Herrou        | 04/05/2015 | Renommer fichier en nature.h .c              */
+/* Herrou        | 17/05/2015 | Ajout d'un param pour stopper les oiseaux    */
 /*               |            |                                              */
 /*               |            |                                              */
 /* ========================================================================= */
@@ -32,7 +33,7 @@
 Entity *ChargementOiseau(SDL_Renderer *pRenderer, Uint32 iOiseau);
 void	CalculPassageOiseau(Entity *pEntity, Boolean bLaunch, Sint32 *movex, Sint32 *movey);
 Uint32  CalculTypeOiseau(Boolean bCalculer, Kr_Level *pLevel);
-Boolean PassageOiseau(Entity *pEntity, Boolean bPassage, Sint32 movex, Sint32 movey, SDL_Renderer *pRenderer, Kr_Sound *pSndOiseau);
+Boolean PassageOiseau(Entity *pEntity, Boolean bPassage, Sint32 movex, Sint32 movey, SDL_Renderer *pRenderer, Kr_Sound *pSndOiseau, Boolean bStop);
 
 Entity *ChargementBuisson(SDL_Renderer *pRenderer,Uint32 iBuisson);
 Boolean AnimationBuisson(Entity *pEntity, Boolean bPassage, Uint32 x, Uint32 y, SDL_Renderer *pRenderer, Kr_Sound *pSndBuisson);

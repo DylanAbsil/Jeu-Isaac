@@ -34,8 +34,8 @@
 Kr_Sprite * Kr_Sprite_Init(char *szFileName)
 {
 	Uint32 iNameLen = strlen(szFileName);
-	Kr_Sprite * pSprite = UTIL_Malloc(sizeof(Kr_Sprite));		//allocation mémoire
-
+	Kr_Sprite * pSprite = malloc(sizeof(Kr_Sprite));		//allocation mémoire
+	if (!pSprite) return pSprite = NULL;
 	pSprite->strSpriteName = UTIL_CopyStr(szFileName, iNameLen);
 	pSprite->pTextureSprite = NULL;
 	pSprite->iFrameHeight = 0;
@@ -88,7 +88,14 @@ Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Direction dir, Uint32 frameHeight, Uin
 	pSpriteEntite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
 	if (pSpriteEntite == NULL){
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the texture of the sprite : %s!\n", newSprFileName);
-		return FALSE;
+		sprintf(newSprFileName, "sprites/%s.png", sprite->strSpriteName);
+		Kr_Log_Print(KR_LOG_ERROR, "=> Trying to load the texture of the sprite : %s!\n", newSprFileName);
+		pSpriteEntite = UTIL_LoadTexture(pRenderer, newSprFileName, NULL, NULL);
+		if (pSpriteEntite == NULL)
+		{
+			Kr_Log_Print(KR_LOG_ERROR, "Cant load the texture of the sprite : %s!\n", newSprFileName);
+			return FALSE;
+		}
 	}
 
 	// Integration dans la structure
@@ -117,6 +124,6 @@ void Kr_Sprite_Free(Kr_Sprite *pSprite){
 	if (pSprite != NULL){
 		UTIL_FreeTexture(&pSprite->pTextureSprite);
 		//UTIL_Free(pSprite->pRectPosition);
-		UTIL_Free(pSprite);
+		free(pSprite);
 	}
 }

@@ -44,10 +44,10 @@ Bouton *Bouton_Init(char *BoutonName, SDL_Renderer *pRenderer, char* szImageActi
 	Uint32     iNameLen = strlen(BoutonName);
 	char szPath[60] = "";
 
-	pBouton = (Bouton *)UTIL_Malloc(sizeof(Bouton));	
+	pBouton = (Bouton *)malloc(sizeof(Bouton));
+	if (!pBouton) return NULL;
 
 	pBouton->szBoutonName = UTIL_CopyStr(BoutonName, iNameLen);
-
 	sprintf(szPath, "menu/%s.png", szImageActive);
 	pBouton->pTextureImageActive = UTIL_LoadTexture(pRenderer, szPath, NULL, &(pBouton->RectImage));
 	if (pBouton->pTextureImageActive == NULL) return pBouton = NULL;
@@ -87,11 +87,11 @@ Bouton *Bouton_Init(char *BoutonName, SDL_Renderer *pRenderer, char* szImageActi
 */
 void Bouton_Free(Bouton *pBouton)
 {
+	UTIL_FreeTexture(&pBouton->pTextureActive);
+	UTIL_FreeTexture(&pBouton->pTextureDesactive);
 	UTIL_FreeTexture(&pBouton->pTextureImageActive);
 	UTIL_FreeTexture(&pBouton->pTextureImageDesactive);
 	UTIL_FreeTexture(&pBouton->pTextureSelection);
-	UTIL_FreeTexture(&pBouton->pTextureActive);
-	UTIL_FreeTexture(&pBouton->pTextureDesactive);
 	UTIL_Free(pBouton);
 }
 
@@ -216,8 +216,11 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	Uint32 iRetour = 0;
 	// Image de fond
 	SDL_Texture *pBackgroundMP = NULL;
+	SDL_Texture *pTitreMP = NULL;
 	SDL_Rect	 rectMP = { 0, 0, KR_WIDTH_WINDOW, KR_HEIGHT_WINDOW };
+	SDL_Rect	 rectTitre = { 475,75, 350, 370 };
 	pBackgroundMP = UTIL_LoadTexture(pRenderer, "menu/Fond_Menu.png", NULL, NULL);
+	pTitreMP = UTIL_LoadTexture(pRenderer, "menu/titre.png", NULL, NULL);
 
 	//Bouton Jouer
 	Bouton    *pBoutonJouer = NULL;
@@ -251,21 +254,21 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 	}
 	Bouton_Load(pBoutonEditeur, TRUE, pFontBoutonEditeur, couleurBoutonEditeur, rPositionBoutonEditeur, "Chargement", "Level Editor");
 
-	//Bouton Crédit
-	Bouton    *pBoutonCredit = NULL;
-	TTF_Font  *pFontBoutonCredit = NULL;
-	SDL_Color  couleurBoutonCredit = { 0, 0, 0 };
-	SDL_Rect   rPositionBoutonCredit = { 915, 550, 300, 120 };
-	pFontBoutonCredit = Kr_Text_OpenFont("cour", 25);
-	TTF_SetFontStyle(pFontBoutonCredit, TTF_STYLE_BOLD);
-	pBoutonCredit = Bouton_Init("Bouton_Credit", pRenderer, "Bouton1_Active", "Bouton1_Desactive", "Bouton1_Selection");
-	if (!pBoutonCredit)
+	//Bouton Rejouer
+	Bouton    *pBoutonRejouer = NULL;
+	TTF_Font  *pFontBoutonRejouer = NULL;
+	SDL_Color  couleurBoutonRejouer = { 0, 0, 0 };
+	SDL_Rect   rPositionBoutonRejouer = { 915, 550, 300, 120 };
+	pFontBoutonRejouer = Kr_Text_OpenFont("cour", 25);
+	TTF_SetFontStyle(pFontBoutonRejouer, TTF_STYLE_BOLD);
+	pBoutonRejouer = Bouton_Init("Bouton_Rejouer", pRenderer, "Bouton1_Active", "Bouton1_Desactive", "Bouton1_Selection");
+	if (!pBoutonRejouer)
 	{
-		Kr_Log_Print(KR_LOG_ERROR, "Cant initialize pBoutonCredit!\n");
+		Kr_Log_Print(KR_LOG_ERROR, "Cant initialize pBoutonRejouer!\n");
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
-	Bouton_Load(pBoutonCredit, TRUE, pFontBoutonCredit, couleurBoutonCredit, rPositionBoutonCredit, "Chargement", "Crédit");
+	Bouton_Load(pBoutonRejouer, TRUE, pFontBoutonRejouer, couleurBoutonRejouer, rPositionBoutonRejouer, "Chargement", "Rejouer");
 
 	//Music menu principal
 	Kr_Music *pMusicMP = NULL;
@@ -281,7 +284,6 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 
 	//FPS
 	/* Préparation de la gestion des FPS */
-	SDL_Texture *pTextureFPS = NULL;
 	TTF_Font	*pFontFPS = NULL;
 	Kr_Fps		*pFPS = NULL;
 	SDL_Color    colorFPS = { 0, 10, 220 };
@@ -328,12 +330,12 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 					iRetour = 2;
 				}
 			}
-			else if (pBoutonCredit->bSurvole)
+			else if (pBoutonRejouer->bSurvole)
 			{
-				if (pBoutonCredit->bActive == TRUE) pBoutonCredit->bActive = FALSE;
+				if (pBoutonRejouer->bActive == TRUE) pBoutonRejouer->bActive = FALSE;
 				else
 				{
-					pBoutonCredit->bActive = TRUE;
+					pBoutonRejouer->bActive = TRUE;
 					iRetour = 3;
 				}
 			}
@@ -351,43 +353,45 @@ Uint32 	Menu_Principal(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		/* Menu et Interface */
 		SDL_RenderClear(pRenderer);
 		SDL_RenderCopy(pRenderer, pBackgroundMP, NULL, &rectMP);
+		SDL_RenderCopy(pRenderer, pTitreMP, NULL, &rectTitre);
 		if (pBoutonJouer->bMustShow) Bouton_Draw(pBoutonJouer);
 		if (pBoutonEditeur->bMustShow) Bouton_Draw(pBoutonEditeur);
-		if (pBoutonCredit->bMustShow) Bouton_Draw(pBoutonCredit);
+		if (pBoutonRejouer->bMustShow) Bouton_Draw(pBoutonRejouer);
 		Bouton_estSurvole(pBoutonJouer, inEvent);
 		Bouton_estSurvole(pBoutonEditeur, inEvent);
-		Bouton_estSurvole(pBoutonCredit, inEvent);
+		Bouton_estSurvole(pBoutonRejouer, inEvent);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 
 		Kr_Fps_Wait(pFPS, &iCurrentTime, &iPreviousTime, KR_FPS);
 	}
-
+	UTIL_FreeTexture(&pBackgroundMP);
 	Bouton_Free(pBoutonJouer);
 	Bouton_Free(pBoutonEditeur);
-	Bouton_Free(pBoutonCredit);
-	Kr_Text_CloseFont(&pFontFPS);		// Libération mémoire de la police
+	Bouton_Free(pBoutonRejouer);
+	Kr_Text_CloseFont(&pFontBoutonJouer);
+	Kr_Text_CloseFont(&pFontBoutonEditeur);
+	Kr_Text_CloseFont(&pFontBoutonRejouer);
 	Kr_Sound_FreeMusic(pMusicMP);
 	Kr_Fps_Free(pFPS);
 	return iRetour;
 }
 
 /*!
-*  \fn     void Menu_Pause(SDL_Renderer *pRenderer);
+*  \fn     void Menu_Pause(SDL_Renderer *pRenderer, char *szMessage)
 *  \brief  Function to handle the main menu
 *
 *  \param   pRenderer	a pointer to the renderer
-*  \param   pWindow		a pointer to the window
+*  \param   szMessage	the message to print
 *  \return  none
 */
-void Menu_Pause(SDL_Renderer *pRenderer)
+void Menu_Pause(SDL_Renderer *pRenderer, char *szMessage)
 {
 	Kr_Input inEvent; // Structure pour la gestion des événements
 	InitEvents(&inEvent);
 
 	//FPS
 	/* Préparation de la gestion des FPS */
-	SDL_Texture *pTextureFPS = NULL;
 	TTF_Font	*pFontFPS = NULL;
 	Kr_Fps		*pFPS = NULL;
 	SDL_Color    colorFPS = { 0, 10, 220 };
@@ -420,7 +424,7 @@ void Menu_Pause(SDL_Renderer *pRenderer)
 		SDL_Quit();
 		exit(EXIT_FAILURE);
 	}
-	Bouton_Load(pBoutonPause, TRUE, pFontBoutonPause, couleurBoutonPause, rPositionBoutonPause, "Chargement", "P pour reprendre");
+	Bouton_Load(pBoutonPause, TRUE, pFontBoutonPause, couleurBoutonPause, rPositionBoutonPause, "Chargement", szMessage);
 	Bouton_Draw(pBoutonPause);
 	SDL_RenderPresent(pRenderer);
 	while (!inEvent.szKey[SDL_SCANCODE_P])
@@ -429,6 +433,6 @@ void Menu_Pause(SDL_Renderer *pRenderer)
 		Kr_Fps_Wait(pFPS, &iCurrentTime, &iPreviousTime, KR_FPS);
 	}
 	Bouton_Free(pBoutonPause);
-	Kr_Text_CloseFont(&pFontFPS);
+	Kr_Text_CloseFont(&pFontBoutonPause);
 	Kr_Fps_Free(pFPS);
 }

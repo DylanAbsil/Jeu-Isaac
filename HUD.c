@@ -34,8 +34,8 @@
 HUD * HUD_Init(char *HUDName, Boolean estTexte, SDL_Renderer *pRenderer)
 {
 	HUD * pHUD = NULL;
-	pHUD = (HUD *)UTIL_Malloc(sizeof(HUD));
-
+	pHUD = (HUD *)malloc(sizeof(HUD));
+	if (!pHUD) return NULL;
 	pHUD->pRenderer = pRenderer;
 	pHUD->HUDName = HUDName;
 	

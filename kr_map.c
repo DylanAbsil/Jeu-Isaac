@@ -38,15 +38,16 @@
 */
 Kr_Map *Kr_Map_Init(char *szMapFile)
 {
-	char     szMapPath[50];
-	char     szBuffer[50];
+	char     szMapPath[200];
+	char     szBuffer[200];
 	Kr_Map  *pMap = NULL;
 	FILE    *pFile;
 	Uint32   i, iNameLen;
 
 	iNameLen = strlen(szMapFile);
 
-	pMap = (Kr_Map *)UTIL_Malloc(sizeof(Kr_Map));
+	pMap = (Kr_Map *)malloc(sizeof(Kr_Map));
+	if (!pMap) return NULL;
 	pMap->szMapFile = UTIL_CopyStr(szMapFile, iNameLen);
 
 	/* Ouverture du fichier map */
@@ -60,8 +61,8 @@ Kr_Map *Kr_Map_Init(char *szMapFile)
 	Kr_Log_Print(KR_LOG_INFO, "Maps : %d Levels\n", pMap->iNbLevel);
 
 	//Tableau 2D
-	pMap->szMapLayout = UTIL_Malloc(pMap->iNbLevel*sizeof(*pMap->szMapLayout));
-	for (i = 0; i < pMap->iNbLevel; i++) pMap->szMapLayout[i] = UTIL_Malloc(50 * sizeof(**pMap->szMapLayout));
+	pMap->szMapLayout = malloc(pMap->iNbLevel*sizeof(*pMap->szMapLayout));
+	for (i = 0; i < pMap->iNbLevel; i++) pMap->szMapLayout[i] = malloc(50 * sizeof(**pMap->szMapLayout));
 
 	do // Lecture ligne par ligne du fichier
 	{
@@ -102,7 +103,7 @@ void Kr_Map_Free(Kr_Map *pMap)
 
 
 /*!
-*  \fn     void Kr_Map_Log(Kr_Map *pMap);
+*  \fn     void Kr_Map_Log(Kr_Map *pMap)
 *  \brief  Function to log a Kr_Map structure
 *
 *  \param  pMap a pointer to the map structure
@@ -169,7 +170,7 @@ void Kr_Map_GetNeighborOfLevel(Kr_Map *pMap, Kr_Level *pLevel, Uint32 *iNumNord,
 *  \brief  Function to check if the level should be changed
 *
 *  \param  pLevel  a pointer to a the level structure
-*  \param  pEntity a pointer to the entity
+*  \param  pEntity a pointer to the player entity
 *  \return the number of the level if we must change, 0 otherwise
 */
 Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
@@ -182,8 +183,8 @@ Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 	y = pEntity->pSprEntity->pRectPosition->y + pEntity->pSprEntity->pRectPosition->h / 2;
 
 	// On vérifie que le joueur est sur une extrémité de la map
-	if ((x < pLevel->pLevel_Tileset->iTilesWidth) || (y < pLevel->pLevel_Tileset->iTilesHeight) ||
-		(x > KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth) || (y > KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight))
+	if ((x <= pLevel->pLevel_Tileset->iTilesWidth) || (y <= pLevel->pLevel_Tileset->iTilesHeight) ||
+		(x >= KR_WIDTH_WINDOW - pLevel->pLevel_Tileset->iTilesWidth) || (y >= KR_HEIGHT_WINDOW - pLevel->pLevel_Tileset->iTilesHeight))
 	{
 		Kr_Map_GetNeighborOfLevel(pMap, pLevel, &pLevel->iNumNord, &pLevel->iNumSud, &pLevel->iNumEst, &pLevel->iNumOuest);
 		if (pEntity->direction == nord && (y < pLevel->pLevel_Tileset->iTilesHeight) && pLevel->iNumNord != 0)
@@ -216,7 +217,7 @@ Uint32 Kr_Map_ShouldChangeLevel(Kr_Map *pMap, Kr_Level *pLevel, Entity *pEntity)
 
 /*!
 *  \fn     Boolean Kr_Map_CopyLevelFiles(Boolean bMustLoad)
-*  \brief  This function remove the current maps file and copy the backup ones in maps/save
+*  \brief  This function remove the current maps file and copy the backup ones in maps/bakcup
 *
 *  \param  bMustLoad  a boolean to tell if we must load the backup file or continue with the current one
 *  \return TRUE if everything is ok, FALSE otherwise

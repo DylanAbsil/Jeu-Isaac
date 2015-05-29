@@ -32,7 +32,7 @@
 Kr_Fps *Kr_Fps_Init(SDL_Renderer *pRenderer, TTF_Font *pFont, SDL_Rect *pRectPosition, SDL_Color color, Boolean bMustShow)
 {
 	Kr_Fps *pFPS = NULL;
-	pFPS = (Kr_Fps *)UTIL_Malloc(sizeof(Kr_Fps));
+	pFPS = (Kr_Fps *)malloc(sizeof(Kr_Fps));
 	if (pFPS == NULL) return NULL;
 
 	pFPS->color		= color;
@@ -129,6 +129,8 @@ Uint32 PeriodicEvent()
 */
 void    Kr_Fps_Free(Kr_Fps *pFPS)
 {
+	UTIL_FreeTexture(&pFPS->pTexture);
+	Kr_Text_CloseFont(&pFPS->pFont);
 	free(pFPS);
 }
 

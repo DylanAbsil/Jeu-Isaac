@@ -65,7 +65,7 @@ void Kr_Sound_FreeChunk(Mix_Chunk **ppChunk)
  */
 Kr_Sound* Kr_Sound_Alloc( const char *szSndName )
 {
-    Kr_Sound *pSound;
+    Kr_Sound *pSound = NULL;
 	char      pSoundPath[50];
 	size_t    iSoundLen;
     
@@ -75,7 +75,7 @@ Kr_Sound* Kr_Sound_Alloc( const char *szSndName )
     
 	if (pSoundPath)
     {
-        pSound = ( Kr_Sound * ) UTIL_Malloc( sizeof( Kr_Sound ));
+        pSound = ( Kr_Sound * ) malloc( sizeof( Kr_Sound ));
 
         if( pSound )
         {
@@ -145,35 +145,6 @@ void Kr_Sound_Free( Kr_Sound **ppSound )
 }
 
 
-
-/*!
-*  \fn     void Kr_Sound_PlayOnce(const char *szSndName, Uint32 iChannel, Uint32 iVolume)
-*  \brief  Function to play a sound one time on a specific canal
-*
-*  \param  szSndName the name of the sound to be played
-*  \param  iChannel  Channel to play the sound.
-*  \param  iVolume   Volume to play the sound.
-*  \return None.
-*/
-void Kr_Sound_PlayOnce(const char *szSndName, Uint32 iChannel, Uint32 iVolume)
-{
-	Kr_Sound *pSound = NULL;
-
-	pSound = Kr_Sound_Alloc(szSndName);
-	if (!pSound)
-	{
-		Kr_Log_Print(KR_LOG_WARNING, "Can't load the sound \"%s\".\n", szSndName);
-		return;
-	}
-
-	Kr_Sound_Play(pSound, iChannel, iVolume, 0);
-// Problème, ici il faut attendre le temps du son avant de free sinon le son ne sera pas jouer
-	Kr_Sound_Free(&pSound);
-}
-
-
-
-
 /* ========================================================================= */
 
 
@@ -187,7 +158,7 @@ void Kr_Sound_PlayOnce(const char *szSndName, Uint32 iChannel, Uint32 iVolume)
 Kr_Music* Kr_Sound_InitMusic(void)
 {
 	Kr_Music *pMusic = NULL;
-	pMusic = (Kr_Music *)UTIL_Malloc(sizeof(Kr_Music));
+	pMusic = (Kr_Music *)malloc(sizeof(Kr_Music));
 	return pMusic;
 }
 
@@ -238,21 +209,12 @@ Boolean Kr_Sound_LoadMusic(Kr_Music *pMusic, const char *szMusicName)
 */
 void Kr_Sound_FreeMusic(Kr_Music *pMusic)
 {
+	if (!pMusic) return;
 	Mix_FreeMusic(pMusic->pMsc);
 	UTIL_Free(pMusic);
 }
 
-void Kr_Sound_AllocInterract(void)
-{
-	Uint32 i = 0;
-	Kr_Sound *aSoundInterraction[10];
 
-	for (i = 0; i < 10; i++)
-	{
-		aSoundInterraction[i] = NULL;
-	}
-	aSoundInterraction[0] = Kr_Sound_Alloc("ouverture_coffre");
-}
 
 
 

@@ -59,6 +59,7 @@ typedef struct {
 	ListProj	*plProjectile;			/*< Liste containing all the projectile currently still fired (under range of the weapon and before collisions >*/
 }Weapon;
 
+
 /* ======================================== */
 /*				PROJECTILES					*/
 /* ======================================== */
@@ -90,16 +91,16 @@ void			setOnLast(ListProj *lProj);
 void			next(ListProj *lProj);
 Projectile *	getCurrentProj(ListProj *lProj);
 
-void			deleteCurrent(ListProj *lProj);
+void			deleteCurrent(ListProj *lProj, Boolean *nextL);
 
 Boolean			insertLast(ListProj *lProj, Projectile *p);
 
 Boolean			drawProjectilesWeapon(ListProj *lProj, SDL_Renderer *pRenderer);
 
+
 /* ======================================== */
 /*				  WEAPONS				    */
 /* ======================================== */
-
 
 Weapon *		Weapon_Init(char *strWeaponName);
 Boolean			Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 munition, Uint32 damage);

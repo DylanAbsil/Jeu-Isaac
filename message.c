@@ -34,8 +34,8 @@ Message *Message_Init(char *szMessageName, SDL_Renderer *pRenderer)
 	Uint32 iNameLen = strlen(szMessageName);
 	SDL_Color    color = { 0, 0, 70 };
 
-	pMessage = (Message *)UTIL_Malloc(sizeof(Message));
-
+	pMessage = (Message *)malloc(sizeof(Message));
+	if (!pMessage) return pMessage = NULL;
 	pMessage->szMessageName = UTIL_CopyStr(szMessageName, iNameLen);
 	pMessage->pBackgroundTexture = NULL;
 	pMessage->pRenderer = pRenderer;

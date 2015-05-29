@@ -41,7 +41,7 @@
 Entity * Entity_Init(char* szFileName){
 	Uint32 iNameLen = strlen(szFileName);
 	Entity * entite = (Entity *)malloc(sizeof(Entity));
-	
+	if (!entite) return NULL;
 	entite->strEntityName = UTIL_CopyStr(szFileName, iNameLen);
 	entite->pSprEntity = NULL;
 	entite->state = normal;
@@ -53,6 +53,7 @@ Entity * Entity_Init(char* szFileName){
 	entite->bFriendly = TRUE;
 	entite->iCurrentMoveX = 0;
 	entite->iCurrentMoveY = 0;
+	entite->pWeapon = NULL;
 	return entite;
 }
 
@@ -76,7 +77,8 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Uint32 iSpeed, E
 	entite->iArmor = armor;
 	entite->pSprEntity = sprite;
 	if (entite->pSprEntity == NULL){
-//		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s in the entity %s !\n", sprite->strSpriteName, entite->strEntityName);
+		if (sprite) Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite %s of the entity %s !\n", sprite->strSpriteName, entite->strEntityName);
+		else Kr_Log_Print(KR_LOG_ERROR, "Can't load an entity and a sprite, both NULL\n");
 		return FALSE;
 	}
 	entite->state = state;
@@ -86,8 +88,8 @@ Boolean Entity_Load(Entity *entite,  Uint32 life, Uint32 armor, Uint32 iSpeed, E
 	entite->iTempoAtk = ATTACK_SPEED;
 	entite->bFriendly = bFriendly;
 
-	//Entity_Log(entite);
-//	Kr_Log_Print(KR_LOG_INFO, "Entity %s with sprite %s has been loaded !\n", entite->strEntityName, entite->pSprEntity->strName);
+	Entity_Log(entite);
+	Kr_Log_Print(KR_LOG_INFO, "Entity %s with sprite %s has been loaded !\n", entite->strEntityName, entite->pSprEntity->strSpriteName);
 	return TRUE;
 }
 
@@ -102,32 +104,10 @@ void Entity_Free(Entity *entite){
 	if (entite != NULL){
 		UTIL_Free(entite->strEntityName);
 		Kr_Sprite_Free(entite->pSprEntity);
+		Weapon_Free(entite->pWeapon);
 		UTIL_Free(entite);
 	}
 }
-
-/*!
-*  \fn     void  Entity_Log(Entity *pEntity)
-*  \brief  Function to log an entity
-*
-*  \param  pEntity a pointer to the Entity to free
-*  \return none
-*/
-void  Entity_Log(Entity *pEntity)
-{
-	Kr_Log_Print(KR_LOG_INFO, "Entity loaded : %s\n", pEntity->strEntityName);
-	Kr_Log_Print(KR_LOG_INFO, "			Life		: %d\n", pEntity->iEntityLife);
-	Kr_Log_Print(KR_LOG_INFO, "			Armor		: %d\n", pEntity->iArmor);
-	Kr_Log_Print(KR_LOG_INFO, "			CoordX		: %d\n", pEntity->pSprEntity->pRectPosition->x);
-	Kr_Log_Print(KR_LOG_INFO, "			CoordY		: %d\n", pEntity->pSprEntity->pRectPosition->y);
-	Kr_Log_Print(KR_LOG_INFO, "			iSpeedEntity: %d\n", pEntity->iSpeedEntity);
-	Kr_Log_Print(KR_LOG_INFO, "			state       : %d\n", pEntity->state);
-	Kr_Log_Print(KR_LOG_INFO, "			bFriendly   : %d\n", pEntity->bFriendly);
-}
-
-
-
-
 
 /*!
 *  \fn     Entity_Draw(SDL_Renderer * renderer, Entity *entite)
@@ -153,17 +133,153 @@ Boolean Entity_Draw(SDL_Renderer * pRenderer, Entity *entite){
 	frameToDraw.y = 0;
 	frameToDraw.h = entite->pSprEntity->iFrameHeight;
 	frameToDraw.w = largeur;
-//	Kr_Log_Print(KR_LOG_INFO, "Frame : { x = %d ; y = %d ; h = %d ; w = %d }\n", frameToDraw.x, frameToDraw.y, frameToDraw.h, frameToDraw.w);
+	//	Kr_Log_Print(KR_LOG_INFO, "Frame : { x = %d ; y = %d ; h = %d ; w = %d }\n", frameToDraw.x, frameToDraw.y, frameToDraw.h, frameToDraw.w);
 
 	//Affichage de l'entite sur l'écran
 	if (SDL_RenderCopy(pRenderer, entite->pSprEntity->pTextureSprite, &frameToDraw, entite->pSprEntity->pRectPosition) == -1){
 		Kr_Log_Print(KR_LOG_ERROR, "The entity %s hasn't been draw on the window\n", entite->strEntityName);
 		return FALSE;
 	}
-//	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window on coordonates x = %d and y = %d\n", entite->strEntityName, entite->pSprEntity->pRectPosition->x, entite->pSprEntity->pRectPosition->y);
+	//	Kr_Log_Print(KR_LOG_INFO, "The entity %s has been draw on the window on coordonates x = %d and y = %d\n", entite->strEntityName, entite->pSprEntity->pRectPosition->x, entite->pSprEntity->pRectPosition->y);
 	return TRUE;
 
 }
+
+/*!
+*  \fn     void  Entity_Log(Entity *pEntity)
+*  \brief  Function to log an entity
+*
+*  \param  pEntity a pointer to the Entity to free
+*  \return none
+*/
+void  Entity_Log(Entity *pEntity)
+{
+	Kr_Log_Print(KR_LOG_INFO, "Entity loaded : %s\n", pEntity->strEntityName);
+	Kr_Log_Print(KR_LOG_INFO, "			Life		: %d\n", pEntity->iEntityLife);
+	Kr_Log_Print(KR_LOG_INFO, "			Armor		: %d\n", pEntity->iArmor);
+	Kr_Log_Print(KR_LOG_INFO, "			CoordX		: %d\n", pEntity->pSprEntity->pRectPosition->x);
+	Kr_Log_Print(KR_LOG_INFO, "			CoordY		: %d\n", pEntity->pSprEntity->pRectPosition->y);
+	Kr_Log_Print(KR_LOG_INFO, "			iSpeedEntity: %d\n", pEntity->iSpeedEntity);
+	Kr_Log_Print(KR_LOG_INFO, "			state       : %d\n", pEntity->state);
+	Kr_Log_Print(KR_LOG_INFO, "			bFriendly   : %d\n", pEntity->bFriendly);
+}
+
+
+/* ========================================================================= */
+/*					GESTION DES LISTES D'ENTITES							 */
+/* ========================================================================= */
+
+NodeListEnt	* newNodeListEnt(Entity *e, NodeListEnt *n){
+	NodeListEnt * new = (NodeListEnt *)malloc(sizeof(NodeListEnt));
+	if (!new) return new = NULL;
+	new->e = e;
+	new->next = n;
+	return new;
+}
+
+void deleteNodeListEnt(NodeListEnt * n){
+	Entity_Free(n->e);
+	UTIL_Free(n);
+}
+
+
+void initListEnt(ListEnt *lEnt){
+	lEnt->first = lEnt->current = lEnt->last = NULL;
+}
+
+void deleteListEnt(ListEnt *lEnt){
+	setOnFirstEnt(lEnt);
+	while (lEnt->current != NULL){
+		nextEnt(lEnt);
+		deleteNodeListEnt(lEnt->first);
+		Kr_Log_Print(KR_LOG_INFO, "The entity has been freed\n");
+		lEnt->first = lEnt->current;
+	}
+}
+
+
+Boolean emptyListEnt(ListEnt *lEnt){
+	if (lEnt->first == NULL) return TRUE;
+	else return FALSE;
+}
+
+int firstEnt(ListEnt *lEnt){
+	if (lEnt->current->next == lEnt->first->next) return TRUE;
+	else return FALSE;
+}
+
+int lastEnt(ListEnt *lEnt){
+	if (lEnt->current->next == lEnt->last->next) return TRUE;
+	else return FALSE;
+}
+
+int outOfListEnt(ListEnt *lEnt){
+	if ((lEnt->current == NULL) && !emptyListEnt(lEnt)) return TRUE;
+	else return FALSE;
+}
+
+void setOnFirstEnt(ListEnt *lEnt){
+	lEnt->current = lEnt->first;
+}
+
+void setOnLastEnt(ListEnt *lEnt){
+	lEnt->current = lEnt->last;
+}
+
+void nextEnt(ListEnt *lEnt){
+	if (emptyListEnt(lEnt) == FALSE)
+		lEnt->current = lEnt->current->next;
+}
+
+
+Entity * getCurrentEnt(ListEnt *lEnt){
+	return lEnt->current->e;
+}
+
+void deleteCurrentEnt(ListEnt *lEnt, Boolean *nextL){
+	NodeListEnt *nodeTmp = lEnt->current;
+
+	if (lEnt->first == lEnt->last){
+		lEnt->current = lEnt->first = lEnt->last = NULL;
+		*nextL = TRUE;
+	}
+	else if (firstEnt(lEnt) == TRUE){
+		nextEnt(lEnt);
+		lEnt->first = lEnt->current;
+		*nextL = TRUE;
+	}
+	else if (lastEnt(lEnt) == TRUE){
+		setOnFirstEnt(lEnt);
+		while (lEnt->current->next != nodeTmp)
+			nextEnt(lEnt);
+		lEnt->current->next = nodeTmp->next;
+		lEnt->last = lEnt->current;
+		*nextL = FALSE;
+	}
+	else{
+		setOnFirstEnt(lEnt);
+		while (lEnt->current->next != nodeTmp)
+			nextEnt(lEnt);
+		lEnt->current->next = nodeTmp->next;
+		*nextL = FALSE;
+	}
+	deleteNodeListEnt(nodeTmp);
+}
+
+
+Boolean	insertLastEnt(ListEnt *lEnt, Entity *e){
+	NodeListEnt * new = newNodeListEnt(e, NULL);
+	if (emptyListEnt(lEnt) == TRUE){
+		lEnt->first = new;
+		lEnt->current = new;
+	}
+	else
+		lEnt->last->next = new;
+	lEnt->last = new;
+	return TRUE;
+}
+
+
 
 
 
@@ -199,12 +315,11 @@ void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy){
 */
 void getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy){
 	Sint32 movex = pPlayer->pSprEntity->pRectPosition->x - pEntity->pSprEntity->pRectPosition->x;
-	Sint32 movey = pPlayer->pSprEntity->pRectPosition->x - pEntity->pSprEntity->pRectPosition->x;
+	Sint32 movey = pPlayer->pSprEntity->pRectPosition->y - pEntity->pSprEntity->pRectPosition->y;
 	double movez = sqrt(movex*movex + movey*movey);
 	double rapport = pEntity->iSpeedEntity / movez;
 	*vx = (Sint32)(rapport * movex);
 	*vy = (Sint32)(rapport * movey);
-	
 }
 
 
@@ -229,11 +344,6 @@ Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
 		newDir = ouest;
 	return newDir;
 }
-
-
-
-
-
 
 
 /*!
@@ -318,6 +428,7 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 //	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 }
 
+
 /*  \fn void meleeDamage(Entity *pGiver, Entity *pReceiver)
 *  \brief function to inflict damage to an entity by being touched by another entity
 *
@@ -338,7 +449,7 @@ void meleeDamage(Entity *pGiver, Entity *pReceiver){
 }
 
 void weaponDamage(Projectile *pProj, Entity *pEntity){
-	if (pEntity->iArmor > pProj->iDamagePrj)
+	if (pEntity->iArmor > (Uint32)pProj->iDamagePrj)
 		pEntity->iArmor -= pProj->iDamagePrj;
 	else if (pEntity->iArmor > 0){
 		Uint32 truedamage = pProj->iDamagePrj - pEntity->iArmor;
@@ -359,6 +470,9 @@ void weaponDamage(Projectile *pProj, Entity *pEntity){
 *  \return	TRUE if the entity has fired, FALSE otherwise
 */
 Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
+	Direction newDir = unknown; //Défaut
+	Boolean res = FALSE;
+
 	if (myEvent.szKey[SDL_SCANCODE_W]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
 				Projectile * newProj = Projectile_Init(pEntity->pWeapon->strNameProjectile);
@@ -367,14 +481,15 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 				pEntity->pWeapon->iMunitionWeapon -= 1;
 				pEntity->iTempoAtk = 0;
 
-				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a été tiré en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
-				return TRUE;
+				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a ete tire en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
+				res = TRUE;
 			}
 			else{
 				if (pEntity->iTempoAtk < ATTACK_SPEED)
 					pEntity->iTempoAtk += 1;
-				return FALSE;
 			}
+
+			newDir = nord;
 	}
 	else if (myEvent.szKey[SDL_SCANCODE_A]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
@@ -384,14 +499,15 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 				pEntity->pWeapon->iMunitionWeapon -= 1;
 				pEntity->iTempoAtk = 0;
 
-				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a été tiré en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
-				return TRUE;
+				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a ete tire en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
+				res = TRUE;
 			}
 			else{
 				if (pEntity->iTempoAtk < ATTACK_SPEED)
 					pEntity->iTempoAtk += 1;
-				return FALSE;
 			}
+
+			newDir = ouest;
 	}
 	else if (myEvent.szKey[SDL_SCANCODE_S]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
@@ -401,14 +517,15 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 				pEntity->pWeapon->iMunitionWeapon -= 1;
 				pEntity->iTempoAtk = 0;
 
-				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a été tiré en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
-				return TRUE;
+				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a ete tire en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
+				res = TRUE;
 			}
 			else{
 				if (pEntity->iTempoAtk < ATTACK_SPEED)
 					pEntity->iTempoAtk += 1;
-				return FALSE;
 			}
+
+			newDir = sud;
 	}
 	else if (myEvent.szKey[SDL_SCANCODE_D]){
 			if (pEntity->pWeapon->iMunitionWeapon > 0 && pEntity->iTempoAtk == ATTACK_SPEED){
@@ -418,20 +535,23 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 				pEntity->pWeapon->iMunitionWeapon -= 1;
 				pEntity->iTempoAtk = 0;
 
-				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a été tiré en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
-				return TRUE;
+				Kr_Log_Print(KR_LOG_INFO, "Le projectile %s a ete tire en direction : %d\n", pEntity->pWeapon->plProjectile->last->p->strNamePrj, pEntity->pWeapon->plProjectile->last->p->direction);
+				res = TRUE;
 			}
 			else{
 				if (pEntity->iTempoAtk < ATTACK_SPEED)
 					pEntity->iTempoAtk += 1;
-				return FALSE;
 			}
+
+			newDir = est;
 	}
 	else{
 		if (pEntity->iTempoAtk < ATTACK_SPEED)
 			pEntity->iTempoAtk += 1;
-		return FALSE;
 	}
+
+	switchTextureFromDirection(pEntity, newDir, pRenderer);
+	return res;
 }
 
 /*  \fn Boolean	ChangeWeapon(Entity *pEntity, Weapon *pWeapon)
@@ -441,9 +561,32 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
  *  \param	pWeapon	a pointer to the new weapon
  *  \return	TRUE 
  */
-Boolean	ChangeWeapon(Entity *pEntity, Weapon *pWeapon){
+Boolean	changeWeapon(Entity *pEntity, Weapon *pWeapon){
 	pEntity->pWeapon = pWeapon;
 	Kr_Log_Print(KR_LOG_INFO, "The entity %s with weapon %s has been changed in %s\n", pEntity->strEntityName, pEntity->pWeapon->strNameWeapon, pEntity->pWeapon->strNameProjectile);
 	return TRUE;
 }
 
+
+/*  \fn  Uint32 Entity_NumberHP(Entity *pEntity)
+*  \brief function to return the number of hearth the entity has (1 hearth = 10hp)
+*
+*  \remarks : Max 20 hearth
+*
+*  \param	pEntity	a pointer the entity
+*  \return	The number of hearth ( 1 hearth = 10 hp)
+*/
+Uint32 Entity_NumberHP(Entity *pEntity)
+{
+	Uint32 iHearth = 0;
+    if (pEntity->iEntityLife % 10 == 0) // Dans le cas des multiples de 10
+	{
+		iHearth = pEntity->iEntityLife / 10 - 1;
+	}
+	else // Cas général
+	{
+		iHearth = pEntity->iEntityLife / 10;
+	}
+	if (iHearth > 20) iHearth = 20;
+	return iHearth;
+}

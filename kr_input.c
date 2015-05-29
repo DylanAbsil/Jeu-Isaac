@@ -24,7 +24,7 @@
 *  \fn     void UpdateEvents( Kr_Input* inEvent )
 *  \brief  Function to update the Input structure
 *
-*  \param  inEvent      Structure which handle the input
+*  \param  inEvent  Structure which handle the input
 *  \return None
 */
 void UpdateEvents(Kr_Input* inEvent)
@@ -71,10 +71,10 @@ void UpdateEvents(Kr_Input* inEvent)
 *  \fn     void InitEvents( Kr_Input* inEvent )
 *  \brief  Function to initialize the Input structure
 *
-*  \param  inEvent      Structure which handle the input
+*  \param  inEvent   Structure which handle the input
 *  \return None
 */
-void   InitEvents(Kr_Input* inEvent)
+void InitEvents(Kr_Input* inEvent)
 {
 	memset(inEvent, 0, sizeof(*inEvent)); // Mise à 0 de toutes les données de la structure Kr_Input
 }
