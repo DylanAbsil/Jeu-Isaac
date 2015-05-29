@@ -144,16 +144,15 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	pRectPositionPlayer->h = 32;
 
 	/* Chargement des sprites */
-	pSpritePlayer = Kr_Sprite_Init("zelda");			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
-	if (Kr_Sprite_Load(pSpritePlayer, sud, 26, 136, 8, pRectPositionPlayer, pRenderer) == FALSE)
+	pSpritePlayer = Kr_Sprite_Init("bower");			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
+	if (Kr_Sprite_Load(pSpritePlayer, sud, 32, 192, 6, pRectPositionPlayer, pRenderer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
-		exit(EXIT_FAILURE);
 	}
 
 	/* Chargement du personnage principale */
-	pPlayer = Entity_Init("zelda");				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
+	pPlayer = Entity_Init("bower");				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
 	if (Entity_Load(pPlayer, 100, 50, MOVESPEED, normal, FALSE, pSpritePlayer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
@@ -162,9 +161,9 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	}
 
 	/*Chargement de l'arme */
-	Weapon *pistoletLumiere = Weapon_Init("pistolet lumiere");
+	Weapon *pistoletLumiere = Weapon_Init("bow");
 
-	Weapon_Load(pistoletLumiere, "bullet", 100, 50, 500);
+	Weapon_Load(pistoletLumiere, "arrow", 100, 50, 500, 5, hard);
 	changeWeapon(pPlayer, pistoletLumiere);
 
 	/* Bombe */
@@ -437,8 +436,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		/* Controle du tir du personnage */
 		shoot(inEvent, pPlayer, pRenderer);
 
-		/* Mise à jour des projectiles du personnage */
-		updateProjectilesWeapon(pRenderer, pCurrentLevelState, pCurrentLevelState->pPlayer->pWeapon);
+		/* Mise à jour des projectiles de toutes les entites (inclus le player)*/
+		updateAllWeapons(pRenderer, pCurrentLevelState);
 		
 		/* ========================================================================= */
 		/*                           GESTIONS DES TOUCHES                            */
@@ -683,8 +682,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			bStartExplosion = Bombe_Explosion(pBombe, TRUE, pRenderer); // Affichage de l'explosion de la bombe
 		}
 
-		drawAllEntities(pCurrentLevelState, pRenderer); 
-		drawProjectilesWeapon(pPlayer->pWeapon->plProjectile, pRenderer);
+		drawAllEntities(pCurrentLevelState, pRenderer);
+		drawAllProjectiles(pCurrentLevelState, pRenderer);
 		if (bDrawPapillon == TRUE) Entity_Draw(pRenderer, pPapillon);
 		if ((bDrawPigeonVol == TRUE)) Entity_Draw(pRenderer, pPigeonVol);
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 1)) Entity_Draw(pRenderer, pOiseau1);

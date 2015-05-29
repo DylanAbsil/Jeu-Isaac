@@ -36,7 +36,10 @@ Boolean			Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer
 void			Level_State_Free(Level_State *pLevelSt, Boolean bFreePlayer);
 
 Boolean			drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer);
+void			drawAllProjectiles(Level_State *pLevelSt, SDL_Renderer *pRenderer);
+
 Uint32			updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent);
+Uint32			updateAllWeapons(SDL_Renderer *pRenderer, Level_State *pLevelSt);
 
 Uint32			updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer);
 Boolean			updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, Weapon *pWeapon);

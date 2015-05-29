@@ -29,9 +29,9 @@
 #include "weapon.h"
 #include "kr_input.h"
 
-#define MOVESPEED 5	/*< Movespeed of the player >*/
-#define MOB_MOVESPEED 3 /*< Basic movespeed of the monstres >*/
-#define RESET_FRAME 10	/*< Number to handle the reset of the frame >*/
+#define MOVESPEED 5
+#define RESET_FRAME	 10			/*< Number to handle the reset of the frame >*/
+#define RESET_FIRING_FRAME 3	/*< Number to handle the reset of the frame of firing animation >*/
 #define MOB_INFIGHTING_DAMAGE 15
 
 /*!
@@ -45,6 +45,7 @@ typedef enum {
 	invisible,
 	poisoned,
 	noclip,
+	touched,
 }EntityState;
 
 /*!
@@ -61,7 +62,9 @@ typedef struct {
 	Uint32		iSpeedEntity;		/*< */
 	Direction	direction;			/*< Direction which the entity is facing >*/
 	Boolean		mouvement;			/*< Mouvement : 0 (static) or 1 (in movement) >*/
+	Boolean		firing;				/*< Firing : 1 or 0 >*/
 	Uint32		iTempoAnim;			/*< Int for the temporisation of the animation >*/
+	Uint32		iTempoFiringAnim;
 	Uint32		iTempoAtk;			/*< Int to handle the attack speed >*/
 	Boolean     bFriendly;			/*< TRUE if the entity is friendly ? Does it deal damage  >*/
 	Uint32      iTempoMovement;     /*< Value which can be used to compute a random movement   >*/
@@ -132,14 +135,19 @@ Boolean			insertLastEnt(ListEnt *lEnt, Entity *e);
 
 Direction	foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity);
 void		foundWayToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 movex, Sint32 movey);
-void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
-void		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy);
+void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy, Uint32 speed);
+double		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy);
 void		switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer *pRenderer);
+void		switchToFiringTexture(Entity *entite, SDL_Renderer *pRenderer, Uint32 nbFrames);
 
 
 /* ======================================== */
 /*				FIGHTS						*/
 /* ======================================== */
+
+void		firingAnimation(Entity *entite, SDL_Renderer *pRenderer);
+void		movementAnimation(Entity *entite);
+void		resetAnimation(Entity *entite);
 
 void		meleeDamage(Entity *pGiver, Entity *pReceiver);
 void		weaponDamage(Projectile *pProj, Entity *pEntity);
