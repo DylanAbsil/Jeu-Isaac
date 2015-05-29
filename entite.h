@@ -29,7 +29,7 @@
 #include "weapon.h"
 #include "kr_input.h"
 
-#define MOVESPEED 5
+#define MOVESPEED 3
 #define RESET_FRAME	 10			/*< Number to handle the reset of the frame >*/
 #define RESET_FIRING_FRAME 3	/*< Number to handle the reset of the frame of firing animation >*/
 #define MOB_INFIGHTING_DAMAGE 15

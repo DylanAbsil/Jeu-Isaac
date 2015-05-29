@@ -777,7 +777,7 @@ Boolean Level_State_SaveLevel(Level_State *pCurrentLevelState)
 	{
 		state = pCurrentLevelState->plEnt->current->e->state;
 		if (strcmp(pCurrentLevelState->plEnt->current->e->strEntityName, "pigeon1") == 0) state = 0; // On force l'état du pigeon à 0 dans le cas où celui-ci était en phase de vol
-		fprintf(pFileSrc, "%s %d %d %d %d %d %d %d %d %d %d %d\n",
+		fprintf(pFileSrc, "%s %d %d %d %d %d %d %d %d %d %d %d %s %s %d %d %d %d\n",
 			pCurrentLevelState->plEnt->current->e->strEntityName,
 			pCurrentLevelState->plEnt->current->e->direction,
 			pCurrentLevelState->plEnt->current->e->pSprEntity->iFrameWidth,
@@ -789,7 +789,13 @@ Boolean Level_State_SaveLevel(Level_State *pCurrentLevelState)
 			pCurrentLevelState->plEnt->current->e->pSprEntity->pRectPosition->y,
 			pCurrentLevelState->plEnt->current->e->iSpeedEntity,
 			state,
-			pCurrentLevelState->plEnt->current->e->bFriendly);
+			pCurrentLevelState->plEnt->current->e->bFriendly,
+			pCurrentLevelState->plEnt->current->e->pWeapon->strNameWeapon,
+			pCurrentLevelState->plEnt->current->e->pWeapon->strNameProjectile,
+			pCurrentLevelState->plEnt->current->e->pWeapon->iDamageWeapon,
+			pCurrentLevelState->plEnt->current->e->pWeapon->iMunitionWeapon,
+			pCurrentLevelState->plEnt->current->e->pWeapon->iRangeWeapon,
+			pCurrentLevelState->plEnt->current->e->pWeapon->iSpeedPrj);
 		nextEnt(pCurrentLevelState->plEnt);
 	}
 	fprintf(pFileSrc, "#layout\n");
