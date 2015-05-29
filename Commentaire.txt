@@ -1,12 +1,10 @@
-28/04 Modification du Main :
-Remplacer la partie du chargement par celle-ci, nouveaux paramètres pour entity_load
-  	/* Chargement des personnages */
-	pPlayer = Entity_Init("zelda");				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
+Utilisation des entites dans les fichiers textes:
+La ligne s'écrit comme suit:
+"nom entité" direction framewidth frameheigth nbFrames life armor coordx coordy speed state bFriendly "nom de l'arme" "nom de proejctile" dmgWeapon munitions rangewpn speed prj
 
-	if (Entity_Load(pPlayer, 100, 50, MOVESPEED ,normal, FALSE, pSpriteZelda) == FALSE)
-	{
-		Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
-		SDL_Quit();
-		exit(EXIT_FAILURE);
-	}
+quelques exemples:
+dragon 1 400 64 8 1000 0 264 360 2 0 0 NULL NULL 0 0 0 0
+firewizerobe 1 48 38 3 1000 500 800 200 2 0 0 batonflamme fire 50 -1 200 5
+poule 1 92 21 4 100 0 264 360 2 0 1 NULL NULL 0 0 0 0
 
+29/05: Il ya un beug de collisions dans le deuxième level avec un dragon
