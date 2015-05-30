@@ -507,6 +507,7 @@ void meleeDamage(Entity *pGiver, Entity *pReceiver){
 	}
 	else
 		pReceiver->iEntityLife -= MOB_INFIGHTING_DAMAGE;
+	if (pReceiver->iEntityLife < 0) pReceiver->iEntityLife = 0;
 }
 
 void weaponDamage(Projectile *pProj, Entity *pEntity){
@@ -519,6 +520,7 @@ void weaponDamage(Projectile *pProj, Entity *pEntity){
 	}
 	else
 		pEntity->iEntityLife -= pProj->iDamagePrj;
+	if (pEntity->iEntityLife < 0) pEntity->iEntityLife = 0;
 }
 
 /*!
@@ -668,7 +670,8 @@ Uint32 Entity_NumberHP(Entity *pEntity)
 	Uint32 iHearth = 0;
     if (pEntity->iEntityLife % 10 == 0) // Dans le cas des multiples de 10
 	{
-		iHearth = pEntity->iEntityLife / 10 - 1;
+		if (pEntity->iEntityLife == 0) iHearth = 0;
+		else iHearth = pEntity->iEntityLife / 10 - 1;
 	}
 	else // Cas général
 	{

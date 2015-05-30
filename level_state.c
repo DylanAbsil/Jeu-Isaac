@@ -288,7 +288,7 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 		double		movez = 0;
 		Direction	newDir = sud; //Défaut
 		NodeListEnt *currentNode = pLevelSt->plEnt->current;
-
+	
 		// Calcul des vecteurs de déplacement
 		if (bIsPlayer) //Player
 		{
@@ -341,6 +341,7 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 				iTmp = Kr_Collision(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
 			}
 
+			//collision avec le joueur
 			if (!bIsPlayer && pEntity->state != noclip && pEntity->state != invisible)
 			{
 				movex = NewVx;
@@ -359,7 +360,8 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 					movey = NewVy;
 					NewVx = NewVy = 0;
 					iTmp = Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->plEnt->current->e->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
-					if (bIsPlayer && iTmp == 2){
+					if (bIsPlayer && iTmp == 2 && pLevelSt->plEnt->current->e->bFriendly == FALSE)
+					{
 						meleeDamage(pLevelSt->plEnt->current->e, pLevelSt->pPlayer);
 						Kr_Log_Print(KR_LOG_INFO, "The player met the entity %s\n", pLevelSt->plEnt->current->e->strEntityName);
 						break;
@@ -368,11 +370,10 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 				nextEnt(pLevelSt->plEnt);
 			}
 			pLevelSt->plEnt->current = currentNode;
-
 			//Collision avec le player
 			if (!bIsPlayer && Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->pPlayer->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy) == 2 && pLevelSt->pPlayer->state != invincible){
 				meleeDamage(pEntity, pLevelSt->pPlayer);
-				Kr_Log_Print(KR_LOG_INFO, "The player has been melee damaged by %s\n", pLevelSt->plEnt->current->e->strEntityName);
+				//Kr_Log_Print(KR_LOG_INFO, "The player has been melee damaged by %s\n", pLevelSt->plEnt->current->e->strEntityName); // on peut pas l'afficher car currendNode peut avoir la valeur NULL5
 			}
 
 			// Déplacement de l'entité sans la gestion des collisions
@@ -488,7 +489,22 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 						}
 						nextEnt(pLevelSt->plEnt);
 					}
-
+					// Collision avec le joueur
+					if (res == TRUE)
+					{
+						NewVx = NewVy = 0;
+						iTmp = Kr_Collision(NULL, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition, pLevelSt->pPlayer->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
+						if (iTmp == 2)
+						{
+							Kr_Log_Print(KR_LOG_INFO, "The projectile hit the player in (%d;%d)\n", pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movex, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey);
+							if (pLevelSt->pPlayer->state != invincible)
+								weaponDamage(pWeapon->plProjectile->current->p, pLevelSt->pPlayer);
+							if (pWeapon->plProjectile->current->p->prjType != piercing)
+								deleteCurrent(pWeapon->plProjectile, &nextL);
+							res = FALSE;
+							break;
+						}
+					}
 					if (res == TRUE)
 					{
 						pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x += NewVx;
