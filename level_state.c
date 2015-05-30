@@ -278,16 +278,17 @@ void drawAllProjectiles(Level_State *pLevelSt, SDL_Renderer *pRenderer){
 */
 Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
 {
+	Sint32		movex = 0, movey = 0, NewVx = 0, NewVy = 0;
+	Uint32		iTmp = 0, iRandomVectorRetour = 0, iRetour = 1;
+	double		movez = 0;
+	Direction	newDir = sud; //Défaut
+	NodeListEnt *currentNode = pLevelSt->plEnt->current;
 	if (pEntity->iEntityLife <= 0 && !bIsPlayer){
 		Kr_Log_Print(KR_LOG_INFO, "The entity %s is dead to death !\n", pEntity->strEntityName);
 		return 3;
 	}
 	else{
-		Sint32		movex = 0, movey = 0, NewVx = 0, NewVy = 0;
-		Uint32		iTmp = 0, iRandomVectorRetour = 0, iRetour = 1;
-		double		movez = 0;
-		Direction	newDir = sud; //Défaut
-		NodeListEnt *currentNode = pLevelSt->plEnt->current;
+
 	
 		// Calcul des vecteurs de déplacement
 		if (bIsPlayer) //Player
@@ -371,9 +372,17 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 			}
 			pLevelSt->plEnt->current = currentNode;
 			//Collision avec le player
-			if (!bIsPlayer && Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->pPlayer->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy) == 2 && pLevelSt->pPlayer->state != invincible){
-				meleeDamage(pEntity, pLevelSt->pPlayer);
-				//Kr_Log_Print(KR_LOG_INFO, "The player has been melee damaged by %s\n", pLevelSt->plEnt->current->e->strEntityName); // on peut pas l'afficher car currendNode peut avoir la valeur NULL5
+
+			if (!bIsPlayer  && pLevelSt->pPlayer->state != invincible)
+			{
+				movex = NewVx;
+				movey = NewVy;
+				NewVx = NewVy = 0;
+				if (Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->pPlayer->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy) == 2)
+				{
+					meleeDamage(pEntity, pLevelSt->pPlayer);
+					//Kr_Log_Print(KR_LOG_INFO, "The player has been melee damaged by %s\n", pLevelSt->plEnt->current->e->strEntityName); // on peut pas l'afficher car currendNode peut avoir la valeur NULL5
+				}
 			}
 
 			// Déplacement de l'entité sans la gestion des collisions
@@ -636,7 +645,7 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 
 
 /*!
-*  \fn     Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait)
+*  \fn     Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait,Uint32 iRatio))
 *  \brief  Function to generate random vector
 *
 *  \param  pMoveX  a pointer to the X vector
