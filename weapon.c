@@ -71,16 +71,32 @@ Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint3
 	pProj->direction = dir;
 
 	if (strcmp(pWeapon->strNameProjectile, "arrow") == 0){
-		prjLength = 30;
-		prjWidth = 10;
+		if (dir == nord || dir == sud)
+		{ 
+			prjLength = 30;
+			prjWidth = 10;
+		}
+		else
+		{
+			prjLength = 10;
+			prjWidth = 30;
+		}
 	}
 	if (strcmp(pWeapon->strNameProjectile, "bullet") == 0){
 		prjLength = 20;
 		prjWidth = 10;
 	}
 	if (strcmp(pWeapon->strNameProjectile, "fire") == 0){
-		prjLength = 60;
-		prjWidth = 12;
+		if (dir == nord || dir == sud)
+		{
+			prjLength = 18;
+			prjWidth = 35;
+		}
+		else
+		{
+			prjLength = 12;
+			prjWidth = 60;
+		}
 	}
 
 	switch (dir)
@@ -92,18 +108,14 @@ Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint3
 		pRectProj->y = pRect->y - pRectProj->h;
 		pProj->iCoordPrj_XEnd = pRectProj->x;
 		pProj->iCoordPrj_YEnd = pRectProj->y - pWeapon->iRangeWeapon;
-
-		Kr_Sprite_Load(pSprProj, dir, prjLength, prjWidth, nbFrames, pRectProj, pRenderer);
 		break;
 	case est:
-		pRectProj->h = prjWidth;
-		pRectProj->w = prjLength;
+		pRectProj->h = prjLength;
+		pRectProj->w = prjWidth;
 		pRectProj->x = pRect->x + pRect->w;
 		pRectProj->y = entityMiddleY - pRectProj->h / 2;
 		pProj->iCoordPrj_XEnd = pRectProj->x + pWeapon->iRangeWeapon;
 		pProj->iCoordPrj_YEnd = pRectProj->y;
-
-		Kr_Sprite_Load(pSprProj, dir, prjWidth, prjLength, nbFrames, pRectProj, pRenderer);
 		break;
 	case sud:
 		pRectProj->h = prjLength;
@@ -112,18 +124,18 @@ Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint3
 		pRectProj->y = pRect->y + pRect->h;
 		pProj->iCoordPrj_XEnd = pRectProj->x;
 		pProj->iCoordPrj_YEnd = pRectProj->y + pWeapon->iRangeWeapon;
-		Kr_Sprite_Load(pSprProj, dir, prjLength, prjWidth, nbFrames, pRectProj, pRenderer);
 		break;
 	case ouest:
-		pRectProj->h = prjWidth;
-		pRectProj->w = prjLength;
+		pRectProj->h = prjLength;
+		pRectProj->w = prjWidth;
 		pRectProj->x = pRect->x - pRectProj->w;
 		pRectProj->y = entityMiddleY - pRectProj->h / 2;
 		pProj->iCoordPrj_XEnd = pRectProj->x - pWeapon->iRangeWeapon;
 		pProj->iCoordPrj_YEnd = pRectProj->y;
-		Kr_Sprite_Load(pSprProj, dir, prjWidth, prjLength, nbFrames, pRectProj, pRenderer);
 		break;
 	}
+
+	Kr_Sprite_Load(pSprProj, dir, prjLength, prjWidth, nbFrames, pRectProj, pRenderer);
 
 	pProj->pSprProjectile = pSprProj;
 	pProj->pSprProjectile->iNbFrames = nbFrames;
