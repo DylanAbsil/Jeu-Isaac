@@ -490,7 +490,7 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 						{
 							Kr_Log_Print(KR_LOG_INFO, "The projectile hit an entity in (%d;%d)\n", pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movex, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey);
 							if (pLevelSt->plEnt->current->e->state != invincible)
-								weaponDamage(pWeapon->plProjectile->current->p, pLevelSt->plEnt->current->e);
+								weaponDamage(pWeapon->plProjectile->current->p->iDamagePrj, pLevelSt->plEnt->current->e);
 							if (pWeapon->plProjectile->current->p->prjType != piercing)
 								deleteCurrent(pWeapon->plProjectile, &nextL);
 							res = FALSE;
@@ -507,7 +507,7 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 						{
 							Kr_Log_Print(KR_LOG_INFO, "The projectile hit the player in (%d;%d)\n", pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movex, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey);
 							if (pLevelSt->pPlayer->state != invincible)
-								weaponDamage(pWeapon->plProjectile->current->p, pLevelSt->pPlayer);
+								weaponDamage(pWeapon->plProjectile->current->p->iDamagePrj, pLevelSt->pPlayer);
 							if (pWeapon->plProjectile->current->p->prjType != piercing)
 								deleteCurrent(pWeapon->plProjectile, &nextL);
 							res = FALSE;
@@ -875,7 +875,7 @@ Uint32 Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
 		}
 		if (iContact)
 		{
-			//Appliquer les à l'entité current ici
+			weaponDamage(BOMBE_DMG, pLevelSt->plEnt->current->e);
 			Kr_Log_Print(KR_LOG_INFO, "The entity %s was damaged by the bomb \n", pLevelSt->plEnt->current->e->strEntityName);
 		}
 		nextEnt(pLevelSt->plEnt);

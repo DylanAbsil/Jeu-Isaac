@@ -22,6 +22,7 @@
 #include "kr_sound.h"
 #include "kr_fps.h"
 
+#define BOMBE_DMG 600
 /*!
 * \struct Bombe
 * \brief  Structure to handle the bomb.

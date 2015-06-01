@@ -510,16 +510,23 @@ void meleeDamage(Entity *pGiver, Entity *pReceiver){
 	if (pReceiver->iEntityLife < 0) pReceiver->iEntityLife = 0;
 }
 
-void weaponDamage(Projectile *pProj, Entity *pEntity){
-	if (pEntity->iArmor > (Uint32)pProj->iDamagePrj)
-		pEntity->iArmor -= pProj->iDamagePrj;
+/*  \fn void weaponDamage(Sint32 iDamage, Entity *pEntity)
+*  \brief function to inflict damage to an entity by being touched by a projectile
+*
+*  \param	iDamage the value of the damage
+*  \param	pEntity	a pointer to the receiver of the damage
+*  \return none
+*/
+void weaponDamage(Sint32 iDamage, Entity *pEntity){
+	if (pEntity->iArmor >(Uint32)iDamage)
+		pEntity->iArmor -= iDamage;
 	else if (pEntity->iArmor > 0){
-		Uint32 truedamage = pProj->iDamagePrj - pEntity->iArmor;
+		Uint32 truedamage = iDamage - pEntity->iArmor;
 		pEntity->iArmor = 0;
 		pEntity->iEntityLife -= truedamage;
 	}
 	else
-		pEntity->iEntityLife -= pProj->iDamagePrj;
+		pEntity->iEntityLife -= iDamage;
 	if (pEntity->iEntityLife < 0) pEntity->iEntityLife = 0;
 }
 

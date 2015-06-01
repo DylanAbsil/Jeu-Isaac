@@ -150,7 +150,7 @@ void		movementAnimation(Entity *entite);
 void		resetAnimation(Entity *entite);
 
 void		meleeDamage(Entity *pGiver, Entity *pReceiver);
-void		weaponDamage(Projectile *pProj, Entity *pEntity);
+void		weaponDamage(Sint32 iDamage, Entity *pEntity);
 Boolean		shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer);
 Boolean		changeWeapon(Entity *pEntity, Weapon *pWeapon);
 
