@@ -173,6 +173,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	Boolean bStartExplosion = FALSE; // Vrai quand la bombe est dans sa phase d'explosion
 	Boolean bCheckBomb = FALSE; // Vrai lorsque la bombe a fini d'explosé et qu'il faut aller vérifier si une entité était dans l'explosion
 	char szNbBomb[10] = "0";
+	char szNbMunition[10] = "0";
 	pBombe = Bombe_Init(pRenderer, 2, 20, "Bombe_sol_explosion", "Bombe_sol", "bomb_set", "bomb_explosion");
 	if (!pBombe)
 	{
@@ -326,7 +327,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	hBombeImage = HUD_Init("SDL_Bomb", FALSE, pRenderer);
 	HUD_Load(hBombeImage, RectBombeImage);
 	/* InitialisationHUD CleImage */
-	hCleImage = HUD_Init("SDL_Key", FALSE, pRenderer);
+	hCleImage = HUD_Init("SDL_Ammo", FALSE, pRenderer);
 	HUD_Load(hCleImage, RectCleImage);
 	/* InitialisationHUD BombeTexte */
 	hBombeTexte = HUD_Init("BombeImage", TRUE, pRenderer);
@@ -610,28 +611,30 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		{
 			if (iRecompense == 1)
 			{
-				Message_Update(pMessageLevel, TRUE, "Vous trouvez 5 bombes et 50hp !");
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 5 bombes, 50hp  et 75 munitions !");
 				pBombe->iNumber += 5;
 				pPlayer->iEntityLife += 50;
+				pPlayer->pWeapon->iMunitionWeapon += 75;
 				iRecompense = 0;
 			}
 			else if (iRecompense == 2)
 			{
-				Message_Update(pMessageLevel, TRUE, "Vous trouvez 50hp et 50ap !");
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 50hp, 50ap et 50 munitions !");
 				pPlayer->iArmor += 50;
 				pPlayer->iEntityLife += 50;
+				pPlayer->pWeapon->iMunitionWeapon += 50;
 				iRecompense = 0;
 			}
 			else if (iRecompense == 3)
 			{
-				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes et 20hp !");
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes et 30 munitions !");
 				pBombe->iNumber += 2;
-				pPlayer->iEntityLife += 20;
+				pPlayer->pWeapon->iMunitionWeapon += 30;
 				iRecompense = 0;
 			}
 			else if (iRecompense == 4)
 			{
-				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes !");
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes et 10 munitions !");
 				pBombe->iNumber += 2;
 				iRecompense = 0;
 			}
@@ -643,7 +646,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		/* ========================================================================= */
 		/* Création des textures à partir du texte pour le nombre de munition ou de clés*/
 		sprintf(szNbBomb, "%d", pBombe->iNumber);
-		CleTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "4", CouleurHUD, TRUE, &(hCleTexte->RectDest));
+		sprintf(szNbMunition, "%d", pPlayer->pWeapon->iMunitionWeapon);
+		CleTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, szNbMunition, CouleurHUD, TRUE, &(hCleTexte->RectDest));
 		BombeTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, szNbBomb, CouleurHUD, TRUE, &(hBombeTexte->RectDest));
 
 		/* Mise à jour des HUD "texte" avec la nouvelle texture générée */
@@ -699,7 +703,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		HUD_Draw(pRenderer, hCleTexte, 0);
 
 		// Divers
-		if (pMessageInfo->bMustShow == TRUE)  SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
+		//if (pMessageInfo->bMustShow == TRUE)  SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 
