@@ -36,7 +36,7 @@
      * \struct Kr_Log
      * \brief  Structure to handle the logs.
      */
-    typedef struct
+    typedef struct Kr_Log
     {
         FILE       *pLogFile;    /*!< Pointer on the logs file. */
         const char *szLogName;   /*!< Name of the logs file. */

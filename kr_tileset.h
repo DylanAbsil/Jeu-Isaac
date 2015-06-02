@@ -32,7 +32,7 @@
 * \struct Kr_TileProp
 * \brief  Structure to handle the properties of the tile.
 */
-typedef struct
+typedef struct Kr_TileProp
 {
 	SDL_Rect rTile;
 	Uint32  iPlein;
@@ -48,7 +48,7 @@ typedef struct
 * \struct Kr_Tileset
 * \brief  Structure to handle the tileset.
 */
-typedef struct
+typedef struct Kr_Tileset
 {
 	char		*szTilesetName;		/*!< Name of the tileset */
 	Sint32       iTilesWidth;		/*!< Width of a Tile */

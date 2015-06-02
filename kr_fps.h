@@ -25,7 +25,7 @@
 * \struct Kr_FPS
 * \brief  Structure to handle the FPS.
 */
-typedef struct
+typedef struct Kr_Fps
 {
 	SDL_Texture		*pTexture;		/*!< Texture of the FPS*/
 	SDL_Renderer	*pRenderer;		/*!< The Renderer where the FPS will be print*/

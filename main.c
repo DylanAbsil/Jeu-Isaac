@@ -364,7 +364,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	/* Sound */
 	Mix_AllocateChannels(10);
 	Kr_Sound *pSndCoffre = Kr_Sound_Alloc("ouverture_coffre");
-
+	Kr_Sound *pSndGameOver = Kr_Sound_Alloc("Game_Over");
 
 	/* Gestion des entitées */
 	Uint32 iCodeUpdateEntity = 1;
@@ -664,6 +664,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		if (pPlayer->iEntityLife <= 0)
 		{
 			bPlayerDead = TRUE;
+			Kr_Sound_Play(pSndGameOver, 0, 100, 0);
 			Message_Update(pMessageInfo, TRUE, "Vous êtes mort, la partie s'achève !");
 		}
 
@@ -715,7 +716,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		//Gestion de la mort du player
 		if (bPlayerDead)
 		{
-			SDL_Delay(5000);
+			SDL_Delay(7000);
 		}
 	}
 
@@ -742,6 +743,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	Kr_Sound_Free(&pSndPigeon);
 	Kr_Sound_Free(&pSndPapillon);
 	Kr_Sound_Free(&pSndCoffre);
+	Kr_Sound_Free(&pSndGameOver);
 	Kr_Fps_Free(pFPS);
 	HUD_free(hVie);
 	HUD_free(hCleImage);

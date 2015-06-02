@@ -33,7 +33,7 @@ typedef enum {
 	burning,
 }PrjType;
 
-typedef struct {
+typedef struct Projectile{
 	char		*strNamePrj;			/*< Name of the projectile >*/
 	Sint32	    iDamagePrj;				/*< Damage of the projectile >*/
 	Uint32	    iSpeedPrj;				/*< Speed of the projectile >*/
@@ -63,7 +63,7 @@ typedef struct{
 	NodeListProj *last;			/*!< A pointer to the last list element*/
 }ListProj;
 
-typedef struct {
+typedef struct Weapon{
 	char		*strNameWeapon;			/*< Name of the weapon >*/
 	char		*strNameProjectile;		/*< Name of the projective contained in the weapon >*/
 	Uint32		iRangeWeapon;			/*< Range of the weapon >*/

@@ -26,7 +26,7 @@
 #include "kr_util.h"
 #include "kr_log.h"
 
-typedef struct {
+typedef struct Kr_Sprite {
 	char		*strSpriteName;				/*< Name of the sprite (contenant la direction ex : zelda_sud) >*/
 	SDL_Texture *pTextureSprite;			/*< Texture of the sprite >*/
 	Uint32		iFrameHeight;				/*< Frame height of the sprite >*/

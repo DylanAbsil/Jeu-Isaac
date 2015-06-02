@@ -27,7 +27,7 @@
 * \struct Bombe
 * \brief  Structure to handle the bomb.
 */
-typedef struct
+typedef struct Bombe
 {
 	Uint32		 iNumber;			/*!< The number of bomb the player has */
 	Uint32		 iCooldown;			/*!< The cooldown between each ticks of the bomb */

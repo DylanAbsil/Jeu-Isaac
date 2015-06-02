@@ -52,7 +52,7 @@ typedef enum {
 * \struct Entity
 * \brief  Structure to handle the entity.
 */
-typedef struct {
+typedef struct Entity{
 	char		*strEntityName;		/*< Name of the entity >*/
 	Sint32		iEntityLife;		/*< Life of the entity >*/
 	Uint32		iArmor;				/*< Armor of the entity >*/
