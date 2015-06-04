@@ -23,7 +23,7 @@
 
 
 /*!
-*  \fn      HUD * HUD_Init(char *HUDName, Boolean estTexte)
+*  \fn      HUD * HUD_Init(char *HUDName, Boolean estTexte, SDL_Renderer *pRenderer)
 *  \brief   Function to initiate a HUD
 *
 *  \param   HUDName    the HUD structure

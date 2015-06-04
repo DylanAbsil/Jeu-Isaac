@@ -167,7 +167,7 @@ Boolean Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y, Boolean *bC
 
 
 /*!
-*  \fn     Boolean Bombe_Explosion(Bombe *pBombe, Boolean bStart)
+*  \fn     Boolean Bombe_Explosion(Bombe *pBombe, Boolean bStart, SDL_Renderer *pRenderer)
 *  \brief  Function to start the explosion
 *
 *  \param  pBombe    the Bombe
