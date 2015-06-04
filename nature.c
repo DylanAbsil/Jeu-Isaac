@@ -18,14 +18,6 @@
 
 #include "nature.h"
 
-/*
-Remarque : Le déplacement de l'oiseau n'est pas interrompu même lors d'un changement de niveau (pas prioritaire pour corriger)
-
-
-
-
-
-*/
 /*!
 *  \fn     CalculPassageOiseau(Entity *pEntity, Boolean bLaunch, Sint32 *movex, Sint32 *movey)
 *  \brief  Function to compute the movement of the entity

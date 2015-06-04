@@ -469,7 +469,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		}
 		if (inEvent.szKey[SDL_SCANCODE_P]) // Mettre en pause le jeu
 		{
-			Menu_Pause(pRenderer, "Appuyer sur P pour reprendre");
+			Menu_Pause(pRenderer, "Press P");
 			inEvent.szKey[SDL_SCANCODE_P] = 0;
 		}
 		if (inEvent.szKey[SDL_SCANCODE_E]) // Interragir avec le niveau (panneau, coffre)
@@ -636,6 +636,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			{
 				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes et 10 munitions !");
 				pBombe->iNumber += 2;
+				pPlayer->pWeapon->iMunitionWeapon += 10;
 				iRecompense = 0;
 			}
 		}

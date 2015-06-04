@@ -935,7 +935,7 @@ Uint32 Editor(SDL_Renderer *pRenderer, SDL_Window *pWindow)
 		if (bSelection) Level_Editor_PreDrawTileSelection(pEditor, iTabTile, inEvent.iMouseX, inEvent.iMouseY, TRUE, pRenderer, iTabCursor, pTextureSelected);
 		Level_Editor_PrintTiles(pEditor->pLevel->pLevel_Tileset, bTilesShow, pRenderer);
 		Grid_Draw(pGrid, pEditor->pLevel, bGridShow, pRenderer);
-		//SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
+		SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Message_Draw(pMessageInfo);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer);
