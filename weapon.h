@@ -70,7 +70,7 @@ typedef struct Weapon{
 	Sint32		iMunitionWeapon;		/*< Munitions currently in the weapon >*/
 	Sint32		iDamageWeapon;			/*< Damage of the weapon <*/
 	Uint32	    iSpeedPrj;				/*< Speed of the projectile >*/
-	Uint32		iattackSpeed;
+	Uint32		iattackSpeed;			/*< Int to handle the attack speed >*/
 	PrjType		prjType;				/*< The type of projectile used >*/
 	ListProj	*plProjectile;			/*< Liste containing all the projectile currently still fired (under range of the weapon and before collisions >*/
 }Weapon;

@@ -25,10 +25,10 @@
 
 
 typedef struct {
-	Kr_Level		*pLevel;			/* Pointer to the level associated */
-	Entity			*pPlayer;			/* Pointer to the player */
-	ListEnt			*plEnt;				/* List containing pointers on all entities currently in the level*/
-	Uint32			iNbEntities;			/* Int containing the number of entites currently in the level */
+	Kr_Level		*pLevel;			/*< Pointer to the level associated >*/
+	Entity			*pPlayer;			/*< Pointer to the player >*/
+	ListEnt			*plEnt;				/*< List containing pointers on all entities currently in the level >*/
+	Uint32			iNbEntities;		/*< Int containing the number of entites currently in the level >*/
 }Level_State;
 
 Level_State *   Level_State_Init(Entity *pPlayer);
@@ -39,7 +39,7 @@ Boolean			drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer);
 void			drawAllProjectiles(Level_State *pLevelSt, SDL_Renderer *pRenderer);
 
 Uint32			updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent);
-Uint32			updateAllWeapons(SDL_Renderer *pRenderer, Level_State *pLevelSt);
+void			updateAllWeapons(SDL_Renderer *pRenderer, Level_State *pLevelSt);
 
 Uint32			updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer);
 Boolean			updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, Weapon *pWeapon);

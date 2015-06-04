@@ -35,7 +35,7 @@
 *
 *  \todo   use this function at first to create an entity then load
 *
-*  \param szFileName the name of the sprite file must be allocated in the initialization
+*  \param  szFileName the name of the sprite file must be allocated in the initialization
 *  \return Entity* a pointer to the empty created entity
 */
 Entity * Entity_Init(char* szFileName){
@@ -70,10 +70,10 @@ Entity * Entity_Init(char* szFileName){
 *  \param entite a pointer to an entity
 *  \param life his life with an integer
 *  \param armor his armor with an integer
-*  \param sprite a pointer to the sprite of the entity
+*  \param iSpeed the speed of the entity
 *  \param state his state
 *  \param bFriendly is the entity friendly ?
-*  \param iSpeed the speed of the entity
+*  \param *sprite a pointer to the sprite of the entity
 *  \return boolean it verify if the load is correct or not
 */
 Boolean Entity_Load(Entity *entite, Uint32 life, Uint32 armor, Uint32 iSpeed, EntityState state, Boolean bFriendly, Kr_Sprite *sprite){
@@ -287,7 +287,7 @@ Boolean	insertLastEnt(ListEnt *lEnt, Entity *e){
 
 /*!
 *  \fn     void getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy, Uint32 speed)
-*  \brief  Function to get the vector of the player
+*  \brief  Function to get the movement vector of the player
 *
 *  \param  inEvent Structure which handle the input
 *  \param  vx      a pointer to the vector on X
@@ -352,11 +352,11 @@ Direction foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity){
 
 
 /*!
-*  \fn     void switchTextureFromDirection(Entity *entite, Direction dir, SDL_Renderer *pRenderer){
+*  \fn     void switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer *pRenderer){
 *  \brief  Function to switch the texture of the entity according to the new direction
 *
 *  \param  enite  a pointer to the entity
-*  \param  dir	  the new direction
+*  \param  newdir the new direction
 *  \param  pRenderer the renderer
 *  \return none
 */
@@ -410,6 +410,15 @@ void switchTextureFromDirection(Entity *entite, Direction newDir, SDL_Renderer *
 	//	Kr_Log_Print(KR_LOG_INFO, "New direction : %d\n", entite->direction);
 }
 
+/*!
+*  \fn     void switchToFiringTexture(Entity *entite, SDL_Renderer *pRenderer, Uint32 nbFrames)
+*  \brief  Function to switch from normal to firing texture
+*
+*  \param  enite     a pointer to the entity
+*  \param  pRenderer the renderer
+*  \param  nbFrames  the number of frames of the firing texture
+*  \return none
+*/
 void switchToFiringTexture(Entity *entite, SDL_Renderer *pRenderer, Uint32 nbFrames){
 	char newSprFileName[SIZE_MAX_NAME], direction[10];
 	SDL_Rect rect = { 0, 0, 0, 0 };
@@ -441,7 +450,14 @@ void switchToFiringTexture(Entity *entite, SDL_Renderer *pRenderer, Uint32 nbFra
 	//	Kr_Log_Print(KR_LOG_INFO, "Sprite %s of %d by %d has been loaded !\n", entite->pSprEntity->strSpriteName, entite->pSprEntity->iFrameWidth, entite->pSprEntity->iFrameHeight);
 }
 
-
+/*!
+*  \fn	  void firingAnimation(Entity *entite, SDL_Renderer *pRenderer)
+*  \brief Function to handle the firing animation
+*  
+*  \param *entite    a pointer to the entity
+*  \param *pRenderer a pointer to the renderer
+*  \return none
+*/
 void firingAnimation(Entity *entite, SDL_Renderer *pRenderer){
 	entite->iTempoFiringAnim += 1;
 	if (entite->iTempoFiringAnim == RESET_FRAME)
@@ -467,7 +483,13 @@ void firingAnimation(Entity *entite, SDL_Renderer *pRenderer){
 
 }
 
-
+/*!
+*  \fn	  void movementAnimation(Entity *entite)
+*  \brief Function to handle the movement animation
+*
+*  \param *entite    a pointer to the entity
+*  \return none
+*/
 void movementAnimation(Entity *entite){
 	entite->mouvement = 1;
 	entite->iTempoAnim += 1;
@@ -482,6 +504,13 @@ void movementAnimation(Entity *entite){
 	}
 }
 
+/*!
+*  \fn	  void resetAnimation(Entity *entite)
+*  \brief Function to reset the animation of the entite
+*
+*  \param *entite    a pointer to the entity
+*  \return none
+*/
 void resetAnimation(Entity *entite){
 	entite->mouvement = 0;
 	entite->pSprEntity->iCurrentFrame = 0;
@@ -491,7 +520,7 @@ void resetAnimation(Entity *entite){
 }
 
 /*  \fn void meleeDamage(Entity *pGiver, Entity *pReceiver)
-*  \brief function to inflict damage to an entity by being touched by another entity
+*  \brief Function to inflict damage to an entity by being touched by another entity
 *
 *  \param	pGiver		a pointer to the giver of the damage
 *  \param	pReceiver	a pointer to the receiver of the damage
@@ -511,7 +540,7 @@ void meleeDamage(Entity *pGiver, Entity *pReceiver){
 }
 
 /*  \fn void weaponDamage(Sint32 iDamage, Entity *pEntity)
-*  \brief function to inflict damage to an entity by being touched by a projectile
+*  \brief Function to inflict damage to an entity by being touched by a projectile
 *
 *  \param	iDamage the value of the damage
 *  \param	pEntity	a pointer to the receiver of the damage
@@ -531,7 +560,7 @@ void weaponDamage(Sint32 iDamage, Entity *pEntity){
 }
 
 /*!
-*  \fn     Boolean	Shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer)
+*  \fn     Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer)
 *  \brief  if the player use zqsd to shoot, load a new projectile
 *
 *  \param	myEvent	the new event
@@ -650,7 +679,7 @@ Boolean	shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer){
 	return res;
 }
 
-/*  \fn Boolean	ChangeWeapon(Entity *pEntity, Weapon *pWeapon)
+/*  \fn Boolean	changeWeapon(Entity *pEntity, Weapon *pWeapon)
  *  \brief function to change the weapon of an entity
  *  
  *  \param	pEntity	a pointer the entity which you want to change the weapon

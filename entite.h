@@ -29,10 +29,10 @@
 #include "weapon.h"
 #include "kr_input.h"
 
-#define MOVESPEED 3
-#define RESET_FRAME	 10			/*< Number to handle the reset of the frame >*/
-#define RESET_FIRING_FRAME 3	/*< Number to handle the reset of the frame of firing animation >*/
-#define MOB_INFIGHTING_DAMAGE 2
+#define MOVESPEED 3					/*< Spped of the player >*/
+#define RESET_FRAME	 10				/*< Number to handle the reset of the frame >*/
+#define RESET_FIRING_FRAME 3		/*< Number to handle the reset of the frame of firing animation >*/
+#define MOB_INFIGHTING_DAMAGE 2		/*< The damage of the monsters when we touch them >*/
 
 /*!
 * \enum EntityState
@@ -59,12 +59,12 @@ typedef struct Entity{
 	Weapon		*pWeapon;			/*< A pointer to his weapon (can be NULL) >*/
 	Kr_Sprite	*pSprEntity;		/*<	A pointer to his sprite >*/
 	EntityState	state;				/*< State of the entity : normal, invincible, slowed, ...) >*/
-	Uint32		iSpeedEntity;		/*< */
+	Uint32		iSpeedEntity;		/*< Speed of the entity */
 	Direction	direction;			/*< Direction which the entity is facing >*/
 	Boolean		mouvement;			/*< Mouvement : 0 (static) or 1 (in movement) >*/
 	Boolean		firing;				/*< Firing : 1 or 0 >*/
 	Uint32		iTempoAnim;			/*< Int for the temporisation of the animation >*/
-	Uint32		iTempoFiringAnim;
+	Uint32		iTempoFiringAnim;   /*< Int for the temporisation of the animation of the attacks >*/
 	Uint32		iTempoAtk;			/*< Int to handle the attack speed >*/
 	Boolean     bFriendly;			/*< TRUE if the entity is friendly ? Does it deal damage  >*/
 	Uint32      iTempoMovement;     /*< Value which can be used to compute a random movement   >*/

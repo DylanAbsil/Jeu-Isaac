@@ -202,7 +202,15 @@ Uint32 updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Inpu
 	return iRetour;
 }
 
-Uint32 updateAllWeapons(SDL_Renderer *pRenderer, Level_State *pLevelSt){
+/*!
+*  \fn     void updateAllWeapons(SDL_Renderer *pRenderer, Level_State *pLevelSt)
+*  \brief  Function to update all the weaponsof all entites (include the player) of the current level
+*
+*  \param  pRenderer a pointer to the renderer
+*  \param  pLevelSt  a pointer to the Level_State structure
+*  \return none
+*/
+void updateAllWeapons(SDL_Renderer *pRenderer, Level_State *pLevelSt){
 	//Update des projectiles du player
 	updateProjectilesWeapon(pRenderer, pLevelSt, pLevelSt->pPlayer->pWeapon);
 
@@ -216,15 +224,14 @@ Uint32 updateAllWeapons(SDL_Renderer *pRenderer, Level_State *pLevelSt){
 	}
 
 	//	Kr_Log_Print(KR_LOG_INFO, "All projectiles have been updated\n");
-	return TRUE;
 }
 
 /*!
 *  \fn     Boolean drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer);
 *  \brief  Function to draw all the entities of the current level
 *
-*  \param  pLevelSt
-*  \param  pRenderer
+*  \param  pLevelSt		a pointer to the Level_State
+*  \param  pRenderer	a pointer to the renderer
 *  \return boolean if the entities have been draw on the screen or not
 */
 Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
@@ -249,6 +256,14 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
 	return TRUE;
 }
 
+/*!
+*  \fn     void drawAllProjectiles(Level_State *pLevelSt, SDL_Renderer *pRenderer)
+*  \brief  Function to draw all the projectiles currently in the level
+*
+*  \param  pLevelSt		a pointer to the Level_State
+*  \param  pRenderer	a pointer to the renderer
+*  \return boolean if the entities have been draw on the screen or not
+*/
 void drawAllProjectiles(Level_State *pLevelSt, SDL_Renderer *pRenderer){
 	drawProjectilesWeapon(pLevelSt->pPlayer->pWeapon->plProjectile, pRenderer);
 
@@ -263,7 +278,7 @@ void drawAllProjectiles(Level_State *pLevelSt, SDL_Renderer *pRenderer){
 
 
 /*!
-*  \fn     Uint32  updateEntity(Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
+*  \fn     Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
 *  \brief  This function will update the data about the entity
 *
 *  \param  pRenderer	a pointer to the renderer

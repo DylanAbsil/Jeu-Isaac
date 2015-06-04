@@ -43,7 +43,7 @@ Projectile* Projectile_Init(char *strProjName){
 }
 
 /*!
-*  \fn     Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint32 speed, SDL_Rect *pRect, SDL_Renderer *pRenderer)
+*  \fn     Boolean	Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint32 speed, PrjType prjType, Uint32 nbFrames, SDL_Rect *pRect, SDL_Renderer *pRenderer)
 *  \brief  Function to load a projectile
 *
 *  \todo   use this function after the projectile had been initialized
@@ -53,7 +53,8 @@ Projectile* Projectile_Init(char *strProjName){
 *  \param  dir			the direction to where the projectile is sent
 *  \param  speed		the movespeed of the projectile
 *  \param  PrjType		the type of the projectile
-*  \param  pRec			a pointer to a rect indicating the position from where the projectile is fired
+*  \param  nbFrames		the number of frames of the sprite
+*  \param  pRect		a pointer to a rect indicating the position from where the projectile is fired
 *  \param  pRenderer    a pointer to the renderer
 *  \return TRUE if everything is ok, FALSE otherwise
 */
@@ -342,7 +343,7 @@ Weapon *  Weapon_Init(char *strWeaponName){
 }
 
 /*!
-*  \fn     Boolean Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 munition, Uint32 damage)
+*  \fn     Boolean Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 munition, Uint32 damage, Uint32 speedPrj, PrjType prjType)
 *  \brief  Function to load a weapon
 *
 *  \param  pWeapon		a pointer to the weapon you want to load
@@ -351,6 +352,7 @@ Weapon *  Weapon_Init(char *strWeaponName){
 *  \param  munition		the munitions currently in the weapon
 *  \param  damage		the damage of the weapon
 *  \param  speedPrj		the speed of the projectile
+*  \param  prjType		the type of the projectile the weapon is using
 *  \return TRUE if everything is ok, FALSE otherwise
 */
 Boolean Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 munition, Uint32 damage, Uint32 speedPrj, PrjType prjType){
