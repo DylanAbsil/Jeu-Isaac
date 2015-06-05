@@ -1,0 +1,19 @@
+<map id="Menu_Pause" name="Menu_Pause">
+<area shape="rect" id="node2" href="$kr__input_8c.html#a9cdfe7beb91f7112dcc15a7023df4cde" title="Function to initialize the Input structure. " alt="" coords="179,5,258,32"/>
+<area shape="rect" id="node3" href="$kr__text_8c.html#afdcf9204802c68726c748c12a590e757" title="Kr_Text_OpenFont" alt="" coords="563,157,693,184"/>
+<area shape="rect" id="node4" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="741,260,839,287"/>
+<area shape="rect" id="node5" href="$kr__fps_8c.html#a3bec1aa5957a4e3234dae1cd1f9d2ad7" title="Function to initialize a Kr_Fps structure. " alt="" coords="380,157,468,184"/>
+<area shape="rect" id="node7" href="$_menu_8c.html#ac3b2aaeff1dae40232888c7df7facb06" title="Function to initiate a button. " alt="" coords="175,284,262,311"/>
+<area shape="rect" id="node10" href="$_menu_8c.html#ae97facdcd27e6d7f673701112c2a192b" title="Function to load a bouton structure. " alt="" coords="169,360,268,387"/>
+<area shape="rect" id="node13" href="$_menu_8c.html#a1d61f59c0cc5e1d7b89f2a2b8fc8dc76" title="Function to draw a button. " alt="" coords="169,512,268,539"/>
+<area shape="rect" id="node14" href="$kr__input_8c.html#a44752fdef6a5a8362090374c41a05c17" title="Function to update the Input structure. " alt="" coords="167,563,270,589"/>
+<area shape="rect" id="node15" href="$kr__fps_8c.html#a1414fc41405c320af392c000c08d61bb" title="Function to handle the FPS. " alt="" coords="169,411,268,437"/>
+<area shape="rect" id="node16" href="$_menu_8c.html#a967306255a64c167317888c693eac9df" title="Function to free a button structure. " alt="" coords="171,461,267,488"/>
+<area shape="rect" id="node17" href="$kr__text_8c.html#a560c43998ded9bedf3747b81df242591" title="Function to free a font. " alt="" coords="152,613,285,640"/>
+<area shape="rect" id="node18" href="$kr__fps_8c.html#a8624d15c825a1ce5fb57ef76debf01a5" title="Function to free the structure. " alt="" coords="170,664,267,691"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#a541d70598bec0a55448a24db69a1ed60" title="Function to allocate memory block. " alt="" coords="581,221,675,248"/>
+<area shape="rect" id="node8" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="373,259,475,285"/>
+<area shape="rect" id="node9" href="$kr__util_8c.html#a1db13b904cd51019886423dc0711d9b7" title="Function to load a texture. " alt="" coords="565,297,691,324"/>
+<area shape="rect" id="node11" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="362,461,486,488"/>
+<area shape="rect" id="node12" href="$kr__text_8c.html#a15deeb30a29aa44a49a39981a3363f55" title="Kr_Text_FontCreateTexture" alt="" coords="333,411,515,437"/>
+</map>

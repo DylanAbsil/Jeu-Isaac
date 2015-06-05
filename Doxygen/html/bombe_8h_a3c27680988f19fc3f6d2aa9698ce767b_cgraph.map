@@ -1,0 +1,8 @@
+<map id="Bombe_Free" name="Bombe_Free">
+<area shape="rect" id="node2" href="$kr__sound_8c.html#a6a83214fe98846570ded721e4d9947d1" title="Function to free a sound. " alt="" coords="149,5,261,32"/>
+<area shape="rect" id="node4" href="$entite_8c.html#a3d58a115048731b7eb6501f9b351ec14" title="Function to freed an entity. " alt="" coords="161,56,250,83"/>
+<area shape="rect" id="node3" href="$kr__sound_8c.html#ae185a96981ca8dfcdad75aa5db3f8d98" title="Function to free a sound. " alt="" coords="309,5,459,32"/>
+<area shape="rect" id="node5" href="$kr__sprite_8c.html#a0899eb27b0f7aa37db089900a1204911" title="Function to freed a Kr_Sprite texture. " alt="" coords="329,56,439,83"/>
+<area shape="rect" id="node7" href="$weapon_8c.html#abfd65d6b353c0adc3d625a8e3eca1af9" title="Function to freed a weapon. " alt="" coords="333,107,435,133"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="507,56,631,83"/>
+</map>

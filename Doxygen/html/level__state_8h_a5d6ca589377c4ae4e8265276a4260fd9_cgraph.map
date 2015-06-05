@@ -1,0 +1,20 @@
+<map id="Level_State_Load" name="Level_State_Load">
+<area shape="rect" id="node2" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="511,157,608,184"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#a9f79b8a3f5b4ee746d262194cef9fab0" title="Function to open a file. " alt="" coords="346,208,453,235"/>
+<area shape="rect" id="node4" href="$entite_8c.html#a6382d6bc4cc3e6d4b181a70a751935a4" title="setOnFirstEnt" alt="" coords="181,512,284,539"/>
+<area shape="rect" id="node5" href="$kr__sprite_8c.html#a796df8374ef81a6a365169bac74c68d6" title="Function to init a sprite. " alt="" coords="183,309,283,336"/>
+<area shape="rect" id="node7" href="$kr__sprite_8c.html#a9accd31f396c44e2a41264c53bf4b974" title="Function to load the sprite. " alt="" coords="177,259,288,285"/>
+<area shape="rect" id="node9" href="$kr__util_8c.html#afee1c2c8a9fbfe900b3c98561c0bb9ac" title="Function to close a file. " alt="" coords="178,563,287,589"/>
+<area shape="rect" id="node10" href="$entite_8c.html#a1be2ab5ce5ddc62ff8e998fd6cf1cc77" title="Function to init an entity. " alt="" coords="193,360,273,387"/>
+<area shape="rect" id="node11" href="$entite_8c.html#a96dade8a074155f396bee4bc92d27e86" title="Function to load the entity. " alt="" coords="187,56,278,83"/>
+<area shape="rect" id="node13" href="$weapon_8c.html#a568658daabc4f022bd7c46309d3fb494" title="Function to init a weapon. " alt="" coords="185,461,280,488"/>
+<area shape="rect" id="node15" href="$weapon_8c.html#a362c8039954cf0cb862c2bc8c80d5694" title="Function to load a weapon. " alt="" coords="180,411,285,437"/>
+<area shape="rect" id="node16" href="$entite_8c.html#abb79d9d0fef1582deb33e8c0351180cf" title="changeWeapon" alt="" coords="343,107,455,133"/>
+<area shape="rect" id="node17" href="$entite_8c.html#a3e21c6adf2c8bcf23df7aa5431e29bc6" title="insertLastEnt" alt="" coords="183,613,282,640"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="348,360,451,387"/>
+<area shape="rect" id="node8" href="$kr__util_8c.html#a1db13b904cd51019886423dc0711d9b7" title="Function to load a texture. " alt="" coords="336,309,463,336"/>
+<area shape="rect" id="node12" href="$entite_8c.html#a9f88cb039702afcc4e9685614e875a49" title="Function to log an entity. " alt="" coords="357,5,441,32"/>
+<area shape="rect" id="node14" href="$weapon_8c.html#ab5bd43394a08c3078386d0d110c33ccf" title="initList" alt="" coords="369,461,429,488"/>
+<area shape="rect" id="node18" href="$entite_8c.html#a591f44a7a3751f082a36d185449fbedc" title="newNodeListEnt" alt="" coords="341,639,457,665"/>
+<area shape="rect" id="node19" href="$entite_8c.html#a67921c7c335b0c4800f7bc172b2aef72" title="emptyListEnt" alt="" coords="350,588,449,615"/>
+</map>

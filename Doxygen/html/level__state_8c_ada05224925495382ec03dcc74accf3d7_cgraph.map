@@ -1,0 +1,9 @@
+<map id="Kr_Level_Interraction" name="Kr_Level_Interraction">
+<area shape="rect" id="node2" href="$kr__level_8c.html#a4e1df9451ef05b8d04fb2009c7a9ca19" title="Function to get the block at a coordinate. " alt="" coords="211,5,329,32"/>
+<area shape="rect" id="node3" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="549,107,647,133"/>
+<area shape="rect" id="node4" href="$kr__level_8c.html#acc6d4a238c12f278e923618b2f4ef254" title="Kr_Level_WriteLayout" alt="" coords="196,107,344,133"/>
+<area shape="rect" id="node5" href="$kr__level_8c.html#a9a2e23ed5312385267ef99b1863406bd" title="Function to save the layout of the level. " alt="" coords="197,157,343,184"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#a9f79b8a3f5b4ee746d262194cef9fab0" title="Function to open a file. " alt="" coords="393,157,500,184"/>
+<area shape="rect" id="node7" href="$kr__util_8c.html#afee1c2c8a9fbfe900b3c98561c0bb9ac" title="Function to close a file. " alt="" coords="392,208,501,235"/>
+<area shape="rect" id="node8" href="$kr__util_8c.html#a631b59df2d5c64ee51617ade83c87863" title="Function to convert a string to a Uint32. " alt="" coords="393,259,500,285"/>
+</map>

@@ -1,0 +1,11 @@
+<map id="next" name="next">
+<area shape="rect" id="node2" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="531,5,651,32"/>
+<area shape="rect" id="node5" href="$level__state_8h.html#aaba71fc8d91c4b3acced99408da1a2e2" title="Function to update all the position of the projectiles contained in a list in the struct weapon..." alt="" coords="307,81,477,108"/>
+<area shape="rect" id="node7" href="$weapon_8h.html#ae3ef46fb61d620bbf1ec3e72f51d5f36" title="deleteList" alt="" coords="140,81,219,108"/>
+<area shape="rect" id="node8" href="$weapon_8h.html#ade2d585693d11f47e3f57b1d73f37cc5" title="deleteCurrent" alt="" coords="130,132,229,159"/>
+<area shape="rect" id="node9" href="$weapon_8h.html#a60858621b1b811b40a79af115fc938e4" title="drawProjectilesWeapon" alt="" coords="100,183,259,209"/>
+<area shape="rect" id="node3" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="704,81,757,108"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="805,81,856,108"/>
+<area shape="rect" id="node6" href="$level__state_8h.html#a0dafcc028cd3f356c87e71c9e428bcc9" title="Function to update all the weaponsof all entites (include the player) of the current level..." alt="" coords="525,81,656,108"/>
+<area shape="rect" id="node10" href="$level__state_8h.html#af47c959ba6f67f0447416c894e933cd5" title="Function to draw all the projectiles currently in the level. " alt="" coords="329,157,455,184"/>
+</map>

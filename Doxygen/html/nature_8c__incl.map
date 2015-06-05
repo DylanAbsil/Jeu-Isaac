@@ -1,0 +1,18 @@
+<map id="nature.c" name="nature.c">
+<area shape="rect" id="node2" href="$nature_8h.html" title="Contains the structure to handle the nature. " alt="" coords="245,80,315,107"/>
+<area shape="rect" id="node3" href="$kr__common_8h.html" title="Contains the standard includes, structures and enumerations. " alt="" coords="573,752,675,779"/>
+<area shape="rect" id="node14" href="$kr__log_8h.html" title="Contains the structure to handle the logs. " alt="" coords="486,677,554,704"/>
+<area shape="rect" id="node15" href="$entite_8h.html" title="entite.h" alt="" coords="817,304,882,331"/>
+<area shape="rect" id="node20" href="$kr__level_8h.html" title="Contains the structure to handle the level. " alt="" coords="741,528,817,555"/>
+<area shape="rect" id="node22" href="$kr__sound_8h.html" title="kr_sound.h" alt="" coords="43,603,130,629"/>
+<area shape="rect" id="node24" href="$level__state_8h.html" title="level_state.h" alt="" coords="487,155,582,181"/>
+<area shape="rect" id="node16" href="$weapon_8h.html" title="weapon.h" alt="" coords="821,379,899,405"/>
+<area shape="rect" id="node23" href="$kr__input_8h.html" title="Contains the structure to handle the input (keyboard and mouse). " alt="" coords="1131,453,1210,480"/>
+<area shape="rect" id="node17" href="$kr__sprite_8h.html" title="kr_sprite.h" alt="" coords="608,603,691,629"/>
+<area shape="rect" id="node19" href="$kr__collision_8h.html" title="kr_collision.h" alt="" coords="816,453,915,480"/>
+<area shape="rect" id="node18" href="$kr__util_8h.html" title="Contains some useful and standard functions. " alt="" coords="694,677,762,704"/>
+<area shape="rect" id="node21" href="$kr__tileset_8h.html" title="Contains the structure to handle the tileset. " alt="" coords="817,603,903,629"/>
+<area shape="rect" id="node25" href="$bombe_8h.html" title="Contains the structure to handle the weapon bomb. " alt="" coords="356,229,428,256"/>
+<area shape="rect" id="node26" href="$kr__fps_8h.html" title="Contains the structure to handle the fps. " alt="" coords="358,528,426,555"/>
+<area shape="rect" id="node27" href="$kr__text_8h.html" title="kr_text.h" alt="" coords="409,603,482,629"/>
+</map>

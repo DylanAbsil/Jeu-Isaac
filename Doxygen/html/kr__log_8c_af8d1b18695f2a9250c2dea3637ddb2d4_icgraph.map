@@ -1,0 +1,13 @@
+<map id="Kr_Log_Print" name="Kr_Log_Print">
+<area shape="rect" id="node2" href="$kr__sound_8h.html#a6be9281065103165394ba13abb05c582" title="Function to print the data of a sound. " alt="" coords="157,5,271,32"/>
+<area shape="rect" id="node3" href="$kr__util_8h.html#a239f39c59de6b1dfce1e2c01954240af" title="Function to open a file. " alt="" coords="161,56,267,83"/>
+<area shape="rect" id="node4" href="$kr__util_8h.html#a6784507b28aa4529d41f59fc1038c7fa" title="Function to load a texture. " alt="" coords="151,107,277,133"/>
+<area shape="rect" id="node5" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="360,157,411,184"/>
+<area shape="rect" id="node6" href="$kr__util_8h.html#a8762c40bbad980084e5b51581b2a95ab" title="Function to load a music. " alt="" coords="155,208,273,235"/>
+<area shape="rect" id="node7" href="$kr__util_8h.html#a8945e88efe514258e42e1f78fabe9bec" title="Function to load a sound. " alt="" coords="325,233,445,260"/>
+<area shape="rect" id="node9" href="$kr__util_8h.html#a222c6fca425dd01ef858caff56848cdc" title="Function to allocate memory block. " alt="" coords="167,309,261,336"/>
+<area shape="rect" id="node12" href="$kr__util_8h.html#aa0ce866ce80964f4a4a345243fb52df9" title="Function to reallocate memory block. " alt="" coords="165,360,263,387"/>
+<area shape="rect" id="node8" href="$kr__sound_8h.html#a2bc47604ede539fe74424f36e679d67c" title="Function to load a sound. " alt="" coords="493,309,608,336"/>
+<area shape="rect" id="node10" href="$kr__util_8h.html#af1275d2ab3c58cd111b0142ca503e368" title="Function to allocate and copy a string. " alt="" coords="334,335,437,361"/>
+<area shape="rect" id="node11" href="$kr__util_8h.html#ab844d1f2b503e4d49fabe3770e5eb359" title="Function to build a path. " alt="" coords="330,385,441,412"/>
+</map>

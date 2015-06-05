@@ -1,0 +1,10 @@
+<map id="drawAllProjectiles" name="drawAllProjectiles">
+<area shape="rect" id="node2" href="$weapon_8c.html#a60858621b1b811b40a79af115fc938e4" title="drawProjectilesWeapon" alt="" coords="179,78,337,105"/>
+<area shape="rect" id="node7" href="$entite_8c.html#a6382d6bc4cc3e6d4b181a70a751935a4" title="setOnFirstEnt" alt="" coords="207,129,309,155"/>
+<area shape="rect" id="node8" href="$entite_8c.html#a4f3a62d4a377b6cb35ea7dc15448f061" title="nextEnt" alt="" coords="225,179,291,206"/>
+<area shape="rect" id="node3" href="$weapon_8c.html#a66c44cd2d164369952c0e12e670b6dfc" title="emptyList" alt="" coords="545,53,624,79"/>
+<area shape="rect" id="node4" href="$weapon_8c.html#a7266b4ca18c42fcf3580744e18c4da77" title="setOnFirst" alt="" coords="400,27,483,54"/>
+<area shape="rect" id="node5" href="$weapon_8c.html#a27a3deab83f380efcd9ad1c62ca50772" title="Function to draw a projectile. " alt="" coords="385,78,497,105"/>
+<area shape="rect" id="node6" href="$weapon_8c.html#a4269bb73372138cecf6423bf8959110b" title="next" alt="" coords="418,129,465,155"/>
+<area shape="rect" id="node9" href="$entite_8c.html#a67921c7c335b0c4800f7bc172b2aef72" title="emptyListEnt" alt="" coords="392,179,491,206"/>
+</map>

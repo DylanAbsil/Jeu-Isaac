@@ -1,0 +1,5 @@
+<map id="Weapon_Init" name="Weapon_Init">
+<area shape="rect" id="node2" href="$level__state_8h.html#a5d6ca589377c4ae4e8265276a4260fd9" title="Function to load the Level_State from the Kr_Level and the file related. " alt="" coords="148,5,272,32"/>
+<area shape="rect" id="node3" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="320,31,373,57"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="421,31,472,57"/>
+</map>

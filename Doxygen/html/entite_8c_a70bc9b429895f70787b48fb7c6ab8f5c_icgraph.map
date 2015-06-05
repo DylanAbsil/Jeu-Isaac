@@ -1,0 +1,8 @@
+<map id="deleteNodeListEnt" name="deleteNodeListEnt">
+<area shape="rect" id="node2" href="$entite_8h.html#a6de1c064101a904ba009f89c9c379858" title="deleteListEnt" alt="" coords="191,5,290,32"/>
+<area shape="rect" id="node6" href="$entite_8h.html#a4c5f29e81453c7d40028dbec8ec677e8" title="deleteCurrentEnt" alt="" coords="181,56,300,83"/>
+<area shape="rect" id="node3" href="$level__state_8h.html#a7f222e3b0f04ed1c5b0267051eb8aad3" title="Function to freed the level state. " alt="" coords="348,5,471,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="519,31,572,57"/>
+<area shape="rect" id="node5" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="620,31,671,57"/>
+<area shape="rect" id="node7" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="349,56,469,83"/>
+</map>

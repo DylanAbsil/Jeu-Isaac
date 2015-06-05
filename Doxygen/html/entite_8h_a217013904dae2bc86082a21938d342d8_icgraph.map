@@ -1,0 +1,11 @@
+<map id="switchTextureFromDirection" name="switchTextureFromDirection">
+<area shape="rect" id="node2" href="$entite_8h.html#a612edea1f358c8c6f9c7c26ad8dd7184" title="Function to handle the firing animation. " alt="" coords="236,5,343,32"/>
+<area shape="rect" id="node3" href="$level__state_8h.html#a2b4dc11b61c65c97198fe06b9814ab03" title="This function will update the data about the entity. " alt="" coords="399,56,493,83"/>
+<area shape="rect" id="node7" href="$entite_8h.html#a6c1b0de829748c435810862afc03b48a" title="if the player use zqsd to shoot, load a new projectile " alt="" coords="419,107,473,133"/>
+<area shape="rect" id="node8" href="$nature_8h.html#a519aa3283a4077b173c5913e40abae58" title="PassageOiseau" alt="" coords="552,157,667,184"/>
+<area shape="rect" id="node9" href="$nature_8h.html#ab311b3285407faec47ae7ca1f9335625" title="Function to update the behaviour of a butterfly. " alt="" coords="391,208,501,235"/>
+<area shape="rect" id="node10" href="$nature_8h.html#af296f4f177845d9011f849f3918a4ea4" title="Function to update the behaviour of the flying bird. " alt="" coords="249,259,330,285"/>
+<area shape="rect" id="node4" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="549,56,669,83"/>
+<area shape="rect" id="node5" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="717,157,771,184"/>
+<area shape="rect" id="node6" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="819,157,869,184"/>
+</map>

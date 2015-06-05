@@ -1,0 +1,4 @@
+<map id="Kr_Collision_LevelAffine" name="Kr_Collision_LevelAffine">
+<area shape="rect" id="node2" href="$kr__collision_8c.html#a767e24ad20e5e0618932ba2c36d747bc" title="Function to try to move a rectangle with a certain vector speed and check if it&#39;s colliding with the ..." alt="" coords="212,5,357,32"/>
+<area shape="rect" id="node3" href="$kr__collision_8c.html#a7dff5138272412257f29b75d04f6c727" title="Function to detect if a rectangle is colliding with the level background. " alt="" coords="405,5,571,32"/>
+</map>

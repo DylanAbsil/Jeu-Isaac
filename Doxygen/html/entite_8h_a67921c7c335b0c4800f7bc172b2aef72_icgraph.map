@@ -1,0 +1,19 @@
+<map id="emptyListEnt" name="emptyListEnt">
+<area shape="rect" id="node2" href="$entite_8h.html#a8251090c81ec03d86c9972d016eaf954" title="outOfListEnt" alt="" coords="154,233,249,260"/>
+<area shape="rect" id="node3" href="$entite_8h.html#a4f3a62d4a377b6cb35ea7dc15448f061" title="nextEnt" alt="" coords="168,284,235,311"/>
+<area shape="rect" id="node17" href="$entite_8h.html#a3e21c6adf2c8bcf23df7aa5431e29bc6" title="insertLastEnt" alt="" coords="152,436,251,463"/>
+<area shape="rect" id="node4" href="$entite_8h.html#a6de1c064101a904ba009f89c9c379858" title="deleteListEnt" alt="" coords="337,5,435,32"/>
+<area shape="rect" id="node6" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="723,360,776,387"/>
+<area shape="rect" id="node8" href="$entite_8h.html#a4c5f29e81453c7d40028dbec8ec677e8" title="deleteCurrentEnt" alt="" coords="327,107,445,133"/>
+<area shape="rect" id="node9" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="538,183,658,209"/>
+<area shape="rect" id="node10" href="$level__state_8h.html#a0dafcc028cd3f356c87e71c9e428bcc9" title="Function to update all the weaponsof all entites (include the player) of the current level..." alt="" coords="533,309,663,336"/>
+<area shape="rect" id="node11" href="$level__state_8h.html#a36556ab5288bcba361985311ead3484b" title="Function to draw all the entities of the current level. " alt="" coords="544,360,652,387"/>
+<area shape="rect" id="node12" href="$level__state_8h.html#af47c959ba6f67f0447416c894e933cd5" title="Function to draw all the projectiles currently in the level. " alt="" coords="535,411,661,437"/>
+<area shape="rect" id="node13" href="$level__state_8h.html#a2b4dc11b61c65c97198fe06b9814ab03" title="This function will update the data about the entity. " alt="" coords="339,208,433,235"/>
+<area shape="rect" id="node14" href="$level__state_8h.html#aaba71fc8d91c4b3acced99408da1a2e2" title="Function to update all the position of the projectiles contained in a list in the struct weapon..." alt="" coords="301,309,471,336"/>
+<area shape="rect" id="node15" href="$level__state_8h.html#a72769f14b5db2f8b2fdd0dedfd10c106" title="Function to save the data of the level. " alt="" coords="521,461,675,488"/>
+<area shape="rect" id="node16" href="$level__state_8h.html#a99cc529a04f8591b8ec1f12b3ae59a0d" title="Check if the entity of the level are near an exploding bomb, and destroy the bush near by..." alt="" coords="299,512,473,539"/>
+<area shape="rect" id="node5" href="$level__state_8h.html#a7f222e3b0f04ed1c5b0267051eb8aad3" title="Function to freed the level state. " alt="" coords="537,5,659,32"/>
+<area shape="rect" id="node7" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="824,360,875,387"/>
+<area shape="rect" id="node18" href="$level__state_8h.html#a5d6ca589377c4ae4e8265276a4260fd9" title="Function to load the Level_State from the Kr_Level and the file related. " alt="" coords="324,563,448,589"/>
+</map>

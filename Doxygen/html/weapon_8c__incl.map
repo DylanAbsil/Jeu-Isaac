@@ -1,0 +1,11 @@
+<map id="weapon.c" name="weapon.c">
+<area shape="rect" id="node2" href="$weapon_8h.html" title="weapon.h" alt="" coords="265,80,343,107"/>
+<area shape="rect" id="node3" href="$kr__common_8h.html" title="Contains the standard includes, structures and enumerations. " alt="" coords="384,453,485,480"/>
+<area shape="rect" id="node14" href="$kr__sprite_8h.html" title="kr_sprite.h" alt="" coords="303,304,385,331"/>
+<area shape="rect" id="node17" href="$kr__collision_8h.html" title="kr_collision.h" alt="" coords="341,155,440,181"/>
+<area shape="rect" id="node15" href="$kr__util_8h.html" title="Contains some useful and standard functions. " alt="" coords="473,379,541,405"/>
+<area shape="rect" id="node16" href="$kr__log_8h.html" title="Contains the structure to handle the logs. " alt="" coords="310,379,378,405"/>
+<area shape="rect" id="node18" href="$kr__level_8h.html" title="Contains the structure to handle the level. " alt="" coords="443,229,519,256"/>
+<area shape="rect" id="node19" href="$kr__tileset_8h.html" title="Contains the structure to handle the tileset. " alt="" coords="410,304,497,331"/>
+<area shape="rect" id="node20" href="$kr__sound_8h.html" title="kr_sound.h" alt="" coords="674,379,761,405"/>
+</map>

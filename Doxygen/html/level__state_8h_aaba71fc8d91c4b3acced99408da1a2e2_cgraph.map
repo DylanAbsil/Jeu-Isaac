@@ -1,0 +1,24 @@
+<map id="updateProjectilesWeapon" name="updateProjectilesWeapon">
+<area shape="rect" id="node2" href="$weapon_8c.html#a66c44cd2d164369952c0e12e670b6dfc" title="emptyList" alt="" coords="627,9,705,36"/>
+<area shape="rect" id="node3" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="233,200,330,227"/>
+<area shape="rect" id="node4" href="$weapon_8c.html#a7266b4ca18c42fcf3580744e18c4da77" title="setOnFirst" alt="" coords="425,85,507,112"/>
+<area shape="rect" id="node5" href="$weapon_8c.html#ade2d585693d11f47e3f57b1d73f37cc5" title="deleteCurrent" alt="" coords="232,147,331,173"/>
+<area shape="rect" id="node7" href="$weapon_8c.html#a4269bb73372138cecf6423bf8959110b" title="next" alt="" coords="443,35,489,61"/>
+<area shape="rect" id="node13" href="$kr__collision_8c.html#a6f0b8e8200c930bc38ef48321d43424b" title="Function to detect the collision of a rectangle with the level and an other rectangle,. " alt="" coords="236,288,327,315"/>
+<area shape="rect" id="node20" href="$entite_8c.html#a6382d6bc4cc3e6d4b181a70a751935a4" title="setOnFirstEnt" alt="" coords="230,339,333,365"/>
+<area shape="rect" id="node21" href="$entite_8c.html#a05b2287ff96d90f83bea8fdea737d470" title="weaponDamage" alt="" coords="224,389,339,416"/>
+<area shape="rect" id="node22" href="$entite_8c.html#a4f3a62d4a377b6cb35ea7dc15448f061" title="nextEnt" alt="" coords="248,465,315,492"/>
+<area shape="rect" id="node6" href="$weapon_8c.html#a56416817015621df6224b47fefdd1efe" title="first" alt="" coords="445,136,487,163"/>
+<area shape="rect" id="node8" href="$weapon_8c.html#adbab546afffa935d84239a3d9aa6bd6d" title="last" alt="" coords="445,187,487,213"/>
+<area shape="rect" id="node9" href="$weapon_8c.html#ac872ee33c7d42f9567dbcf494741f3df" title="deleteNodeListProj" alt="" coords="401,237,531,264"/>
+<area shape="rect" id="node10" href="$weapon_8c.html#a42f9341f7d8600c3d4c51f2770ea9eb2" title="Function to freed a Projectile and his sprite. " alt="" coords="611,237,721,264"/>
+<area shape="rect" id="node11" href="$kr__sprite_8c.html#a0899eb27b0f7aa37db089900a1204911" title="Function to freed a Kr_Sprite texture. " alt="" coords="815,237,924,264"/>
+<area shape="rect" id="node12" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="1000,237,1124,264"/>
+<area shape="rect" id="node14" href="$kr__collision_8c.html#a7d911924bc83ce2467f110157526249f" title="Function to try to move a rectangle with a certain vector speed and check if it&#39;s colliding with the ..." alt="" coords="595,313,737,340"/>
+<area shape="rect" id="node16" href="$kr__collision_8c.html#a2e47075c7ced525c02eb319449dc73f3" title="Function to reduce the vector speed to check if there is a collision between the rectangle and the ot..." alt="" coords="387,339,545,365"/>
+<area shape="rect" id="node17" href="$kr__collision_8c.html#a767e24ad20e5e0618932ba2c36d747bc" title="Function to try to move a rectangle with a certain vector speed and check if it&#39;s colliding with the ..." alt="" coords="593,415,739,441"/>
+<area shape="rect" id="node19" href="$kr__collision_8c.html#af794496b79acd9aed5c7a77d6b2d506d" title="Function to reduce the vector speed to check if there is a collision between the rectangle and the le..." alt="" coords="387,389,545,416"/>
+<area shape="rect" id="node15" href="$kr__collision_8c.html#a9d99b8a387f711f28edda86754767926" title="Function to detect if the Rect2 is colliding with Rect1. " alt="" coords="788,313,951,340"/>
+<area shape="rect" id="node18" href="$kr__collision_8c.html#a7dff5138272412257f29b75d04f6c727" title="Function to detect if a rectangle is colliding with the level background. " alt="" coords="787,415,952,441"/>
+<area shape="rect" id="node23" href="$entite_8c.html#a67921c7c335b0c4800f7bc172b2aef72" title="emptyListEnt" alt="" coords="417,491,515,517"/>
+</map>

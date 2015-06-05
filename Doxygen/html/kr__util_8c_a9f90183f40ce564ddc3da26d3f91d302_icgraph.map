@@ -1,0 +1,40 @@
+<map id="UTIL_CopyStr" name="UTIL_CopyStr">
+<area shape="rect" id="node2" href="$entite_8h.html#af2bf477b2f591ca04ea8defc74e25fa2" title="Function to init an entity. " alt="" coords="191,309,271,336"/>
+<area shape="rect" id="node11" href="$entite_8h.html#a217013904dae2bc86082a21938d342d8" title="Function to switch the texture of the entity according to the new direction. " alt="" coords="353,793,536,820"/>
+<area shape="rect" id="node19" href="$kr__level_8h.html#a53b21e8b36982fdfbf443d0f14a379f2" title="Function to initialize a Level thanks to the level file. " alt="" coords="183,1167,278,1193"/>
+<area shape="rect" id="node23" href="$level__editor_8h.html#a7d7ba9a2917bdc0b4e4159994f831396" title="Function to create a LevelFile from a pEditor structure. " alt="" coords="367,1217,523,1244"/>
+<area shape="rect" id="node24" href="$kr__level_8h.html#a83ccc06b352f372399cd30b358c0cdea" title="Function to load a Kr_Level structure via a level file. " alt="" coords="391,1065,498,1092"/>
+<area shape="rect" id="node25" href="$kr__map_8h.html#a46042e91aa44fe7b200c6f22af2fdb84" title="Function to initialize a Kr_Map structure. " alt="" coords="936,5,1027,32"/>
+<area shape="rect" id="node26" href="$kr__sound_8h.html#a2bc47604ede539fe74424f36e679d67c" title="Function to load a sound. " alt="" coords="173,157,288,184"/>
+<area shape="rect" id="node27" href="$kr__sound_8h.html#aebea4818aa659caba849f6ea852514e6" title="Function to load a music. " alt="" coords="156,964,305,991"/>
+<area shape="rect" id="node29" href="$kr__sprite_8h.html#a782464cff66394b48126342e39c98edd" title="Function to init a sprite. " alt="" coords="181,360,281,387"/>
+<area shape="rect" id="node31" href="$kr__sprite_8h.html#a9fa64221b2d5cf8658d64fd9cb7ade9d" title="Function to load the sprite. " alt="" coords="175,411,286,437"/>
+<area shape="rect" id="node32" href="$kr__tileset_8h.html#aec02faae7a9bcf8513db3c34527df8d2" title="Function to initialize a Kr_Tileset structure. " alt="" coords="179,1065,283,1092"/>
+<area shape="rect" id="node33" href="$level__editor_8h.html#a6b55963b347b06461a5636963bc0583a" title="Function to initialize a Level Editor structure thanks to the level editor file. " alt="" coords="589,1171,705,1197"/>
+<area shape="rect" id="node34" href="$_menu_8h.html#ac2ad3c7db89db1404d43fa19ba55cbaa" title="Function to initiate a button. " alt="" coords="187,913,274,940"/>
+<area shape="rect" id="node36" href="$message_8h.html#a5ed8f14e1ccefe7ecc30893faa6fe2c4" title="Function to initialize a Message structure. " alt="" coords="598,968,697,995"/>
+<area shape="rect" id="node37" href="$weapon_8h.html#ac67745e7572d780256c8f0f58a7d954b" title="Function to init a projectile. " alt="" coords="395,715,495,741"/>
+<area shape="rect" id="node38" href="$weapon_8h.html#ac2c267ec67eab142d9cf3f9694eb8358" title="Function to init a weapon. " alt="" coords="183,613,278,640"/>
+<area shape="rect" id="node39" href="$weapon_8h.html#a362c8039954cf0cb862c2bc8c80d5694" title="Function to load a weapon. " alt="" coords="178,664,283,691"/>
+<area shape="rect" id="node3" href="$bombe_8h.html#a453edac8f8e9f6db004489326920f3f6" title="Function to initialize a Bombe structure. " alt="" coords="401,157,488,184"/>
+<area shape="rect" id="node4" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="1089,537,1143,564"/>
+<area shape="rect" id="node6" href="$level__state_8h.html#a5d6ca589377c4ae4e8265276a4260fd9" title="Function to load the Level_State from the Kr_Level and the file related. " alt="" coords="383,512,507,539"/>
+<area shape="rect" id="node7" href="$nature_8h.html#a9ed3ce6172f6ad10a678518c96ee1507" title="Function to load the entities. " alt="" coords="378,259,511,285"/>
+<area shape="rect" id="node8" href="$nature_8h.html#a2a1e1f88230819a34a56329d8aa871b8" title="Function to load the bush. " alt="" coords="375,309,514,336"/>
+<area shape="rect" id="node9" href="$nature_8h.html#a468a66139249a83e8d8414d7dff3efd6" title="Function to load the entity &quot;papillon&quot;. " alt="" coords="375,360,514,387"/>
+<area shape="rect" id="node10" href="$nature_8h.html#aacd3bfbf5889d0a45a94c19b21caee08" title="Function to load the flying bird. " alt="" coords="360,411,529,437"/>
+<area shape="rect" id="node5" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="1191,1120,1241,1147"/>
+<area shape="rect" id="node12" href="$entite_8h.html#a612edea1f358c8c6f9c7c26ad8dd7184" title="Function to handle the firing animation. " alt="" coords="594,715,701,741"/>
+<area shape="rect" id="node13" href="$level__state_8h.html#a2b4dc11b61c65c97198fe06b9814ab03" title="This function will update the data about the entity. " alt="" coords="769,715,863,741"/>
+<area shape="rect" id="node15" href="$entite_8h.html#a6c1b0de829748c435810862afc03b48a" title="if the player use zqsd to shoot, load a new projectile " alt="" coords="620,664,675,691"/>
+<area shape="rect" id="node16" href="$nature_8h.html#a519aa3283a4077b173c5913e40abae58" title="PassageOiseau" alt="" coords="759,917,873,944"/>
+<area shape="rect" id="node17" href="$nature_8h.html#ab311b3285407faec47ae7ca1f9335625" title="Function to update the behaviour of a butterfly. " alt="" coords="926,791,1037,817"/>
+<area shape="rect" id="node18" href="$nature_8h.html#af296f4f177845d9011f849f3918a4ea4" title="Function to update the behaviour of the flying bird. " alt="" coords="775,867,857,893"/>
+<area shape="rect" id="node14" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="921,715,1041,741"/>
+<area shape="rect" id="node20" href="$kr__level_8h.html#ac1708df66d49f823c8aa00d119ceee78" title="Kr_Level_Change" alt="" coords="586,1120,709,1147"/>
+<area shape="rect" id="node21" href="$level__editor_8h.html#ace28da75a0015962c60e937a76ba1292" title="Function to load a Level Editor structure thanks to the level editor file. " alt="" coords="584,1221,711,1248"/>
+<area shape="rect" id="node22" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="788,1171,844,1197"/>
+<area shape="rect" id="node28" href="$_menu_8h.html#a42d6ad889e3098920658ccdd14f51182" title="Function to handle the main menu. " alt="" coords="389,1015,500,1041"/>
+<area shape="rect" id="node30" href="$weapon_8h.html#abd2145393074d4815a58db2c5141a560" title="Function to load a projectile. " alt="" coords="389,563,500,589"/>
+<area shape="rect" id="node35" href="$_menu_8h.html#ab74e2c2fb65680a57c733a01beff7cbc" title="Function to handle the main menu. " alt="" coords="932,1019,1031,1045"/>
+</map>

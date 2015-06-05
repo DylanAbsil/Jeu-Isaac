@@ -1,0 +1,22 @@
+<map id="kr_tileset.h" name="kr_tileset.h">
+<area shape="rect" id="node2" href="$kr__level_8h.html" title="Contains the structure to handle the level. " alt="" coords="470,80,546,107"/>
+<area shape="rect" id="node19" href="$level__editor_8h.html" title="Contains the structure to handle the level editor. " alt="" coords="686,155,783,181"/>
+<area shape="rect" id="node21" href="$kr__tileset_8c.html" title="Contains the function to handle the tileset. " alt="" coords="715,80,802,107"/>
+<area shape="rect" id="node3" href="$kr__collision_8h.html" title="kr_collision.h" alt="" coords="296,155,395,181"/>
+<area shape="rect" id="node8" href="$level__state_8h.html" title="level_state.h" alt="" coords="166,453,261,480"/>
+<area shape="rect" id="node10" href="$main_8c.html" title="main.c" alt="" coords="389,603,451,629"/>
+<area shape="rect" id="node11" href="$nature_8h.html" title="Contains the structure to handle the nature. " alt="" coords="21,528,91,555"/>
+<area shape="rect" id="node14" href="$kr__map_8h.html" title="Contains the structure to handle the map. " alt="" coords="433,379,509,405"/>
+<area shape="rect" id="node18" href="$kr__level_8c.html" title="Contains the functions to handle the level. " alt="" coords="509,155,585,181"/>
+<area shape="rect" id="node4" href="$weapon_8h.html" title="weapon.h" alt="" coords="307,229,384,256"/>
+<area shape="rect" id="node17" href="$kr__collision_8c.html" title="Contains the functions to handle the collision. " alt="" coords="184,229,283,256"/>
+<area shape="rect" id="node5" href="$entite_8h.html" title="entite.h" alt="" coords="289,304,354,331"/>
+<area shape="rect" id="node16" href="$weapon_8c.html" title="Contains the structure to handle the weapons and the projectiles. " alt="" coords="187,304,264,331"/>
+<area shape="rect" id="node6" href="$bombe_8h.html" title="Contains the structure to handle the weapon bomb. " alt="" coords="336,379,408,405"/>
+<area shape="rect" id="node13" href="$entite_8c.html" title="Contains the structure to handle the entities. " alt="" coords="195,379,261,405"/>
+<area shape="rect" id="node7" href="$bombe_8c.html" title="Contains the functions to handle the weapon bomb. " alt="" coords="285,453,357,480"/>
+<area shape="rect" id="node9" href="$level__state_8c.html" title="Contains the structure to handle the level data. " alt="" coords="251,528,346,555"/>
+<area shape="rect" id="node12" href="$nature_8c.html" title="Contains the function to handle the nature. " alt="" coords="21,603,91,629"/>
+<area shape="rect" id="node15" href="$kr__map_8c.html" title="Contains the functions to handle the map. " alt="" coords="483,453,559,480"/>
+<area shape="rect" id="node20" href="$level__editor_8c.html" title="Contains the functions to handle the level editor. " alt="" coords="737,229,834,256"/>
+</map>

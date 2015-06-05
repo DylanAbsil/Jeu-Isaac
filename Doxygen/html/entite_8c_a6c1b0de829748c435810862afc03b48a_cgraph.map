@@ -1,0 +1,16 @@
+<map id="shoot" name="shoot">
+<area shape="rect" id="node2" href="$entite_8c.html#ae826a5b1e37aec1f2b9eeae153e16ca0" title="Function to switch from normal to firing texture. " alt="" coords="284,264,432,291"/>
+<area shape="rect" id="node5" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="672,176,769,203"/>
+<area shape="rect" id="node6" href="$weapon_8c.html#a24be0341308272c8ce2e6a68f159004d" title="Function to init a projectile. " alt="" coords="113,11,213,37"/>
+<area shape="rect" id="node8" href="$weapon_8c.html#abd2145393074d4815a58db2c5141a560" title="Function to load a projectile. " alt="" coords="108,112,219,139"/>
+<area shape="rect" id="node12" href="$weapon_8c.html#a66fd542624f4285ac4c63562c670d8f2" title="insertLast" alt="" coords="124,315,203,341"/>
+<area shape="rect" id="node15" href="$entite_8c.html#acaf47ef7919535baa5b0cf1591296f56" title="Function to switch the texture of the entity according to the new direction. " alt="" coords="267,213,449,240"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="499,264,623,291"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#a1db13b904cd51019886423dc0711d9b7" title="Function to load a texture. " alt="" coords="497,207,624,233"/>
+<area shape="rect" id="node7" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="509,68,612,95"/>
+<area shape="rect" id="node9" href="$kr__sprite_8c.html#a796df8374ef81a6a365169bac74c68d6" title="Function to init a sprite. " alt="" coords="308,61,408,88"/>
+<area shape="rect" id="node10" href="$kr__util_8c.html#a323eb5b62076c0220028eb20a0ce9523" title="Function to compute the middle of two values with coord2 &gt; coord1. " alt="" coords="299,163,417,189"/>
+<area shape="rect" id="node11" href="$kr__sprite_8c.html#a9accd31f396c44e2a41264c53bf4b974" title="Function to load the sprite. " alt="" coords="303,112,413,139"/>
+<area shape="rect" id="node13" href="$weapon_8c.html#adb920ebc81fd9f4defa8b17c27484dc6" title="newNodeListProj" alt="" coords="299,315,417,341"/>
+<area shape="rect" id="node14" href="$weapon_8c.html#a66c44cd2d164369952c0e12e670b6dfc" title="emptyList" alt="" coords="319,365,397,392"/>
+</map>

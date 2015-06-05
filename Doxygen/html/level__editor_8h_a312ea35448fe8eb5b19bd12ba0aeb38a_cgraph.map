@@ -1,0 +1,5 @@
+<map id="Level_Editor_CreateLevelFile" name="Level_Editor_CreateLevelFile">
+<area shape="rect" id="node2" href="$kr__util_8c.html#a9f79b8a3f5b4ee746d262194cef9fab0" title="Function to open a file. " alt="" coords="241,5,348,32"/>
+<area shape="rect" id="node3" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="397,31,495,57"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#afee1c2c8a9fbfe900b3c98561c0bb9ac" title="Function to close a file. " alt="" coords="240,107,349,133"/>
+</map>

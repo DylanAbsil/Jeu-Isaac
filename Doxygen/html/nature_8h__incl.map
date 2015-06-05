@@ -1,0 +1,17 @@
+<map id="nature.h" name="nature.h">
+<area shape="rect" id="node2" href="$kr__common_8h.html" title="Contains the standard includes, structures and enumerations. " alt="" coords="573,677,675,704"/>
+<area shape="rect" id="node13" href="$kr__log_8h.html" title="Contains the structure to handle the logs. " alt="" coords="486,603,554,629"/>
+<area shape="rect" id="node14" href="$entite_8h.html" title="entite.h" alt="" coords="817,229,882,256"/>
+<area shape="rect" id="node19" href="$kr__level_8h.html" title="Contains the structure to handle the level. " alt="" coords="741,453,817,480"/>
+<area shape="rect" id="node21" href="$kr__sound_8h.html" title="kr_sound.h" alt="" coords="43,528,130,555"/>
+<area shape="rect" id="node23" href="$level__state_8h.html" title="level_state.h" alt="" coords="487,80,582,107"/>
+<area shape="rect" id="node15" href="$weapon_8h.html" title="weapon.h" alt="" coords="821,304,899,331"/>
+<area shape="rect" id="node22" href="$kr__input_8h.html" title="Contains the structure to handle the input (keyboard and mouse). " alt="" coords="1131,379,1210,405"/>
+<area shape="rect" id="node16" href="$kr__sprite_8h.html" title="kr_sprite.h" alt="" coords="608,528,691,555"/>
+<area shape="rect" id="node18" href="$kr__collision_8h.html" title="kr_collision.h" alt="" coords="816,379,915,405"/>
+<area shape="rect" id="node17" href="$kr__util_8h.html" title="Contains some useful and standard functions. " alt="" coords="694,603,762,629"/>
+<area shape="rect" id="node20" href="$kr__tileset_8h.html" title="Contains the structure to handle the tileset. " alt="" coords="817,528,903,555"/>
+<area shape="rect" id="node24" href="$bombe_8h.html" title="Contains the structure to handle the weapon bomb. " alt="" coords="356,155,428,181"/>
+<area shape="rect" id="node25" href="$kr__fps_8h.html" title="Contains the structure to handle the fps. " alt="" coords="358,453,426,480"/>
+<area shape="rect" id="node26" href="$kr__text_8h.html" title="kr_text.h" alt="" coords="409,528,482,555"/>
+</map>

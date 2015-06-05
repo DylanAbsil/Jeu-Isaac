@@ -1,0 +1,28 @@
+<map id="UTIL_LoadTexture" name="UTIL_LoadTexture">
+<area shape="rect" id="node2" href="$entite_8h.html#a217013904dae2bc86082a21938d342d8" title="Function to switch the texture of the entity according to the new direction. " alt="" coords="339,173,521,199"/>
+<area shape="rect" id="node12" href="$entite_8h.html#ae826a5b1e37aec1f2b9eeae153e16ca0" title="Function to switch from normal to firing texture. " alt="" coords="356,325,504,351"/>
+<area shape="rect" id="node13" href="$_h_u_d_8h.html#a9570d0607c8895d8f0f0a31dd1f606c7" title="Function to initiate a HUD. " alt="" coords="583,375,667,402"/>
+<area shape="rect" id="node14" href="$kr__sprite_8h.html#a9fa64221b2d5cf8658d64fd9cb7ade9d" title="Function to load the sprite. " alt="" coords="180,578,291,605"/>
+<area shape="rect" id="node22" href="$level__editor_8h.html#a997746776f10ec7b5ff7618d9cf01c6f" title="Function to initialize a Grid structure. " alt="" coords="200,933,271,959"/>
+<area shape="rect" id="node23" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="402,933,458,959"/>
+<area shape="rect" id="node24" href="$_menu_8h.html#ac2ad3c7db89db1404d43fa19ba55cbaa" title="Function to initiate a button. " alt="" coords="192,781,279,807"/>
+<area shape="rect" id="node25" href="$_menu_8h.html#a42d6ad889e3098920658ccdd14f51182" title="Function to handle the main menu. " alt="" coords="375,831,485,858"/>
+<area shape="rect" id="node27" href="$message_8h.html#aed9977fb0ab253a73e63963af67adc90" title="Function to free a Message structure. " alt="" coords="180,882,291,909"/>
+<area shape="rect" id="node3" href="$entite_8h.html#a612edea1f358c8c6f9c7c26ad8dd7184" title="Function to handle the firing animation. " alt="" coords="571,223,678,250"/>
+<area shape="rect" id="node4" href="$level__state_8h.html#a2b4dc11b61c65c97198fe06b9814ab03" title="This function will update the data about the entity. " alt="" coords="765,237,860,263"/>
+<area shape="rect" id="node8" href="$entite_8h.html#a6c1b0de829748c435810862afc03b48a" title="if the player use zqsd to shoot, load a new projectile " alt="" coords="597,274,652,301"/>
+<area shape="rect" id="node9" href="$nature_8h.html#a519aa3283a4077b173c5913e40abae58" title="PassageOiseau" alt="" coords="957,97,1072,123"/>
+<area shape="rect" id="node10" href="$nature_8h.html#ab311b3285407faec47ae7ca1f9335625" title="Function to update the behaviour of a butterfly. " alt="" coords="569,122,680,149"/>
+<area shape="rect" id="node11" href="$nature_8h.html#af296f4f177845d9011f849f3918a4ea4" title="Function to update the behaviour of the flying bird. " alt="" coords="584,21,665,47"/>
+<area shape="rect" id="node5" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="955,249,1075,275"/>
+<area shape="rect" id="node6" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="1132,502,1185,529"/>
+<area shape="rect" id="node7" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="1233,882,1284,909"/>
+<area shape="rect" id="node15" href="$bombe_8h.html#a453edac8f8e9f6db004489326920f3f6" title="Function to initialize a Bombe structure. " alt="" coords="971,477,1058,503"/>
+<area shape="rect" id="node16" href="$level__state_8h.html#a5d6ca589377c4ae4e8265276a4260fd9" title="Function to load the Level_State from the Kr_Level and the file related. " alt="" coords="751,527,875,554"/>
+<area shape="rect" id="node17" href="$nature_8h.html#a9ed3ce6172f6ad10a678518c96ee1507" title="Function to load the entities. " alt="" coords="948,578,1081,605"/>
+<area shape="rect" id="node18" href="$nature_8h.html#a2a1e1f88230819a34a56329d8aa871b8" title="Function to load the bush. " alt="" coords="743,629,882,655"/>
+<area shape="rect" id="node19" href="$nature_8h.html#a468a66139249a83e8d8414d7dff3efd6" title="Function to load the entity &quot;papillon&quot;. " alt="" coords="945,679,1084,706"/>
+<area shape="rect" id="node20" href="$nature_8h.html#aacd3bfbf5889d0a45a94c19b21caee08" title="Function to load the flying bird. " alt="" coords="728,730,897,757"/>
+<area shape="rect" id="node21" href="$weapon_8h.html#abd2145393074d4815a58db2c5141a560" title="Function to load a projectile. " alt="" coords="375,274,485,301"/>
+<area shape="rect" id="node26" href="$_menu_8h.html#ab74e2c2fb65680a57c733a01beff7cbc" title="Function to handle the main menu. " alt="" coords="763,781,862,807"/>
+</map>

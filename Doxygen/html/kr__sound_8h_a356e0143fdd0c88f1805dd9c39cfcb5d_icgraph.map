@@ -1,0 +1,9 @@
+<map id="Kr_Sound_FreeMusic" name="Kr_Sound_FreeMusic">
+<area shape="rect" id="node2" href="$kr__level_8h.html#a646cf66821b4e30e37a81c2699942f4e" title="Function to free a Kr_Level structure. " alt="" coords="203,81,307,108"/>
+<area shape="rect" id="node8" href="$_menu_8h.html#a42d6ad889e3098920658ccdd14f51182" title="Function to handle the main menu. " alt="" coords="200,132,311,159"/>
+<area shape="rect" id="node3" href="$kr__level_8h.html#ac1708df66d49f823c8aa00d119ceee78" title="Kr_Level_Change" alt="" coords="360,5,483,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="533,56,587,83"/>
+<area shape="rect" id="node6" href="$level__editor_8h.html#a669189481452bf89f179280f39118c5b" title="Function to free the Level Editor structure. " alt="" coords="359,107,484,133"/>
+<area shape="rect" id="node5" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="636,107,687,133"/>
+<area shape="rect" id="node7" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="532,107,588,133"/>
+</map>

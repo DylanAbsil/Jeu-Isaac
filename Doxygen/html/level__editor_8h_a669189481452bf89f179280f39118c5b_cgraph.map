@@ -1,0 +1,6 @@
+<map id="Level_Editor_Free" name="Level_Editor_Free">
+<area shape="rect" id="node2" href="$kr__level_8c.html#a646cf66821b4e30e37a81c2699942f4e" title="Function to free a Kr_Level structure. " alt="" coords="179,31,283,57"/>
+<area shape="rect" id="node3" href="$kr__tileset_8c.html#a1c8d34e6a70975a26055a35d6ab8666c" title="Function to free a Kr_Tileset structure. " alt="" coords="347,5,461,32"/>
+<area shape="rect" id="node5" href="$kr__sound_8c.html#a356e0143fdd0c88f1805dd9c39cfcb5d" title="Function to free a music. " alt="" coords="331,56,477,83"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="525,5,649,32"/>
+</map>

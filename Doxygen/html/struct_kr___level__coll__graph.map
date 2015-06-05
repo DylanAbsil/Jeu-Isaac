@@ -1,0 +1,5 @@
+<map id="Kr_Level" name="Kr_Level">
+<area shape="rect" id="node2" href="$struct_kr___tileset.html" title="Structure to handle the tileset. " alt="" coords="10,95,90,121"/>
+<area shape="rect" id="node3" href="$struct_kr___tile_prop.html" title="Structure to handle the properties of the tile. " alt="" coords="5,5,95,32"/>
+<area shape="rect" id="node4" href="$struct_kr___music.html" title="Structure to handle the music. " alt="" coords="127,95,205,121"/>
+</map>

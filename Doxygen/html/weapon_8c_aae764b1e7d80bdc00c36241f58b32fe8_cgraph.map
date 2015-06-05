@@ -1,0 +1,9 @@
+<map id="Projectile_Load" name="Projectile_Load">
+<area shape="rect" id="node2" href="$kr__sprite_8c.html#a796df8374ef81a6a365169bac74c68d6" title="Function to init a sprite. " alt="" coords="173,44,273,71"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#a541d70598bec0a55448a24db69a1ed60" title="Function to allocate memory block. " alt="" coords="498,70,591,96"/>
+<area shape="rect" id="node4" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="656,108,753,135"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#a323eb5b62076c0220028eb20a0ce9523" title="Function to compute the middle of two values with coord2 &gt; coord1. " alt="" coords="164,95,283,122"/>
+<area shape="rect" id="node7" href="$kr__sprite_8c.html#a9accd31f396c44e2a41264c53bf4b974" title="Kr_Sprite_Load" alt="" coords="168,146,279,172"/>
+<area shape="rect" id="node5" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="331,95,433,122"/>
+<area shape="rect" id="node8" href="$kr__util_8c.html#a1db13b904cd51019886423dc0711d9b7" title="Function to load a texture. " alt="" coords="481,196,608,223"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="Kr_Collision" name="Kr_Collision">
+<area shape="rect" id="node2" href="$kr__collision_8c.html#a7d911924bc83ce2467f110157526249f" title="Function to try to move a rectangle with a certain vector speed and check if it&#39;s colliding with the ..." alt="" coords="352,6,495,33"/>
+<area shape="rect" id="node4" href="$kr__collision_8c.html#a2e47075c7ced525c02eb319449dc73f3" title="Function to reduce the vector speed to check if there is a collision between the rectangle and the ot..." alt="" coords="145,32,302,58"/>
+<area shape="rect" id="node5" href="$kr__collision_8c.html#a767e24ad20e5e0618932ba2c36d747bc" title="Function to try to move a rectangle with a certain vector speed and check if it&#39;s colliding with the ..." alt="" coords="351,108,496,134"/>
+<area shape="rect" id="node7" href="$kr__collision_8c.html#af794496b79acd9aed5c7a77d6b2d506d" title="Function to reduce the vector speed to check if there is a collision between the rectangle and the le..." alt="" coords="144,133,303,160"/>
+<area shape="rect" id="node3" href="$kr__collision_8c.html#a9d99b8a387f711f28edda86754767926" title="Function to detect if the Rect2 is colliding with Rect1. " alt="" coords="545,6,708,33"/>
+<area shape="rect" id="node6" href="$kr__collision_8c.html#a7dff5138272412257f29b75d04f6c727" title="Function to detect if a rectangle is colliding with the level background. " alt="" coords="544,108,709,134"/>
+</map>

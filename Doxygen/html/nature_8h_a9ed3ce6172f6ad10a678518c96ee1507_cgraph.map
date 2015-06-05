@@ -1,0 +1,10 @@
+<map id="ChargementOiseau" name="ChargementOiseau">
+<area shape="rect" id="node2" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="520,154,617,181"/>
+<area shape="rect" id="node3" href="$kr__sprite_8c.html#a796df8374ef81a6a365169bac74c68d6" title="Function to init a sprite. " alt="" coords="192,53,292,80"/>
+<area shape="rect" id="node5" href="$kr__sprite_8c.html#a9accd31f396c44e2a41264c53bf4b974" title="Function to load the sprite. " alt="" coords="187,154,297,181"/>
+<area shape="rect" id="node7" href="$entite_8c.html#a1be2ab5ce5ddc62ff8e998fd6cf1cc77" title="Function to init an entity. " alt="" coords="202,104,282,130"/>
+<area shape="rect" id="node8" href="$entite_8c.html#a96dade8a074155f396bee4bc92d27e86" title="Function to load the entity. " alt="" coords="197,205,287,232"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="357,53,460,80"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#a1db13b904cd51019886423dc0711d9b7" title="Function to load a texture. " alt="" coords="345,154,472,181"/>
+<area shape="rect" id="node9" href="$entite_8c.html#a9f88cb039702afcc4e9685614e875a49" title="Function to log an entity. " alt="" coords="367,256,451,282"/>
+</map>

@@ -1,0 +1,25 @@
+<map id="updateAllWeapons" name="updateAllWeapons">
+<area shape="rect" id="node2" href="$level__state_8c.html#aaba71fc8d91c4b3acced99408da1a2e2" title="Function to update all the position of the projectiles contained in a list in the struct weapon..." alt="" coords="184,318,355,345"/>
+<area shape="rect" id="node21" href="$entite_8c.html#a6382d6bc4cc3e6d4b181a70a751935a4" title="setOnFirstEnt" alt="" coords="409,445,511,472"/>
+<area shape="rect" id="node23" href="$entite_8c.html#a4f3a62d4a377b6cb35ea7dc15448f061" title="nextEnt" alt="" coords="427,496,493,522"/>
+<area shape="rect" id="node3" href="$weapon_8c.html#a66c44cd2d164369952c0e12e670b6dfc" title="emptyList" alt="" coords="805,205,884,232"/>
+<area shape="rect" id="node4" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="411,344,509,370"/>
+<area shape="rect" id="node5" href="$weapon_8c.html#a7266b4ca18c42fcf3580744e18c4da77" title="setOnFirst" alt="" coords="603,445,686,472"/>
+<area shape="rect" id="node6" href="$weapon_8c.html#ade2d585693d11f47e3f57b1d73f37cc5" title="deleteCurrent" alt="" coords="411,293,509,320"/>
+<area shape="rect" id="node8" href="$weapon_8c.html#a4269bb73372138cecf6423bf8959110b" title="next" alt="" coords="621,242,668,269"/>
+<area shape="rect" id="node14" href="$kr__collision_8c.html#a6f0b8e8200c930bc38ef48321d43424b" title="Function to detect the collision of a rectangle with the level and an other rectangle,. " alt="" coords="415,116,505,142"/>
+<area shape="rect" id="node22" href="$entite_8c.html#a05b2287ff96d90f83bea8fdea737d470" title="weaponDamage" alt="" coords="403,41,517,68"/>
+<area shape="rect" id="node7" href="$weapon_8c.html#a56416817015621df6224b47fefdd1efe" title="first" alt="" coords="623,344,666,370"/>
+<area shape="rect" id="node9" href="$weapon_8c.html#adbab546afffa935d84239a3d9aa6bd6d" title="last" alt="" coords="623,394,666,421"/>
+<area shape="rect" id="node10" href="$weapon_8c.html#ac872ee33c7d42f9567dbcf494741f3df" title="deleteNodeListProj" alt="" coords="579,293,710,320"/>
+<area shape="rect" id="node11" href="$weapon_8c.html#a42f9341f7d8600c3d4c51f2770ea9eb2" title="Function to freed a Projectile and his sprite. " alt="" coords="790,293,899,320"/>
+<area shape="rect" id="node12" href="$kr__sprite_8c.html#a0899eb27b0f7aa37db089900a1204911" title="Function to freed a Kr_Sprite texture. " alt="" coords="993,293,1103,320"/>
+<area shape="rect" id="node13" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="1179,293,1303,320"/>
+<area shape="rect" id="node15" href="$kr__collision_8c.html#a7d911924bc83ce2467f110157526249f" title="Function to try to move a rectangle with a certain vector speed and check if it&#39;s colliding with the ..." alt="" coords="773,129,916,156"/>
+<area shape="rect" id="node17" href="$kr__collision_8c.html#a2e47075c7ced525c02eb319449dc73f3" title="Function to reduce the vector speed to check if there is a collision between the rectangle and the ot..." alt="" coords="566,90,723,117"/>
+<area shape="rect" id="node18" href="$kr__collision_8c.html#a767e24ad20e5e0618932ba2c36d747bc" title="Function to try to move a rectangle with a certain vector speed and check if it&#39;s colliding with the ..." alt="" coords="772,14,917,41"/>
+<area shape="rect" id="node20" href="$kr__collision_8c.html#af794496b79acd9aed5c7a77d6b2d506d" title="Function to reduce the vector speed to check if there is a collision between the rectangle and the le..." alt="" coords="565,40,724,66"/>
+<area shape="rect" id="node16" href="$kr__collision_8c.html#a9d99b8a387f711f28edda86754767926" title="Function to detect if the Rect2 is colliding with Rect1. " alt="" coords="967,129,1129,156"/>
+<area shape="rect" id="node19" href="$kr__collision_8c.html#a7dff5138272412257f29b75d04f6c727" title="Function to detect if a rectangle is colliding with the level background. " alt="" coords="965,14,1131,41"/>
+<area shape="rect" id="node24" href="$entite_8c.html#a67921c7c335b0c4800f7bc172b2aef72" title="emptyListEnt" alt="" coords="595,496,694,522"/>
+</map>

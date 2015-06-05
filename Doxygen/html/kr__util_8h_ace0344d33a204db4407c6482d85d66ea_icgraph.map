@@ -1,0 +1,41 @@
+<map id="UTIL_FreeTexture" name="UTIL_FreeTexture">
+<area shape="rect" id="node2" href="$entite_8h.html#a217013904dae2bc86082a21938d342d8" title="Function to switch the texture of the entity according to the new direction. " alt="" coords="497,195,680,221"/>
+<area shape="rect" id="node6" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="1301,639,1355,665"/>
+<area shape="rect" id="node12" href="$entite_8h.html#ae826a5b1e37aec1f2b9eeae153e16ca0" title="Function to switch from normal to firing texture. " alt="" coords="515,347,663,373"/>
+<area shape="rect" id="node13" href="$_h_u_d_8h.html#a1b2c83970c99b943c80fcbb069a06043" title="Function to free the HUD. " alt="" coords="355,651,433,677"/>
+<area shape="rect" id="node14" href="$kr__fps_8h.html#a1414fc41405c320af392c000c08d61bb" title="Function to handle the FPS. " alt="" coords="185,752,283,779"/>
+<area shape="rect" id="node15" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="764,1107,820,1133"/>
+<area shape="rect" id="node16" href="$_menu_8h.html#a42d6ad889e3098920658ccdd14f51182" title="Function to handle the main menu. " alt="" coords="339,904,449,931"/>
+<area shape="rect" id="node18" href="$kr__fps_8h.html#a8624d15c825a1ce5fb57ef76debf01a5" title="Function to free the structure. " alt="" coords="185,803,283,829"/>
+<area shape="rect" id="node19" href="$kr__sprite_8h.html#a0899eb27b0f7aa37db089900a1204911" title="Function to freed a Kr_Sprite texture. " alt="" coords="179,600,289,627"/>
+<area shape="rect" id="node32" href="$kr__tileset_8h.html#a1c8d34e6a70975a26055a35d6ab8666c" title="Function to free a Kr_Tileset structure. " alt="" coords="177,1005,291,1032"/>
+<area shape="rect" id="node36" href="$level__editor_8h.html#a8e266bd830ac5cc5631b518f168d1f90" title="Function to free a Grid structure. " alt="" coords="355,1259,433,1285"/>
+<area shape="rect" id="node37" href="$_menu_8h.html#a967306255a64c167317888c693eac9df" title="Function to free a button structure. " alt="" coords="186,853,282,880"/>
+<area shape="rect" id="node38" href="$_menu_8h.html#ae97facdcd27e6d7f673701112c2a192b" title="Function to load a bouton structure. " alt="" coords="185,904,283,931"/>
+<area shape="rect" id="node39" href="$message_8h.html#a681ab786a2c046aac7a704e33331ac0e" title="Function to free a Message structure. " alt="" coords="535,1107,643,1133"/>
+<area shape="rect" id="node40" href="$message_8h.html#ae36319b06a4a7f608955d84ab0b210eb" title="Function to update a Message structure. " alt="" coords="527,1157,650,1184"/>
+<area shape="rect" id="node3" href="$entite_8h.html#a612edea1f358c8c6f9c7c26ad8dd7184" title="Function to handle the firing animation. " alt="" coords="739,195,845,221"/>
+<area shape="rect" id="node4" href="$level__state_8h.html#a2b4dc11b61c65c97198fe06b9814ab03" title="This function will update the data about the entity. " alt="" coords="942,245,1037,272"/>
+<area shape="rect" id="node8" href="$entite_8h.html#a6c1b0de829748c435810862afc03b48a" title="if the player use zqsd to shoot, load a new projectile " alt="" coords="765,296,819,323"/>
+<area shape="rect" id="node9" href="$nature_8h.html#a519aa3283a4077b173c5913e40abae58" title="PassageOiseau" alt="" coords="932,43,1047,69"/>
+<area shape="rect" id="node10" href="$nature_8h.html#ab311b3285407faec47ae7ca1f9335625" title="Function to update the behaviour of a butterfly. " alt="" coords="1133,149,1243,176"/>
+<area shape="rect" id="node11" href="$nature_8h.html#af296f4f177845d9011f849f3918a4ea4" title="Function to update the behaviour of the flying bird. " alt="" coords="949,169,1030,196"/>
+<area shape="rect" id="node5" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="1128,347,1248,373"/>
+<area shape="rect" id="node7" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="1403,904,1453,931"/>
+<area shape="rect" id="node17" href="$_menu_8h.html#ab74e2c2fb65680a57c733a01beff7cbc" title="Function to handle the main menu. " alt="" coords="345,853,443,880"/>
+<area shape="rect" id="node20" href="$entite_8h.html#a3d58a115048731b7eb6501f9b351ec14" title="Function to freed an entity. " alt="" coords="544,499,633,525"/>
+<area shape="rect" id="node26" href="$weapon_8h.html#a42f9341f7d8600c3d4c51f2770ea9eb2" title="Function to freed a Projectile and his sprite. " alt="" coords="339,600,449,627"/>
+<area shape="rect" id="node21" href="$bombe_8h.html#a3c27680988f19fc3f6d2aa9698ce767b" title="Function to free a Bombe structure. " alt="" coords="1140,588,1236,615"/>
+<area shape="rect" id="node22" href="$entite_8h.html#a70bc9b429895f70787b48fb7c6ab8f5c" title="deleteNodeListEnt" alt="" coords="728,397,856,424"/>
+<area shape="rect" id="node24" href="$level__state_8h.html#a7f222e3b0f04ed1c5b0267051eb8aad3" title="Function to freed the level state. " alt="" coords="1127,537,1249,564"/>
+<area shape="rect" id="node23" href="$entite_8h.html#a6de1c064101a904ba009f89c9c379858" title="deleteListEnt" alt="" coords="940,397,1039,424"/>
+<area shape="rect" id="node25" href="$entite_8h.html#a4c5f29e81453c7d40028dbec8ec677e8" title="deleteCurrentEnt" alt="" coords="930,347,1049,373"/>
+<area shape="rect" id="node27" href="$weapon_8h.html#ac872ee33c7d42f9567dbcf494741f3df" title="deleteNodeListProj" alt="" coords="523,600,654,627"/>
+<area shape="rect" id="node28" href="$weapon_8h.html#ae3ef46fb61d620bbf1ec3e72f51d5f36" title="deleteList" alt="" coords="753,651,831,677"/>
+<area shape="rect" id="node29" href="$weapon_8h.html#ade2d585693d11f47e3f57b1d73f37cc5" title="deleteCurrent" alt="" coords="743,600,841,627"/>
+<area shape="rect" id="node30" href="$level__state_8h.html#aaba71fc8d91c4b3acced99408da1a2e2" title="Function to update all the position of the projectiles contained in a list in the struct weapon..." alt="" coords="904,625,1075,652"/>
+<area shape="rect" id="node31" href="$level__state_8h.html#a0dafcc028cd3f356c87e71c9e428bcc9" title="Function to update all the weaponsof all entites (include the player) of the current level..." alt="" coords="1123,639,1253,665"/>
+<area shape="rect" id="node33" href="$kr__level_8h.html#a646cf66821b4e30e37a81c2699942f4e" title="Function to free a Kr_Level structure. " alt="" coords="342,1005,446,1032"/>
+<area shape="rect" id="node34" href="$kr__level_8h.html#ac1708df66d49f823c8aa00d119ceee78" title="Kr_Level_Change" alt="" coords="1127,1005,1249,1032"/>
+<area shape="rect" id="node35" href="$level__editor_8h.html#a669189481452bf89f179280f39118c5b" title="Function to free the Level Editor structure. " alt="" coords="526,1056,651,1083"/>
+</map>

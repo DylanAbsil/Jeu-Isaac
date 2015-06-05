@@ -1,0 +1,10 @@
+<map id="Entity_Free" name="Entity_Free">
+<area shape="rect" id="node2" href="$bombe_8h.html#a3c27680988f19fc3f6d2aa9698ce767b" title="Function to free a Bombe structure. " alt="" coords="159,5,255,32"/>
+<area shape="rect" id="node3" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="656,81,709,108"/>
+<area shape="rect" id="node5" href="$entite_8h.html#a70bc9b429895f70787b48fb7c6ab8f5c" title="deleteNodeListEnt" alt="" coords="143,107,271,133"/>
+<area shape="rect" id="node7" href="$level__state_8h.html#a7f222e3b0f04ed1c5b0267051eb8aad3" title="Function to freed the level state. " alt="" coords="485,157,608,184"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="757,81,808,108"/>
+<area shape="rect" id="node6" href="$entite_8h.html#a6de1c064101a904ba009f89c9c379858" title="deleteListEnt" alt="" coords="329,157,427,184"/>
+<area shape="rect" id="node8" href="$entite_8h.html#a4c5f29e81453c7d40028dbec8ec677e8" title="deleteCurrentEnt" alt="" coords="319,107,437,133"/>
+<area shape="rect" id="node9" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="487,107,607,133"/>
+</map>

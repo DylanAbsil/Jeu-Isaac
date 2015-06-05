@@ -1,0 +1,9 @@
+<map id="PassageOiseau" name="PassageOiseau">
+<area shape="rect" id="node2" href="$kr__sound_8c.html#a27ad375067750c4d55a6e6c5743a6025" title="Function to play a sound. " alt="" coords="203,5,315,32"/>
+<area shape="rect" id="node3" href="$entite_8c.html#ab1d852fd71f20a44647e0a3b163102cc" title="Function to get a direction that the entity is looking. " alt="" coords="207,56,311,83"/>
+<area shape="rect" id="node4" href="$entite_8c.html#acaf47ef7919535baa5b0cf1591296f56" title="Function to switch the texture of the entity according to the new direction. " alt="" coords="168,107,351,133"/>
+<area shape="rect" id="node5" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="400,56,524,83"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#a1db13b904cd51019886423dc0711d9b7" title="Function to load a texture. " alt="" coords="399,107,525,133"/>
+<area shape="rect" id="node8" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="411,157,513,184"/>
+<area shape="rect" id="node7" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="573,107,671,133"/>
+</map>

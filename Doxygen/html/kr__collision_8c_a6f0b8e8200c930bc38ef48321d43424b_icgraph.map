@@ -1,0 +1,12 @@
+<map id="Kr_Collision" name="Kr_Collision">
+<area shape="rect" id="node2" href="$kr__collision_8h.html#a6f0b8e8200c930bc38ef48321d43424b" title="Function to detect the collision of a rectangle with the level and an other rectangle,. " alt="" coords="144,65,235,92"/>
+<area shape="rect" id="node3" href="$level__state_8h.html#a2b4dc11b61c65c97198fe06b9814ab03" title="This function will update the data about the entity. " alt="" coords="501,28,596,55"/>
+<area shape="rect" id="node7" href="$level__state_8h.html#aaba71fc8d91c4b3acced99408da1a2e2" title="Function to update all the position of the projectiles contained in a list in the struct weapon..." alt="" coords="283,167,453,193"/>
+<area shape="rect" id="node9" href="$level__state_8h.html#a791ce85f06777f79b2b4341c01d3eafe" title="GenerateRandomVector" alt="" coords="287,92,449,119"/>
+<area shape="rect" id="node4" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="649,28,769,55"/>
+<area shape="rect" id="node5" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="823,104,876,131"/>
+<area shape="rect" id="node6" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="924,104,975,131"/>
+<area shape="rect" id="node8" href="$level__state_8h.html#a0dafcc028cd3f356c87e71c9e428bcc9" title="Function to update all the weaponsof all entites (include the player) of the current level..." alt="" coords="644,180,775,207"/>
+<area shape="rect" id="node10" href="$nature_8h.html#ab311b3285407faec47ae7ca1f9335625" title="Function to update the behaviour of a butterfly. " alt="" coords="654,79,765,105"/>
+<area shape="rect" id="node11" href="$nature_8h.html#af296f4f177845d9011f849f3918a4ea4" title="Function to update the behaviour of the flying bird. " alt="" coords="508,129,589,156"/>
+</map>

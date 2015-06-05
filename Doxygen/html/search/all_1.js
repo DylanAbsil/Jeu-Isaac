@@ -1,0 +1,28 @@
+var searchData=
+[
+  ['bactive',['bActive',['../struct_bouton.html#ae265ffd3238d54a8c8e1519ea6e3441c',1,'Bouton']]],
+  ['bbombexplosion',['bBombExplosion',['../struct_bombe.html#ac539624a5b6f0edae078b499b6788781',1,'Bombe']]],
+  ['bbombset',['bBombSet',['../struct_bombe.html#a3f9d833b6f912553d6d101e7889ae7c4',1,'Bombe']]],
+  ['bfriendly',['bFriendly',['../struct_entity.html#ada7c2ff6f7fe824ee23d1d1775554c22',1,'Entity']]],
+  ['bisempty',['bIsEmpty',['../struct_kr___log.html#a17c687a6efecc2e80f3d61e58283b459',1,'Kr_Log']]],
+  ['bmustshow',['bMustShow',['../struct_kr___fps.html#a7f4f2f89389ce434b6fbb2d2804d9e31',1,'Kr_Fps::bMustShow()'],['../struct_bouton.html#a7f4f2f89389ce434b6fbb2d2804d9e31',1,'Bouton::bMustShow()'],['../struct_message.html#a7f4f2f89389ce434b6fbb2d2804d9e31',1,'Message::bMustShow()']]],
+  ['bombe',['Bombe',['../struct_bombe.html',1,'Bombe'],['../bombe_8h.html#aacc8c0996f348bc984344512b29271d9',1,'Bombe():&#160;bombe.h']]],
+  ['bombe_2ec',['bombe.c',['../bombe_8c.html',1,'']]],
+  ['bombe_2eh',['bombe.h',['../bombe_8h.html',1,'']]],
+  ['bombe_5fdmg',['BOMBE_DMG',['../bombe_8h.html#ac15c968bcdb2d828ec7a1aef132c377d',1,'bombe.h']]],
+  ['bombe_5fexplosion',['Bombe_Explosion',['../bombe_8c.html#ae8dd6636ea9ef2d88724f6a95452b95f',1,'Bombe_Explosion(Bombe *pBombe, Boolean bStart, SDL_Renderer *pRenderer):&#160;bombe.c'],['../bombe_8h.html#ae8dd6636ea9ef2d88724f6a95452b95f',1,'Bombe_Explosion(Bombe *pBombe, Boolean bStart, SDL_Renderer *pRenderer):&#160;bombe.c']]],
+  ['bombe_5ffree',['Bombe_Free',['../bombe_8c.html#a3c27680988f19fc3f6d2aa9698ce767b',1,'Bombe_Free(Bombe *pBombe):&#160;bombe.c'],['../bombe_8h.html#a3c27680988f19fc3f6d2aa9698ce767b',1,'Bombe_Free(Bombe *pBombe):&#160;bombe.c']]],
+  ['bombe_5finit',['Bombe_Init',['../bombe_8c.html#aa1926c0411b8055cfceef8461ab76d2a',1,'Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode):&#160;bombe.c'],['../bombe_8h.html#a453edac8f8e9f6db004489326920f3f6',1,'Bombe_Init(SDL_Renderer *pRenderer, Uint32 iNumber, Uint32 iCooldown, char *szSprExplosion, char *szSprBomb, char *szSndSet, char *szSndExplode):&#160;bombe.c']]],
+  ['bombe_5fset',['Bombe_Set',['../bombe_8c.html#af077dc97d322938487cfbd56ff5dd5a3',1,'Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y, Boolean *bCheck):&#160;bombe.c'],['../bombe_8h.html#af077dc97d322938487cfbd56ff5dd5a3',1,'Bombe_Set(Bombe *pBombe, Boolean bStart, Uint32 x, Uint32 y, Boolean *bCheck):&#160;bombe.c']]],
+  ['boolean',['Boolean',['../kr__common_8h.html#ae7d38601dfbd73adbe5c1b3ec34e0e13',1,'kr_common.h']]],
+  ['bouton',['Bouton',['../struct_bouton.html',1,'']]],
+  ['bouton_5fdraw',['Bouton_Draw',['../_menu_8c.html#a1d61f59c0cc5e1d7b89f2a2b8fc8dc76',1,'Bouton_Draw(Bouton *pBouton):&#160;Menu.c'],['../_menu_8h.html#a1d61f59c0cc5e1d7b89f2a2b8fc8dc76',1,'Bouton_Draw(Bouton *pBouton):&#160;Menu.c']]],
+  ['bouton_5festsurvole',['Bouton_estSurvole',['../_menu_8c.html#a78a15f96704d19866bcfa1ad80926f39',1,'Bouton_estSurvole(Bouton *pBouton, Kr_Input myEvent):&#160;Menu.c'],['../_menu_8h.html#a78a15f96704d19866bcfa1ad80926f39',1,'Bouton_estSurvole(Bouton *pBouton, Kr_Input myEvent):&#160;Menu.c']]],
+  ['bouton_5ffree',['Bouton_Free',['../_menu_8c.html#a967306255a64c167317888c693eac9df',1,'Bouton_Free(Bouton *pBouton):&#160;Menu.c'],['../_menu_8h.html#a967306255a64c167317888c693eac9df',1,'Bouton_Free(Bouton *pBouton):&#160;Menu.c']]],
+  ['bouton_5finit',['Bouton_Init',['../_menu_8c.html#ac3b2aaeff1dae40232888c7df7facb06',1,'Bouton_Init(char *BoutonName, SDL_Renderer *pRenderer, char *szImageActive, char *szImageDesactive, char *szSelect):&#160;Menu.c'],['../_menu_8h.html#ac2ad3c7db89db1404d43fa19ba55cbaa',1,'Bouton_Init(char *szBoutonName, SDL_Renderer *pRenderer, char *szImageActive, char *szImageDesactive, char *szSelect):&#160;Menu.c']]],
+  ['bouton_5fload',['Bouton_Load',['../_menu_8c.html#ae97facdcd27e6d7f673701112c2a192b',1,'Bouton_Load(Bouton *pBouton, Boolean bMustShow, TTF_Font *pFont, SDL_Color Color, SDL_Rect RectImage, char *TexteActive, char *TexteNonActive):&#160;Menu.c'],['../_menu_8h.html#ae97facdcd27e6d7f673701112c2a192b',1,'Bouton_Load(Bouton *pBouton, Boolean bMustShow, TTF_Font *pFont, SDL_Color Color, SDL_Rect RectImage, char *TexteActive, char *TexteNonActive):&#160;Menu.c']]],
+  ['bquit',['bQuit',['../struct_kr___input.html#aafeabbcb2eefab125ecf45c53f7921a5',1,'Kr_Input']]],
+  ['bsurvole',['bSurvole',['../struct_bouton.html#a3fbb88c3bfcb8d7a7939fae95de8fd98',1,'Bouton']]],
+  ['burning',['burning',['../weapon_8h.html#ab7ecf803e63af6d7b307938b6349a6a5adc11aac62d22b8522ed1b10bef858e92',1,'weapon.h']]],
+  ['butterflycollision',['ButterflyCollision',['../nature_8c.html#a81aa9714050d31564f79286ef01690cf',1,'ButterflyCollision(Kr_Level *pLevel, SDL_Rect *pRect, Uint32 vx, Uint32 vy):&#160;nature.c'],['../nature_8h.html#a81aa9714050d31564f79286ef01690cf',1,'ButterflyCollision(Kr_Level *pLevel, SDL_Rect *pRect, Uint32 vx, Uint32 vy):&#160;nature.c']]]
+];

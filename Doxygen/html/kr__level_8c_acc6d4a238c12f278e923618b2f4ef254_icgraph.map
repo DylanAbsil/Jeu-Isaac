@@ -1,0 +1,8 @@
+<map id="Kr_Level_WriteLayout" name="Kr_Level_WriteLayout">
+<area shape="rect" id="node2" href="$level__editor_8h.html#ae8ef1f5f815a242ec285902eda71d959" title="Function to write the current group selection in the layout. " alt="" coords="204,5,373,47"/>
+<area shape="rect" id="node3" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="424,71,480,98"/>
+<area shape="rect" id="node5" href="$level__state_8h.html#ada05224925495382ec03dcc74accf3d7" title="Function to handle the interraction of an entity on the map. " alt="" coords="217,122,360,149"/>
+<area shape="rect" id="node7" href="$level__state_8h.html#a99cc529a04f8591b8ec1f12b3ae59a0d" title="Check if the entity of the level are near an exploding bomb, and destroy the bush near by..." alt="" coords="201,173,376,199"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="528,97,579,123"/>
+<area shape="rect" id="node6" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="425,122,479,149"/>
+</map>

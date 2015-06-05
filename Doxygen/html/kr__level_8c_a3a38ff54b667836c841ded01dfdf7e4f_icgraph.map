@@ -1,0 +1,8 @@
+<map id="Kr_Level_Init" name="Kr_Level_Init">
+<area shape="rect" id="node2" href="$kr__level_8h.html#ac1708df66d49f823c8aa00d119ceee78" title="Kr_Level_Change" alt="" coords="165,5,287,32"/>
+<area shape="rect" id="node5" href="$level__editor_8h.html#ace28da75a0015962c60e937a76ba1292" title="Function to load a Level Editor structure thanks to the level editor file. " alt="" coords="352,56,479,83"/>
+<area shape="rect" id="node7" href="$level__editor_8h.html#a7d7ba9a2917bdc0b4e4159994f831396" title="Function to create a LevelFile from a pEditor structure. " alt="" coords="148,107,304,133"/>
+<area shape="rect" id="node3" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="528,5,581,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="631,31,681,57"/>
+<area shape="rect" id="node6" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="527,56,583,83"/>
+</map>

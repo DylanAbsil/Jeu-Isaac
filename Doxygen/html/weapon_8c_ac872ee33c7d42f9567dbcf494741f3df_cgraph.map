@@ -1,0 +1,5 @@
+<map id="deleteNodeListProj" name="deleteNodeListProj">
+<area shape="rect" id="node2" href="$weapon_8c.html#a42f9341f7d8600c3d4c51f2770ea9eb2" title="Function to freed a Projectile and his sprite. " alt="" coords="184,5,293,32"/>
+<area shape="rect" id="node3" href="$kr__sprite_8c.html#a0899eb27b0f7aa37db089900a1204911" title="Function to freed a Kr_Sprite texture. " alt="" coords="341,5,451,32"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="499,5,623,32"/>
+</map>

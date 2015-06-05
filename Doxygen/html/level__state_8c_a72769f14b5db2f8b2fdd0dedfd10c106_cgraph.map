@@ -1,0 +1,9 @@
+<map id="Level_State_SaveLevel" name="Level_State_SaveLevel">
+<area shape="rect" id="node2" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="365,6,462,33"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#a9f79b8a3f5b4ee746d262194cef9fab0" title="Function to open a file. " alt="" coords="208,32,315,58"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#afee1c2c8a9fbfe900b3c98561c0bb9ac" title="Function to close a file. " alt="" coords="207,82,316,109"/>
+<area shape="rect" id="node5" href="$kr__util_8c.html#a631b59df2d5c64ee51617ade83c87863" title="Function to convert a string to a Uint32. " alt="" coords="208,133,315,160"/>
+<area shape="rect" id="node6" href="$entite_8c.html#a6382d6bc4cc3e6d4b181a70a751935a4" title="setOnFirstEnt" alt="" coords="210,184,313,210"/>
+<area shape="rect" id="node7" href="$entite_8c.html#a4f3a62d4a377b6cb35ea7dc15448f061" title="nextEnt" alt="" coords="228,234,295,261"/>
+<area shape="rect" id="node8" href="$entite_8c.html#a67921c7c335b0c4800f7bc172b2aef72" title="emptyListEnt" alt="" coords="364,234,463,261"/>
+</map>

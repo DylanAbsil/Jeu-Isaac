@@ -1,0 +1,10 @@
+<map id="Kr_Sound_InitMusic" name="Kr_Sound_InitMusic">
+<area shape="rect" id="node2" href="$kr__level_8h.html#a53b21e8b36982fdfbf443d0f14a379f2" title="Function to initialize a Level thanks to the level file. " alt="" coords="192,81,287,108"/>
+<area shape="rect" id="node9" href="$_menu_8h.html#a42d6ad889e3098920658ccdd14f51182" title="Function to handle the main menu. " alt="" coords="547,151,657,177"/>
+<area shape="rect" id="node3" href="$kr__level_8h.html#ac1708df66d49f823c8aa00d119ceee78" title="Kr_Level_Change" alt="" coords="351,5,474,32"/>
+<area shape="rect" id="node6" href="$level__editor_8h.html#ace28da75a0015962c60e937a76ba1292" title="Function to load a Level Editor structure thanks to the level editor file. " alt="" coords="539,100,665,127"/>
+<area shape="rect" id="node8" href="$level__editor_8h.html#a7d7ba9a2917bdc0b4e4159994f831396" title="Function to create a LevelFile from a pEditor structure. " alt="" coords="335,107,491,133"/>
+<area shape="rect" id="node4" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="715,37,768,64"/>
+<area shape="rect" id="node5" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="817,100,868,127"/>
+<area shape="rect" id="node7" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="713,100,769,127"/>
+</map>

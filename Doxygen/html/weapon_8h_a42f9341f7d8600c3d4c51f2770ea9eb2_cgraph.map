@@ -1,0 +1,4 @@
+<map id="Projectile_Free" name="Projectile_Free">
+<area shape="rect" id="node2" href="$kr__sprite_8c.html#a0899eb27b0f7aa37db089900a1204911" title="Function to freed a Kr_Sprite texture. " alt="" coords="163,5,272,32"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="320,5,444,32"/>
+</map>

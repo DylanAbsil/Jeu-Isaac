@@ -1,0 +1,10 @@
+<map id="Kr_Sound_Play" name="Kr_Sound_Play">
+<area shape="rect" id="node2" href="$bombe_8h.html#af077dc97d322938487cfbd56ff5dd5a3" title="Function to set a bomb. " alt="" coords="183,5,274,32"/>
+<area shape="rect" id="node3" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="340,157,393,184"/>
+<area shape="rect" id="node5" href="$bombe_8h.html#ae8dd6636ea9ef2d88724f6a95452b95f" title="Function to start the explosion. " alt="" coords="165,107,292,133"/>
+<area shape="rect" id="node6" href="$nature_8h.html#a519aa3283a4077b173c5913e40abae58" title="PassageOiseau" alt="" coords="171,157,286,184"/>
+<area shape="rect" id="node7" href="$nature_8h.html#a61500f140fe826f357a53ad3b0351e9f" title="Function to start the animation sequence of the bush. " alt="" coords="165,208,292,235"/>
+<area shape="rect" id="node8" href="$nature_8h.html#ab311b3285407faec47ae7ca1f9335625" title="Function to update the behaviour of a butterfly. " alt="" coords="173,259,284,285"/>
+<area shape="rect" id="node9" href="$nature_8h.html#af296f4f177845d9011f849f3918a4ea4" title="Function to update the behaviour of the flying bird. " alt="" coords="188,309,269,336"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="441,157,492,184"/>
+</map>

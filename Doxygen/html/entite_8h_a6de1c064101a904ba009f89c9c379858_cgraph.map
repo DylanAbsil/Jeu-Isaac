@@ -1,0 +1,11 @@
+<map id="deleteListEnt" name="deleteListEnt">
+<area shape="rect" id="node2" href="$entite_8c.html#a6382d6bc4cc3e6d4b181a70a751935a4" title="setOnFirstEnt" alt="" coords="165,5,267,32"/>
+<area shape="rect" id="node3" href="$entite_8c.html#a4f3a62d4a377b6cb35ea7dc15448f061" title="nextEnt" alt="" coords="183,56,249,83"/>
+<area shape="rect" id="node5" href="$entite_8c.html#a70bc9b429895f70787b48fb7c6ab8f5c" title="deleteNodeListEnt" alt="" coords="152,107,280,133"/>
+<area shape="rect" id="node10" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="167,157,265,184"/>
+<area shape="rect" id="node4" href="$entite_8c.html#a67921c7c335b0c4800f7bc172b2aef72" title="emptyListEnt" alt="" coords="328,56,427,83"/>
+<area shape="rect" id="node6" href="$entite_8c.html#a3d58a115048731b7eb6501f9b351ec14" title="Function to freed an entity. " alt="" coords="333,107,422,133"/>
+<area shape="rect" id="node7" href="$kr__sprite_8c.html#a0899eb27b0f7aa37db089900a1204911" title="Function to freed a Kr_Sprite texture. " alt="" coords="475,81,584,108"/>
+<area shape="rect" id="node9" href="$weapon_8c.html#abfd65d6b353c0adc3d625a8e3eca1af9" title="Function to freed a weapon. " alt="" coords="478,132,581,159"/>
+<area shape="rect" id="node8" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="632,81,756,108"/>
+</map>

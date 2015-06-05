@@ -1,0 +1,17 @@
+<map id="Level_Editor_Load" name="Level_Editor_Load">
+<area shape="rect" id="node2" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="805,251,903,278"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#a9f79b8a3f5b4ee746d262194cef9fab0" title="Function to open a file. " alt="" coords="635,694,741,720"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#afee1c2c8a9fbfe900b3c98561c0bb9ac" title="Function to close a file. " alt="" coords="633,631,743,658"/>
+<area shape="rect" id="node5" href="$kr__level_8c.html#a3a38ff54b667836c841ded01dfdf7e4f" title="Function to initialize a Level thanks to the level file. " alt="" coords="430,530,525,556"/>
+<area shape="rect" id="node8" href="$kr__level_8c.html#a83ccc06b352f372399cd30b358c0cdea" title="Function to load a Kr_Level structure via a level file. " alt="" coords="205,327,311,354"/>
+<area shape="rect" id="node15" href="$level__editor_8c.html#a7d7ba9a2917bdc0b4e4159994f831396" title="Function to create a LevelFile from a pEditor structure. " alt="" coords="180,682,336,708"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="637,479,739,506"/>
+<area shape="rect" id="node7" href="$kr__sound_8c.html#a4dd4b0cd04925c81805125fdbf413d96" title="Function to initialize a music structure. " alt="" coords="619,530,757,556"/>
+<area shape="rect" id="node9" href="$kr__util_8c.html#aac6ce0f8f013f8fe277c733be04f0e03" title="Cette fonction permet d&#39;extraire dans une chaine la sous&#45;chaine comprise entre deux positions..." alt="" coords="625,226,751,252"/>
+<area shape="rect" id="node10" href="$kr__util_8c.html#ab85b7a5f1acec11639a71caad74735bd" title="Function to convert a string to a Uint32. " alt="" coords="627,74,749,100"/>
+<area shape="rect" id="node11" href="$kr__sound_8c.html#a25aebee1a19635d009db1490b3bdc081" title="Function to load a music. " alt="" coords="403,276,552,303"/>
+<area shape="rect" id="node12" href="$kr__tileset_8c.html#a59093a17aea917a03ef86ed889353ae1" title="Function to initialize a Kr_Tileset structure. " alt="" coords="425,479,529,506"/>
+<area shape="rect" id="node13" href="$kr__tileset_8c.html#adc46274a18936b15dd8662394d549e53" title="Function to load a tileset. " alt="" coords="420,580,535,607"/>
+<area shape="rect" id="node14" href="$kr__level_8c.html#a8e1cf4e8e357b22d45594a68bb0dc428" title="Function to load the layout in the Kr_Level structure. " alt="" coords="419,124,536,151"/>
+<area shape="rect" id="node16" href="$level__editor_8c.html#a312ea35448fe8eb5b19bd12ba0aeb38a" title="Function to create a LevelFile from a pEditor structure. " alt="" coords="384,783,571,810"/>
+</map>

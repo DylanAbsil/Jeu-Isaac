@@ -1,0 +1,5 @@
+<map id="Bombe_Explosion" name="Bombe_Explosion">
+<area shape="rect" id="node2" href="$kr__sound_8c.html#a27ad375067750c4d55a6e6c5743a6025" title="Function to play a sound. " alt="" coords="180,5,292,32"/>
+<area shape="rect" id="node3" href="$entite_8c.html#ace3c0b2b03fddc8e3484db1c151fd799" title="Function to draw an entity. " alt="" coords="190,56,282,83"/>
+<area shape="rect" id="node4" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="340,56,437,83"/>
+</map>

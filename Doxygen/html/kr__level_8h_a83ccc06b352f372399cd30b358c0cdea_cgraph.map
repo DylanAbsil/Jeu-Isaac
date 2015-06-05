@@ -1,0 +1,12 @@
+<map id="Kr_Level_Load" name="Kr_Level_Load">
+<area shape="rect" id="node2" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="531,259,628,285"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#a9f79b8a3f5b4ee746d262194cef9fab0" title="Function to open a file. " alt="" coords="367,360,473,387"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#aac6ce0f8f013f8fe277c733be04f0e03" title="Cette fonction permet d&#39;extraire dans une chaine la sous&#45;chaine comprise entre deux positions..." alt="" coords="357,132,483,159"/>
+<area shape="rect" id="node5" href="$kr__util_8c.html#ab85b7a5f1acec11639a71caad74735bd" title="Function to convert a string to a Uint32. " alt="" coords="359,309,481,336"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="369,208,471,235"/>
+<area shape="rect" id="node7" href="$kr__sound_8c.html#a25aebee1a19635d009db1490b3bdc081" title="Function to load a music. " alt="" coords="160,259,309,285"/>
+<area shape="rect" id="node8" href="$kr__tileset_8c.html#a59093a17aea917a03ef86ed889353ae1" title="Function to initialize a Kr_Tileset structure. " alt="" coords="183,157,287,184"/>
+<area shape="rect" id="node9" href="$kr__tileset_8c.html#adc46274a18936b15dd8662394d549e53" title="Function to load a tileset. " alt="" coords="177,411,292,437"/>
+<area shape="rect" id="node10" href="$kr__util_8c.html#afee1c2c8a9fbfe900b3c98561c0bb9ac" title="Function to close a file. " alt="" coords="365,461,475,488"/>
+<area shape="rect" id="node11" href="$kr__level_8c.html#a8e1cf4e8e357b22d45594a68bb0dc428" title="Function to load the layout in the Kr_Level structure. " alt="" coords="176,5,293,32"/>
+</map>

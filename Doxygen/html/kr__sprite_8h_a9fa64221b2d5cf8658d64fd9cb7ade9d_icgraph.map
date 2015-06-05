@@ -1,0 +1,15 @@
+<map id="Kr_Sprite_Load" name="Kr_Sprite_Load">
+<area shape="rect" id="node2" href="$bombe_8h.html#a453edac8f8e9f6db004489326920f3f6" title="Function to initialize a Bombe structure. " alt="" coords="589,16,675,43"/>
+<area shape="rect" id="node3" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="936,219,989,246"/>
+<area shape="rect" id="node5" href="$level__state_8h.html#a5d6ca589377c4ae4e8265276a4260fd9" title="Function to load the Level_State from the Kr_Level and the file related. " alt="" coords="757,118,881,144"/>
+<area shape="rect" id="node6" href="$nature_8h.html#a9ed3ce6172f6ad10a678518c96ee1507" title="Function to load the entities. " alt="" coords="381,168,515,195"/>
+<area shape="rect" id="node7" href="$nature_8h.html#a2a1e1f88230819a34a56329d8aa871b8" title="Function to load the bush. " alt="" coords="563,219,701,246"/>
+<area shape="rect" id="node8" href="$nature_8h.html#a468a66139249a83e8d8414d7dff3efd6" title="Function to load the entity &quot;papillon&quot;. " alt="" coords="749,270,888,296"/>
+<area shape="rect" id="node9" href="$nature_8h.html#aacd3bfbf5889d0a45a94c19b21caee08" title="Function to load the flying bird. " alt="" coords="164,320,333,347"/>
+<area shape="rect" id="node10" href="$weapon_8h.html#abd2145393074d4815a58db2c5141a560" title="Function to load a projectile. " alt="" coords="193,371,304,398"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="1037,219,1088,246"/>
+<area shape="rect" id="node11" href="$entite_8h.html#a612edea1f358c8c6f9c7c26ad8dd7184" title="Function to handle the firing animation. " alt="" coords="395,371,501,398"/>
+<area shape="rect" id="node14" href="$entite_8h.html#a6c1b0de829748c435810862afc03b48a" title="if the player use zqsd to shoot, load a new projectile " alt="" coords="421,422,475,448"/>
+<area shape="rect" id="node12" href="$level__state_8h.html#a2b4dc11b61c65c97198fe06b9814ab03" title="This function will update the data about the entity. " alt="" coords="585,371,679,398"/>
+<area shape="rect" id="node13" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="759,371,879,398"/>
+</map>

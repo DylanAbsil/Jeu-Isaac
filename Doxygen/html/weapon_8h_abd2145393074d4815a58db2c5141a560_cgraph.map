@@ -1,0 +1,8 @@
+<map id="Projectile_Load" name="Projectile_Load">
+<area shape="rect" id="node2" href="$kr__sprite_8c.html#a796df8374ef81a6a365169bac74c68d6" title="Function to init a sprite. " alt="" coords="173,5,273,32"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#a323eb5b62076c0220028eb20a0ce9523" title="Function to compute the middle of two values with coord2 &gt; coord1. " alt="" coords="164,56,283,83"/>
+<area shape="rect" id="node5" href="$kr__sprite_8c.html#a9accd31f396c44e2a41264c53bf4b974" title="Function to load the sprite. " alt="" coords="168,107,279,133"/>
+<area shape="rect" id="node7" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="505,107,603,133"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="343,5,445,32"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#a1db13b904cd51019886423dc0711d9b7" title="Function to load a texture. " alt="" coords="331,56,457,83"/>
+</map>

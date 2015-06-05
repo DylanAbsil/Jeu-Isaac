@@ -1,0 +1,5 @@
+<map id="Kr_Tileset_Load" name="Kr_Tileset_Load">
+<area shape="rect" id="node2" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="325,5,423,32"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#a9f79b8a3f5b4ee746d262194cef9fab0" title="Function to open a file. " alt="" coords="169,31,276,57"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#afee1c2c8a9fbfe900b3c98561c0bb9ac" title="Function to close a file. " alt="" coords="168,81,277,108"/>
+</map>

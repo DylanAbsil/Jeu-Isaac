@@ -1,0 +1,4 @@
+<map id="Level_Editor_GroupFill" name="Level_Editor_GroupFill">
+<area shape="rect" id="node2" href="$level__editor_8c.html#ab546a9c4af31d04ea893aed25f1755c9" title="Function to get the tile on the renderer from coordinate. " alt="" coords="204,5,344,32"/>
+<area shape="rect" id="node3" href="$kr__level_8c.html#a4e1df9451ef05b8d04fb2009c7a9ca19" title="Function to get the block at a coordinate. " alt="" coords="392,5,511,32"/>
+</map>

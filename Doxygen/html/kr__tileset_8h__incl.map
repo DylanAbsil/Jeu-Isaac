@@ -1,0 +1,5 @@
+<map id="kr_tileset.h" name="kr_tileset.h">
+<area shape="rect" id="node2" href="$kr__common_8h.html" title="Contains the standard includes, structures and enumerations. " alt="" coords="384,155,485,181"/>
+<area shape="rect" id="node13" href="$kr__util_8h.html" title="Contains some useful and standard functions. " alt="" coords="401,80,469,107"/>
+<area shape="rect" id="node14" href="$kr__log_8h.html" title="Contains the structure to handle the logs. " alt="" coords="493,80,561,107"/>
+</map>

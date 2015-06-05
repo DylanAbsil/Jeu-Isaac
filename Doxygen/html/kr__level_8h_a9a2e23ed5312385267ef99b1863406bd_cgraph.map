@@ -1,0 +1,6 @@
+<map id="Kr_Level_SaveLayout" name="Kr_Level_SaveLayout">
+<area shape="rect" id="node2" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="356,5,453,32"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#a9f79b8a3f5b4ee746d262194cef9fab0" title="Function to open a file. " alt="" coords="200,31,307,57"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#afee1c2c8a9fbfe900b3c98561c0bb9ac" title="Function to close a file. " alt="" coords="199,81,308,108"/>
+<area shape="rect" id="node5" href="$kr__util_8c.html#a631b59df2d5c64ee51617ade83c87863" title="Function to convert a string to a Uint32. " alt="" coords="200,132,307,159"/>
+</map>

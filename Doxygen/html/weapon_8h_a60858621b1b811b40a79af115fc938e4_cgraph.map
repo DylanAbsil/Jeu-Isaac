@@ -1,0 +1,6 @@
+<map id="drawProjectilesWeapon" name="drawProjectilesWeapon">
+<area shape="rect" id="node2" href="$weapon_8c.html#a66c44cd2d164369952c0e12e670b6dfc" title="emptyList" alt="" coords="372,51,451,78"/>
+<area shape="rect" id="node3" href="$weapon_8c.html#a7266b4ca18c42fcf3580744e18c4da77" title="setOnFirst" alt="" coords="227,26,309,53"/>
+<area shape="rect" id="node4" href="$weapon_8c.html#a27a3deab83f380efcd9ad1c62ca50772" title="Function to draw a projectile. " alt="" coords="212,77,324,103"/>
+<area shape="rect" id="node5" href="$weapon_8c.html#a4269bb73372138cecf6423bf8959110b" title="next" alt="" coords="245,127,291,154"/>
+</map>

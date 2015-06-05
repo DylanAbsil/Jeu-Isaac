@@ -1,0 +1,12 @@
+<map id="entite.h" name="entite.h">
+<area shape="rect" id="node2" href="$bombe_8h.html" title="Contains the structure to handle the weapon bomb. " alt="" coords="223,80,295,107"/>
+<area shape="rect" id="node4" href="$level__state_8h.html" title="level_state.h" alt="" coords="294,155,389,181"/>
+<area shape="rect" id="node6" href="$main_8c.html" title="main.c" alt="" coords="200,304,262,331"/>
+<area shape="rect" id="node7" href="$nature_8h.html" title="Contains the structure to handle the nature. " alt="" coords="439,229,508,256"/>
+<area shape="rect" id="node9" href="$entite_8c.html" title="Contains the structure to handle the entities. " alt="" coords="465,80,530,107"/>
+<area shape="rect" id="node10" href="$kr__map_8h.html" title="Contains the structure to handle the map. " alt="" coords="46,80,122,107"/>
+<area shape="rect" id="node3" href="$bombe_8c.html" title="Contains the functions to handle the weapon bomb. " alt="" coords="147,155,219,181"/>
+<area shape="rect" id="node5" href="$level__state_8c.html" title="Contains the structure to handle the level data. " alt="" coords="320,229,414,256"/>
+<area shape="rect" id="node8" href="$nature_8c.html" title="Contains the function to handle the nature. " alt="" coords="439,304,508,331"/>
+<area shape="rect" id="node11" href="$kr__map_8c.html" title="Contains the functions to handle the map. " alt="" coords="46,155,122,181"/>
+</map>

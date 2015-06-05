@@ -1,0 +1,6 @@
+<map id="Kr_Sound_LoadChunk" name="Kr_Sound_LoadChunk">
+<area shape="rect" id="node2" href="$kr__sound_8h.html#a2bc47604ede539fe74424f36e679d67c" title="Function to load a sound. " alt="" coords="204,31,319,57"/>
+<area shape="rect" id="node3" href="$bombe_8h.html#a453edac8f8e9f6db004489326920f3f6" title="Function to initialize a Bombe structure. " alt="" coords="367,5,453,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="501,31,555,57"/>
+<area shape="rect" id="node5" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="603,31,653,57"/>
+</map>

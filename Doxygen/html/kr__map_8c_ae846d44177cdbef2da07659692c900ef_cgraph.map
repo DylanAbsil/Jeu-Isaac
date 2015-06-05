@@ -1,0 +1,7 @@
+<map id="Kr_Map_Init" name="Kr_Map_Init">
+<area shape="rect" id="node2" href="$kr__util_8c.html#a9f90183f40ce564ddc3da26d3f91d302" title="Function to allocate and copy a string. " alt="" coords="147,5,250,32"/>
+<area shape="rect" id="node3" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="301,107,399,133"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#a9f79b8a3f5b4ee746d262194cef9fab0" title="Function to open a file. " alt="" coords="145,107,252,133"/>
+<area shape="rect" id="node5" href="$kr__map_8c.html#a6f0f27bbc3455e733c2b4c3443f4bf08" title="Function to log a Kr_Map structure. " alt="" coords="151,157,246,184"/>
+<area shape="rect" id="node6" href="$kr__util_8c.html#afee1c2c8a9fbfe900b3c98561c0bb9ac" title="Function to close a file. " alt="" coords="144,208,253,235"/>
+</map>

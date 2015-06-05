@@ -1,0 +1,10 @@
+<map id="UTIL_FileCopy" name="UTIL_FileCopy">
+<area shape="rect" id="node2" href="$kr__level_8h.html#a9a2e23ed5312385267ef99b1863406bd" title="Function to save the layout of the level. " alt="" coords="164,56,309,83"/>
+<area shape="rect" id="node8" href="$kr__map_8h.html#adb3108af2fd36a2a3dc4c6e63f8d566e" title="This function remove the current maps file and copy the backup ones in maps/bakcup. " alt="" coords="368,132,529,159"/>
+<area shape="rect" id="node9" href="$level__state_8h.html#a72769f14b5db2f8b2fdd0dedfd10c106" title="Function to save the data of the level. " alt="" coords="160,183,313,209"/>
+<area shape="rect" id="node3" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="584,5,640,32"/>
+<area shape="rect" id="node5" href="$level__state_8h.html#ada05224925495382ec03dcc74accf3d7" title="Function to handle the interraction of an entity on the map. " alt="" coords="377,31,520,57"/>
+<area shape="rect" id="node7" href="$level__state_8h.html#a99cc529a04f8591b8ec1f12b3ae59a0d" title="Check if the entity of the level are near an exploding bomb, and destroy the bush near by..." alt="" coords="361,81,536,108"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="688,44,739,71"/>
+<area shape="rect" id="node6" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="585,81,639,108"/>
+</map>

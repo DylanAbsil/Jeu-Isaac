@@ -1,0 +1,5 @@
+<map id="drawProjectilesWeapon" name="drawProjectilesWeapon">
+<area shape="rect" id="node2" href="$level__state_8h.html#af47c959ba6f67f0447416c894e933cd5" title="Function to draw all the projectiles currently in the level. " alt="" coords="212,5,337,32"/>
+<area shape="rect" id="node3" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="385,5,439,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="487,5,537,32"/>
+</map>

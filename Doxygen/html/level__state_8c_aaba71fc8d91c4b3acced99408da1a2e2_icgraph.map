@@ -1,0 +1,5 @@
+<map id="updateProjectilesWeapon" name="updateProjectilesWeapon">
+<area shape="rect" id="node2" href="$level__state_8h.html#a0dafcc028cd3f356c87e71c9e428bcc9" title="Function to update all the weaponsof all entites (include the player) of the current level..." alt="" coords="224,5,355,32"/>
+<area shape="rect" id="node3" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="403,5,456,32"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="504,5,555,32"/>
+</map>

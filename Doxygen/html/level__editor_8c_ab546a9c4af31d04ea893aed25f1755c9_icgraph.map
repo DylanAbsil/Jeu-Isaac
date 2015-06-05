@@ -1,0 +1,5 @@
+<map id="Level_Editor_GetTile" name="Level_Editor_GetTile">
+<area shape="rect" id="node2" href="$level__editor_8h.html#a3c3e9ca5569ae6c223634ed680b3b982" title="Function to fill an array with the number of the tile of each block of the group selection. " alt="" coords="193,5,344,32"/>
+<area shape="rect" id="node3" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="392,31,448,57"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="496,31,547,57"/>
+</map>

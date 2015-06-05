@@ -1,0 +1,4 @@
+<map id="Kr_Collision_RectAffine" name="Kr_Collision_RectAffine">
+<area shape="rect" id="node2" href="$kr__collision_8c.html#a7d911924bc83ce2467f110157526249f" title="Function to try to move a rectangle with a certain vector speed and check if it&#39;s colliding with the ..." alt="" coords="211,5,353,32"/>
+<area shape="rect" id="node3" href="$kr__collision_8c.html#a9d99b8a387f711f28edda86754767926" title="Function to detect if the Rect2 is colliding with Rect1. " alt="" coords="401,5,564,32"/>
+</map>

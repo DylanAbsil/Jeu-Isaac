@@ -1,0 +1,8 @@
+<map id="bombe.h" name="bombe.h">
+<area shape="rect" id="node2" href="$bombe_8c.html" title="Contains the functions to handle the weapon bomb. " alt="" coords="5,80,77,107"/>
+<area shape="rect" id="node3" href="$level__state_8h.html" title="level_state.h" alt="" coords="178,80,273,107"/>
+<area shape="rect" id="node5" href="$main_8c.html" title="main.c" alt="" coords="135,229,196,256"/>
+<area shape="rect" id="node4" href="$level__state_8c.html" title="Contains the structure to handle the level data. " alt="" coords="203,155,298,181"/>
+<area shape="rect" id="node6" href="$nature_8h.html" title="Contains the structure to handle the nature. " alt="" coords="323,155,392,181"/>
+<area shape="rect" id="node7" href="$nature_8c.html" title="Contains the function to handle the nature. " alt="" coords="323,229,392,256"/>
+</map>

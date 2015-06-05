@@ -1,0 +1,5 @@
+<map id="switchToFiringTexture" name="switchToFiringTexture">
+<area shape="rect" id="node2" href="$kr__util_8c.html#ace0344d33a204db4407c6482d85d66ea" title="Function to free a texture. " alt="" coords="203,5,327,32"/>
+<area shape="rect" id="node3" href="$kr__util_8c.html#a1db13b904cd51019886423dc0711d9b7" title="Function to load a texture. " alt="" coords="201,56,328,83"/>
+<area shape="rect" id="node4" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="376,56,473,83"/>
+</map>

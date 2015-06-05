@@ -1,0 +1,40 @@
+<map id="kr_log.h" name="kr_log.h">
+<area shape="rect" id="node2" href="$bombe_8h.html" title="Contains the structure to handle the weapon bomb. " alt="" coords="607,453,679,480"/>
+<area shape="rect" id="node6" href="$main_8c.html" title="main.c" alt="" coords="837,677,899,704"/>
+<area shape="rect" id="node7" href="$nature_8h.html" title="Contains the structure to handle the nature. " alt="" coords="157,603,227,629"/>
+<area shape="rect" id="node9" href="$kr__sprite_8h.html" title="kr_sprite.h" alt="" coords="43,229,125,256"/>
+<area shape="rect" id="node13" href="$kr__map_8h.html" title="Contains the structure to handle the map. " alt="" coords="754,453,830,480"/>
+<area shape="rect" id="node17" href="$kr__collision_8h.html" title="kr_collision.h" alt="" coords="352,229,451,256"/>
+<area shape="rect" id="node19" href="$kr__level_8h.html" title="Contains the structure to handle the level. " alt="" coords="678,155,754,181"/>
+<area shape="rect" id="node21" href="$level__editor_8h.html" title="Contains the structure to handle the level editor. " alt="" coords="881,229,978,256"/>
+<area shape="rect" id="node23" href="$kr__tileset_8h.html" title="Contains the structure to handle the tileset. " alt="" coords="855,80,942,107"/>
+<area shape="rect" id="node25" href="$kr__fps_8h.html" title="Contains the structure to handle the fps. " alt="" coords="1153,155,1221,181"/>
+<area shape="rect" id="node27" href="$_menu_8h.html" title="Contains the structures of the menus. " alt="" coords="1519,229,1585,256"/>
+<area shape="rect" id="node29" href="$kr__text_8h.html" title="kr_text.h" alt="" coords="1395,80,1469,107"/>
+<area shape="rect" id="node31" href="$message_8h.html" title="Contains the structure to handle the message. " alt="" coords="1245,155,1331,181"/>
+<area shape="rect" id="node33" href="$_h_u_d_8h.html" title="Contains the structure of the HUD. " alt="" coords="1493,80,1553,107"/>
+<area shape="rect" id="node35" href="$kr__config_8h.html" title="Contains the functions to configure and initialize the graphic motor. " alt="" coords="1043,155,1128,181"/>
+<area shape="rect" id="node37" href="$kr__log_8c.html" title="Contains the functions to handle the logs. " alt="" coords="1577,80,1645,107"/>
+<area shape="rect" id="node38" href="$kr__sound_8c.html" title="Contains the functions to handle the sounds. " alt="" coords="1669,80,1755,107"/>
+<area shape="rect" id="node39" href="$kr__util_8c.html" title="Contains some useful and standard functions. " alt="" coords="1779,80,1847,107"/>
+<area shape="rect" id="node3" href="$bombe_8c.html" title="Contains the functions to handle the weapon bomb. " alt="" coords="581,528,653,555"/>
+<area shape="rect" id="node4" href="$level__state_8h.html" title="level_state.h" alt="" coords="462,528,557,555"/>
+<area shape="rect" id="node5" href="$level__state_8c.html" title="Contains the structure to handle the level data. " alt="" coords="547,603,642,629"/>
+<area shape="rect" id="node8" href="$nature_8c.html" title="Contains the function to handle the nature. " alt="" coords="157,677,227,704"/>
+<area shape="rect" id="node10" href="$weapon_8h.html" title="weapon.h" alt="" coords="251,304,328,331"/>
+<area shape="rect" id="node16" href="$kr__sprite_8c.html" title="Contains the structure to handle the sprites. " alt="" coords="43,304,125,331"/>
+<area shape="rect" id="node11" href="$entite_8h.html" title="entite.h" alt="" coords="403,379,469,405"/>
+<area shape="rect" id="node15" href="$weapon_8c.html" title="Contains the structure to handle the weapons and the projectiles. " alt="" coords="251,379,328,405"/>
+<area shape="rect" id="node12" href="$entite_8c.html" title="Contains the structure to handle the entities. " alt="" coords="355,453,421,480"/>
+<area shape="rect" id="node14" href="$kr__map_8c.html" title="Contains the functions to handle the map. " alt="" coords="830,528,906,555"/>
+<area shape="rect" id="node18" href="$kr__collision_8c.html" title="Contains the functions to handle the collision. " alt="" coords="352,304,451,331"/>
+<area shape="rect" id="node20" href="$kr__level_8c.html" title="Contains the functions to handle the level. " alt="" coords="627,229,703,256"/>
+<area shape="rect" id="node22" href="$level__editor_8c.html" title="Contains the functions to handle the level editor. " alt="" coords="881,304,978,331"/>
+<area shape="rect" id="node24" href="$kr__tileset_8c.html" title="Contains the function to handle the tileset. " alt="" coords="830,155,917,181"/>
+<area shape="rect" id="node26" href="$kr__fps_8c.html" title="kr_fps.c" alt="" coords="1214,229,1282,256"/>
+<area shape="rect" id="node28" href="$_menu_8c.html" title="Contains the functions concerning the menus. " alt="" coords="1519,304,1585,331"/>
+<area shape="rect" id="node30" href="$kr__text_8c.html" title="Contains the functions to handle the SDL_ttf. " alt="" coords="1470,155,1543,181"/>
+<area shape="rect" id="node32" href="$message_8c.html" title="message.c" alt="" coords="1409,229,1495,256"/>
+<area shape="rect" id="node34" href="$_h_u_d_8c.html" title="Contains the functions to display the HUD. " alt="" coords="1639,155,1699,181"/>
+<area shape="rect" id="node36" href="$kr__config_8c.html" title="Contains the functions to configure and initialize the graphic motor. " alt="" coords="1003,229,1088,256"/>
+</map>

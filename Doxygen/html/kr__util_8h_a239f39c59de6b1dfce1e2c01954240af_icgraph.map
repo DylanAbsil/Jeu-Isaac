@@ -1,0 +1,17 @@
+<map id="UTIL_OpenFile" name="UTIL_OpenFile">
+<area shape="rect" id="node2" href="$kr__level_8h.html#a83ccc06b352f372399cd30b358c0cdea" title="Function to load a Kr_Level structure via a level file. " alt="" coords="419,281,526,308"/>
+<area shape="rect" id="node6" href="$level__editor_8h.html#ace28da75a0015962c60e937a76ba1292" title="Function to load a Level Editor structure thanks to the level editor file. " alt="" coords="623,364,749,390"/>
+<area shape="rect" id="node8" href="$kr__level_8h.html#a9a2e23ed5312385267ef99b1863406bd" title="Function to save the layout of the level. " alt="" coords="400,186,545,213"/>
+<area shape="rect" id="node11" href="$kr__map_8h.html#a46042e91aa44fe7b200c6f22af2fdb84" title="Function to initialize a Kr_Map structure. " alt="" coords="427,9,518,36"/>
+<area shape="rect" id="node12" href="$kr__tileset_8h.html#a8e812e133bf63592f52bf85fefb2021e" title="Function to load a tileset. " alt="" coords="196,268,311,294"/>
+<area shape="rect" id="node13" href="$level__editor_8h.html#a7d7ba9a2917bdc0b4e4159994f831396" title="Function to create a LevelFile from a pEditor structure. " alt="" coords="395,357,551,384"/>
+<area shape="rect" id="node14" href="$level__editor_8h.html#a312ea35448fe8eb5b19bd12ba0aeb38a" title="Function to create a LevelFile from a pEditor structure. " alt="" coords="160,318,347,345"/>
+<area shape="rect" id="node15" href="$level__state_8h.html#a5d6ca589377c4ae4e8265276a4260fd9" title="Function to load the Level_State from the Kr_Level and the file related. " alt="" coords="191,60,315,86"/>
+<area shape="rect" id="node16" href="$level__state_8h.html#a72769f14b5db2f8b2fdd0dedfd10c106" title="Function to save the data of the level. " alt="" coords="177,110,330,137"/>
+<area shape="rect" id="node3" href="$kr__level_8h.html#ac1708df66d49f823c8aa00d119ceee78" title="Kr_Level_Change" alt="" coords="625,313,747,340"/>
+<area shape="rect" id="node4" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="823,161,876,188"/>
+<area shape="rect" id="node5" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="925,212,976,238"/>
+<area shape="rect" id="node7" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="821,262,877,289"/>
+<area shape="rect" id="node9" href="$level__state_8h.html#ada05224925495382ec03dcc74accf3d7" title="Function to handle the interraction of an entity on the map. " alt="" coords="615,161,757,188"/>
+<area shape="rect" id="node10" href="$level__state_8h.html#a99cc529a04f8591b8ec1f12b3ae59a0d" title="Check if the entity of the level are near an exploding bomb, and destroy the bush near by..." alt="" coords="599,212,773,238"/>
+</map>

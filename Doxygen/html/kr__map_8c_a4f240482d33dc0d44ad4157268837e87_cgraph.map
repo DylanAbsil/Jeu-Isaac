@@ -1,0 +1,5 @@
+<map id="Kr_Map_GetNeighborOfLevel" name="Kr_Map_GetNeighborOfLevel">
+<area shape="rect" id="node2" href="$kr__util_8c.html#aac6ce0f8f013f8fe277c733be04f0e03" title="Cette fonction permet d&#39;extraire dans une chaine la sous&#45;chaine comprise entre deux positions..." alt="" coords="241,5,367,32"/>
+<area shape="rect" id="node3" href="$kr__log_8c.html#af8d1b18695f2a9250c2dea3637ddb2d4" title="Function to print a log message. " alt="" coords="415,56,512,83"/>
+<area shape="rect" id="node4" href="$kr__util_8c.html#ab85b7a5f1acec11639a71caad74735bd" title="Function to convert a string to a Uint32. " alt="" coords="243,107,365,133"/>
+</map>

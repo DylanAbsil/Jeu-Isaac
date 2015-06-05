@@ -1,0 +1,8 @@
+<map id="Projectile_Init" name="Projectile_Init">
+<area shape="rect" id="node2" href="$entite_8h.html#a612edea1f358c8c6f9c7c26ad8dd7184" title="Function to handle the firing animation. " alt="" coords="153,5,260,32"/>
+<area shape="rect" id="node7" href="$entite_8h.html#a6c1b0de829748c435810862afc03b48a" title="if the player use zqsd to shoot, load a new projectile " alt="" coords="328,56,383,83"/>
+<area shape="rect" id="node3" href="$level__state_8h.html#a2b4dc11b61c65c97198fe06b9814ab03" title="This function will update the data about the entity. " alt="" coords="308,5,403,32"/>
+<area shape="rect" id="node4" href="$level__state_8h.html#afc00387158ebfba70da7f2c9a6e4b45a" title="Function to update all the entities of the current level. " alt="" coords="451,5,571,32"/>
+<area shape="rect" id="node5" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="619,31,672,57"/>
+<area shape="rect" id="node6" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="720,31,771,57"/>
+</map>

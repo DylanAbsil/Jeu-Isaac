@@ -1,0 +1,9 @@
+<map id="Kr_Text_CloseFont" name="Kr_Text_CloseFont">
+<area shape="rect" id="node2" href="$kr__fps_8h.html#a8624d15c825a1ce5fb57ef76debf01a5" title="Function to free the structure. " alt="" coords="192,78,289,104"/>
+<area shape="rect" id="node3" href="$main_8c.html#a42bfdcd3f1e737875b6f0a357a3adb29" title="Function to start the game. " alt="" coords="501,78,555,104"/>
+<area shape="rect" id="node5" href="$_menu_8h.html#a42d6ad889e3098920658ccdd14f51182" title="Function to handle the main menu. " alt="" coords="343,128,453,155"/>
+<area shape="rect" id="node6" href="$_menu_8h.html#ab74e2c2fb65680a57c733a01beff7cbc" title="Function to handle the main menu. " alt="" coords="349,27,447,54"/>
+<area shape="rect" id="node7" href="$level__editor_8h.html#a314883ea893bdf6445935c0907470dc4" title="Editor" alt="" coords="370,230,426,256"/>
+<area shape="rect" id="node8" href="$message_8h.html#a681ab786a2c046aac7a704e33331ac0e" title="Function to free a Message structure. " alt="" coords="187,179,295,206"/>
+<area shape="rect" id="node4" href="$main_8c.html#a3c04138a5bfe5d72780bb7e82a18e627" title="main" alt="" coords="603,128,653,155"/>
+</map>

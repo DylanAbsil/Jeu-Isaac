@@ -1,0 +1,14 @@
+<map id="level_editor.c" name="level_editor.c">
+<area shape="rect" id="node2" href="$level__editor_8h.html" title="Contains the structure to handle the level editor. " alt="" coords="449,80,546,107"/>
+<area shape="rect" id="node3" href="$kr__common_8h.html" title="Contains the standard includes, structures and enumerations. " alt="" coords="384,379,485,405"/>
+<area shape="rect" id="node14" href="$kr__util_8h.html" title="Contains some useful and standard functions. " alt="" coords="314,304,382,331"/>
+<area shape="rect" id="node15" href="$kr__tileset_8h.html" title="Contains the structure to handle the tileset. " alt="" coords="209,229,295,256"/>
+<area shape="rect" id="node16" href="$kr__log_8h.html" title="Contains the structure to handle the logs. " alt="" coords="562,304,630,331"/>
+<area shape="rect" id="node17" href="$kr__level_8h.html" title="Contains the structure to handle the level. " alt="" coords="135,155,211,181"/>
+<area shape="rect" id="node19" href="$kr__input_8h.html" title="Contains the structure to handle the input (keyboard and mouse). " alt="" coords="934,229,1013,256"/>
+<area shape="rect" id="node20" href="$kr__fps_8h.html" title="Contains the structure to handle the fps. " alt="" coords="723,155,791,181"/>
+<area shape="rect" id="node22" href="$kr__config_8h.html" title="Contains the functions to configure and initialize the graphic motor. " alt="" coords="824,229,909,256"/>
+<area shape="rect" id="node23" href="$message_8h.html" title="Contains the structure to handle the message. " alt="" coords="454,155,541,181"/>
+<area shape="rect" id="node18" href="$kr__sound_8h.html" title="kr_sound.h" alt="" coords="26,304,113,331"/>
+<area shape="rect" id="node21" href="$kr__text_8h.html" title="kr_text.h" alt="" coords="523,229,597,256"/>
+</map>
