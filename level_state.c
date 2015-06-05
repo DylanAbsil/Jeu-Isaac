@@ -47,22 +47,24 @@ Level_State * Level_State_Init(Entity *pPlayer)
 */
 Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *pRenderer){
 	Uint32	iNameLen = strlen(pLevel->szLevelName);
-	Uint32	iNbEntities = 0;
-	Uint32	iFrameHeight = 0;
-	Uint32	iFrameWidth = 0;
+	Uint32	iNbEntities = 0, iFrameHeight = 0, iFrameWidth = 0;
 	Uint32	iNbFrames = 0;
-	Uint32	iLife = 0;
-	Uint32	iArmor = 0;
+	Uint32	iLife = 0, iArmor = 0;
+	Uint32	iEntityState = 0;
+	Uint32	iSpeed = 0;
+	Uint32	dmgwpn = 0, speedPrj = 0, munition = 0, rangewpn = 0;
 	char    szLevelPath[50];
 
 	FILE   *pFile;
 	char    szBuf[CACHE_SIZE];  // Buffer
-	char    szEntityName[CACHE_SIZE];
-	Uint32  iEntityState = 0;
-	Uint32 i = 0, iSpeed = 0,iDirection = 0;
+	char    szEntityName[CACHE_SIZE], szWeaponName[CACHE_SIZE], szProjectileName[CACHE_SIZE];
+
+	Direction direction = sud;
 	Boolean bFriendly = TRUE;
 	Kr_Sprite *pSprite = NULL;
+	Weapon	*pWeapon = NULL;
 	Sint32 iCoordX = 0, iCoordY = 0;
+	Uint32 i = 0;
 
 	pLevelSt->pLevel = pLevel;
 
@@ -85,8 +87,8 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 			setOnFirstEnt(pLevelSt->plEnt);
 			for (i = 0; i < iNbEntities; i++)
 			{
-				fscanf(pFile, "%s %d %d %d %d %d %d %d %d %d %d %d\n", szEntityName, &iDirection, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &iCoordX, &iCoordY, &iSpeed, &iEntityState, &bFriendly);
-				
+				fscanf(pFile, "%s %d %d %d %d %d %d %d %d %d %d %d", szEntityName, &direction, &iFrameWidth, &iFrameHeight, &iNbFrames, &iLife, &iArmor, &iCoordX, &iCoordY, &iSpeed, &iEntityState, &bFriendly);
+
 				/* Chargement des rect */
 				*(aRect + i) = (SDL_Rect*)malloc(sizeof(SDL_Rect));
 				(*(aRect + i))->x = iCoordX;
@@ -97,7 +99,7 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 				/* Chargement des sprites */
 				pSprite = NULL;
 				pSprite = Kr_Sprite_Init(szEntityName);	
-				if (Kr_Sprite_Load(pSprite, iDirection, iFrameHeight, iFrameWidth, iNbFrames, (*(aRect + i)), pRenderer) == FALSE)
+				if (Kr_Sprite_Load(pSprite, direction, iFrameHeight, iFrameWidth, iNbFrames, (*(aRect + i)), pRenderer) == FALSE)
 				{
 					Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 					UTIL_CloseFile(&pFile);
@@ -112,6 +114,16 @@ Boolean	Level_State_Load(Level_State *pLevelSt, Kr_Level *pLevel, SDL_Renderer *
 					UTIL_CloseFile(&pFile);
 					return FALSE;
 				}
+
+				/* Load de l'arme */
+				fscanf(pFile, "%s %s %d %d %d %d\n", szWeaponName, szProjectileName, &dmgwpn, &munition, &rangewpn, &speedPrj);
+				if (szWeaponName != NULL){
+					pWeapon = NULL;
+					pWeapon = Weapon_Init(szWeaponName);
+					Weapon_Load(pWeapon, szProjectileName, rangewpn, munition, dmgwpn, speedPrj, ghost);
+					changeWeapon(new, pWeapon);
+				}
+
 				insertLastEnt(pLevelSt->plEnt, new);
 			}
 		}		
@@ -191,11 +203,35 @@ Uint32 updateAllEntities(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Inpu
 }
 
 /*!
+*  \fn     void updateAllWeapons(SDL_Renderer *pRenderer, Level_State *pLevelSt)
+*  \brief  Function to update all the weaponsof all entites (include the player) of the current level
+*
+*  \param  pRenderer a pointer to the renderer
+*  \param  pLevelSt  a pointer to the Level_State structure
+*  \return none
+*/
+void updateAllWeapons(SDL_Renderer *pRenderer, Level_State *pLevelSt){
+	//Update des projectiles du player
+	updateProjectilesWeapon(pRenderer, pLevelSt, pLevelSt->pPlayer->pWeapon);
+
+	//Update des projectiles des autres entites
+	setOnFirstEnt(pLevelSt->plEnt);
+	while (pLevelSt->plEnt->current != NULL)
+	{
+		if (pLevelSt->plEnt->current->e->pWeapon != NULL)
+			updateProjectilesWeapon(pRenderer, pLevelSt, pLevelSt->plEnt->current->e->pWeapon);
+		nextEnt(pLevelSt->plEnt);
+	}
+
+	//	Kr_Log_Print(KR_LOG_INFO, "All projectiles have been updated\n");
+}
+
+/*!
 *  \fn     Boolean drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer);
 *  \brief  Function to draw all the entities of the current level
 *
-*  \param  pLevelSt
-*  \param  pRenderer
+*  \param  pLevelSt		a pointer to the Level_State
+*  \param  pRenderer	a pointer to the renderer
 *  \return boolean if the entities have been draw on the screen or not
 */
 Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
@@ -220,10 +256,29 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
 	return TRUE;
 }
 
+/*!
+*  \fn     void drawAllProjectiles(Level_State *pLevelSt, SDL_Renderer *pRenderer)
+*  \brief  Function to draw all the projectiles currently in the level
+*
+*  \param  pLevelSt		a pointer to the Level_State
+*  \param  pRenderer	a pointer to the renderer
+*  \return boolean if the entities have been draw on the screen or not
+*/
+void drawAllProjectiles(Level_State *pLevelSt, SDL_Renderer *pRenderer){
+	drawProjectilesWeapon(pLevelSt->pPlayer->pWeapon->plProjectile, pRenderer);
+
+	setOnFirstEnt(pLevelSt->plEnt);
+	while (pLevelSt->plEnt->current != NULL){
+		if (pLevelSt->plEnt->current->e->pWeapon != NULL)
+			drawProjectilesWeapon(pLevelSt->plEnt->current->e->pWeapon->plProjectile, pRenderer);
+		nextEnt(pLevelSt->plEnt);
+	}
+}
+
 
 
 /*!
-*  \fn     Uint32  updateEntity(Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
+*  \fn     Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
 *  \brief  This function will update the data about the entity
 *
 *  \param  pRenderer	a pointer to the renderer
@@ -238,20 +293,22 @@ Boolean	drawAllEntities(Level_State *pLevelSt, SDL_Renderer *pRenderer)
 */
 Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input myEvent, Entity *pEntity, Boolean bIsPlayer)
 {
+	Sint32		movex = 0, movey = 0, NewVx = 0, NewVy = 0;
+	Uint32		iTmp = 0, iRandomVectorRetour = 0, iRetour = 1;
+	double		movez = 0;
+	Direction	newDir = sud; //Défaut
+	NodeListEnt *currentNode = pLevelSt->plEnt->current;
 	if (pEntity->iEntityLife <= 0 && !bIsPlayer){
 		Kr_Log_Print(KR_LOG_INFO, "The entity %s is dead to death !\n", pEntity->strEntityName);
 		return 3;
 	}
 	else{
-		Sint32		movex = 0, movey = 0, NewVx = 0, NewVy = 0;
-		Uint32		iTmp = 0, iRandomVectorRetour = 0, iRetour = 1;
-		Direction	newDir = sud; //Défaut
-		NodeListEnt *currentNode = pLevelSt->plEnt->current;
 
+	
 		// Calcul des vecteurs de déplacement
 		if (bIsPlayer) //Player
 		{
-			getVector(myEvent, &movex, &movey);
+			getVector(myEvent, &movex, &movey, pEntity->iSpeedEntity);
 		}
 		else // Monster
 		{
@@ -266,35 +323,32 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 					}
 				}
 			}
-			else getVectorToPlayer(pEntity, pLevelSt->pPlayer, &movex, &movey);
+			else movez = getVectorToPlayer(pEntity, pLevelSt->pPlayer, &movex, &movey);
+		}
+
+		if (!bIsPlayer && pEntity->bFriendly == FALSE && pEntity->firing == 0 && abs(movez) <= pEntity->pWeapon->iRangeWeapon){
+			pEntity->firing = 1;
+			switchToFiringTexture(pEntity, pRenderer, 9);
+			resetAnimation(pEntity);
+			Kr_Log_Print(KR_LOG_INFO, "The entity %s start firing\n", pEntity->strEntityName);
 		}
 
 		newDir = foundDirection(movex, movey, pEntity);
 		
-		if ((movex == 0) && (movey == 0)) // Aucun déplacement
+		if (!bIsPlayer && pEntity->firing == 1){
+			firingAnimation(pEntity, pRenderer);
+//			Kr_Log_Print(KR_LOG_INFO, "The entity %s is firing\n", pEntity->strEntityName);
+			return iRetour;
+		}
+		else if ((movex == 0) && (movey == 0)) // Aucun déplacement
 		{
-			pEntity->mouvement = 0;
-			pEntity->pSprEntity->iCurrentFrame = 0;
-			pEntity->iTempoAnim = 0;
-			pEntity->iCurrentMoveX = 0;
-			pEntity->iCurrentMoveY = 0;
+			resetAnimation(pEntity);
+//			Kr_Log_Print(KR_LOG_INFO, "The entity %s didn't move\n", pEntity->strEntityName);
 			return iRetour;
 		}
 		else
 		{
-			pEntity->mouvement = 1;
-			pEntity->iTempoAnim += 1;
-			if (pEntity->iTempoAnim == RESET_FRAME)	//Si la tempo est arrivée à son terme :
-			{
-				pEntity->pSprEntity->iCurrentFrame += 1; //	- Frame suivante
-				if (pEntity->pSprEntity->iCurrentFrame == pEntity->pSprEntity->iNbFrames) //Si l'animation est arrivée au bout 
-				{
-					pEntity->pSprEntity->iCurrentFrame = 0;
-				}
-				pEntity->iTempoAnim = 0;
-			}
-
-			//Gestion de la direction, seulement pour le personnage pour le moment
+			movementAnimation(pEntity);
 			switchTextureFromDirection(pEntity, newDir, pRenderer);
 
 			// Collision avec le level
@@ -303,6 +357,7 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 				iTmp = Kr_Collision(pLevelSt->pLevel, pEntity->pSprEntity->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
 			}
 
+			//collision avec le joueur
 			if (!bIsPlayer && pEntity->state != noclip && pEntity->state != invisible)
 			{
 				movex = NewVx;
@@ -321,10 +376,29 @@ Uint32  updateEntity(SDL_Renderer *pRenderer, Level_State *pLevelSt, Kr_Input my
 					movey = NewVy;
 					NewVx = NewVy = 0;
 					iTmp = Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->plEnt->current->e->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
+					if (bIsPlayer && iTmp == 2 && pLevelSt->plEnt->current->e->bFriendly == FALSE)
+					{
+						meleeDamage(pLevelSt->plEnt->current->e, pLevelSt->pPlayer);
+						Kr_Log_Print(KR_LOG_INFO, "The player met the entity %s\n", pLevelSt->plEnt->current->e->strEntityName);
+						break;
+					}
 				}
 				nextEnt(pLevelSt->plEnt);
 			}
 			pLevelSt->plEnt->current = currentNode;
+			//Collision avec le player
+
+			if (!bIsPlayer  && pLevelSt->pPlayer->state != invincible)
+			{
+				movex = NewVx;
+				movey = NewVy;
+				NewVx = NewVy = 0;
+				if (Kr_Collision(NULL, pEntity->pSprEntity->pRectPosition, pLevelSt->pPlayer->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy) == 2)
+				{
+					meleeDamage(pEntity, pLevelSt->pPlayer);
+					//Kr_Log_Print(KR_LOG_INFO, "The player has been melee damaged by %s\n", pLevelSt->plEnt->current->e->strEntityName); // on peut pas l'afficher car currendNode peut avoir la valeur NULL5
+				}
+			}
 
 			// Déplacement de l'entité sans la gestion des collisions
 			if (pEntity->state == noclip)
@@ -355,51 +429,67 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 	Sint32 movex = 0, movey = 0, NewVx = 0, NewVy = 0;
 	Uint32 iTmp = 0;
 	Boolean res = TRUE, nextL = FALSE;
+	NodeListEnt *currentNode = pLevelSt->plEnt->current;
 
 	if (emptyList(pWeapon->plProjectile) == FALSE){
 		Kr_Log_Print(KR_LOG_INFO, "A projectile to be load\n");
 		setOnFirst(pWeapon->plProjectile);
 		while (pWeapon->plProjectile->current != NULL)
 		{
-			/* Calcul de la nouvelle position */
+			//Gestion de l'animation
+			pWeapon->plProjectile->current->p->iTempoAnim += 1;
+			if (pWeapon->plProjectile->current->p->iTempoAnim == RESET_PROJECTILE_FRAME)	//Si la tempo est arrivée à son terme :
+			{
+				pWeapon->plProjectile->current->p->pSprProjectile->iCurrentFrame += 1; //	- Frame suivante
+				if (pWeapon->plProjectile->current->p->pSprProjectile->iCurrentFrame == pWeapon->plProjectile->current->p->pSprProjectile->iNbFrames) //Si l'animation est arrivée au bout 
+				{
+					pWeapon->plProjectile->current->p->pSprProjectile->iCurrentFrame = 0;
+				}
+				pWeapon->plProjectile->current->p->iTempoAnim = 0;
+			}
+
+			// Calcul de la nouvelle position
 			switch (pWeapon->plProjectile->current->p->direction)
 			{
 			case nord:
 				movex = 0;
-				movey -= PROJECTILE_SPEED;
+				movey -= pWeapon->iSpeedPrj;
 				if (pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey <= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
 					iTmp = 1;
 				break;
 			case est:
-				movex += PROJECTILE_SPEED;
+				movex += pWeapon->iSpeedPrj;
 				movey = 0;
 				if (pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movey >= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
 					iTmp = 1;
 				break;
 			case sud:
 				movex = 0;
-				movey += PROJECTILE_SPEED;
+				movey += pWeapon->iSpeedPrj;
 				if (pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey >= pWeapon->plProjectile->current->p->iCoordPrj_YEnd)
 					iTmp = 1;
 				break;
 			case ouest:
-				movex -= PROJECTILE_SPEED;
+				movex -= pWeapon->iSpeedPrj;
 				movey = 0;
 				if (pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movey <= pWeapon->plProjectile->current->p->iCoordPrj_XEnd)
 					iTmp = 1;
 				break;
 			}
 
+			//Gestion de la range
 			if (iTmp == 1)
 			{	//Fin de course
 				deleteCurrent(pWeapon->plProjectile, &nextL);
 				Kr_Log_Print(KR_LOG_INFO, "The projectile is out of range\n");
 				res = FALSE;
 			}
+
+			//Gestion des collisions
 			else
 			{
 				iTmp = Kr_Collision(pLevelSt->pLevel, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition, NULL, movex, movey, &NewVx, &NewVy);
-				if (iTmp == 6){	// Collision avec le level
+				if (iTmp == 6 && pWeapon->plProjectile->current->p->prjType != ghost){	// Collision avec le level
 					Kr_Log_Print(KR_LOG_INFO, "The projectile hit the level\n");
 					deleteCurrent(pLevelSt->pPlayer->pWeapon->plProjectile, &nextL);
 					res = FALSE;
@@ -414,14 +504,31 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 						if (iTmp == 2)
 						{
 							Kr_Log_Print(KR_LOG_INFO, "The projectile hit an entity in (%d;%d)\n", pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movex, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey);
-							weaponDamage(pWeapon->plProjectile->current->p, pLevelSt->plEnt->current->e);
-							deleteCurrent(pWeapon->plProjectile, &nextL);
+							if (pLevelSt->plEnt->current->e->state != invincible)
+								weaponDamage(pWeapon->plProjectile->current->p->iDamagePrj, pLevelSt->plEnt->current->e);
+							if (pWeapon->plProjectile->current->p->prjType != piercing)
+								deleteCurrent(pWeapon->plProjectile, &nextL);
 							res = FALSE;
 							break;
 						}
 						nextEnt(pLevelSt->plEnt);
 					}
-
+					// Collision avec le joueur
+					if (res == TRUE)
+					{
+						NewVx = NewVy = 0;
+						iTmp = Kr_Collision(NULL, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition, pLevelSt->pPlayer->pSprEntity->pRectPosition, movex, movey, &NewVx, &NewVy);
+						if (iTmp == 2)
+						{
+							Kr_Log_Print(KR_LOG_INFO, "The projectile hit the player in (%d;%d)\n", pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x + movex, pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->y + movey);
+							if (pLevelSt->pPlayer->state != invincible)
+								weaponDamage(pWeapon->plProjectile->current->p->iDamagePrj, pLevelSt->pPlayer);
+							if (pWeapon->plProjectile->current->p->prjType != piercing)
+								deleteCurrent(pWeapon->plProjectile, &nextL);
+							res = FALSE;
+							break;
+						}
+					}
 					if (res == TRUE)
 					{
 						pWeapon->plProjectile->current->p->pSprProjectile->pRectPosition->x += NewVx;
@@ -439,6 +546,7 @@ Boolean	updateProjectilesWeapon(SDL_Renderer *pRenderer, Level_State *pLevelSt, 
 				nextL = FALSE;
 
 		}
+		pLevelSt->plEnt->current = currentNode;
 
 		return res;
 
@@ -552,7 +660,7 @@ Uint32 Kr_Level_Interraction(Kr_Level *pLevel, Entity *pPlayer)
 
 
 /*!
-*  \fn     Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait)
+*  \fn     Uint32 GenerateRandomVector(Sint32 *pMovex, Sint32 *pMovey, Uint32 iMin, Uint32 iMax, Entity *pEntity, Kr_Level *pLevel, Entity *pPlayer, Uint32 iWait,Uint32 iRatio))
 *  \brief  Function to generate random vector
 *
 *  \param  pMoveX  a pointer to the X vector
@@ -709,7 +817,7 @@ Boolean Level_State_SaveLevel(Level_State *pCurrentLevelState)
 	{
 		state = pCurrentLevelState->plEnt->current->e->state;
 		if (strcmp(pCurrentLevelState->plEnt->current->e->strEntityName, "pigeon1") == 0) state = 0; // On force l'état du pigeon à 0 dans le cas où celui-ci était en phase de vol
-		fprintf(pFileSrc, "%s %d %d %d %d %d %d %d %d %d %d %d\n",
+		fprintf(pFileSrc, "%s %d %d %d %d %d %d %d %d %d %d %d %s %s %d %d %d %d\n",
 			pCurrentLevelState->plEnt->current->e->strEntityName,
 			pCurrentLevelState->plEnt->current->e->direction,
 			pCurrentLevelState->plEnt->current->e->pSprEntity->iFrameWidth,
@@ -721,7 +829,13 @@ Boolean Level_State_SaveLevel(Level_State *pCurrentLevelState)
 			pCurrentLevelState->plEnt->current->e->pSprEntity->pRectPosition->y,
 			pCurrentLevelState->plEnt->current->e->iSpeedEntity,
 			state,
-			pCurrentLevelState->plEnt->current->e->bFriendly);
+			pCurrentLevelState->plEnt->current->e->bFriendly,
+			pCurrentLevelState->plEnt->current->e->pWeapon->strNameWeapon,
+			pCurrentLevelState->plEnt->current->e->pWeapon->strNameProjectile,
+			pCurrentLevelState->plEnt->current->e->pWeapon->iDamageWeapon,
+			pCurrentLevelState->plEnt->current->e->pWeapon->iMunitionWeapon,
+			pCurrentLevelState->plEnt->current->e->pWeapon->iRangeWeapon,
+			pCurrentLevelState->plEnt->current->e->pWeapon->iSpeedPrj);
 		nextEnt(pCurrentLevelState->plEnt);
 	}
 	fprintf(pFileSrc, "#layout\n");
@@ -776,7 +890,7 @@ Uint32 Level_State_Bomb_Detect(Level_State *pLevelSt, Bombe *pBombe)
 		}
 		if (iContact)
 		{
-			//Appliquer les à l'entité current ici
+			weaponDamage(BOMBE_DMG, pLevelSt->plEnt->current->e);
 			Kr_Log_Print(KR_LOG_INFO, "The entity %s was damaged by the bomb \n", pLevelSt->plEnt->current->e->strEntityName);
 		}
 		nextEnt(pLevelSt->plEnt);

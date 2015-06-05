@@ -31,7 +31,7 @@
 * \struct Kr_Map
 * \brief  Structure to handle the Map.
 */
-typedef struct
+typedef struct Kr_Map
 {
 	char   *szMapFile;		/*!< File of the map data  */
 	char  **szMapLayout;    /*!< 2D Array of level  */

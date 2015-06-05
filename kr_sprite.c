@@ -47,12 +47,13 @@ Kr_Sprite * Kr_Sprite_Init(char *szFileName)
 }
 
 /*!
-*  \fn     Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition)
+*  \fn     Boolean Kr_Sprite_Load(Kr_Sprite *sprite, Direction dir, Uint32 frameHeight, Uint32 frameWidth, Uint32 nbFrames, SDL_Rect *pRectPosition, SDL_Renderer *pRenderer){
 *  \brief  Function to load the sprite
 *
 *  \todo   use this function after the sprite had been initialized
 *
-*  \param  sprite         a pointer to a sprite
+*  \param  *sprite        a pointer to a sprite
+*  \param  Direction	  the direction of the sprite is looking
 *  \param  frameHeight    the height of the frame
 *  \param  frameWidth     the width of the frame
 *  \param  nbFrames       the numper of frames of the animation

@@ -410,7 +410,7 @@ void Menu_Pause(SDL_Renderer *pRenderer, char *szMessage)
 		exit(EXIT_FAILURE);
 	}
 
-	//Bouton Editeur
+	//Bouton Pause
 	Bouton    *pBoutonPause = NULL;
 	TTF_Font  *pFontBoutonPause = NULL;
 	SDL_Color  couleurBoutonPause = { 0, 0, 0 };

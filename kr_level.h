@@ -51,7 +51,7 @@
 * \struct Kr_Level
 * \brief  Structure to handle the level.
 */
-typedef struct
+typedef struct Kr_Level
 {
 	char           *szLevelFile;		/*!< Name of the file of the level  */
 	char		   *szLevelName;		/*!< Name of the level  */

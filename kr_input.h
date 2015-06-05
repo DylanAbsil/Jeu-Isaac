@@ -26,7 +26,7 @@
 	* \struct Kr_Input
 	* \brief  Structure to handle the input.
 	*/
-	typedef struct
+	typedef struct Kr_Input
 	{
 		char    szKey[SDL_NUM_SCANCODES];  /*!< array to indication the status of each key of the keyboard*/
 		Uint32  iMouseX;				   /*!< Integer to indicate the absolute position of the mouse on X. */

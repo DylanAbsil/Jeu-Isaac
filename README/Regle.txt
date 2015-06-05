@@ -1,0 +1,13 @@
+World of Isaac est un jeu d'aventure où vous pouvez parcourir un monde de plusieurs niveaux et combattre des ennemis
+
+
+// La configuration des touches est la suivante 
+ZQSD : Utiliser l'arc 
+UP,DOWN,LEFT,RIGHT : Déplacer le personnage
+
+B : Poser une bombe
+P : Mettre en pause le jeu
+O : Mettre en pause la musique
+F : Afficher les FPS
+E : Interagir avec le niveau
+TAB : Afficher les informations du niveau

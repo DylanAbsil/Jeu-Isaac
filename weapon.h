@@ -18,15 +18,29 @@
 #include "kr_sprite.h"
 #include "kr_collision.h"
 
-#define PROJECTILE_SPEED 5		/*< Number to handle the projectile movement*/
 #define ATTACK_SPEED 20			/*< Number to handle how many projectile do you fire at the same time >*/
+#define RESET_PROJECTILE_FRAME 10
 
-typedef struct {
+/*!
+* \enum PrjState
+* \brief Enumeration to describe the state of the projectile.
+*/
+typedef enum {
+	hard,
+	ghost,
+	piercing,
+	poisonning,
+	burning,
+}PrjType;
+
+typedef struct Projectile{
 	char		*strNamePrj;			/*< Name of the projectile >*/
 	Sint32	    iDamagePrj;				/*< Damage of the projectile >*/
 	Uint32	    iSpeedPrj;				/*< Speed of the projectile >*/
 	Direction	direction;				/*< Direction of the projectile's movement >*/
+	PrjType		prjType;				/*< The type of projectile used >*/
 	Kr_Sprite	*pSprProjectile;		/*< A pointer to the sprite of the projectile >*/
+	Uint32		iTempoAnim;
 	Sint32		iCoordPrj_XEnd;			/*< Limit position of the projectile in x>*/
 	Sint32		iCoordPrj_YEnd;			/*< Limit position of the projectile in y*/
 }Projectile;
@@ -49,13 +63,15 @@ typedef struct{
 	NodeListProj *last;			/*!< A pointer to the last list element*/
 }ListProj;
 
-typedef struct {
+typedef struct Weapon{
 	char		*strNameWeapon;			/*< Name of the weapon >*/
 	char		*strNameProjectile;		/*< Name of the projective contained in the weapon >*/
 	Uint32		iRangeWeapon;			/*< Range of the weapon >*/
 	Sint32		iMunitionWeapon;		/*< Munitions currently in the weapon >*/
 	Sint32		iDamageWeapon;			/*< Damage of the weapon <*/
 	Uint32	    iSpeedPrj;				/*< Speed of the projectile >*/
+	Uint32		iattackSpeed;			/*< Int to handle the attack speed >*/
+	PrjType		prjType;				/*< The type of projectile used >*/
 	ListProj	*plProjectile;			/*< Liste containing all the projectile currently still fired (under range of the weapon and before collisions >*/
 }Weapon;
 
@@ -65,7 +81,7 @@ typedef struct {
 /* ======================================== */
 
 Projectile* Projectile_Init(char *strProjName);
-Boolean		Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint32 speed, SDL_Rect *pRect, SDL_Renderer *pRenderer);
+Boolean		Projectile_Load(Projectile *pProj, Weapon *pWeapon, Direction dir, Uint32 speed, PrjType prjType, Uint32 nbFrames, SDL_Rect *pRect, SDL_Renderer *pRenderer); 
 void		Projectile_Free(Projectile *pProj);
 Boolean		Projectile_Draw(SDL_Renderer *pRenderer, Projectile *pProj);
 
@@ -103,7 +119,7 @@ Boolean			drawProjectilesWeapon(ListProj *lProj, SDL_Renderer *pRenderer);
 /* ======================================== */
 
 Weapon *		Weapon_Init(char *strWeaponName);
-Boolean			Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 munition, Uint32 damage);
+Boolean			Weapon_Load(Weapon *pWeapon, char *strProjName, Uint32 range, Uint32 munition, Uint32 damage, Uint32 speedPrj, PrjType prjType);
 void			Weapon_Free(Weapon *pWeapon);
 
 

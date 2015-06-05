@@ -30,7 +30,7 @@
      * \struct Kr_Sound
      * \brief  Structure to handle the sound.
      */
-    typedef struct
+    typedef struct Kr_Sound
     {
         char      *szSndName; /*!< Name of the sound. */
         Mix_Chunk *pChunk;    /*!< Pointer on the sound structure. */
@@ -40,7 +40,7 @@
 	* \struct Kr_Music
 	* \brief  Structure to handle the music.
 	*/
-	typedef struct
+	typedef struct Kr_Music
 	{
 		char      *szMscName; /*!< Name of the music. */
 		Mix_Music *pMsc;    /*!< Pointer on the music structure. */

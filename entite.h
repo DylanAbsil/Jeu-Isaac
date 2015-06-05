@@ -29,10 +29,10 @@
 #include "weapon.h"
 #include "kr_input.h"
 
-#define MOVESPEED 5	/*< Movespeed of the player >*/
-#define MOB_MOVESPEED 3 /*< Basic movespeed of the monstres >*/
-#define RESET_FRAME 10	/*< Number to handle the reset of the frame >*/
-#define MOB_INFIGHTING_DAMAGE 15
+#define MOVESPEED 3					/*< Spped of the player >*/
+#define RESET_FRAME	 10				/*< Number to handle the reset of the frame >*/
+#define RESET_FIRING_FRAME 3		/*< Number to handle the reset of the frame of firing animation >*/
+#define MOB_INFIGHTING_DAMAGE 2		/*< The damage of the monsters when we touch them >*/
 
 /*!
 * \enum EntityState
@@ -45,23 +45,26 @@ typedef enum {
 	invisible,
 	poisoned,
 	noclip,
+	touched,
 }EntityState;
 
 /*!
 * \struct Entity
 * \brief  Structure to handle the entity.
 */
-typedef struct {
+typedef struct Entity{
 	char		*strEntityName;		/*< Name of the entity >*/
 	Sint32		iEntityLife;		/*< Life of the entity >*/
 	Uint32		iArmor;				/*< Armor of the entity >*/
 	Weapon		*pWeapon;			/*< A pointer to his weapon (can be NULL) >*/
 	Kr_Sprite	*pSprEntity;		/*<	A pointer to his sprite >*/
 	EntityState	state;				/*< State of the entity : normal, invincible, slowed, ...) >*/
-	Uint32		iSpeedEntity;		/*< */
+	Uint32		iSpeedEntity;		/*< Speed of the entity */
 	Direction	direction;			/*< Direction which the entity is facing >*/
 	Boolean		mouvement;			/*< Mouvement : 0 (static) or 1 (in movement) >*/
+	Boolean		firing;				/*< Firing : 1 or 0 >*/
 	Uint32		iTempoAnim;			/*< Int for the temporisation of the animation >*/
+	Uint32		iTempoFiringAnim;   /*< Int for the temporisation of the animation of the attacks >*/
 	Uint32		iTempoAtk;			/*< Int to handle the attack speed >*/
 	Boolean     bFriendly;			/*< TRUE if the entity is friendly ? Does it deal damage  >*/
 	Uint32      iTempoMovement;     /*< Value which can be used to compute a random movement   >*/
@@ -132,17 +135,22 @@ Boolean			insertLastEnt(ListEnt *lEnt, Entity *e);
 
 Direction	foundDirection(Sint32 vx, Sint32 vy, Entity *pEntity);
 void		foundWayToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 movex, Sint32 movey);
-void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy);
-void		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy);
+void		getVector(Kr_Input myEvent, Sint32 *vx, Sint32 *vy, Uint32 speed);
+double		getVectorToPlayer(Entity *pEntity, Entity *pPlayer, Sint32 *vx, Sint32 *vy);
 void		switchTextureFromDirection(Entity *entite, Direction newdir, SDL_Renderer *pRenderer);
+void		switchToFiringTexture(Entity *entite, SDL_Renderer *pRenderer, Uint32 nbFrames);
 
 
 /* ======================================== */
 /*				FIGHTS						*/
 /* ======================================== */
 
+void		firingAnimation(Entity *entite, SDL_Renderer *pRenderer);
+void		movementAnimation(Entity *entite);
+void		resetAnimation(Entity *entite);
+
 void		meleeDamage(Entity *pGiver, Entity *pReceiver);
-void		weaponDamage(Projectile *pProj, Entity *pEntity);
+void		weaponDamage(Sint32 iDamage, Entity *pEntity);
 Boolean		shoot(Kr_Input myEvent, Entity *pEntity, SDL_Renderer *pRenderer);
 Boolean		changeWeapon(Entity *pEntity, Weapon *pWeapon);
 

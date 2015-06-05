@@ -144,16 +144,15 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	pRectPositionPlayer->h = 32;
 
 	/* Chargement des sprites */
-	pSpritePlayer = Kr_Sprite_Init("zelda");			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
-	if (Kr_Sprite_Load(pSpritePlayer, sud, 26, 136, 8, pRectPositionPlayer, pRenderer) == FALSE)
+	pSpritePlayer = Kr_Sprite_Init("bower");			//D'abord création et load du sprite (ici le nom du sprite est "sprites/zelda_sud.png"
+	if (Kr_Sprite_Load(pSpritePlayer, sud, 32, 192, 6, pRectPositionPlayer, pRenderer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the sprite !\n");
 		SDL_Quit();
-		exit(EXIT_FAILURE);
 	}
 
 	/* Chargement du personnage principale */
-	pPlayer = Entity_Init("zelda");				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
+	pPlayer = Entity_Init("bower");				//Ensuite création et load du sprite (il faut préciser la taille de l'image png)
 	if (Entity_Load(pPlayer, 100, 50, MOVESPEED, normal, FALSE, pSpritePlayer) == FALSE)
 	{
 		Kr_Log_Print(KR_LOG_ERROR, "Cant load the entity !\n");
@@ -162,9 +161,9 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	}
 
 	/*Chargement de l'arme */
-	Weapon *pistoletLumiere = Weapon_Init("pistolet lumiere");
+	Weapon *pistoletLumiere = Weapon_Init("bow");
 
-	Weapon_Load(pistoletLumiere, "bullet", 100, 50, 500);
+	Weapon_Load(pistoletLumiere, "arrow", 100, 50, 500, 5, hard);
 	changeWeapon(pPlayer, pistoletLumiere);
 
 	/* Bombe */
@@ -174,6 +173,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	Boolean bStartExplosion = FALSE; // Vrai quand la bombe est dans sa phase d'explosion
 	Boolean bCheckBomb = FALSE; // Vrai lorsque la bombe a fini d'explosé et qu'il faut aller vérifier si une entité était dans l'explosion
 	char szNbBomb[10] = "0";
+	char szNbMunition[10] = "0";
 	pBombe = Bombe_Init(pRenderer, 2, 20, "Bombe_sol_explosion", "Bombe_sol", "bomb_set", "bomb_explosion");
 	if (!pBombe)
 	{
@@ -327,7 +327,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	hBombeImage = HUD_Init("SDL_Bomb", FALSE, pRenderer);
 	HUD_Load(hBombeImage, RectBombeImage);
 	/* InitialisationHUD CleImage */
-	hCleImage = HUD_Init("SDL_Key", FALSE, pRenderer);
+	hCleImage = HUD_Init("SDL_Ammo", FALSE, pRenderer);
 	HUD_Load(hCleImage, RectCleImage);
 	/* InitialisationHUD BombeTexte */
 	hBombeTexte = HUD_Init("BombeImage", TRUE, pRenderer);
@@ -364,7 +364,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	/* Sound */
 	Mix_AllocateChannels(10);
 	Kr_Sound *pSndCoffre = Kr_Sound_Alloc("ouverture_coffre");
-
+	Kr_Sound *pSndGameOver = Kr_Sound_Alloc("Game_Over");
 
 	/* Gestion des entitées */
 	Uint32 iCodeUpdateEntity = 1;
@@ -437,8 +437,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		/* Controle du tir du personnage */
 		shoot(inEvent, pPlayer, pRenderer);
 
-		/* Mise à jour des projectiles du personnage */
-		updateProjectilesWeapon(pRenderer, pCurrentLevelState, pCurrentLevelState->pPlayer->pWeapon);
+		/* Mise à jour des projectiles de toutes les entites (inclus le player)*/
+		updateAllWeapons(pRenderer, pCurrentLevelState);
 		
 		/* ========================================================================= */
 		/*                           GESTIONS DES TOUCHES                            */
@@ -469,7 +469,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		}
 		if (inEvent.szKey[SDL_SCANCODE_P]) // Mettre en pause le jeu
 		{
-			Menu_Pause(pRenderer, "Appuyer sur P pour reprendre");
+			Menu_Pause(pRenderer, "Press P");
 			inEvent.szKey[SDL_SCANCODE_P] = 0;
 		}
 		if (inEvent.szKey[SDL_SCANCODE_E]) // Interragir avec le niveau (panneau, coffre)
@@ -611,29 +611,32 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		{
 			if (iRecompense == 1)
 			{
-				Message_Update(pMessageLevel, TRUE, "Vous trouvez 5 bombes et 50hp !");
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 5 bombes, 50hp  et 75 munitions !");
 				pBombe->iNumber += 5;
 				pPlayer->iEntityLife += 50;
+				pPlayer->pWeapon->iMunitionWeapon += 75;
 				iRecompense = 0;
 			}
 			else if (iRecompense == 2)
 			{
-				Message_Update(pMessageLevel, TRUE, "Vous trouvez 50hp et 50ap !");
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 50hp, 50ap et 50 munitions !");
 				pPlayer->iArmor += 50;
 				pPlayer->iEntityLife += 50;
+				pPlayer->pWeapon->iMunitionWeapon += 50;
 				iRecompense = 0;
 			}
 			else if (iRecompense == 3)
 			{
-				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes et 20hp !");
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes et 30 munitions !");
 				pBombe->iNumber += 2;
-				pPlayer->iEntityLife += 20;
+				pPlayer->pWeapon->iMunitionWeapon += 30;
 				iRecompense = 0;
 			}
 			else if (iRecompense == 4)
 			{
-				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes !");
+				Message_Update(pMessageLevel, TRUE, "Vous trouvez 2 bombes et 10 munitions !");
 				pBombe->iNumber += 2;
+				pPlayer->pWeapon->iMunitionWeapon += 10;
 				iRecompense = 0;
 			}
 		}
@@ -644,7 +647,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		/* ========================================================================= */
 		/* Création des textures à partir du texte pour le nombre de munition ou de clés*/
 		sprintf(szNbBomb, "%d", pBombe->iNumber);
-		CleTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, "4", CouleurHUD, TRUE, &(hCleTexte->RectDest));
+		sprintf(szNbMunition, "%d", pPlayer->pWeapon->iMunitionWeapon);
+		CleTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, szNbMunition, CouleurHUD, TRUE, &(hCleTexte->RectDest));
 		BombeTexteTexture = Kr_Text_FontCreateTexture(pRenderer, policeHUD, szNbBomb, CouleurHUD, TRUE, &(hBombeTexte->RectDest));
 
 		/* Mise à jour des HUD "texte" avec la nouvelle texture générée */
@@ -661,6 +665,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		if (pPlayer->iEntityLife <= 0)
 		{
 			bPlayerDead = TRUE;
+			Kr_Sound_Play(pSndGameOver, 0, 100, 0);
 			Message_Update(pMessageInfo, TRUE, "Vous êtes mort, la partie s'achève !");
 		}
 
@@ -683,8 +688,8 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 			bStartExplosion = Bombe_Explosion(pBombe, TRUE, pRenderer); // Affichage de l'explosion de la bombe
 		}
 
-		drawAllEntities(pCurrentLevelState, pRenderer); 
-		drawProjectilesWeapon(pPlayer->pWeapon->plProjectile, pRenderer);
+		drawAllEntities(pCurrentLevelState, pRenderer);
+		drawAllProjectiles(pCurrentLevelState, pRenderer);
 		if (bDrawPapillon == TRUE) Entity_Draw(pRenderer, pPapillon);
 		if ((bDrawPigeonVol == TRUE)) Entity_Draw(pRenderer, pPigeonVol);
 		if ((bDrawOiseau == TRUE) && (iTypeOiseau == 1)) Entity_Draw(pRenderer, pOiseau1);
@@ -700,7 +705,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		HUD_Draw(pRenderer, hCleTexte, 0);
 
 		// Divers
-		if (pMessageInfo->bMustShow == TRUE)  SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
+		//if (pMessageInfo->bMustShow == TRUE)  SDL_RenderCopy(pRenderer, pTextureText, NULL, &textPosition);
 		Kr_FPS_Show(pFPS);
 		SDL_RenderPresent(pRenderer); // Lorsque toutes les surfaces ont été placé on affiche le renderer (l'écran quoi...)
 
@@ -712,7 +717,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 		//Gestion de la mort du player
 		if (bPlayerDead)
 		{
-			SDL_Delay(5000);
+			SDL_Delay(7000);
 		}
 	}
 
@@ -739,6 +744,7 @@ Uint32 Isaac(SDL_Renderer *pRenderer, SDL_Window *pWindow, Boolean bLoadBackup)
 	Kr_Sound_Free(&pSndPigeon);
 	Kr_Sound_Free(&pSndPapillon);
 	Kr_Sound_Free(&pSndCoffre);
+	Kr_Sound_Free(&pSndGameOver);
 	Kr_Fps_Free(pFPS);
 	HUD_free(hVie);
 	HUD_free(hCleImage);
