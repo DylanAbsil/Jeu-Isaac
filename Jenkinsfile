@@ -8,7 +8,7 @@ pipeline {
     }
     stage('Syntax ') {
       steps {
-        echo 'Checking syntax'
+        echo 'Checking syntax - test'
       }
     }
     stage('Build') {
